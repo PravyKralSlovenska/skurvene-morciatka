@@ -1,0 +1,34 @@
+SKURVENE MORCIATKA
+    GLAD - open source kniznica, kde su zapisane vsetky funkcie napriec vsetkymi openGL verziami, manazuje tieto funkcie
+    OpenGL - 
+        . state machine
+        .
+    VBO - Vertex buffer object - float array ulozena v GPU
+    VAO - Vertex Array Object - ako by mali byt vertex data interpretovane
+    EBO - Element Buffer Object -  
+        . pouziva sa na definovanie vrcholov, ktore tvoria trojuholniky
+        . v tomto pripade su dva trojuholniky, ktore tvoria stvorec 
+    Vertex Shader - vypocita polohu vertexu na obrazovke 
+    Fragment Shader - robi ze "zafarby tento pixel na modro"
+    Render Process:
+        . vytvor VBO - uloz vertexy do GPU
+        . vytvor VAO - povedz OpenGL ako ich ma precitat
+        . vytvor Sahder - ako ich ma GPU nakreslit
+        . pouzi Shader - 
+        . nakresli s glDrawElements - 
+        . swap buffers - zobraz element na obrazovke  
+
+dennik:
+21.6.2025 - sobota
+    - co je to opengl a glad
+    - zaklady opengl
+    - setup, struktura projektu
+
+22.6.2025 - nedela
+    - pojebane buffery a shadery
+    - Shader je kod, ktory bezi na GPU
+    - stvorec je 2 trojuholniky
+        . trojuholniky preto lebo su jednoduch, rychle a GPU su uz na to optimalizovane
+
+23.6.2025 - pondelok
+    -
