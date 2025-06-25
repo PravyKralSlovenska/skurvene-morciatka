@@ -4,9 +4,10 @@
 CMakeFiles/morciatko.dir/main.cpp.o
  /home/jakub/programko/cpp/skurvene-morciatka/main.cpp
  /home/jakub/programko/cpp/skurvene-morciatka/include/KHR/khrplatform.h
- /home/jakub/programko/cpp/skurvene-morciatka/include/engine/grid.hpp
  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/particle.hpp
+ /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world.hpp
  /home/jakub/programko/cpp/skurvene-morciatka/include/glad/gl.h
+ /home/jakub/programko/cpp/skurvene-morciatka/src/world.cpp
  /usr/include/GLFW/glfw3.h
  /usr/include/alloca.h
  /usr/include/asm-generic/bitsperlong.h

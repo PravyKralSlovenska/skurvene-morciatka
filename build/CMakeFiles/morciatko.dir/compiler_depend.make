@@ -3,9 +3,10 @@
 
 CMakeFiles/morciatko.dir/main.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/main.cpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/KHR/khrplatform.h \
-  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/grid.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/particle.hpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/glad/gl.h \
+  /home/jakub/programko/cpp/skurvene-morciatka/src/world.cpp \
   /usr/include/GLFW/glfw3.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
@@ -356,6 +357,8 @@ morciatko: /usr/lib/Scrt1.o \
 
 /usr/lib/libGLX.so.0:
 
+/usr/lib/ld-linux-x86-64.so.2:
+
 /usr/include/c++/15.1.1/bits/move.h:
 
 /usr/include/bits/time64.h:
@@ -375,6 +378,8 @@ morciatko: /usr/lib/Scrt1.o \
 /usr/include/linux/stddef.h:
 
 /usr/include/c++/15.1.1/bits/nested_exception.h:
+
+/home/jakub/programko/cpp/skurvene-morciatka/src/world.cpp:
 
 /usr/include/c++/15.1.1/vector:
 
@@ -426,12 +431,6 @@ morciatko: /usr/lib/Scrt1.o \
 
 /usr/lib/Scrt1.o:
 
-/usr/include/bits/types/struct_tm.h:
-
-/usr/include/bits/uintn-identity.h:
-
-/usr/lib/libdl.a:
-
 /usr/include/bits/types/struct_timespec.h:
 
 /usr/include/c++/15.1.1/clocale:
@@ -441,8 +440,6 @@ morciatko: /usr/lib/Scrt1.o \
 /usr/include/ctype.h:
 
 /usr/include/bits/types/struct_sched_param.h:
-
-/usr/include/c++/15.1.1/bits/refwrap.h:
 
 /usr/include/bits/types/struct_itimerspec.h:
 
@@ -488,8 +485,6 @@ morciatko: /usr/lib/Scrt1.o \
 
 /usr/include/bits/endianness.h:
 
-/usr/include/bits/long-double.h:
-
 /usr/include/bits/libc-header-start.h:
 
 /usr/include/c++/15.1.1/bits/atomic_base.h:
@@ -504,6 +499,10 @@ morciatko: /usr/lib/Scrt1.o \
 
 /usr/include/bits/struct_mutex.h:
 
+/usr/include/c++/15.1.1/bits/new_allocator.h:
+
+/usr/include/c++/15.1.1/cstdlib:
+
 /usr/include/strings.h:
 
 /home/jakub/programko/cpp/skurvene-morciatka/include/KHR/khrplatform.h:
@@ -512,27 +511,25 @@ morciatko: /usr/lib/Scrt1.o \
 
 /usr/include/c++/15.1.1/bits/uses_allocator_args.h:
 
-/usr/include/c++/15.1.1/bits/new_allocator.h:
-
-/usr/include/c++/15.1.1/cstdlib:
-
-/home/jakub/programko/cpp/skurvene-morciatka/include/engine/grid.hpp:
-
-/usr/include/c++/15.1.1/bits/ostream.h:
-
-/usr/include/bits/types/struct_FILE.h:
-
-/usr/include/alloca.h:
-
-/usr/include/bits/stdint-least.h:
-
-/usr/include/c++/15.1.1/type_traits:
-
 /usr/include/c++/15.1.1/bits/ostream.tcc:
 
 /usr/include/c++/15.1.1/ext/type_traits.h:
 
 /usr/include/c++/15.1.1/cstdio:
+
+/usr/include/asm-generic/errno-base.h:
+
+/usr/include/c++/15.1.1/string_view:
+
+/usr/include/bits/types/struct_tm.h:
+
+/usr/include/bits/uintn-identity.h:
+
+/usr/lib/libdl.a:
+
+/usr/include/c++/15.1.1/bits/ostream.h:
+
+/usr/include/bits/types/struct_FILE.h:
 
 /usr/include/c++/15.1.1/istream:
 
@@ -556,11 +553,15 @@ morciatko: /usr/lib/Scrt1.o \
 
 /usr/include/c++/15.1.1/pstl/pstl_config.h:
 
+/usr/include/alloca.h:
+
+/usr/include/bits/stdint-least.h:
+
+/usr/include/c++/15.1.1/type_traits:
+
 /usr/include/bits/types/clock_t.h:
 
 /usr/include/bits/types/__fpos_t.h:
-
-/usr/include/asm-generic/errno-base.h:
 
 /usr/lib/libGLU.so:
 
@@ -582,7 +583,7 @@ morciatko: /usr/lib/Scrt1.o \
 
 /usr/include/stdc-predef.h:
 
-/usr/include/c++/15.1.1/string_view:
+/usr/include/bits/long-double.h:
 
 /usr/include/bits/pthread_stack_min-dynamic.h:
 
@@ -610,9 +611,13 @@ morciatko: /usr/lib/Scrt1.o \
 
 /usr/include/bits/types/struct___jmp_buf_tag.h:
 
+/usr/include/errno.h:
+
 /usr/include/bits/setjmp.h:
 
 /home/jakub/programko/cpp/skurvene-morciatka/src/gl.c:
+
+/usr/include/bits/types/error_t.h:
 
 /usr/include/c++/15.1.1/bits/exception_ptr.h:
 
@@ -654,8 +659,6 @@ morciatko: /usr/lib/Scrt1.o \
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.1.1/include/stdarg.h:
 
-/usr/include/bits/types/error_t.h:
-
 /usr/include/bits/types.h:
 
 /home/jakub/programko/cpp/skurvene-morciatka/main.cpp:
@@ -675,6 +678,8 @@ morciatko: /usr/lib/Scrt1.o \
 /usr/include/bits/stdint-intn.h:
 
 /usr/include/bits/types/clockid_t.h:
+
+/usr/include/c++/15.1.1/bits/refwrap.h:
 
 /usr/include/c++/15.1.1/bits/exception.h:
 
@@ -706,11 +711,11 @@ morciatko: /usr/lib/Scrt1.o \
 
 /usr/include/c++/15.1.1/bits/stl_uninitialized.h:
 
+/usr/include/asm-generic/types.h:
+
 /usr/include/asm-generic/bitsperlong.h:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.1.1/crtbeginS.o:
-
-/usr/include/asm-generic/types.h:
 
 /usr/include/c++/15.1.1/bits/stringfwd.h:
 
@@ -754,11 +759,11 @@ morciatko: /usr/lib/Scrt1.o \
 
 /usr/include/c++/15.1.1/debug/assertions.h:
 
-/usr/lib/ld-linux-x86-64.so.2:
-
 /usr/include/c++/15.1.1/ext/aligned_buffer.h:
 
 /usr/include/c++/15.1.1/ext/alloc_traits.h:
+
+/home/jakub/programko/cpp/skurvene-morciatka/include/engine/world.hpp:
 
 /usr/include/c++/15.1.1/ext/concurrence.h:
 
@@ -815,8 +820,6 @@ CMakeFiles/morciatko.dir/main.cpp.o:
 /usr/include/stdint.h:
 
 /usr/include/endian.h:
-
-/usr/include/errno.h:
 
 /usr/include/features-time64.h:
 

@@ -13,10 +13,11 @@ SKURVENE MORCIATKA
     Render Process:
         . vytvor VBO - uloz vertexy do GPU
         . vytvor VAO - povedz OpenGL ako ich ma precitat
-        . vytvor Sahder - ako ich ma GPU nakreslit
+        . vytvor Shader - ako ich ma GPU nakreslit
         . pouzi Shader - 
         . nakresli s glDrawElements - 
         . swap buffers - zobraz element na obrazovke  
+    Herringbone Wang Tiles - na generovanie sveta
 
 dennik:
 21.6.2025 - sobota
@@ -29,6 +30,10 @@ dennik:
     - Shader je kod, ktory bezi na GPU
     - stvorec je 2 trojuholniky
         . trojuholniky preto lebo su jednoduch, rychle a GPU su uz na to optimalizovane
+    - program som rozbehal az o 8:40 (nakreslil som krasny zlty stvorec na ciernom pozadi)
+        . problem bol ze som do glDrawElements(mod, index, dlzka, mod) hadzal indicies namiesto 0
+        . na problem prisiel az Claude, potom co GPT nevedel pomoct
 
 23.6.2025 - pondelok
-    -
+    - vymyslenie ako vygenerujem svet, ked este neviem nakreslit mriezku
+    - Herringbone Wang Tiles

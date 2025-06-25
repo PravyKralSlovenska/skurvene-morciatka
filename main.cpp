@@ -8,13 +8,14 @@
 #include <sstream>
 
 // Moje header files
-#include "engine/grid.hpp"
-#include "engine/particle.hpp"
+#include "engine/world.hpp"
+#include "src/world.cpp"
+#include "engine/particles.hpp"
 
 // konstanty
 const int WINDOW_WIDTH = 1000;
 const int WINDOW_HEIGHT = 800;
-const int PARTICLE_SIZE = 50;
+const int PARTICLE_SIZE = 10;
 
 static std::string read_file(const std::string &filepath)
 {
@@ -84,6 +85,8 @@ static unsigned int create_shader(const std::string &vertex_shader_path, const s
     return program;
 }
 
+World world(WINDOW_WIDTH, WINDOW_HEIGHT, PARTICLE_SIZE);
+
 int main(int argc, char **argv)
 {
     // init GLFW
@@ -114,60 +117,102 @@ int main(int argc, char **argv)
     std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << "\n";
 
     // Vertex Array Object - VAO
-    float vertices[8] = {
-        -0.5f, -0.5f, // dolny lavy roh
-        0.5f, -0.5f,  // dolny pravy roh
-        0.5f, 0.5f,   // horni pravy roh
-        -0.5f, 0.5f   // horni lavy roh
+    float vertices[] = {
+        // x,    y,    r,    g,    b
+        -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+         0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+         0.5f,  0.5f, 1.0f, 1.0f, 0.0f,
+        -0.5f,  0.5f, 1.0f, 0.0f, 1.0f,
+
+        -0.2f, -0.2f, 1.0f, 0.0f, 0.0f,
+         0.2f, -0.2f, 0.0f, 1.0f, 0.0f,
+         0.2f,  0.2f, 1.0f, 1.0f, 0.0f,
+        -0.2f,  0.2f, 1.0f, 0.0f, 1.0f,
     };
 
     // Element Buffer Object - EBO
-    unsigned int indices[6] = {
+    unsigned int indices[12] = {
         0, 1, 3, // pravy trojuholnik
-        1, 2, 3  // lavy trojuholnik
+        1, 2, 3, // lavy trojuholnik
+
+        4, 5, 6,
+        4, 6, 7
     };
 
-    // idcka pre VBO, VAO a EBO
-    unsigned int VBO, VAO, EBO;
-
+    /*
+     * Vertex Array Object (VAO) - sluzi na ukladanie konfiguracie vertexov
+     */
+    unsigned int VAO;
     glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-
     glBindVertexArray(VAO);
 
+    /*
+     * Vertex Buffer Object (VBO) - sluzi na ukladanie dat vertexov
+     */
+    unsigned int VBO;
+    glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    /*
+     * EBO (Element Buffer Object) - sluzi na ukladanie indexov pre vertexy
+     */
+    unsigned int EBO;
+    glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0);
+    /*
+     * glVertexAttribPointer
+     * 0 - attribute location (index)
+     * 2 - velkost (x,y)
+     * GL_FLOAT - data typ dat
+     * GL_FALSE - normalizacia dat?
+     * 5 - stride (kolko bajtov zaberie jeden vertex)
+     * (void *)0 - offset (odkial zacina data pre tento atribut)
+     */
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
+
+    /*
+     * glEnableVertexAttribArray
+     * 0 - index atributu, ktory chceme zapnut
+     */
     glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(2 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glBindVertexArray(0);
 
+    // cesty treba upravit podla togo kde skonci skompilovany kod ("morciatko")
     unsigned int program_shader = create_shader("../shaders/vertex.glsl", "../shaders/fragment.glsl");
 
-    GLenum err;
-    while ((err = glGetError()) != GL_NO_ERROR)
-    {
-        std::cerr << "OpenGL Error: " << err << std::endl;
-    }
+    glUseProgram(program_shader);
 
     // main loop
     while (!glfwWindowShouldClose(window))
     {
+        // double xpos, ypos;
+        // glfwGetCursorPos(window, &xpos, &ypos);
+        // std::cout << "Mouse Position: " << xpos << ", " << ypos << std::endl;
+
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+        {
+            double xpos, ypos;
+            glfwGetCursorPos(window, &xpos, &ypos);
+            
+            std::cout << "Mouse Click: " << (int)xpos / PARTICLE_SIZE << ", " << (int)ypos / PARTICLE_SIZE << std::endl;
+        }
+
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(program_shader);
         glBindVertexArray(VAO);
 
         // glDrawArrays(GL_TRIANGLES, 0, 4);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
