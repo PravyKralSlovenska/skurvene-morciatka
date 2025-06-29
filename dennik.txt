@@ -1,6 +1,81 @@
-SKURVENE MORCIATKA
+NAZOV HRY - NEMAM VYMYSLENE
+    Tema:
+        . cisty gameplay, chaos a fyziku
+        . unikatna atmosfera (nvm este)
+        . hra by mohla trvat cca 1hodinu, ale to je jedno
+        . LSD (aj ine drogy), pekne dievcata, hudba, sex, 
+        . pribeh - mozno
+        . v kazdom levely 1 boss 
+        . 3 levely:
+            . BRATISLAVSKE METRO
+            . BRATISLAVA - NAMESTIE SLOBODY
+            .
+        . KONIEC - neviem
+
+struktura projektu (docasne)
+    . build
+    . include
+        . engine
+            . world.hpp
+            . particles.hpp
+            . utils.hpp
+            . renderer.hpp
+    . shaders
+        . vertex.glsl
+        . fragment.glsl
+    . src
+        . gl.c
+        . main.cpp
+        . world.cpp - miesto, kde sa bude diat vsetka ta fyzika
+        . utils.cpp (funguje)
+        . renderer.cpp (nefunguje)
+    . CMakeLists.txt
+
+MYSLIENKY/NAPADY:
+    . obratit sa na tvorcov (Noita games) na rady a sposoby
+
+TODO:
+    . GRID:
+        . 
+    . LAYERS: (depth testing)
+        . 1. layer - pozadie 
+        . 2. layer - svet, s ktorym hrac pracuje
+        . 3. layer - hrac
+        . 4. layer - user interface
+    . FYZIKA
+        . Rozdelenie particles podla (vsetko sa dedi):
+            . PARTICLE
+                . PLYN - dedi PARTICLE
+                    . DYM - dedi PLYN
+                    . VODNA PARA
+                . TUHA LATKA
+                    . PIESOK
+                . KVAPALINA
+                    . VODA
+    . GENEROVANIE SVETA
+        . chunky
+        . max moze byt loadnute asi len tie najblizsie
+        . ako bude prebiehat?
+    . VYMYSLIET HERNE MECHANIKY
+        . lietanie
+        . zbrane?
+        . explozie?
+    . POSTAVY (HRAC, KAMOSI, NEPRIATELIA)
+        . sprite-y postav
+    . EFEKTY (HUDBA, SVETLO)
+    . SAVE - ulozit si hru, neskor v nej pokracovat
+
+WOULD LIKE TO HAVE:
+    . RENDER MANAGEMENT
+    . PHYSICS ENGINE
+    . SCENE MANAGEMENT
+    . AUDIO SYSTEM
+    . INPUT MANAGEMENT
+    . USER INTERFACE SYSTEM
+
+co som sa naucil:
     GLAD - open source kniznica, kde su zapisane vsetky funkcie napriec vsetkymi openGL verziami, manazuje tieto funkcie
-    OpenGL - 
+    OpenGL: 
         . state machine
         .
     VBO - Vertex buffer object - float array ulozena v GPU
@@ -13,27 +88,61 @@ SKURVENE MORCIATKA
     Render Process:
         . vytvor VBO - uloz vertexy do GPU
         . vytvor VAO - povedz OpenGL ako ich ma precitat
+        . vytvor EBO - ake indicies ma pouzit pri vykreslovani
         . vytvor Shader - ako ich ma GPU nakreslit
         . pouzi Shader - 
         . nakresli s glDrawElements - 
         . swap buffers - zobraz element na obrazovke  
-    Herringbone Wang Tiles - na generovanie sveta
+    Herringbone Wang Tiles - na generovanie svet
+        . proceduralne generovanie sveta
+            . biomy?
+        . svet sa bude skladat z tychto tiles (chunkov)
+        . svet bude "nekonecny, vzdy jedinecny (nebude sa opakovat)"
+    Voxel Engine - 
+        . kazdy moj "particle" je ako kocka v minecrafte
+    HEADER FILES - ako funguju, nejaky ten best practise, aj ako compiler pracuje so subormi
+
+ERRORY:
+    . AK SA NIC VYKRESLUJE SKONTROLUJ glVertexAttribPointer, VBO, ..., shadery
+    . ERROR::SHADER::PROGRAM::LINKING_FAILED - pravdepodobne zle datove typy 
 
 dennik:
-21.6.2025 - sobota
-    - co je to opengl a glad
-    - zaklady opengl
-    - setup, struktura projektu
+    21.6.2025 - sobota
+        - co je to opengl a glad
+        - zaklady opengl
+        - setup, struktura projektu
 
-22.6.2025 - nedela
-    - pojebane buffery a shadery
-    - Shader je kod, ktory bezi na GPU
-    - stvorec je 2 trojuholniky
-        . trojuholniky preto lebo su jednoduch, rychle a GPU su uz na to optimalizovane
-    - program som rozbehal az o 8:40 (nakreslil som krasny zlty stvorec na ciernom pozadi)
-        . problem bol ze som do glDrawElements(mod, index, dlzka, mod) hadzal indicies namiesto 0
-        . na problem prisiel az Claude, potom co GPT nevedel pomoct
+    22.6.2025 - nedela
+        - pojebane buffery a shadery
+        - Shader je kod, ktory bezi na GPU
+        - stvorec je 2 trojuholniky
+            . trojuholniky preto lebo su jednoduch, rychle a GPU su uz na to optimalizovane
+        - program som rozbehal az o 8:40 (nakreslil som krasny zlty stvorec na ciernom pozadi)
+            . problem bol ze som do glDrawElements(mod, index, dlzka, mod) hadzal indicies namiesto 0
+            . na problem prisiel az Claude, potom co GPT nevedel pomoct
 
-23.6.2025 - pondelok
-    - vymyslenie ako vygenerujem svet, ked este neviem nakreslit mriezku
-    - Herringbone Wang Tiles
+    23.6.2025 - pondelok
+        - vymyslenie ako vygenerujem svet, ked este neviem nakreslit mriezku
+        - Herringbone Wang Tiles
+
+    24.6.2025 - utorok
+        -
+
+    25.6.2025 - streda
+        - 
+
+    26.6.2025 - stvrtok
+        -
+
+    27.6.2025 - piatok
+        -
+
+    28.6.2025 - sobota
+        - v piatok sme oslavovali vysvedcko uplne rozjebal a nemal som energiu dnes nieco robit
+        - presnejsie som zadefinoval projekt v dennik.txt
+
+    29.6.2025 - nedela
+        - znova experimenty - RGBA/blending
+        - naucil som sa pouzivat header files (.hpp)
+        - neviem ako mam urobit grid vo world.cpp
+        - mensie upravy projektu i dennika.txt

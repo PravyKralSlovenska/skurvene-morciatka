@@ -1,3 +1,3 @@
 # skurvene-morciatka
 
-- maturitny projekt
+- maturitny projekt 2026

@@ -1,58 +1,65 @@
-#include <GLFW/glfw3.h>
-
-#include <iostream>
-
 #pragma once
+#include <GLFW/glfw3.h>
+#include <iostream>
+#include <array>
 
 class Particle
 {
 public:
-    int x_coord;       // x pozicia
-    int y_coord;       // y pozicia
-    int velocity_x;    // x rychlost
-    int velocity_y;    // y rychlost
-    int mass;          // hmotnost
-    int lifetime;      // zivotnost
-    float color[3];    // farba v RGB formate (Red, Green, Blue)
-    bool hurt = false; // ci je particle zranitelny
+    int x_coord;                // x pozicia
+    int y_coord;                // y pozicia
+    int velocity_x;             // x rychlost
+    int velocity_y;             // y rychlost
+    int mass;                   // hmotnost
+    int lifetime;               // zivotnost
+    bool hurt = false;          // ci je particle zranitelny
+    std::array<float, 3> color; // farba v RGB formate (Red, Green, Blue)
 
-    Particle(int x, int y, int vx, int vy, int m, int lt, float c[]) : x_coord(x),
-                                                                       y_coord(y),
-                                                                       velocity_x(vx),
-                                                                       velocity_y(vy),
-                                                                       mass(m),
-                                                                       lifetime(lt)
+    Particle(int x, int y, int vx, int vy, int m, int lt, std::array<float, 3> c) : x_coord(x),
+                                                                                    y_coord(y),
+                                                                                    velocity_x(vx),
+                                                                                    velocity_y(vy),
+                                                                                    mass(m),
+                                                                                    lifetime(lt),
+                                                                                    color(c)
     {
-        color[0] = c[0];
-        color[1] = c[1];
-        color[2] = c[2];
     }
-    ~Particle() = default;
+    virtual ~Particle() = default;
 
     virtual void update() {}
     virtual void render() {}
-};
 
-class Air : public Particle
-{
-public:
-    Air(int x, int y, int vx, int vy, int m, int lt, float c[3]) : Particle(x, y, vx, vy, m, lt, c)
+    int getX()
     {
+        return x_coord;
+    }
+
+    int getY()
+    {
+        return y_coord;
     }
 };
 
-class Sand : public Particle
+class Liquid : public Particle
 {
-public:
-    Sand(int x, int y, int vx, int vy, int m, int lt, float c[3]) : Particle(x, y, vx, vy, m, lt, c)
-    {
-    }
 };
 
-class Water : public Particle
+class Water : public Liquid
 {
-public:
-    Water(int x, int y, int vx, int vy, int m, int lt, float c[3]) : Particle(x, y, vx, vy, m, lt, c)
-    {
-    }
+};
+
+class Solid : public Particle
+{
+};
+
+class Sand : public Solid
+{
+};
+
+class Gas : public Particle
+{
+};
+
+class Smoke : public Gas
+{
 };
