@@ -6,6 +6,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/morciatko.dir/src/main.cpp.o.d"
   "CMakeFiles/morciatko.dir/src/renderer.cpp.o"
   "CMakeFiles/morciatko.dir/src/renderer.cpp.o.d"
+  "CMakeFiles/morciatko.dir/src/solid.cpp.o"
+  "CMakeFiles/morciatko.dir/src/solid.cpp.o.d"
   "CMakeFiles/morciatko.dir/src/utils.cpp.o"
   "CMakeFiles/morciatko.dir/src/utils.cpp.o.d"
   "CMakeFiles/morciatko.dir/src/world.cpp.o"

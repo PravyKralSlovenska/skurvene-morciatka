@@ -201,6 +201,30 @@ src/renderer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer.cpp.s
 .PHONY : src/renderer.cpp.s
 
+src/solid.o: src/solid.cpp.o
+.PHONY : src/solid.o
+
+# target to build an object file
+src/solid.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/solid.cpp.o
+.PHONY : src/solid.cpp.o
+
+src/solid.i: src/solid.cpp.i
+.PHONY : src/solid.i
+
+# target to preprocess a source file
+src/solid.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/solid.cpp.i
+.PHONY : src/solid.cpp.i
+
+src/solid.s: src/solid.cpp.s
+.PHONY : src/solid.s
+
+# target to generate assembly for a file
+src/solid.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/solid.cpp.s
+.PHONY : src/solid.cpp.s
+
 src/utils.o: src/utils.cpp.o
 .PHONY : src/utils.o
 
@@ -267,6 +291,9 @@ help:
 	@echo "... src/renderer.o"
 	@echo "... src/renderer.i"
 	@echo "... src/renderer.s"
+	@echo "... src/solid.o"
+	@echo "... src/solid.i"
+	@echo "... src/solid.s"
 	@echo "... src/utils.o"
 	@echo "... src/utils.i"
 	@echo "... src/utils.s"

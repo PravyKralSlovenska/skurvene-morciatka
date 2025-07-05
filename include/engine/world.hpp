@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
-#include "particles.hpp"
+#include "chunk.hpp"
 
 /*
  * Vertix
@@ -16,18 +16,26 @@ struct Vertix
     Vertix(float x, float y, float r, float g, float b) : x(x), y(y), r(r), g(g), b(b) {}
 };
 
+/*
+ * WorldCell
+ * - reprezentuje jednu bunku v svete
+ * - obsahuje informacie o tom, ci je bunka prazdna a aky particle sa v nej nachadza
+ */
 struct WorldCell
 {
-    // shared_ptr je 
-    // nepotrebujem volat delete, ked sa WorldCell nebudem pouzivat
-    std::shared_ptr<Particle> particle;
+    int x, y;
+    bool empty = true;
+    std::shared_ptr<Particle> particle = nullptr;
+
+    void set_particle(std::shared_ptr<Particle> p);
+    void set_empty();
 };
 
-// zatial nie
-class Chunk
-{
-};
-
+/*
+ * World
+ * - in real time reprezentacia sveta
+ * - WORLD je moj physics engine
+ */
 class World
 {
 private:
@@ -35,17 +43,17 @@ private:
      * WORLD CURRENT
      * - obsahuje aktualny stav sveta
      * - pouziva sa na renderovanie
-     * [{x, y, r, g, b}, {x, y, r, g, b}, ...]
+     * [{SAND, EMPTY, EMPTY}, {EMPTY, EMPTY, SAND}, ...]
      */
-    std::vector<WorldCell> world_curr;
+    std::vector<std::vector<WorldCell>> world_curr;
 
     /*
      * WORLD NEXT
      * - obsahuje dalsi stav sveta
      * - pouziva sa na update sveta
-     * [{x, y, r, g, b}, {x, y, r, g, b}, ...]
+     * [{EMPTY, EMPTY, EMPTY}, {SAND, EMPTY, SAND}, ...]
      */
-    std::vector<WorldCell> world_next;
+    std::vector<std::vector<WorldCell>> world_next;
 
     /*
      * VERTIX BUFFER
@@ -53,27 +61,25 @@ private:
      * - pouziva sa na renderovanie sveta
      * [{x, y, r, g, b}, {x, y, r, g, b}, ...]
      */
-    // mutable std::vector<Vertix> vertix_buffer;
-    // mutable bool vertix_buffer_dirty = true;
+    mutable std::vector<Vertix> vertix_buffer;
+    mutable bool vertix_buffer_dirty = true;
 
 public:
-    const int width;
-    const int height;
-    const int particle_size;
+    int width, height, particle_size;
 
-    World(int width, int height, int particle_size) : width(width),
-                                                      height(height),
-                                                      particle_size(particle_size)
-    {
-        world_curr.resize((width / particle_size) * (height / particle_size));
-        world_next.resize((width / particle_size) * (height / particle_size));
-    }
+    World(int w, int h, int ps);
     ~World() = default;
 
-    void add_particle();
+    void add_particle(int particle, int x, int y);
+    void remove_particle();
     void update_world();
-    void render_world();
+    void clear_worlds();
     void swap_worlds();
+    void swap_particles();
+    void render_world();
     void load_chunk();
     void unload_chunk();
+
+    // debug
+    void print_world_info();
 };

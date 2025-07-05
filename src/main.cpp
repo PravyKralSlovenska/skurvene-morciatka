@@ -4,20 +4,14 @@
 
 // Standartne cpp kniznice
 #include <iostream>
-#include <fstream>
-#include <sstream>
 
 // Moje header files
+#include "GLOBALS.hpp"
 #include "engine/world.hpp"
-#include "engine/particles.hpp"
+#include "engine/particle.hpp"
 #include "others/utils.hpp"
 
 // konstanty
-const int WINDOW_WIDTH = 1800;
-const int WINDOW_HEIGHT = 1000;
-const int PARTICLE_SIZE = 50;
-
-World world(WINDOW_WIDTH, WINDOW_HEIGHT, PARTICLE_SIZE);
 
 int main(int argc, char **argv)
 {
@@ -29,7 +23,7 @@ int main(int argc, char **argv)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // vytvorenie okna
-    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Morciatko", nullptr, nullptr);
+    GLFWwindow *window = glfwCreateWindow(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT, "Morciatko", nullptr, nullptr);
     if (window == nullptr)
     {
         std::cerr << "Failed to create GLFW window" << std::endl;
@@ -52,15 +46,55 @@ int main(int argc, char **argv)
     float vertices[] = {
         // X,    Y,    R,    G,    B,    A
         // 0,    1,    2,    3,    4,    5
-        -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f,
-         0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
-         0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f,
-        -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f,
+        -0.5f,
+        -0.5f,
+        1.0f,
+        0.0f,
+        0.0f,
+        1.0f,
+        0.5f,
+        -0.5f,
+        0.0f,
+        1.0f,
+        0.0f,
+        1.0f,
+        0.5f,
+        0.5f,
+        0.0f,
+        0.0f,
+        1.0f,
+        1.0f,
+        -0.5f,
+        0.5f,
+        1.0f,
+        1.0f,
+        1.0f,
+        1.0f,
 
-        -0.2f, -0.2f, 1.0f, 0.0f, 0.0f, 0.2f,
-         0.2f, -0.2f, 0.0f, 1.0f, 0.0f, 0.2f,
-         0.2f,  0.2f, 0.0f, 0.0f, 1.0f, 0.2f,
-        -0.2f,  0.2f, 1.0f, 1.0f, 1.0f, 1.0f,
+        -0.2f,
+        -0.2f,
+        1.0f,
+        0.0f,
+        0.0f,
+        0.2f,
+        0.2f,
+        -0.2f,
+        0.0f,
+        1.0f,
+        0.0f,
+        0.2f,
+        0.2f,
+        0.2f,
+        0.0f,
+        0.0f,
+        1.0f,
+        0.2f,
+        -0.2f,
+        0.2f,
+        1.0f,
+        1.0f,
+        1.0f,
+        1.0f,
     };
 
     // Element Buffer Object - EBO
@@ -109,8 +143,8 @@ int main(int argc, char **argv)
      * 2 - velkost (x,y)
      * GL_FLOAT - data typ dat
      * GL_FALSE - normalizacia dat?
-     * 5 * sizeof(float) - stride (kolko bajtov zaberie jeden vertex) (kolko bajtov 
-     *  . je od jedneho vertixu k druhemu) kazdy element v arraye ma 4 bajty (float), 
+     * 5 * sizeof(float) - stride (kolko bajtov zaberie jeden vertex) (kolko bajtov
+     *  . je od jedneho vertixu k druhemu) kazdy element v arraye ma 4 bajty (float),
      *  . takze 5 * sizeof(float) = 20 bajtov
      * (void *)0 - offset (odkial zacina data pre tento atribut)
      */
@@ -121,7 +155,6 @@ int main(int argc, char **argv)
      * glEnableVertexAttribArray
      * 0 - index atributu, ktory chceme zapnut
      */
-
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(2 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
@@ -133,24 +166,24 @@ int main(int argc, char **argv)
     unsigned int program_shader = create_shader("../shaders/vertex.glsl", "../shaders/fragment.glsl");
 
     glUseProgram(program_shader);
-    
+
     // blending
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // glEnable(GL_BLEND);
+    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    World world(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT, Globals::PARTICLE_SIZE);
 
     // main loop
     while (!glfwWindowShouldClose(window))
     {
-        // double xpos, ypos;
-        // glfwGetCursorPos(window, &xpos, &ypos);
-        // std::cout << "Mouse Position: " << xpos << ", " << ypos << std::endl;
-
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
         {
             double xpos, ypos;
             glfwGetCursorPos(window, &xpos, &ypos);
-            
-            std::cout << "Mouse Click: " << (int)xpos / PARTICLE_SIZE << ", " << (int)ypos / PARTICLE_SIZE << std::endl;
+            int xpos2 = (int)xpos / Globals::PARTICLE_SIZE;
+            int ypos2 = (int)ypos / Globals::PARTICLE_SIZE;
+            std::cout << "Mouse Click: " << xpos2 << ", " << ypos2 << std::endl;
+            world.print_world_info();
         }
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

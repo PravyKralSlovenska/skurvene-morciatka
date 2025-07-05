@@ -13,11 +13,11 @@ NAZOV HRY - NEMAM VYMYSLENE
         . KONIEC - neviem
 
 struktura projektu (docasne)
-    . build
-    . include
-        . engine
+    . build/
+    . include/
+        . engine/
             . world.hpp
-            . particles.hpp
+            . particle.hpp
             . utils.hpp
             . renderer.hpp
     . shaders
@@ -33,25 +33,32 @@ struktura projektu (docasne)
 
 MYSLIENKY/NAPADY:
     . obratit sa na tvorcov (Noita games) na rady a sposoby
-
+    . budem mozno potrebovat ovela viacej shaderov v /shaders na renderovanie aj inych veci
+    . world_curr a world_next by mohli byt 1D arraye, zatial budu 2D matice
+        . vzorcek na idcko by bol cca: array[y * grid_width + x] (nefugunje :3)
+    . v sucastnosti (5.7.2025) ma svet isty pocet WorldCell-ov, v buducnosti ked bude svet nekonecny
+        . sa mozu WorldCell-y skladat do chunkov, ktore sa budu davat do World array
+    . urobit triedu behavior, kde by bolo horenie, 
 TODO:
     . GRID:
         . 
-    . LAYERS: (depth testing)
+    . LAYERS: (depth testing?)
         . 1. layer - pozadie 
         . 2. layer - svet, s ktorym hrac pracuje
         . 3. layer - hrac
-        . 4. layer - user interface
+        . 4. layer - rozne efekty (akoze nebude to)
+        . 5. layer - user interface
     . FYZIKA
         . Rozdelenie particles podla (vsetko sa dedi):
             . PARTICLE
-                . PLYN - dedi PARTICLE
+                . PLYNY - dedi PARTICLE
                     . DYM - dedi PLYN
                     . VODNA PARA
-                . TUHA LATKA
+                . TUHE LATKY
                     . PIESOK
-                . KVAPALINA
+                . KVAPALINY
                     . VODA
+                . PLASMA?
     . GENEROVANIE SVETA
         . chunky
         . max moze byt loadnute asi len tie najblizsie
@@ -64,6 +71,7 @@ TODO:
         . sprite-y postav
     . EFEKTY (HUDBA, SVETLO)
     . SAVE - ulozit si hru, neskor v nej pokracovat
+    . OKOMENTOVAT VSETKY FUNKCIE A TRIEDY V HEADER FILE-och
 
 WOULD LIKE TO HAVE:
     . RENDER MANAGEMENT
@@ -101,10 +109,14 @@ co som sa naucil:
     Voxel Engine - 
         . kazdy moj "particle" je ako kocka v minecrafte
     HEADER FILES - ako funguju, nejaky ten best practise, aj ako compiler pracuje so subormi
-
+        . vedia sa zacyklovat  (kokotiny) dependuje na depend a opacne
+    Globalne premenne je najlepsie pouzivat len v main.cpp, kvoli hierarchi. Je to lepsie i na 
+        . testy, flexibilitu, udzbu a znovu pouzitie
+    
 ERRORY:
     . AK SA NIC VYKRESLUJE SKONTROLUJ glVertexAttribPointer, VBO, ..., shadery
     . ERROR::SHADER::PROGRAM::LINKING_FAILED - pravdepodobne zle datove typy 
+    . Mozna zacyklacia header files
 
 dennik:
     21.6.2025 - sobota
@@ -125,18 +137,6 @@ dennik:
         - vymyslenie ako vygenerujem svet, ked este neviem nakreslit mriezku
         - Herringbone Wang Tiles
 
-    24.6.2025 - utorok
-        -
-
-    25.6.2025 - streda
-        - 
-
-    26.6.2025 - stvrtok
-        -
-
-    27.6.2025 - piatok
-        -
-
     28.6.2025 - sobota
         - v piatok sme oslavovali vysvedcko uplne rozjebal a nemal som energiu dnes nieco robit
         - presnejsie som zadefinoval projekt v dennik.txt
@@ -146,3 +146,8 @@ dennik:
         - naucil som sa pouzivat header files (.hpp)
         - neviem ako mam urobit grid vo world.cpp
         - mensie upravy projektu i dennika.txt
+
+    4.7.2025 - sobota
+        - dost som sa na to vyjebal, nemal som chut sa tomuto venovat
+        - uz som blizko aby to fungovalo ale nejako som sa stratil v logike?
+        - 

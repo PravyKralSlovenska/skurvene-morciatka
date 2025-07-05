@@ -1,10 +1,11 @@
 #include "glad/gl.h"
-
-#include "others/utils.hpp"
+#include <GLFW/glfw3.h>
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
+#include "others/utils.hpp"
 
 /*
  *
@@ -80,4 +81,14 @@ unsigned int create_shader(const std::string &vertex_shader_path, const std::str
     glDeleteShader(fs);
 
     return program;
+}
+
+/*
+ * z utils.hpp
+ * Skontroluje, ci je hodnota v rozsahu
+ * Pouzivam v particles.hpp
+ */
+bool in_world_range(int x, int y, int world_rows, int world_cols)
+{
+    return (x >= 0 && x < world_cols) && (y >= 0 && y < world_rows);
 }
