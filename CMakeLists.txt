@@ -6,8 +6,14 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(OpenGL REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
+find_path(GLM_INCLUDE_DIR glm/glm.hpp)
 
-include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(
+    ${CMAKE_SOURCE_DIR}/include
+    ${OPENGL_INCLUDE_DIR}
+    ${GLFW_INCLUDE_DIRS}
+    ${GLM_INCLUDE_DIR}
+)
 
 file(GLOB SOURCES 
     src/*.cpp 

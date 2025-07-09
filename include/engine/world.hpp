@@ -3,17 +3,20 @@
 #include <vector>
 #include <memory>
 #include "chunk.hpp"
+#include "particle.hpp"
 
 /*
- * Vertix
+ * Vertex
  * - reprezentuje jeden particle v svete na GPUcku
  */
-struct Vertix
+struct Vertex
 {
     float x, y;
-    float r, g, b;
+    float r, g, b, a; // urobil som ze musis zadat hodnotu do 255 a program si to uz upravi podla seba
 
-    Vertix(float x, float y, float r, float g, float b) : x(x), y(y), r(r), g(g), b(b) {}
+    Vertex();
+    Vertex(float x, float y, float r, float g, float b, float a);
+    ~Vertex() = default;
 };
 
 /*
@@ -24,10 +27,17 @@ struct Vertix
 struct WorldCell
 {
     int x, y;
-    bool empty = true;
-    std::shared_ptr<Particle> particle = nullptr;
+    Particle particle;
 
-    void set_particle(std::shared_ptr<Particle> p);
+    bool empty = true;
+    bool visited = false;
+
+    WorldCell();
+    WorldCell(int x, int y);
+    ~WorldCell() = default;
+
+    std::string get_info();
+    void set_particle(Particle p);
     void set_empty();
 };
 
@@ -39,47 +49,70 @@ struct WorldCell
 class World
 {
 private:
+    int seed; // seed na generovanie nahodneho sveta?
+
     /*
      * WORLD CURRENT
      * - obsahuje aktualny stav sveta
      * - pouziva sa na renderovanie
-     * [{SAND, EMPTY, EMPTY}, {EMPTY, EMPTY, SAND}, ...]
+     * [SAND, EMPTY, EMPTY, EMPTY, EMPTY, SAND, ...]
      */
-    std::vector<std::vector<WorldCell>> world_curr;
+    std::vector<WorldCell> world_curr;
 
     /*
      * WORLD NEXT
      * - obsahuje dalsi stav sveta
      * - pouziva sa na update sveta
-     * [{EMPTY, EMPTY, EMPTY}, {SAND, EMPTY, SAND}, ...]
+     * [SAND, EMPTY, EMPTY, EMPTY, EMPTY, SAND, ...]
      */
-    std::vector<std::vector<WorldCell>> world_next;
+    std::vector<WorldCell> world_next;
 
     /*
-     * VERTIX BUFFER
+     * Vertex BUFFER
      * - obsahuje data pre OpenGL na renderovanie
      * - pouziva sa na renderovanie sveta
      * [{x, y, r, g, b}, {x, y, r, g, b}, ...]
      */
-    mutable std::vector<Vertix> vertix_buffer;
-    mutable bool vertix_buffer_dirty = true;
+    mutable bool vertex_buffer_dirty = true;
 
 public:
     int width, height, particle_size;
 
+    // nezabudni odcitat jeden index -1
+    int rows, cols;
+
     World(int w, int h, int ps);
     ~World() = default;
 
-    void add_particle(int particle, int x, int y);
+    std::vector<Vertex> vertex_buffer;
+    std::vector<unsigned int> indices;
+
+    void add_particle(Particle particle, int x, int y);
     void remove_particle();
     void update_world();
     void clear_worlds();
+
+    void push_vertex_buffer(Particle &particle, int grid_x, int grid_y);
+    void clear_vertex_buffer();
+
     void swap_worlds();
     void swap_particles();
+
+    // napln vertex_buffer a potom ho vrat na renderovanie do openGL
     void render_world();
+
     void load_chunk();
     void unload_chunk();
 
+    void update_temperature();
+    void apply_gravity();
+
+    // pohyb particles
+    void move_solid();
+    void move_liquid();
+    void move_gas();
+
     // debug
     void print_world_info();
+    void log_world();
 };

@@ -39,7 +39,9 @@ MYSLIENKY/NAPADY:
     . v sucastnosti (5.7.2025) ma svet isty pocet WorldCell-ov, v buducnosti ked bude svet nekonecny
         . sa mozu WorldCell-y skladat do chunkov, ktore sa budu davat do World array
     . urobit triedu behavior, kde by bolo horenie, 
+
 TODO:
+    . LOGY
     . GRID:
         . 
     . LAYERS: (depth testing?)
@@ -80,6 +82,7 @@ WOULD LIKE TO HAVE:
     . AUDIO SYSTEM
     . INPUT MANAGEMENT
     . USER INTERFACE SYSTEM
+    . MAPU
 
 co som sa naucil:
     GLAD - open source kniznica, kde su zapisane vsetky funkcie napriec vsetkymi openGL verziami, manazuje tieto funkcie
@@ -117,6 +120,7 @@ ERRORY:
     . AK SA NIC VYKRESLUJE SKONTROLUJ glVertexAttribPointer, VBO, ..., shadery
     . ERROR::SHADER::PROGRAM::LINKING_FAILED - pravdepodobne zle datove typy 
     . Mozna zacyklacia header files
+    . Mozno som neurobil default constructor
 
 dennik:
     21.6.2025 - sobota
@@ -147,7 +151,7 @@ dennik:
         - neviem ako mam urobit grid vo world.cpp
         - mensie upravy projektu i dennika.txt
 
-    4.7.2025 - sobota
+    5.7.2025 - sobota
         - dost som sa na to vyjebal, nemal som chut sa tomuto venovat
         - uz som blizko aby to fungovalo ale nejako som sa stratil v logike?
-        - 
+        - cele som to prepisal, prehodnotil moje umysli, nieco si precital o probleme na internete a dosiel som k zaveru  

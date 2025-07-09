@@ -2,19 +2,32 @@
 #include "glad/gl.h"
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 // Standartne cpp kniznice
 #include <iostream>
 
 // Moje header files
-#include "GLOBALS.hpp"
 #include "engine/world.hpp"
 #include "engine/particle.hpp"
+#include "others/GLOBALS.hpp"
 #include "others/utils.hpp"
 
-// konstanty
+void checkGLError(const char *operation)
+{
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR)
+    {
+        std::cerr << "OpenGL Error after " << operation << ": " << error << std::endl;
+    }
+}
 
 int main(int argc, char **argv)
 {
+    World world(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT, Globals::PARTICLE_SIZE);
+
     // init GLFW
     glfwInit();
 
@@ -42,70 +55,6 @@ int main(int argc, char **argv)
 
     std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << "\n";
 
-    // Vertex Array Object - VAO
-    float vertices[] = {
-        // X,    Y,    R,    G,    B,    A
-        // 0,    1,    2,    3,    4,    5
-        -0.5f,
-        -0.5f,
-        1.0f,
-        0.0f,
-        0.0f,
-        1.0f,
-        0.5f,
-        -0.5f,
-        0.0f,
-        1.0f,
-        0.0f,
-        1.0f,
-        0.5f,
-        0.5f,
-        0.0f,
-        0.0f,
-        1.0f,
-        1.0f,
-        -0.5f,
-        0.5f,
-        1.0f,
-        1.0f,
-        1.0f,
-        1.0f,
-
-        -0.2f,
-        -0.2f,
-        1.0f,
-        0.0f,
-        0.0f,
-        0.2f,
-        0.2f,
-        -0.2f,
-        0.0f,
-        1.0f,
-        0.0f,
-        0.2f,
-        0.2f,
-        0.2f,
-        0.0f,
-        0.0f,
-        1.0f,
-        0.2f,
-        -0.2f,
-        0.2f,
-        1.0f,
-        1.0f,
-        1.0f,
-        1.0f,
-    };
-
-    // Element Buffer Object - EBO
-    unsigned int indices[] = {
-        0, 1, 3, // pravy trojuholnik
-        1, 2, 3, // lavy trojuholnik
-
-        4, 5, 7, // pravy trojuholnik
-        5, 6, 7, // lavy trojuholnik
-    };
-
     /*
      * Vertex Array Object (VAO) - sluzi na ukladanie konfiguracie vertexov
      */
@@ -127,7 +76,7 @@ int main(int argc, char **argv)
      * vertices - data, ktore sa budu ukladat do VBO
      * GL_STATIC_DRAW - typ pouzitia dat (static, dynamic, stream)
      */
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, world.vertex_buffer.size() * sizeof(Vertex), world.vertex_buffer.data(), GL_DYNAMIC_DRAW);
 
     /*
      * EBO (Element Buffer Object) - sluzi na ukladanie indexov pre vertexy
@@ -135,7 +84,7 @@ int main(int argc, char **argv)
     unsigned int EBO;
     glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, world.indices.size() * sizeof(unsigned int), world.indices.data(), GL_DYNAMIC_DRAW);
 
     /*
      * glVertexAttribPointer
@@ -144,18 +93,18 @@ int main(int argc, char **argv)
      * GL_FLOAT - data typ dat
      * GL_FALSE - normalizacia dat?
      * 5 * sizeof(float) - stride (kolko bajtov zaberie jeden vertex) (kolko bajtov
-     *  . je od jedneho vertixu k druhemu) kazdy element v arraye ma 4 bajty (float),
+     *  . je od jedneho vertexu k druhemu) kazdy element v arraye ma 4 bajty (float),
      *  . takze 5 * sizeof(float) = 20 bajtov
      * (void *)0 - offset (odkial zacina data pre tento atribut)
      */
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)0);
     glEnableVertexAttribArray(0);
 
     /*
      * glEnableVertexAttribArray
      * 0 - index atributu, ktory chceme zapnut
      */
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(2 * sizeof(float)));
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)(2 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -165,17 +114,25 @@ int main(int argc, char **argv)
     // cesty treba upravit podla togo kde skonci skompilovany kod ("morciatko")
     unsigned int program_shader = create_shader("../shaders/vertex.glsl", "../shaders/fragment.glsl");
 
-    glUseProgram(program_shader);
-
     // blending
     // glEnable(GL_BLEND);
     // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    World world(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT, Globals::PARTICLE_SIZE);
+    /*
+     * PROJECTION
+     */
+    glm::mat4 projection = glm::ortho(0.0f, Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT, 0.0f);
+    unsigned int projLoc = glGetUniformLocation(program_shader, "projection");
+    glUseProgram(program_shader);
+    glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
     // main loop
     while (!glfwWindowShouldClose(window))
     {
+        // background color
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
         {
             double xpos, ypos;
@@ -183,16 +140,30 @@ int main(int argc, char **argv)
             int xpos2 = (int)xpos / Globals::PARTICLE_SIZE;
             int ypos2 = (int)ypos / Globals::PARTICLE_SIZE;
             std::cout << "Mouse Click: " << xpos2 << ", " << ypos2 << std::endl;
-            world.print_world_info();
+            world.add_particle(Particle::create_sand(xpos2, ypos2, 0, 0), xpos2, ypos2);
         }
 
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        world.update_world();
 
-        glBindVertexArray(VAO);
+        if (!world.vertex_buffer.empty() && !world.indices.empty())
+        {
+            std::cout << "Vertex buffer size: " << world.vertex_buffer.size() << std::endl;
+            std::cout << "Indices size: " << world.indices.size() << std::endl;
+            std::cout << "Drawing " << world.indices.size() / 3 << " triangles" << std::endl;
 
-        // glDrawArrays(GL_TRIANGLES, 0, 4);
-        glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferData(GL_ARRAY_BUFFER, world.vertex_buffer.size() * sizeof(Vertex), world.vertex_buffer.data(), GL_DYNAMIC_DRAW);
+
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, world.indices.size() * sizeof(unsigned int), world.indices.data(), GL_DYNAMIC_DRAW);
+
+            glBindVertexArray(VAO);
+            glDrawElements(GL_TRIANGLES, world.indices.size(), GL_UNSIGNED_INT, 0);
+
+            checkGLError("glDrawElements");
+        }
+
+        world.clear_vertex_buffer();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
