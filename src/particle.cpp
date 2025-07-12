@@ -81,7 +81,7 @@ Particle Particle::create_sand(int x, int y, float vx, float vy)
         false,
         false,
         false,
-        std::array<int, 3>{255, 255, 125},
+        std::array<int, 3>{194, 178, 128},
         1.0f);
 }
 

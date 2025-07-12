@@ -133,13 +133,17 @@ int main(int argc, char **argv)
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+        {
+            world.clear_worlds();
+        }
+
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
         {
             double xpos, ypos;
             glfwGetCursorPos(window, &xpos, &ypos);
             int xpos2 = (int)xpos / Globals::PARTICLE_SIZE;
             int ypos2 = (int)ypos / Globals::PARTICLE_SIZE;
-            std::cout << "Mouse Click: " << xpos2 << ", " << ypos2 << std::endl;
             world.add_particle(Particle::create_sand(xpos2, ypos2, 0, 0), xpos2, ypos2);
         }
 
@@ -147,9 +151,9 @@ int main(int argc, char **argv)
 
         if (!world.vertex_buffer.empty() && !world.indices.empty())
         {
-            std::cout << "Vertex buffer size: " << world.vertex_buffer.size() << std::endl;
-            std::cout << "Indices size: " << world.indices.size() << std::endl;
-            std::cout << "Drawing " << world.indices.size() / 3 << " triangles" << std::endl;
+            // std::cout << "Vertex buffer size: " << world.vertex_buffer.size() << std::endl;
+            // std::cout << "Indices size: " << world.indices.size() << std::endl;
+            // std::cout << "Drawing " << world.indices.size() / 3 << " triangles" << std::endl;
 
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
             glBufferData(GL_ARRAY_BUFFER, world.vertex_buffer.size() * sizeof(Vertex), world.vertex_buffer.data(), GL_DYNAMIC_DRAW);
@@ -160,7 +164,7 @@ int main(int argc, char **argv)
             glBindVertexArray(VAO);
             glDrawElements(GL_TRIANGLES, world.indices.size(), GL_UNSIGNED_INT, 0);
 
-            checkGLError("glDrawElements");
+            // checkGLError("glDrawElements");
         }
 
         world.clear_vertex_buffer();

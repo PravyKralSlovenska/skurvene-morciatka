@@ -41,6 +41,7 @@ MYSLIENKY/NAPADY:
     . urobit triedu behavior, kde by bolo horenie, 
 
 TODO:
+    . upravit kod tak aby bol citatelny - ziadne magic numbers
     . LOGY
     . GRID:
         . 
@@ -121,6 +122,8 @@ ERRORY:
     . ERROR::SHADER::PROGRAM::LINKING_FAILED - pravdepodobne zle datove typy 
     . Mozna zacyklacia header files
     . Mozno som neurobil default constructor
+    . Bound checking
+    . bad optional nieco - std::optional<T> - volam to ked nema ziadnu hodnotu v sebe
 
 dennik:
     21.6.2025 - sobota
@@ -155,3 +158,14 @@ dennik:
         - dost som sa na to vyjebal, nemal som chut sa tomuto venovat
         - uz som blizko aby to fungovalo ale nejako som sa stratil v logike?
         - cele som to prepisal, prehodnotil moje umysli, nieco si precital o probleme na internete a dosiel som k zaveru  
+
+    9.7.2025 - streda
+        - uz funguje renderovanie gridu
+        - vsetko je v jednom shaderi, ale to nevadi
+        - neupuzivam 2 buffery, ale iba 1
+
+    10.7.2025 - stvrtok
+        - uz funguje aj padanie objektov
+        - nie je to perfektne
+        - ale ked je vela particlov zacne sekat, takze optimalizacia
+        - & - referencie su nejlepsia vec, este sa len musim naucit pointere

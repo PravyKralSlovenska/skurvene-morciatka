@@ -2,9 +2,12 @@
 
 namespace Globals
 {
-    const float WINDOW_WIDTH = 1000.0;
-    const float WINDOW_HEIGHT = 800.0;
-    const float PARTICLE_SIZE = 25.0;
+    const float WINDOW_WIDTH = 400.0;
+    const float WINDOW_HEIGHT = 400.0;
+    const float PARTICLE_SIZE = 10.0;
+
+    const float CHUNK_WIDTH = 1000.0;
+    const float CHUNK_HEIGHT = 800.0;
 };
 
 namespace Physics

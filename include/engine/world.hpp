@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <optional>
 #include "chunk.hpp"
 #include "particle.hpp"
 
@@ -27,7 +28,7 @@ struct Vertex
 struct WorldCell
 {
     int x, y;
-    Particle particle;
+    std::optional<Particle> particle;
 
     bool empty = true;
     bool visited = false;
@@ -96,7 +97,7 @@ public:
     void clear_vertex_buffer();
 
     void swap_worlds();
-    void swap_particles();
+    void swap_particles(WorldCell &worldcell1, WorldCell &worldcell2);
 
     // napln vertex_buffer a potom ho vrat na renderovanie do openGL
     void render_world();
@@ -108,9 +109,9 @@ public:
     void apply_gravity();
 
     // pohyb particles
-    void move_solid();
-    void move_liquid();
-    void move_gas();
+    void move_solid(WorldCell &worldcell);
+    void move_liquid(WorldCell &worldcell);
+    void move_gas(WorldCell &worldcell);
 
     // debug
     void print_world_info();
