@@ -1,11 +1,7 @@
 #pragma once
 #include <string>
-#include "engine/particle.hpp"
 
 std::string read_file(const std::string &filepath);
-
-unsigned int compile_shader(unsigned int type, const std::string &source);
-unsigned int create_shader(const std::string &vertex_shader_path, const std::string &fragment_shader_path);
 
 /*
  * v utils.hpp
@@ -13,4 +9,25 @@ unsigned int create_shader(const std::string &vertex_shader_path, const std::str
  */
 bool in_world_range(int x, int y, int world_rows, int world_cols);
 
+// chcem lepsie pracovat s farbou
+// -  upravujem farbu tak aby vedel opengl s tym pracovat
+struct Color
+{
+    float r, g, b, a;
 
+    Color();
+    Color(int r, int g, int b, float a);
+};
+
+class Log
+{
+private:
+    std::string path_to_log_folder = "/log";
+
+public:
+    Log();
+    ~Log() = default;
+
+    void create_file();
+    void log_text();
+};

@@ -129,29 +129,29 @@ morciatko/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/build
 .PHONY : morciatko/fast
 
-src/chunk.o: src/chunk.cpp.o
-.PHONY : src/chunk.o
+src/camera.o: src/camera.cpp.o
+.PHONY : src/camera.o
 
 # target to build an object file
-src/chunk.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/chunk.cpp.o
-.PHONY : src/chunk.cpp.o
+src/camera.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/camera.cpp.o
+.PHONY : src/camera.cpp.o
 
-src/chunk.i: src/chunk.cpp.i
-.PHONY : src/chunk.i
+src/camera.i: src/camera.cpp.i
+.PHONY : src/camera.i
 
 # target to preprocess a source file
-src/chunk.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/chunk.cpp.i
-.PHONY : src/chunk.cpp.i
+src/camera.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/camera.cpp.i
+.PHONY : src/camera.cpp.i
 
-src/chunk.s: src/chunk.cpp.s
-.PHONY : src/chunk.s
+src/camera.s: src/camera.cpp.s
+.PHONY : src/camera.s
 
 # target to generate assembly for a file
-src/chunk.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/chunk.cpp.s
-.PHONY : src/chunk.cpp.s
+src/camera.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/camera.cpp.s
+.PHONY : src/camera.cpp.s
 
 src/gl.o: src/gl.c.o
 .PHONY : src/gl.o
@@ -201,53 +201,101 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
-src/particle.o: src/particle.cpp.o
-.PHONY : src/particle.o
+src/particle/particle.o: src/particle/particle.cpp.o
+.PHONY : src/particle/particle.o
 
 # target to build an object file
-src/particle.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle.cpp.o
-.PHONY : src/particle.cpp.o
+src/particle/particle.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle.cpp.o
+.PHONY : src/particle/particle.cpp.o
 
-src/particle.i: src/particle.cpp.i
-.PHONY : src/particle.i
+src/particle/particle.i: src/particle/particle.cpp.i
+.PHONY : src/particle/particle.i
 
 # target to preprocess a source file
-src/particle.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle.cpp.i
-.PHONY : src/particle.cpp.i
+src/particle/particle.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle.cpp.i
+.PHONY : src/particle/particle.cpp.i
 
-src/particle.s: src/particle.cpp.s
-.PHONY : src/particle.s
+src/particle/particle.s: src/particle/particle.cpp.s
+.PHONY : src/particle/particle.s
 
 # target to generate assembly for a file
-src/particle.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle.cpp.s
-.PHONY : src/particle.cpp.s
+src/particle/particle.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle.cpp.s
+.PHONY : src/particle/particle.cpp.s
 
-src/renderer.o: src/renderer.cpp.o
-.PHONY : src/renderer.o
+src/particle/particle_movement.o: src/particle/particle_movement.cpp.o
+.PHONY : src/particle/particle_movement.o
 
 # target to build an object file
-src/renderer.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer.cpp.o
-.PHONY : src/renderer.cpp.o
+src/particle/particle_movement.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.o
+.PHONY : src/particle/particle_movement.cpp.o
 
-src/renderer.i: src/renderer.cpp.i
-.PHONY : src/renderer.i
+src/particle/particle_movement.i: src/particle/particle_movement.cpp.i
+.PHONY : src/particle/particle_movement.i
 
 # target to preprocess a source file
-src/renderer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer.cpp.i
-.PHONY : src/renderer.cpp.i
+src/particle/particle_movement.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.i
+.PHONY : src/particle/particle_movement.cpp.i
 
-src/renderer.s: src/renderer.cpp.s
-.PHONY : src/renderer.s
+src/particle/particle_movement.s: src/particle/particle_movement.cpp.s
+.PHONY : src/particle/particle_movement.s
 
 # target to generate assembly for a file
-src/renderer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer.cpp.s
-.PHONY : src/renderer.cpp.s
+src/particle/particle_movement.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.s
+.PHONY : src/particle/particle_movement.cpp.s
+
+src/renderer/renderer.o: src/renderer/renderer.cpp.o
+.PHONY : src/renderer/renderer.o
+
+# target to build an object file
+src/renderer/renderer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o
+.PHONY : src/renderer/renderer.cpp.o
+
+src/renderer/renderer.i: src/renderer/renderer.cpp.i
+.PHONY : src/renderer/renderer.i
+
+# target to preprocess a source file
+src/renderer/renderer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.i
+.PHONY : src/renderer/renderer.cpp.i
+
+src/renderer/renderer.s: src/renderer/renderer.cpp.s
+.PHONY : src/renderer/renderer.s
+
+# target to generate assembly for a file
+src/renderer/renderer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.s
+.PHONY : src/renderer/renderer.cpp.s
+
+src/renderer/text_renderer.o: src/renderer/text_renderer.cpp.o
+.PHONY : src/renderer/text_renderer.o
+
+# target to build an object file
+src/renderer/text_renderer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.o
+.PHONY : src/renderer/text_renderer.cpp.o
+
+src/renderer/text_renderer.i: src/renderer/text_renderer.cpp.i
+.PHONY : src/renderer/text_renderer.i
+
+# target to preprocess a source file
+src/renderer/text_renderer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.i
+.PHONY : src/renderer/text_renderer.cpp.i
+
+src/renderer/text_renderer.s: src/renderer/text_renderer.cpp.s
+.PHONY : src/renderer/text_renderer.s
+
+# target to generate assembly for a file
+src/renderer/text_renderer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.s
+.PHONY : src/renderer/text_renderer.cpp.s
 
 src/utils.o: src/utils.cpp.o
 .PHONY : src/utils.o
@@ -273,29 +321,53 @@ src/utils.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/utils.cpp.s
 .PHONY : src/utils.cpp.s
 
-src/world.o: src/world.cpp.o
-.PHONY : src/world.o
+src/world/chunk.o: src/world/chunk.cpp.o
+.PHONY : src/world/chunk.o
 
 # target to build an object file
-src/world.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world.cpp.o
-.PHONY : src/world.cpp.o
+src/world/chunk.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/chunk.cpp.o
+.PHONY : src/world/chunk.cpp.o
 
-src/world.i: src/world.cpp.i
-.PHONY : src/world.i
+src/world/chunk.i: src/world/chunk.cpp.i
+.PHONY : src/world/chunk.i
 
 # target to preprocess a source file
-src/world.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world.cpp.i
-.PHONY : src/world.cpp.i
+src/world/chunk.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/chunk.cpp.i
+.PHONY : src/world/chunk.cpp.i
 
-src/world.s: src/world.cpp.s
-.PHONY : src/world.s
+src/world/chunk.s: src/world/chunk.cpp.s
+.PHONY : src/world/chunk.s
 
 # target to generate assembly for a file
-src/world.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world.cpp.s
-.PHONY : src/world.cpp.s
+src/world/chunk.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/chunk.cpp.s
+.PHONY : src/world/chunk.cpp.s
+
+src/world/world.o: src/world/world.cpp.o
+.PHONY : src/world/world.o
+
+# target to build an object file
+src/world/world.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world.cpp.o
+.PHONY : src/world/world.cpp.o
+
+src/world/world.i: src/world/world.cpp.i
+.PHONY : src/world/world.i
+
+# target to preprocess a source file
+src/world/world.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world.cpp.i
+.PHONY : src/world/world.cpp.i
+
+src/world/world.s: src/world/world.cpp.s
+.PHONY : src/world/world.s
+
+# target to generate assembly for a file
+src/world/world.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world.cpp.s
+.PHONY : src/world/world.cpp.s
 
 # Help Target
 help:
@@ -306,27 +378,36 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... morciatko"
-	@echo "... src/chunk.o"
-	@echo "... src/chunk.i"
-	@echo "... src/chunk.s"
+	@echo "... src/camera.o"
+	@echo "... src/camera.i"
+	@echo "... src/camera.s"
 	@echo "... src/gl.o"
 	@echo "... src/gl.i"
 	@echo "... src/gl.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
-	@echo "... src/particle.o"
-	@echo "... src/particle.i"
-	@echo "... src/particle.s"
-	@echo "... src/renderer.o"
-	@echo "... src/renderer.i"
-	@echo "... src/renderer.s"
+	@echo "... src/particle/particle.o"
+	@echo "... src/particle/particle.i"
+	@echo "... src/particle/particle.s"
+	@echo "... src/particle/particle_movement.o"
+	@echo "... src/particle/particle_movement.i"
+	@echo "... src/particle/particle_movement.s"
+	@echo "... src/renderer/renderer.o"
+	@echo "... src/renderer/renderer.i"
+	@echo "... src/renderer/renderer.s"
+	@echo "... src/renderer/text_renderer.o"
+	@echo "... src/renderer/text_renderer.i"
+	@echo "... src/renderer/text_renderer.s"
 	@echo "... src/utils.o"
 	@echo "... src/utils.i"
 	@echo "... src/utils.s"
-	@echo "... src/world.o"
-	@echo "... src/world.i"
-	@echo "... src/world.s"
+	@echo "... src/world/chunk.o"
+	@echo "... src/world/chunk.i"
+	@echo "... src/world/chunk.s"
+	@echo "... src/world/world.o"
+	@echo "... src/world/world.i"
+	@echo "... src/world/world.s"
 .PHONY : help
 
 

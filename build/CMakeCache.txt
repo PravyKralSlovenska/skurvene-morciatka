@@ -216,6 +216,18 @@ CMAKE_TAPI:FILEPATH=CMAKE_TAPI-NOTFOUND
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
 //Path to a file.
+FREETYPE_INCLUDE_DIR_freetype2:PATH=/usr/include/freetype2
+
+//Path to a file.
+FREETYPE_INCLUDE_DIR_ft2build:PATH=/usr/include/freetype2
+
+//Path to a library.
+FREETYPE_LIBRARY_DEBUG:FILEPATH=FREETYPE_LIBRARY_DEBUG-NOTFOUND
+
+//Path to a library.
+FREETYPE_LIBRARY_RELEASE:FILEPATH=/usr/lib/libfreetype.so
+
+//Path to a file.
 GLM_INCLUDE_DIR:PATH=/usr/include
 
 //Path to a file.
@@ -274,6 +286,9 @@ morciatko_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 morciatko_SOURCE_DIR:STATIC=/home/jakub/programko/cpp/skurvene-morciatka
+
+//Path to a library.
+pkgcfg_lib_FREETYPE2_freetype:FILEPATH=/usr/lib/libfreetype.so
 
 //Path to a library.
 pkgcfg_lib_GLFW_glfw:FILEPATH=/usr/lib/libglfw.so
@@ -432,10 +447,55 @@ CMAKE_TAPI-ADVANCED:INTERNAL=1
 CMAKE_UNAME:INTERNAL=/usr/bin/uname
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//Details about finding Freetype
+FIND_PACKAGE_MESSAGE_DETAILS_Freetype:INTERNAL=[/usr/lib/libfreetype.so][/usr/include/freetype2][v2.13.3()]
 //Details about finding OpenGL
 FIND_PACKAGE_MESSAGE_DETAILS_OpenGL:INTERNAL=[/usr/lib/libOpenGL.so][/usr/lib/libGLX.so][/usr/include][ ][v()]
 //Details about finding PkgConfig
 FIND_PACKAGE_MESSAGE_DETAILS_PkgConfig:INTERNAL=[/usr/bin/pkg-config][v2.5.0()]
+FREETYPE2_CFLAGS:INTERNAL=-I/usr/include/freetype2;-I/usr/include;-I/usr/include/libpng16;-I/usr/include/harfbuzz;-I/usr/include/glib-2.0;-I/usr/lib/glib-2.0/include;-I/usr/include/sysprof-6;-pthread
+FREETYPE2_CFLAGS_I:INTERNAL=
+FREETYPE2_CFLAGS_OTHER:INTERNAL=-pthread
+FREETYPE2_FOUND:INTERNAL=1
+FREETYPE2_INCLUDEDIR:INTERNAL=/usr/include
+FREETYPE2_INCLUDE_DIRS:INTERNAL=/usr/include/freetype2;/usr/include;/usr/include/libpng16;/usr/include/harfbuzz;/usr/include/glib-2.0;/usr/lib/glib-2.0/include;/usr/include/sysprof-6
+FREETYPE2_LDFLAGS:INTERNAL=-L/usr/lib;-lfreetype
+FREETYPE2_LDFLAGS_OTHER:INTERNAL=
+FREETYPE2_LIBDIR:INTERNAL=/usr/lib
+FREETYPE2_LIBRARIES:INTERNAL=freetype
+FREETYPE2_LIBRARY_DIRS:INTERNAL=/usr/lib
+FREETYPE2_LIBS:INTERNAL=
+FREETYPE2_LIBS_L:INTERNAL=
+FREETYPE2_LIBS_OTHER:INTERNAL=
+FREETYPE2_LIBS_PATHS:INTERNAL=
+FREETYPE2_MODULE_NAME:INTERNAL=freetype2
+FREETYPE2_PREFIX:INTERNAL=/usr
+FREETYPE2_STATIC_CFLAGS:INTERNAL=-I/usr/include/freetype2;-I/usr/include;-I/usr/include/libpng16;-I/usr/include/harfbuzz;-I/usr/include/glib-2.0;-I/usr/lib/glib-2.0/include;-I/usr/include/sysprof-6;-pthread
+FREETYPE2_STATIC_CFLAGS_I:INTERNAL=
+FREETYPE2_STATIC_CFLAGS_OTHER:INTERNAL=-pthread
+FREETYPE2_STATIC_INCLUDE_DIRS:INTERNAL=/usr/include/freetype2;/usr/include;/usr/include/libpng16;/usr/include/harfbuzz;/usr/include/glib-2.0;/usr/lib/glib-2.0/include;/usr/include/sysprof-6
+FREETYPE2_STATIC_LDFLAGS:INTERNAL=-L/usr/lib;-lfreetype;-lbz2;-lpng16;-lm;-lm;-lz;-lharfbuzz;-pthread;-lm;-lglib-2.0;-lm;-lsysprof-capture-4;-pthread;-lpcre2-8;-lgraphite2;-lbrotlidec;-lbrotlicommon
+FREETYPE2_STATIC_LDFLAGS_OTHER:INTERNAL=-pthread;-pthread
+FREETYPE2_STATIC_LIBDIR:INTERNAL=
+FREETYPE2_STATIC_LIBRARIES:INTERNAL=freetype;bz2;png16;m;m;z;harfbuzz;m;glib-2.0;m;sysprof-capture-4;pcre2-8;graphite2;brotlidec;brotlicommon
+FREETYPE2_STATIC_LIBRARY_DIRS:INTERNAL=/usr/lib
+FREETYPE2_STATIC_LIBS:INTERNAL=
+FREETYPE2_STATIC_LIBS_L:INTERNAL=
+FREETYPE2_STATIC_LIBS_OTHER:INTERNAL=
+FREETYPE2_STATIC_LIBS_PATHS:INTERNAL=
+FREETYPE2_VERSION:INTERNAL=26.2.20
+FREETYPE2_freetype2_INCLUDEDIR:INTERNAL=
+FREETYPE2_freetype2_LIBDIR:INTERNAL=
+FREETYPE2_freetype2_PREFIX:INTERNAL=
+FREETYPE2_freetype2_VERSION:INTERNAL=
+//ADVANCED property for variable: FREETYPE_INCLUDE_DIR_freetype2
+FREETYPE_INCLUDE_DIR_freetype2-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: FREETYPE_INCLUDE_DIR_ft2build
+FREETYPE_INCLUDE_DIR_ft2build-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: FREETYPE_LIBRARY_DEBUG
+FREETYPE_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: FREETYPE_LIBRARY_RELEASE
+FREETYPE_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
 GLFW_CFLAGS:INTERNAL=-I/usr/include
 GLFW_CFLAGS_I:INTERNAL=
 GLFW_CFLAGS_OTHER:INTERNAL=
@@ -503,7 +563,11 @@ OPENGL_xmesa_INCLUDE_DIR-ADVANCED:INTERNAL=1
 PKG_CONFIG_ARGN-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: PKG_CONFIG_EXECUTABLE
 PKG_CONFIG_EXECUTABLE-ADVANCED:INTERNAL=1
+__pkg_config_arguments_FREETYPE2:INTERNAL=REQUIRED;freetype2
+__pkg_config_checked_FREETYPE2:INTERNAL=1
 __pkg_config_checked_GLFW:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_FREETYPE2_freetype
+pkgcfg_lib_FREETYPE2_freetype-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: pkgcfg_lib_GLFW_glfw
 pkgcfg_lib_GLFW_glfw-ADVANCED:INTERNAL=1
 prefix_result:INTERNAL=/usr/lib

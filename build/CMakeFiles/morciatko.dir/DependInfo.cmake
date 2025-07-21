@@ -9,12 +9,15 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/jakub/programko/cpp/skurvene-morciatka/src/gl.c" "CMakeFiles/morciatko.dir/src/gl.c.o" "gcc" "CMakeFiles/morciatko.dir/src/gl.c.o.d"
-  "/home/jakub/programko/cpp/skurvene-morciatka/src/chunk.cpp" "CMakeFiles/morciatko.dir/src/chunk.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/chunk.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/src/camera.cpp" "CMakeFiles/morciatko.dir/src/camera.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/camera.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/main.cpp" "CMakeFiles/morciatko.dir/src/main.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/main.cpp.o.d"
-  "/home/jakub/programko/cpp/skurvene-morciatka/src/particle.cpp" "CMakeFiles/morciatko.dir/src/particle.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/particle.cpp.o.d"
-  "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer.cpp" "CMakeFiles/morciatko.dir/src/renderer.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/renderer.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle.cpp" "CMakeFiles/morciatko.dir/src/particle/particle.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/particle/particle.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_movement.cpp" "CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/renderer.cpp" "CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/text_renderer.cpp" "CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/utils.cpp" "CMakeFiles/morciatko.dir/src/utils.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/utils.cpp.o.d"
-  "/home/jakub/programko/cpp/skurvene-morciatka/src/world.cpp" "CMakeFiles/morciatko.dir/src/world.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/world.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/src/world/chunk.cpp" "CMakeFiles/morciatko.dir/src/world/chunk.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/world/chunk.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world.cpp" "CMakeFiles/morciatko.dir/src/world/world.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/world/world.cpp.o.d"
   "" "morciatko" "gcc" "CMakeFiles/morciatko.dir/link.d"
   )
 
