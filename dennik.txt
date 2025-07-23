@@ -9,7 +9,7 @@ NAZOV HRY - NEMAM VYMYSLENE
         . 3 levely:
             . BRATISLAVSKE METRO
             . BRATISLAVA - NAMESTIE SLOBODY
-            .
+            . BRATISLAVA - KOLIBA
         . KONIEC - neviem
 
 struktura projektu (docasne)
@@ -38,7 +38,7 @@ MYSLIENKY/NAPADY:
         . vzorcek na idcko by bol cca: array[y * grid_width + x] (nefugunje :3)
     . v sucastnosti (5.7.2025) ma svet isty pocet WorldCell-ov, v buducnosti ked bude svet nekonecny
         . sa mozu WorldCell-y skladat do chunkov, ktore sa budu davat do World array
-    . urobit triedu behavior, kde by bolo horenie, 
+    . urobit triedu behavior, kde by bolo horenie, apod
 
 TODO:
     . upravit kod tak aby bol citatelny - ziadne magic numbers
@@ -104,7 +104,11 @@ co som sa naucil:
         . vytvor Shader - ako ich ma GPU nakreslit
         . pouzi Shader - 
         . nakresli s glDrawElements - 
-        . swap buffers - zobraz element na obrazovke  
+        . swap buffers - zobraz element na obrazovke 
+        . Rendering textu
+            . Freetype - kniznica na renderovanie textu
+            . text je renderovany ako texture, ktora sa potom vykresli na obraz
+            . text je rozdeleny na glyphy, ktore su ulozene ako texture 
     Herringbone Wang Tiles - na generovanie svet
         . proceduralne generovanie sveta
             . biomy?
@@ -121,6 +125,10 @@ co som sa naucil:
         . Component - data, ktore su priradene k entity
         . System - logika, ktora pracuje s komponentami a entitami    
 ERRORY:
+    . opengl 1281: invalid value
+        . glVertexAttribPointer() - zle nastaveny vertex buffer object, alebo vertex array object
+    . opengl 1282: invalid operation
+        . glDrawElements() - zle nastaveny VAO, EBO, VBO, shader, alebo nieco ine
     . AK SA NIC VYKRESLUJE SKONTROLUJ glVertexAttribPointer, VBO, ..., shadery
     . ERROR::SHADER::PROGRAM::LINKING_FAILED - pravdepodobne zle datove typy 
     . Mozna zacyklacia header files
@@ -186,3 +194,14 @@ dennik:
     14.7.2025 - pondelok
         - program sa skompiluje bez problemov a potom spadne 
         - text renderer - zatial len zaciatok
+
+    20.7.2025 - nedela
+        - rendering textu - neviem este ako to urobit
+        - vytvoril som shader na text 
+            . text_vertex.glsl - polohu na obrqazovke
+            . text_texture.glsl - jebe na to texturu
+        - nemam este vymyslene ako pouzijem ten text renderer, tak aby vyrenderoval len to co treba
+    
+    21.7.2025 - pondelok
+        - dokoncil som text renderer, len treba doriesit shadery
+        - vytvoril som triedu na shadery - engine/renderer/shader.hpp

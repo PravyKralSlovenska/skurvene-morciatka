@@ -7,6 +7,8 @@
 
 #include "others/utils.hpp"
 #include "engine/camera.hpp"
+#include "engine/renderer/text_renderer.hpp"
+#include "engine/renderer/shader.hpp"
 
 struct Vertex
 {
@@ -21,15 +23,12 @@ struct Vertex
 class Renderer
 {
 private:
-    // cisto len na infosky
-    std::vector<std::string> render_info;
-
+    Shader shader;
     Camera *camera;
 
     float m_window_width, m_window_height;
     GLFWwindow *window;
 
-    unsigned int program_shader;
 
     unsigned int VAO, VAO_next;
     unsigned int VBO, VBO_next;
@@ -37,6 +36,16 @@ private:
 
     std::vector<Vertex> vertex_buffer;
     std::vector<int> indicies_buffer;
+
+    Text_Renderer text_renderer;
+
+    std::vector<Vertex> verticies = {
+        {100.0f, 100.0f, Color(255, 255, 0, 1.0f)},
+        {150.0f, 100.0f, Color(255, 255, 0, 1.0f)},
+        {100.0f, 150.0f, Color(255, 255, 0, 1.0f)}};
+        
+    // cisto len na infosky
+    std::vector<std::string> render_info;
 
 public:
     bool running = true;
@@ -59,36 +68,29 @@ public:
     void enable_blending();
     void enable_ortho_projection();
 
-    unsigned int create_vertex_array_buffer();
-    unsigned int create_vertex_buffer_object();
-    unsigned int create_element_buffer_object();
-
     void update_vertex_buffer(std::vector<Vertex> verticies);
     void index_buffer(std::vector<int> indicies);
 
-    unsigned int create_shader(const std::string &vertex_shader_path, const std::string &fragment_shader_path);
-    unsigned int compile_shader(unsigned int type, const std::string &source);
-
     bool should_close();
-    
+
     void cleanup();
-    
+
     // debug
     void print_render_info();
     void checkGLError(const char *operation);
-    
+
     // will render everthing
     bool render_everything();
 
     // will render the background
     void render_background();
-    
+
     // will render the world (chunks in the future) and the particles
     void render_world();
-    
+
     // will render the player and other game entities
     void render_entities();
-    
+
     // the efects like explosions would be here
     // maybe will delete this and move it to render entities?
     void render_effects();

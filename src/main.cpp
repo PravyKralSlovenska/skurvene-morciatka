@@ -2,7 +2,7 @@
 #include <iostream>
 
 // Moje header files
-#include "engine/renderer.hpp"
+#include "engine/renderer/renderer.hpp"
 #include "engine/world.hpp"
 #include "engine/particle.hpp"
 #include "engine/camera.hpp"
@@ -11,19 +11,19 @@
 #include "others/GLOBALS.hpp"
 #include "others/utils.hpp"
 
-World world(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT, Globals::PARTICLE_SIZE);
-Renderer render(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT);
-Camera camera(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT);
 Player player();
+Camera camera(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT);
+Renderer render(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT);
+World world(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT, Globals::PARTICLE_SIZE);
 // Controls controls(&player);
 
 int main(int argc, char **argv)
 {
     render.init();
-    render.set_camera(&camera);
+    // render.set_camera(&camera);
     render.enable_blending();
     render.enable_ortho_projection();
-
+    
     render.print_render_info();
 
     while (!render.should_close())
@@ -40,19 +40,4 @@ int main(int argc, char **argv)
     render.cleanup();
 
     return 0;
-}
-
-void test()
-{
-    float verticies[] = {
-        100.0f, 100.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-        150.0f, 100.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-        100.0f, 150.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-        150.0f, 150.0f, 1.0f, 1.0f, 0.0f, 1.0f
-    };
-
-    unsigned int indicies[] = {
-        0, 1, 2,
-        1, 2, 3
-    };
 }

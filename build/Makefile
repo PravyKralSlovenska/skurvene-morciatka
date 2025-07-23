@@ -153,6 +153,30 @@ src/camera.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/camera.cpp.s
 .PHONY : src/camera.cpp.s
 
+src/controls.o: src/controls.cpp.o
+.PHONY : src/controls.o
+
+# target to build an object file
+src/controls.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/controls.cpp.o
+.PHONY : src/controls.cpp.o
+
+src/controls.i: src/controls.cpp.i
+.PHONY : src/controls.i
+
+# target to preprocess a source file
+src/controls.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/controls.cpp.i
+.PHONY : src/controls.cpp.i
+
+src/controls.s: src/controls.cpp.s
+.PHONY : src/controls.s
+
+# target to generate assembly for a file
+src/controls.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/controls.cpp.s
+.PHONY : src/controls.cpp.s
+
 src/gl.o: src/gl.c.o
 .PHONY : src/gl.o
 
@@ -249,6 +273,30 @@ src/particle/particle_movement.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.s
 .PHONY : src/particle/particle_movement.cpp.s
 
+src/renderer/effects_renderer.o: src/renderer/effects_renderer.cpp.o
+.PHONY : src/renderer/effects_renderer.o
+
+# target to build an object file
+src/renderer/effects_renderer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.o
+.PHONY : src/renderer/effects_renderer.cpp.o
+
+src/renderer/effects_renderer.i: src/renderer/effects_renderer.cpp.i
+.PHONY : src/renderer/effects_renderer.i
+
+# target to preprocess a source file
+src/renderer/effects_renderer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.i
+.PHONY : src/renderer/effects_renderer.cpp.i
+
+src/renderer/effects_renderer.s: src/renderer/effects_renderer.cpp.s
+.PHONY : src/renderer/effects_renderer.s
+
+# target to generate assembly for a file
+src/renderer/effects_renderer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.s
+.PHONY : src/renderer/effects_renderer.cpp.s
+
 src/renderer/renderer.o: src/renderer/renderer.cpp.o
 .PHONY : src/renderer/renderer.o
 
@@ -273,6 +321,54 @@ src/renderer/renderer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.s
 .PHONY : src/renderer/renderer.cpp.s
 
+src/renderer/scenes_renderer.o: src/renderer/scenes_renderer.cpp.o
+.PHONY : src/renderer/scenes_renderer.o
+
+# target to build an object file
+src/renderer/scenes_renderer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/scenes_renderer.cpp.o
+.PHONY : src/renderer/scenes_renderer.cpp.o
+
+src/renderer/scenes_renderer.i: src/renderer/scenes_renderer.cpp.i
+.PHONY : src/renderer/scenes_renderer.i
+
+# target to preprocess a source file
+src/renderer/scenes_renderer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/scenes_renderer.cpp.i
+.PHONY : src/renderer/scenes_renderer.cpp.i
+
+src/renderer/scenes_renderer.s: src/renderer/scenes_renderer.cpp.s
+.PHONY : src/renderer/scenes_renderer.s
+
+# target to generate assembly for a file
+src/renderer/scenes_renderer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/scenes_renderer.cpp.s
+.PHONY : src/renderer/scenes_renderer.cpp.s
+
+src/renderer/shader.o: src/renderer/shader.cpp.o
+.PHONY : src/renderer/shader.o
+
+# target to build an object file
+src/renderer/shader.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/shader.cpp.o
+.PHONY : src/renderer/shader.cpp.o
+
+src/renderer/shader.i: src/renderer/shader.cpp.i
+.PHONY : src/renderer/shader.i
+
+# target to preprocess a source file
+src/renderer/shader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/shader.cpp.i
+.PHONY : src/renderer/shader.cpp.i
+
+src/renderer/shader.s: src/renderer/shader.cpp.s
+.PHONY : src/renderer/shader.s
+
+# target to generate assembly for a file
+src/renderer/shader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/shader.cpp.s
+.PHONY : src/renderer/shader.cpp.s
+
 src/renderer/text_renderer.o: src/renderer/text_renderer.cpp.o
 .PHONY : src/renderer/text_renderer.o
 
@@ -296,6 +392,54 @@ src/renderer/text_renderer.s: src/renderer/text_renderer.cpp.s
 src/renderer/text_renderer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.s
 .PHONY : src/renderer/text_renderer.cpp.s
+
+src/renderer/ui_renderer.o: src/renderer/ui_renderer.cpp.o
+.PHONY : src/renderer/ui_renderer.o
+
+# target to build an object file
+src/renderer/ui_renderer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/ui_renderer.cpp.o
+.PHONY : src/renderer/ui_renderer.cpp.o
+
+src/renderer/ui_renderer.i: src/renderer/ui_renderer.cpp.i
+.PHONY : src/renderer/ui_renderer.i
+
+# target to preprocess a source file
+src/renderer/ui_renderer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/ui_renderer.cpp.i
+.PHONY : src/renderer/ui_renderer.cpp.i
+
+src/renderer/ui_renderer.s: src/renderer/ui_renderer.cpp.s
+.PHONY : src/renderer/ui_renderer.s
+
+# target to generate assembly for a file
+src/renderer/ui_renderer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/ui_renderer.cpp.s
+.PHONY : src/renderer/ui_renderer.cpp.s
+
+src/renderer/world_renderer.o: src/renderer/world_renderer.cpp.o
+.PHONY : src/renderer/world_renderer.o
+
+# target to build an object file
+src/renderer/world_renderer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o
+.PHONY : src/renderer/world_renderer.cpp.o
+
+src/renderer/world_renderer.i: src/renderer/world_renderer.cpp.i
+.PHONY : src/renderer/world_renderer.i
+
+# target to preprocess a source file
+src/renderer/world_renderer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.i
+.PHONY : src/renderer/world_renderer.cpp.i
+
+src/renderer/world_renderer.s: src/renderer/world_renderer.cpp.s
+.PHONY : src/renderer/world_renderer.s
+
+# target to generate assembly for a file
+src/renderer/world_renderer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.s
+.PHONY : src/renderer/world_renderer.cpp.s
 
 src/utils.o: src/utils.cpp.o
 .PHONY : src/utils.o
@@ -381,6 +525,9 @@ help:
 	@echo "... src/camera.o"
 	@echo "... src/camera.i"
 	@echo "... src/camera.s"
+	@echo "... src/controls.o"
+	@echo "... src/controls.i"
+	@echo "... src/controls.s"
 	@echo "... src/gl.o"
 	@echo "... src/gl.i"
 	@echo "... src/gl.s"
@@ -393,12 +540,27 @@ help:
 	@echo "... src/particle/particle_movement.o"
 	@echo "... src/particle/particle_movement.i"
 	@echo "... src/particle/particle_movement.s"
+	@echo "... src/renderer/effects_renderer.o"
+	@echo "... src/renderer/effects_renderer.i"
+	@echo "... src/renderer/effects_renderer.s"
 	@echo "... src/renderer/renderer.o"
 	@echo "... src/renderer/renderer.i"
 	@echo "... src/renderer/renderer.s"
+	@echo "... src/renderer/scenes_renderer.o"
+	@echo "... src/renderer/scenes_renderer.i"
+	@echo "... src/renderer/scenes_renderer.s"
+	@echo "... src/renderer/shader.o"
+	@echo "... src/renderer/shader.i"
+	@echo "... src/renderer/shader.s"
 	@echo "... src/renderer/text_renderer.o"
 	@echo "... src/renderer/text_renderer.i"
 	@echo "... src/renderer/text_renderer.s"
+	@echo "... src/renderer/ui_renderer.o"
+	@echo "... src/renderer/ui_renderer.i"
+	@echo "... src/renderer/ui_renderer.s"
+	@echo "... src/renderer/world_renderer.o"
+	@echo "... src/renderer/world_renderer.i"
+	@echo "... src/renderer/world_renderer.s"
 	@echo "... src/utils.o"
 	@echo "... src/utils.i"
 	@echo "... src/utils.s"
