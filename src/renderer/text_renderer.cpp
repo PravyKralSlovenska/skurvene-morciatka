@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <vector>
 #include <tuple>
 #include <map>
@@ -11,21 +12,22 @@
 
 #include "engine/renderer/text_renderer.hpp"
 #include "engine/renderer/shader.hpp"
+#include "engine/renderer/buffer.hpp"
 #include "others/utils.hpp"
 
 Character::Character(unsigned int textureID, glm::ivec2 size, glm::ivec2 bearing, unsigned int advance)
     : TextureID(textureID), Size(size), Bearing(bearing), Advance(advance) {}
 
-Text_Renderer::Text_Renderer() 
-    : shader("../shaders/text_vertex.glsl", "../shaders/text_texture.glsl")
+Text_Renderer::Text_Renderer()
 {
-    // toto je na test ci to realne funguje 
+    // toto je na test ci to realne funguje
     text_to_render = {
         {"ABCDEFGHIJKLMNOPQRSTUVWXYZ", {0.0f, 350.0f}, 1, Color(255, 255, 255, 1.0f)},
         {"abcdefghijklmnopqrstuvwxyz", {0.0f, 400.0f}, 1, Color(255, 255, 255, 1.0f)},
-        {"0123456789"                , {0.0f, 450.0f}, 2, Color(255,   0,   0, 1.0f)},
-        {"!@#$%^&*()_+-="            , {0.0f, 500.0f}, 3, Color(  0, 255,   0, 1.0f)},
-        {"[]{}|\\:;\"'<>?,./~`"      , {0.0f, 550.0f}, 4, Color(  0,   0, 255, 0.5f)},
+        {"0123456789", {0.0f, 450.0f}, 1, Color(255, 0, 0, 1.0f)},
+        {"!@#$%^&*()_+-=", {0.0f, 500.0f}, 1, Color(0, 255, 0, 1.0f)},
+        {"[]{}|\\:;\"'<>?,./~`", {0.0f, 550.0f}, 1, Color(0, 0, 255, 0.5f)},
+        {"MISKO POZOR ZITRA :-)", {0.0f, 600.0f}, 0.3, Color(0, 255, 125, 1.0f)}
     };
 }
 
@@ -37,6 +39,11 @@ Text_Renderer::~Text_Renderer()
 
 void Text_Renderer::init()
 {
+    // font_path = "../fonts/Minecraft.ttf";
+    // font_path = "../fonts/EmojiFont.ttf";
+    // font_path = "../fonts/MySims.ttf";
+    font_path = "../fonts/Coolvetica.otf";
+
     if (FT_Init_FreeType(&ft))
     {
         std::cerr << "ERROR::FREETYPE: Could not init FreeType Libraryn\n";
@@ -49,19 +56,23 @@ void Text_Renderer::init()
         return;
     }
 
-    shader.create_shader();
+    std::cout << "Font loaded successfully!" << std::endl;
 
-    VBO = create_vertex_buffer_object();
-    VAO = create_vertex_array_buffer();
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    shader = std::make_unique<Shader>("../shaders/text_vertex.glsl", "../shaders/text_texture.glsl");
+    // shader->create_shader();
 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+    // shader2 = std::make_unique<Shader>("../shaders/vertex.glsl", "../shaders/fragment.glsl");
+    // shader2->create_shader();
 
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    VAO = std::make_unique<VERTEX_ARRAY_OBJECT>();
+    VAO->bind();
+
+    VBO = std::make_unique<VERTEX_BUFFER_OBJECT>();
+    VBO->bind();
+
+    VAO->setup_vertex_attribute_pointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+
+    VBO->fill_with_data_raw(sizeof(float) * 6 * 4, NULL, GL_DYNAMIC);
 
     load_characters();
 }
@@ -94,7 +105,7 @@ void Text_Renderer::load_characters()
             GL_UNSIGNED_BYTE,
             face->glyph->bitmap.buffer);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -113,6 +124,81 @@ void Text_Renderer::load_characters()
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void Text_Renderer::render_text()
+{
+    if (text_to_render.empty())
+    {
+        return;
+    }
+
+    shader->use();
+    glm::mat4 projection = glm::ortho(0.0f, 1000.0f, 800.0f, 0.0f);
+    shader->set_mat4("projection", projection);
+
+    glActiveTexture(GL_TEXTURE0);
+    VAO->bind();
+    VBO->bind();
+
+    for (size_t i = 0; i < text_to_render.size(); i++)
+    {
+        auto [text, coords, scale, color] = text_to_render[i];
+
+        shader->set_vec4("text_color", glm::vec4(color.r, color.g, color.b, color.a));
+
+        float x = coords[0];
+        float y = coords[1];
+
+        for (char c : text)
+        {
+            Character ch = characters[c];
+
+            float xpos = x + ch.Bearing.x * scale;
+            float ypos = y + (ch.Size.y - ch.Bearing.y) * scale;
+            float w = ch.Size.x * scale;
+            float h = ch.Size.y * scale;
+
+            float vertices[6][4] = {
+                {xpos, ypos - h, 0.0f, 0.0f},
+                {xpos, ypos, 0.0f, 1.0f},
+                {xpos + w, ypos, 1.0f, 1.0f},
+                {xpos, ypos - h, 0.0f, 0.0f},
+                {xpos + w, ypos, 1.0f, 1.0f},
+                {xpos + w, ypos - h, 1.0f, 0.0f}};
+
+            glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+
+            x += (ch.Advance >> 6) * scale;
+        }
+    }
+
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+// void Text_Renderer::render_triangle()
+// {
+//     shader2->use();
+
+//     glm::mat4 projection = glm::ortho(0.0f, 1000.0f, 800.0f, 0.0f);
+//     shader2->set_mat4("projection", projection);
+
+//     std::vector<float> vertices = {
+//         500.0f, 600.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+//         800.0f, 200.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+//         200.0f, 200.0f, 1.0f, 0.0f, 0.0f, 1.0f};
+
+//     VAO->bind();
+//     VBO->fill_with_data_vector(vertices, GL_DYNAMIC);
+
+//     VAO->setup_vertex_attribute_pointer(0, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
+//     VAO->setup_vertex_attribute_pointer(1, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(2 * sizeof(float)));
+
+
+//     glDrawArrays(GL_TRIANGLES, 0, 3);
+// }
+
 void Text_Renderer::add_text(std::string text, glm::vec2 coords, int scale, Color color)
 {
     text_to_render.push_back(std::tuple(text, coords, scale, color));
@@ -122,57 +208,3 @@ void Text_Renderer::clear_buffers()
 {
 }
 
-void Text_Renderer::render_text()
-{
-    if (text_to_render.empty())
-    {
-        return;
-    }
-
-    shader.use();
-
-    glm::mat4 projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
-    // glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-    shader.set_mat4("projection", projection);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindVertexArray(VAO);
-
-    for (size_t i = 0; i < text_to_render.size(); i++)
-    {
-        auto [text, coords, scale, color] = text_to_render[i];
-
-        // glUniform3f(glGetUniformLocation(shader.ID, "text_color"), color.r, color.g, color.b);
-        shader.set_vec4("text_color", glm::vec4(color.r, color.g, color.b, color.a));
-
-        for (char c : text)
-        {
-            Character ch = characters[c];
-
-            float xpos = coords[0] + ch.Bearing.x * scale;
-            float ypos = coords[1] - (ch.Size.y - ch.Bearing.y) * scale;
-            float w = ch.Size.x * scale;
-            float h = ch.Size.y * scale;
-
-            float vertices[6][4] = {
-                {xpos, ypos + h, 0.0f, 0.0f},
-                {xpos, ypos, 0.0f, 1.0f},
-                {xpos + w, ypos, 1.0f, 1.0f},
-                {xpos, ypos + h, 0.0f, 0.0f},
-                {xpos + w, ypos, 1.0f, 1.0f},
-                {xpos + w, ypos + h, 1.0f, 0.0f}};
-
-            glBindTexture(GL_TEXTURE_2D, ch.TextureID);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-
-            coords[0] += (ch.Advance >> 6) * scale;
-        }
-    }
-
-    glBindVertexArray(0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    // Clear for next frame
-    // text_to_render.clear();
-}

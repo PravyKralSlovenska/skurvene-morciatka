@@ -14,7 +14,7 @@ Shader::Shader() {}
 Shader::Shader(const std::string &vertex_path, const std::string &fragment_path)
     : vertex_path(vertex_path), fragment_path(fragment_path)
 {
-    // create_shader();
+    create_shader();
 }
 
 Shader::~Shader()
@@ -29,38 +29,38 @@ void Shader::use()
 
 void Shader::create_shader()
 {
-    if (!gladLoadGL) {
-        std::cerr << "ERROR::SHADER: OpenGL context not initialized before shader creation\n";
-        return;
-    }
-
     ID = glCreateProgram();
-    if (ID == 0) {
+    if (ID == 0)
+    {
         std::cerr << "ERROR::SHADER: Failed to create shader program\n";
         return;
     }
 
     std::string vertex_source = read_file(vertex_path);
-    if (vertex_source.empty()) {
+    if (vertex_source.empty())
+    {
         std::cerr << "ERROR::SHADER: Failed to read vertex shader file: " << vertex_path << std::endl;
         return;
     }
-    
+
     unsigned int vs = compile_shader(GL_VERTEX_SHADER, vertex_source);
-    if (vs == -1) {
+    if (vs == -1)
+    {
         std::cerr << "ERROR::SHADER: Failed to compile vertex shader\n";
         return;
     }
 
     std::string fragment_source = read_file(fragment_path);
-    if (fragment_source.empty()) {
+    if (fragment_source.empty())
+    {
         std::cerr << "ERROR::SHADER: Failed to read fragment shader file: " << fragment_path << std::endl;
         glDeleteShader(vs);
         return;
     }
-    
+
     unsigned int fs = compile_shader(GL_FRAGMENT_SHADER, fragment_source);
-    if (fs == -1) {
+    if (fs == -1)
+    {
         std::cerr << "ERROR::SHADER: Failed to compile fragment shader\n";
         glDeleteShader(vs);
         return;
@@ -84,6 +84,8 @@ void Shader::create_shader()
 
     glDeleteShader(vs);
     glDeleteShader(fs);
+
+    std::cout << "shader s ideckom " << ID << " je vytvoreny\n";
 }
 
 unsigned int Shader::compile_shader(unsigned int type, const std::string &source)
@@ -114,25 +116,23 @@ unsigned int Shader::compile_shader(unsigned int type, const std::string &source
 
 void Shader::set_bool(const std::string &name, bool value) const
 {
+    glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
 }
 
 void Shader::set_int(const std::string &name, int value) const
 {
+    glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
 }
 
 void Shader::set_float(const std::string &name, float value) const
 {
+    glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
 }
 
 void Shader::set_vec2(const std::string &name, const glm::vec2 &value) const
 {
     glUniform2fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
 }
-
-// void Shader::set_vec2(const std::string &name, const float x, const float y) const
-// {
-//     glUniform2f(glGetUniformLocation(ID, name.c_str()), x, y);
-// }
 
 void Shader::set_vec3(const std::string &name, const glm::vec3 &value) const
 {

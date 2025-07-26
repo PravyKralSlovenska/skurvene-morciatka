@@ -44,6 +44,8 @@ unsigned int create_vertex_buffer_object()
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
+    std::cout << "VBO vytvoreny " << VBO << "\n";
+
     return VBO;
 }
 
@@ -53,6 +55,9 @@ unsigned int create_vertex_array_buffer()
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
+    std::cout << "VAO vytvoreny " << VAO << "\n";
+
+
     return VAO;
 }
 
@@ -61,6 +66,9 @@ unsigned create_element_buffer_object()
     unsigned int EBO;
     glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
+    std::cout << "EBO vytvoreny " << EBO << "\n";
+
 
     return EBO;
 }

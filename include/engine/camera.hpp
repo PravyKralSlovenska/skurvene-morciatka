@@ -53,5 +53,4 @@ public:
 
     glm::vec2 screen_to_world(float screen_x, float screen_y);
     glm::vec2 world_to_screen(float world_x, float world_y);
-
 };

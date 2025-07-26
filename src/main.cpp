@@ -3,41 +3,48 @@
 
 // Moje header files
 #include "engine/renderer/renderer.hpp"
-#include "engine/world.hpp"
-#include "engine/particle.hpp"
-#include "engine/camera.hpp"
-#include "engine/entity.hpp"
-#include "engine/controls.hpp"
+// #include "engine/world.hpp"
+// #include "engine/particle.hpp"
+// #include "engine/camera.hpp"
+// #include "engine/entity.hpp"
+// #include "engine/controls.hpp"
 #include "others/GLOBALS.hpp"
-#include "others/utils.hpp"
+// #include "others/utils.hpp"
 
-Player player();
-Camera camera(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT);
-Renderer render(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT);
-World world(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT, Globals::PARTICLE_SIZE);
+// Player player;
 // Controls controls(&player);
+// Camera camera(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT);
+Renderer render(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT);
+// World world(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT, Globals::PARTICLE_SIZE);
 
 int main(int argc, char **argv)
 {
+    // std::cout << "PRED INIT";
     render.init();
-    // render.set_camera(&camera);
+
     render.enable_blending();
     render.enable_ortho_projection();
     
-    render.print_render_info();
+    // nefunguje vyjebat prec
+    render.enable_pixel_perfect_rendering();
+    
+    // render.print_render_info();
+
+    // controls.set_window(render.get_window());
 
     while (!render.should_close())
     {
         // controls
+        // controls.handle_input();
 
-        // world.update_world();
-
-        // buffer handling
-
+        // render everything
         render.render_everything();
+
+        // std::cout << "HELL OWORLD\n";
     }
 
-    render.cleanup();
+    // render.cleanup();
 
+    std::cout << "KONIEC PROGRAMU\n";
     return 0;
 }

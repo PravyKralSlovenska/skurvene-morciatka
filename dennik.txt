@@ -124,6 +124,7 @@ co som sa naucil:
         . Entity - je iba ID, ktore sa pouziva na identifikaciu entity
         . Component - data, ktore su priradene k entity
         . System - logika, ktora pracuje s komponentami a entitami    
+
 ERRORY:
     . opengl 1281: invalid value
         . glVertexAttribPointer() - zle nastaveny vertex buffer object, alebo vertex array object
@@ -135,6 +136,7 @@ ERRORY:
     . Mozno som neurobil default constructor
     . Bound checking
     . bad optional nieco - std::optional<T> - volam to ked nema ziadnu hodnotu v sebe
+    . SEGMENTATION FAULT - 
 
 KNIZNICE/APICKA:
     . OpenGL
@@ -205,3 +207,22 @@ dennik:
     21.7.2025 - pondelok
         - dokoncil som text renderer, len treba doriesit shadery
         - vytvoril som triedu na shadery - engine/renderer/shader.hpp
+
+    23.7.2025 - streda
+        - KOKOT
+    
+    24.7.2025 - stvrtok
+        - UZ VIEM NAKRESLIT TEXT, chyba bola v: zlom bindngu, zle suradnice, zle textury
+        - CREATE BUFFERY v UTILS JE PICOVINA
+        - treba vylepsit renderery
+            . vytvorit buffery
+            . linknut VAO (musi byt ako 1.)
+            . linknut ostatne buffery
+        - uz idem robit controls
+    
+    27.7.2025 - nedela
+        - znova som prerobil renderer
+        - vymelsle som triedu buffer 
+            . chcem vymysliet aj na textury
+        - mal som problem s tym ze som volal "kreslice" pred glad initom tak som musel prerobit vsetko na unique_ptr
+            . unique_ptr je smart pointer, ktory sa sam postara o dealokaciu pamate

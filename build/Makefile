@@ -177,6 +177,30 @@ src/controls.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/controls.cpp.s
 .PHONY : src/controls.cpp.s
 
+src/entity.o: src/entity.cpp.o
+.PHONY : src/entity.o
+
+# target to build an object file
+src/entity.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/entity.cpp.o
+.PHONY : src/entity.cpp.o
+
+src/entity.i: src/entity.cpp.i
+.PHONY : src/entity.i
+
+# target to preprocess a source file
+src/entity.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/entity.cpp.i
+.PHONY : src/entity.cpp.i
+
+src/entity.s: src/entity.cpp.s
+.PHONY : src/entity.s
+
+# target to generate assembly for a file
+src/entity.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/entity.cpp.s
+.PHONY : src/entity.cpp.s
+
 src/gl.o: src/gl.c.o
 .PHONY : src/gl.o
 
@@ -272,6 +296,30 @@ src/particle/particle_movement.s: src/particle/particle_movement.cpp.s
 src/particle/particle_movement.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.s
 .PHONY : src/particle/particle_movement.cpp.s
+
+src/renderer/buffer.o: src/renderer/buffer.cpp.o
+.PHONY : src/renderer/buffer.o
+
+# target to build an object file
+src/renderer/buffer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.o
+.PHONY : src/renderer/buffer.cpp.o
+
+src/renderer/buffer.i: src/renderer/buffer.cpp.i
+.PHONY : src/renderer/buffer.i
+
+# target to preprocess a source file
+src/renderer/buffer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.i
+.PHONY : src/renderer/buffer.cpp.i
+
+src/renderer/buffer.s: src/renderer/buffer.cpp.s
+.PHONY : src/renderer/buffer.s
+
+# target to generate assembly for a file
+src/renderer/buffer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.s
+.PHONY : src/renderer/buffer.cpp.s
 
 src/renderer/effects_renderer.o: src/renderer/effects_renderer.cpp.o
 .PHONY : src/renderer/effects_renderer.o
@@ -528,6 +576,9 @@ help:
 	@echo "... src/controls.o"
 	@echo "... src/controls.i"
 	@echo "... src/controls.s"
+	@echo "... src/entity.o"
+	@echo "... src/entity.i"
+	@echo "... src/entity.s"
 	@echo "... src/gl.o"
 	@echo "... src/gl.i"
 	@echo "... src/gl.s"
@@ -540,6 +591,9 @@ help:
 	@echo "... src/particle/particle_movement.o"
 	@echo "... src/particle/particle_movement.i"
 	@echo "... src/particle/particle_movement.s"
+	@echo "... src/renderer/buffer.o"
+	@echo "... src/renderer/buffer.i"
+	@echo "... src/renderer/buffer.s"
 	@echo "... src/renderer/effects_renderer.o"
 	@echo "... src/renderer/effects_renderer.i"
 	@echo "... src/renderer/effects_renderer.s"

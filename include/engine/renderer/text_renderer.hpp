@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <memory>
 #include <vector>
 #include <tuple>
 #include <map>
@@ -8,6 +9,7 @@
 #include <glm/glm.hpp>
 
 #include "engine/renderer/shader.hpp"
+#include "engine/renderer/buffer.hpp"
 #include "others/utils.hpp"
 
 #include <ft2build.h>
@@ -31,15 +33,19 @@ private:
     FT_Library ft;
     FT_Face face;
 
-    unsigned int VAO, VBO;
-    Shader shader;
+    std::unique_ptr<VERTEX_ARRAY_OBJECT> VAO;
+    std::unique_ptr<VERTEX_BUFFER_OBJECT> VBO;
 
-    const char *font_path = "../fonts/MySims Racing DS Large Font.ttf";
+    std::unique_ptr<Shader> shader;
+    std::unique_ptr<Shader> shader2;
+
+    const char *font_path;
     std::map<char, Character> characters;
-    std::vector<std::tuple<std::string, glm::vec2, int, Color>> text_to_render;
+    std::vector<std::tuple<std::string, glm::vec2, float, Color>> text_to_render;
 
 public:
     Text_Renderer();
+    // Text_Renderer(const char *font_path);
     ~Text_Renderer();
 
     void init();
@@ -47,4 +53,7 @@ public:
     void add_text(std::string text, glm::vec2 coords, int scale, Color color);
     void render_text();
     void clear_buffers();
+
+    // test
+    void render_triangle();
 };
