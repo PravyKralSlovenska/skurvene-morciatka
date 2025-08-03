@@ -1,33 +1,34 @@
-#include <iostream>
+#include "engine/particle/particle.hpp"
 
-#include "engine/particle.hpp"
-#include "others/utils.hpp"
+Particle::Particle(glm::vec2 coords)
+    : coords(coords) {}
 
-Particle::Particle() {}
+Particle::Particle(ParticleType type, ParticleState state, Color color, glm::vec2 coords)
+    : type(type), state(state), color(color), coords(coords) {}
 
-Particle::Particle(ParticleType type, ParticleState state, Color color)
-    : type(type), state(state), color(color) {}
-
-Particle create_sand()
+Particle create_sand(glm::vec2 coords)
 {
     return Particle(
         ParticleType::SAND,
         ParticleState::SOLID,
-        Color(255, 255, 0, 1.0));
+        Color(203, 189, 0, 1.0),
+        coords);
 }
 
-Particle create_water()
+Particle create_water(glm::vec2 coords)
 {
     return Particle(
         ParticleType::WATER,
         ParticleState::LIQUID,
-        Color(0, 0, 255, 0.5));
+        Color(0, 0, 255, 0.5),
+        coords);
 }
 
-Particle create_smoke()
+Particle create_smoke(glm::vec2 coords)
 {
     return Particle(
         ParticleType::SMOKE,
         ParticleState::GAS,
-        Color(125, 125, 125, 1.0));
+        Color(125, 125, 125, 1.0),
+        coords);
 }

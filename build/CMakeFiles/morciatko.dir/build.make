@@ -184,19 +184,19 @@ CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffer.cpp -o CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.s
 
-CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.o: CMakeFiles/morciatko.dir/flags.make
-CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/effects_renderer.cpp
-CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.o: CMakeFiles/morciatko.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.o -MF CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.o.d -o CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/effects_renderer.cpp
+CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: CMakeFiles/morciatko.dir/flags.make
+CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/entities_renderer.cpp
+CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: CMakeFiles/morciatko.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o -MF CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o.d -o CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/entities_renderer.cpp
 
-CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/effects_renderer.cpp > CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.i
+CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/entities_renderer.cpp > CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.i
 
-CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/effects_renderer.cpp -o CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.s
+CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/entities_renderer.cpp -o CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.s
 
 CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o: CMakeFiles/morciatko.dir/flags.make
 CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/renderer.cpp
@@ -334,7 +334,7 @@ morciatko_OBJECTS = \
 "CMakeFiles/morciatko.dir/src/particle/particle.cpp.o" \
 "CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.o" \
 "CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.o" \
-"CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.o" \
+"CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o" \
 "CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o" \
 "CMakeFiles/morciatko.dir/src/renderer/scenes_renderer.cpp.o" \
 "CMakeFiles/morciatko.dir/src/renderer/shader.cpp.o" \
@@ -356,7 +356,7 @@ morciatko: CMakeFiles/morciatko.dir/src/main.cpp.o
 morciatko: CMakeFiles/morciatko.dir/src/particle/particle.cpp.o
 morciatko: CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.o
 morciatko: CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.o
-morciatko: CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.o
+morciatko: CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o
 morciatko: CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o
 morciatko: CMakeFiles/morciatko.dir/src/renderer/scenes_renderer.cpp.o
 morciatko: CMakeFiles/morciatko.dir/src/renderer/shader.cpp.o

@@ -321,29 +321,29 @@ src/renderer/buffer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.s
 .PHONY : src/renderer/buffer.cpp.s
 
-src/renderer/effects_renderer.o: src/renderer/effects_renderer.cpp.o
-.PHONY : src/renderer/effects_renderer.o
+src/renderer/entities_renderer.o: src/renderer/entities_renderer.cpp.o
+.PHONY : src/renderer/entities_renderer.o
 
 # target to build an object file
-src/renderer/effects_renderer.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.o
-.PHONY : src/renderer/effects_renderer.cpp.o
+src/renderer/entities_renderer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o
+.PHONY : src/renderer/entities_renderer.cpp.o
 
-src/renderer/effects_renderer.i: src/renderer/effects_renderer.cpp.i
-.PHONY : src/renderer/effects_renderer.i
+src/renderer/entities_renderer.i: src/renderer/entities_renderer.cpp.i
+.PHONY : src/renderer/entities_renderer.i
 
 # target to preprocess a source file
-src/renderer/effects_renderer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.i
-.PHONY : src/renderer/effects_renderer.cpp.i
+src/renderer/entities_renderer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.i
+.PHONY : src/renderer/entities_renderer.cpp.i
 
-src/renderer/effects_renderer.s: src/renderer/effects_renderer.cpp.s
-.PHONY : src/renderer/effects_renderer.s
+src/renderer/entities_renderer.s: src/renderer/entities_renderer.cpp.s
+.PHONY : src/renderer/entities_renderer.s
 
 # target to generate assembly for a file
-src/renderer/effects_renderer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/effects_renderer.cpp.s
-.PHONY : src/renderer/effects_renderer.cpp.s
+src/renderer/entities_renderer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.s
+.PHONY : src/renderer/entities_renderer.cpp.s
 
 src/renderer/renderer.o: src/renderer/renderer.cpp.o
 .PHONY : src/renderer/renderer.o
@@ -594,9 +594,9 @@ help:
 	@echo "... src/renderer/buffer.o"
 	@echo "... src/renderer/buffer.i"
 	@echo "... src/renderer/buffer.s"
-	@echo "... src/renderer/effects_renderer.o"
-	@echo "... src/renderer/effects_renderer.i"
-	@echo "... src/renderer/effects_renderer.s"
+	@echo "... src/renderer/entities_renderer.o"
+	@echo "... src/renderer/entities_renderer.i"
+	@echo "... src/renderer/entities_renderer.s"
 	@echo "... src/renderer/renderer.o"
 	@echo "... src/renderer/renderer.i"
 	@echo "... src/renderer/renderer.s"

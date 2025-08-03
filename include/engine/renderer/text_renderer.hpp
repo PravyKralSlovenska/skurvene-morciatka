@@ -6,8 +6,13 @@
 #include <tuple>
 #include <map>
 
-#include <glm/glm.hpp>
+#include "glad/gl.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "engine/renderer/text_renderer.hpp"
 #include "engine/renderer/shader.hpp"
 #include "engine/renderer/buffer.hpp"
 #include "others/utils.hpp"
@@ -50,8 +55,7 @@ public:
 
     void init();
     void load_characters();
-    void add_text(std::string text, glm::vec2 coords, int scale, Color color);
-    void render_text();
+    void render_text(std::string text, glm::vec2 coords, float scale, Color color);
     void clear_buffers();
 
     // test

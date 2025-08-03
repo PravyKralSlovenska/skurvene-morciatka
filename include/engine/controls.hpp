@@ -1,6 +1,13 @@
 #pragma once
 
+#include <iostream>
+
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
+
+#include <glm/glm.hpp>
+
+#include "engine/world/world.hpp"
 #include "engine/entity.hpp"
 
 class Controls
@@ -8,16 +15,18 @@ class Controls
 private:
     GLFWwindow *window;
     Player *player;
+    World *world;
 
 public:
     glm::vec2 cursor_position;
 
 public:
-    Controls(Player *player);
+    Controls();
     ~Controls() = default;
 
     void set_player(Player *player);
     void set_window(GLFWwindow *window);
+    void set_world(World *world);
 
     // inputs
     void handle_input();

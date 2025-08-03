@@ -9,13 +9,6 @@ std::string read_file(const std::string &filepath);
  */
 bool in_world_range(int x, int y, int world_rows, int world_cols);
 
-unsigned int create_shader(const std::string &vertex_shader_path, const std::string &fragment_shader_path);
-unsigned int compile_shader(unsigned int type, const std::string &source);
-
-unsigned int create_vertex_array_buffer();
-unsigned int create_vertex_buffer_object();
-unsigned int create_element_buffer_object();
-
 // chcem lepsie pracovat s farbou
 // -  upravujem farbu tak aby vedel opengl s tym pracovat
 struct Color
@@ -23,7 +16,17 @@ struct Color
     float r, g, b, a;
 
     Color();
-    Color(int r, int g, int b, float a);
+    Color(int red, int green, int blue, float alpha);
+};
+
+struct Vertex
+{
+    float x, y;
+    Color color;
+
+    Vertex();
+    Vertex(float x, float y, Color color);
+    ~Vertex() = default;
 };
 
 class Log
