@@ -232,4 +232,7 @@ dennik:
         - rendering entities
         - neviem AKO
 
-    
+    2.8.2025 - sobota
+        - funguje sand particle!!!
+
+    5.8.2025 - utorok

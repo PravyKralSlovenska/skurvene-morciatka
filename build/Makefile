@@ -537,6 +537,30 @@ src/world/chunk.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/chunk.cpp.s
 .PHONY : src/world/chunk.cpp.s
 
+src/world/interface_world.o: src/world/interface_world.cpp.o
+.PHONY : src/world/interface_world.o
+
+# target to build an object file
+src/world/interface_world.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/interface_world.cpp.o
+.PHONY : src/world/interface_world.cpp.o
+
+src/world/interface_world.i: src/world/interface_world.cpp.i
+.PHONY : src/world/interface_world.i
+
+# target to preprocess a source file
+src/world/interface_world.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/interface_world.cpp.i
+.PHONY : src/world/interface_world.cpp.i
+
+src/world/interface_world.s: src/world/interface_world.cpp.s
+.PHONY : src/world/interface_world.s
+
+# target to generate assembly for a file
+src/world/interface_world.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/interface_world.cpp.s
+.PHONY : src/world/interface_world.cpp.s
+
 src/world/world.o: src/world/world.cpp.o
 .PHONY : src/world/world.o
 
@@ -621,6 +645,9 @@ help:
 	@echo "... src/world/chunk.o"
 	@echo "... src/world/chunk.i"
 	@echo "... src/world/chunk.s"
+	@echo "... src/world/interface_world.o"
+	@echo "... src/world/interface_world.i"
+	@echo "... src/world/interface_world.s"
 	@echo "... src/world/world.o"
 	@echo "... src/world/world.i"
 	@echo "... src/world/world.s"

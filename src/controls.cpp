@@ -34,9 +34,9 @@ void Controls::handle_input()
         int y = (int)ypos / world->scale;
         // std::cout << x << ';' << y << '\n';
 
-        world->add_particle({x, y}, ParticleType::WATER);
+        world->add_particle({x, y}, ParticleType::SAND);
     }
-
+    
     keyboard_input();
 }
 

@@ -25,6 +25,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/world_renderer.cpp" "CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/utils.cpp" "CMakeFiles/morciatko.dir/src/utils.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/utils.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/world/chunk.cpp" "CMakeFiles/morciatko.dir/src/world/chunk.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/world/chunk.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/src/world/interface_world.cpp" "CMakeFiles/morciatko.dir/src/world/interface_world.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/world/interface_world.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world.cpp" "CMakeFiles/morciatko.dir/src/world/world.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/world/world.cpp.o.d"
   "" "morciatko" "gcc" "CMakeFiles/morciatko.dir/link.d"
   )

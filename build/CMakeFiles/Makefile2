@@ -85,12 +85,12 @@ clean: CMakeFiles/morciatko.dir/clean
 CMakeFiles/morciatko.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 "Built target morciatko"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20 "Built target morciatko"
 .PHONY : CMakeFiles/morciatko.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/morciatko.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles 19
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles 20
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/morciatko.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles 0
 .PHONY : CMakeFiles/morciatko.dir/rule
@@ -102,7 +102,7 @@ morciatko: CMakeFiles/morciatko.dir/rule
 # codegen rule for target.
 CMakeFiles/morciatko.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 "Finished codegen for target morciatko"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20 "Finished codegen for target morciatko"
 .PHONY : CMakeFiles/morciatko.dir/codegen
 
 # clean rule for target.

@@ -16,13 +16,7 @@ World::World(int w, int h, int scale)
         }
     }
 
-    // for (int i = m_rows; i >= 0; --i)
-    // {
-    //     for (int j = m_cols; j >= 0; --j)
-    //     {
-    //         world_curr.emplace_back(glm::vec2(j, i));
-    //     }
-    // }
+    world_curr[10 * m_cols + 10] = create_water({50, 0});
 }
 
 void World::add_particle(glm::vec2 coords, ParticleType type)
@@ -188,44 +182,30 @@ void World::move_liquid(Particle &particle)
         }
     }
 
-    bool can_move_left = false, can_move_right = false;
+    bool can_under_left = false, can_under_right = false;
 
     if (in_world_range(x + 1, y + 1, m_rows, m_cols))
     {
         Particle &under_left = get_particle(x + 1, y + 1);
-        can_move_left = (under_left.type == ParticleType::EMPTY);
+        can_under_left = (under_left.type == ParticleType::EMPTY);
     }
 
     if (in_world_range(x - 1, y + 1, m_rows, m_cols))
     {
         Particle &under_right = get_particle(x - 1, y + 1);
-        can_move_right = (under_right.type == ParticleType::EMPTY);
+        can_under_right = (under_right.type == ParticleType::EMPTY);
     }
 
-    bool can_move_next_left = false, can_move_next_right = false;
-
-    if (in_world_range(x - 1, y, m_rows, m_cols))
+    if (can_under_left && can_under_right)
     {
-        Particle &next_left_particle = get_particle(x - 1, y);
-        can_move_next_left = (next_left_particle.type == ParticleType::EMPTY);
-    }
-
-    if (in_world_range(x + 1, y, m_rows, m_cols))
-    {
-        Particle &next_right_particle = get_particle(x + 1, y);
-        can_move_next_right = (next_right_particle.type == ParticleType::EMPTY);
-    }
-
-    if (can_move_left && can_move_right)
-    {
-        if (rand() % 2 == 0 && can_move_left)
+        if (rand() % 2 == 0 && can_under_left)
         {
             Particle &target = get_particle(x + 1, y + 1);
             particle.coords = {x + 1, y + 1};
             target.coords = {x, y};
             swap_particles(particle, target);
         }
-        else if (can_move_right)
+        else if (can_under_right)
         {
             Particle &target = get_particle(x - 1, y + 1);
             particle.coords = {x - 1, y + 1};
@@ -236,7 +216,7 @@ void World::move_liquid(Particle &particle)
         return;
     }
 
-    else if (can_move_left)
+    else if (can_under_left)
     {
         Particle &target = get_particle(x + 1, y + 1);
         particle.coords = {x + 1, y + 1};
@@ -246,7 +226,7 @@ void World::move_liquid(Particle &particle)
         return;
     }
 
-    else if (can_move_right)
+    else if (can_under_right)
     {
         Particle &target = get_particle(x - 1, y + 1);
         particle.coords = {x - 1, y + 1};
@@ -256,44 +236,50 @@ void World::move_liquid(Particle &particle)
         return;
     }
 
-    else if (can_move_next_left && can_move_next_right)
-    {
-        if (rand() % 2 == 0 && can_move_next_left)
-        {
-            Particle &target = get_particle(x + 1, y);
-            particle.coords = {x + 1, y};
-            target.coords = {x, y};
-            swap_particles(particle, target);
-        }
-        else if (can_move_next_right)
-        {
-            Particle &target = get_particle(x - 1, y);
-            particle.coords = {x - 1, y};
-            target.coords = {x, y};
-            swap_particles(particle, target);
-        }
+    // if you cant drop down, find place where you can
+    bool move_left = false, move_right = false;
+    int lengt_left = 0, lengt_right = 0;
 
-        return;
+    if (get_particle(x + 1, y).state == ParticleState::NONE)
+    {
+        move_left = true;
     }
 
-    else if (can_move_next_left)
+    if (get_particle(x - 1, y).state == ParticleState::NONE)
     {
-        Particle &target = get_particle(x + 1, y);
-        particle.coords = {x + 1, y};
-        target.coords = {x, y};
-        swap_particles(particle, target);
-
-        return;
+        move_right = true;
     }
 
-    else if (can_move_next_right)
+    for (int i = 0; i < m_cols; i++)
     {
-        Particle &target = get_particle(x - 1, y);
-        particle.coords = {x - 1, y};
-        target.coords = {x, y};
-        swap_particles(particle, target);
-
-        return;
+        if (rand() % 2 == 0)
+        {
+            if (move_left && in_world_range(x - 1, y + 1, m_rows, m_cols))
+            {
+                bool empty = (get_particle(x - i, y + 1).state == ParticleState::NONE);
+                if (empty)
+                {
+                    Particle &target = get_particle(x - 1, y);
+                    particle.coords = {x - 1, y};
+                    target.coords = {x, y};
+                    swap_particles(particle, target);
+                }
+            }
+        }
+        else
+        {
+            if (move_right && in_world_range(x + i, y + 1, m_rows, m_cols))
+            {
+                bool empty = (get_particle(x + i, y + 1).state == ParticleState::NONE);
+                if (empty)
+                {
+                    Particle &target = get_particle(x + 1, y);
+                    particle.coords = {x + 1, y};
+                    target.coords = {x, y};
+                    swap_particles(particle, target);
+                }
+            }
+        }
     }
 }
 
@@ -312,3 +298,25 @@ void World::print_world()
     }
     std::cout << "---------------------------------------\n\n";
 }
+
+// liquid
+// void World::find_place_to_fall(const Particle &particle)
+// {
+//     auto x = particle.coords.x;
+//     auto y = particle.coords.y - 1;
+
+//     for (int i = 0; i < m_cols; i++)
+//     {
+//         if (in_world_range(x - 1, y, m_rows, m_cols))
+//         {
+//             auto &target = get_particle(x - i, y);
+//             bool idk = (target.state == ParticleState::NONE);
+//         }
+
+//         if (in_world_range(x + i, y, m_rows, m_cols))
+//         {
+//             auto &target = get_particle(x + i, y);
+//             bool idk = (target.state == ParticleState::NONE);
+//         }
+//     }
+// }

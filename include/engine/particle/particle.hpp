@@ -34,7 +34,7 @@ public:
     ParticleType type = ParticleType::EMPTY;   // konkretne co to je (Piesok)
     ParticleState state = ParticleState::NONE; // ake skupenstvo ma dana latka
     Color color = Color(0.0f, 0.0f, 0.0f, 0.0f);
-    glm::vec2 coords; // povinne
+    glm::ivec2 coords; // povinne
 
 public:
     Particle(ParticleType type, ParticleState state, Color color, glm::vec2 coords);

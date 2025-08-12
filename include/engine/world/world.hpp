@@ -33,6 +33,7 @@ public:
     void move_solid(Particle &particle);
     void move_gas(Particle &particle);
     void move_liquid(Particle &particle);
+    void find_place_to_move(const Particle &particle);
 
     std::vector<Particle> &get_world();
 
