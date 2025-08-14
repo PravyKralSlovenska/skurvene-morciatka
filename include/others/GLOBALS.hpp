@@ -4,7 +4,7 @@ namespace Globals
 {
     const float WINDOW_WIDTH = 1000.0;
     const float WINDOW_HEIGHT = 800.0;
-    const float PARTICLE_SIZE = 10.0;
+    const float PARTICLE_SIZE = 2.0; // particle size 1 == seka idk preco
 
     const float CHUNK_WIDTH = 1000.0;
     const float CHUNK_HEIGHT = 800.0;

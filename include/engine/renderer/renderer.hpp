@@ -31,14 +31,20 @@ private:
     glm::mat4 view_projection;
 
     // rendere
-    std::unique_ptr<World_Renderer>    world_renderer;
+    std::unique_ptr<World_Renderer> world_renderer;
     std::unique_ptr<Entities_Renderer> entities_renderer;
-    std::unique_ptr<Text_Renderer>     text_renderer;
+    std::unique_ptr<Text_Renderer> text_renderer;
 
     // svet
     World *world = nullptr;
     // cisto len na infosky
     std::vector<std::string> render_info;
+
+    // FPS
+    double start_time = glfwGetTime();
+    double previous_time = glfwGetTime();
+    int frame_count = 0;
+    int frame_count_display = 0;
 
 public:
     IRenderer(float window_width, float window_height, float scale, World *world);

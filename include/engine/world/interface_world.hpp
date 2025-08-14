@@ -11,7 +11,7 @@ class IWorld
 private:
     std::unique_ptr<World> world;
 
-private:
+public:
     IWorld(float width, float hight, float scale);
     ~IWorld() = default;
 };

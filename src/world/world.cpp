@@ -1,6 +1,17 @@
 #include "engine/world/world.hpp"
 
 /*
+ * WORLDCELL
+ */
+WorldCell::WorldCell(glm::vec2 coords)
+    : coords(coords), particle() {}
+
+void WorldCell::set_particle(Particle particle)
+{
+    this->particle = particle;
+}
+
+/*
  * WORLD
  */
 World::World(int w, int h, int scale)
@@ -15,32 +26,56 @@ World::World(int w, int h, int scale)
             world_curr.emplace_back(glm::vec2(j, i));
         }
     }
-
-    world_curr[10 * m_cols + 10] = create_water({50, 0});
 }
 
-void World::add_particle(glm::vec2 coords, ParticleType type)
+void World::add_particle(glm::vec2 coords, ParticleType type, int size)
 {
-    switch (type)
+    std::vector<glm::vec2> offsets = {
+        {0, 0}, // center
+        {-1, -1},
+        {0, -1},
+        {1, -1}, // top row
+        {-1, 0},
+        {1, 0}, // middle row (left and right)
+        {-1, 1},
+        {0, 1},
+        {1, 1} // bottom row
+    };
+
+    for (const auto &offset : offsets)
     {
-    case ParticleType::SAND:
-        world_curr[coords.y * m_cols + coords.x] = create_sand(coords);
-        break;
+        int new_x = coords.x + offset.x;
+        int new_y = coords.y + offset.y;
 
-    case ParticleType::WATER:
-        world_curr[coords.y * m_cols + coords.x] = create_water(coords);
-        break;
+        if (in_world_range(new_x, new_y, m_rows, m_cols))
+        {
+            int index = new_y * m_cols + new_x;
 
-    case ParticleType::SMOKE:
-        world_curr[coords.y * m_cols + coords.x] = create_smoke(coords);
-        break;
+            if (world_curr[index].particle.type == ParticleType::EMPTY)
+            {
+                switch (type)
+                {
+                case ParticleType::SAND:
+                    world_curr[index].set_particle(create_sand());
+                    break;
 
-    default:
-        break;
+                case ParticleType::WATER:
+                    world_curr[index].set_particle(create_water());
+                    break;
+
+                case ParticleType::SMOKE:
+                    world_curr[index].set_particle(create_smoke());
+                    break;
+
+                default:
+                    break;
+                }
+            }
+        }
     }
 }
 
-Particle &World::get_particle(int x, int y)
+WorldCell &World::get_worldcell(int x, int y)
 {
     return world_curr[y * m_cols + x];
 }
@@ -50,7 +85,15 @@ void World::swap_particles(Particle &this_particle, Particle &that_particle)
     std::swap(this_particle, that_particle);
 }
 
-std::vector<Particle> &World::get_world()
+void World::clear_world()
+{
+    for (int i = 0; i < m_rows * m_cols; i++)
+    {
+        world_curr[i].particle = Particle();
+    }
+}
+
+std::vector<WorldCell> &World::get_world()
 {
     return world_curr;
 }
@@ -61,30 +104,63 @@ void World::update_world()
 {
     for (int i = m_rows - 1; i >= 0; --i)
     {
-        // for (int j = m_cols - 1; j >= 0; --j)
-        for (int j = 0; j < m_cols; ++j)
+        if (rand() % 2)
         {
-            auto &particle = get_particle(j, i);
-
-            if (particle.state != ParticleState::NONE || particle.type != ParticleType::EMPTY)
+            for (int j = 0; j <= m_cols - 1; ++j)
             {
-                switch (particle.state)
+                auto &cell = get_worldcell(j, i);
+                auto &particle = cell.particle;
+
+                if (particle.state != ParticleState::NONE || particle.type != ParticleType::EMPTY)
                 {
-                case ParticleState::SOLID:
-                    move_solid(particle);
-                    break;
+                    switch (particle.state)
+                    {
+                    case ParticleState::SOLID:
+                        move_solid(cell);
+                        break;
 
-                case ParticleState::LIQUID:
-                    move_liquid(particle);
-                    break;
+                    case ParticleState::LIQUID:
+                        move_liquid(cell);
+                        break;
 
-                case ParticleState::GAS:
-                    move_gas(particle);
-                    break;
+                    case ParticleState::GAS:
+                        move_gas(cell);
+                        break;
 
-                default:
-                    std::cerr << "nieco sa pokazilo updateworld\n";
-                    break;
+                    default:
+                        std::cerr << "nieco sa pokazilo updateworld\n";
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            for (int j = m_cols - 1; j >= 0; --j)
+            {
+                auto &cell = get_worldcell(j, i);
+                auto &particle = cell.particle;
+
+                if (particle.state != ParticleState::NONE || particle.type != ParticleType::EMPTY)
+                {
+                    switch (particle.state)
+                    {
+                    case ParticleState::SOLID:
+                        move_solid(cell);
+                        break;
+
+                    case ParticleState::LIQUID:
+                        move_liquid(cell);
+                        break;
+
+                    case ParticleState::GAS:
+                        move_gas(cell);
+                        break;
+
+                    default:
+                        std::cerr << "nieco sa pokazilo updateworld\n";
+                        break;
+                    }
                 }
             }
         }
@@ -93,20 +169,18 @@ void World::update_world()
     // print_world();
 }
 
-void World::move_solid(Particle &particle)
+void World::move_solid(WorldCell &worldcell)
 {
-    auto x = particle.coords.x;
-    auto y = particle.coords.y;
+    auto x = worldcell.coords.x;
+    auto y = worldcell.coords.y;
 
     if (in_world_range(x, y + 1, m_rows, m_cols))
     {
-        auto &under_particle = get_particle(x, y + 1);
-        if (under_particle.type == ParticleType::EMPTY)
+        auto &under_cell = get_worldcell(x, y + 1);
+        if (under_cell.particle.type == ParticleType::EMPTY)
         {
-            particle.coords.y = y + 1;
-            under_particle.coords.y = y;
-
-            swap_particles(particle, under_particle);
+            auto &current_cell = get_worldcell(x, y);
+            swap_particles(current_cell.particle, under_cell.particle);
             return;
         }
     }
@@ -115,69 +189,63 @@ void World::move_solid(Particle &particle)
 
     if (in_world_range(x + 1, y + 1, m_rows, m_cols))
     {
-        Particle &under_left = get_particle(x + 1, y + 1);
-        can_move_left = (under_left.type == ParticleType::EMPTY);
+        WorldCell &under_left_cell = get_worldcell(x + 1, y + 1);
+        can_move_left = (under_left_cell.particle.type == ParticleType::EMPTY);
     }
 
     if (in_world_range(x - 1, y + 1, m_rows, m_cols))
     {
-        Particle &under_right = get_particle(x - 1, y + 1);
-        can_move_right = (under_right.type == ParticleType::EMPTY);
+        WorldCell &under_right_cell = get_worldcell(x - 1, y + 1);
+        can_move_right = (under_right_cell.particle.type == ParticleType::EMPTY);
     }
 
     if (can_move_left && can_move_right)
     {
         if (rand() % 2 == 0 && can_move_left)
         {
-            Particle &target = get_particle(x + 1, y + 1);
-            particle.coords = {x + 1, y + 1};
-            target.coords = {x, y};
-            swap_particles(particle, target);
+            auto &current_cell = get_worldcell(x, y);
+            auto &target_cell = get_worldcell(x + 1, y + 1);
+            swap_particles(current_cell.particle, target_cell.particle);
         }
         else if (can_move_right)
         {
-            Particle &target = get_particle(x - 1, y + 1);
-            particle.coords = {x - 1, y + 1};
-            target.coords = {x, y};
-            swap_particles(particle, target);
+            auto &current_cell = get_worldcell(x, y);
+            auto &target_cell = get_worldcell(x - 1, y + 1);
+            swap_particles(current_cell.particle, target_cell.particle);
         }
     }
 
     else if (can_move_left)
     {
-        Particle &target = get_particle(x + 1, y + 1);
-        particle.coords = {x + 1, y + 1};
-        target.coords = {x, y};
-        swap_particles(particle, target);
+        auto &current_cell = get_worldcell(x, y);
+        auto &target_cell = get_worldcell(x + 1, y + 1);
+        swap_particles(current_cell.particle, target_cell.particle);
     }
 
     else if (can_move_right)
     {
-        Particle &target = get_particle(x - 1, y + 1);
-        particle.coords = {x - 1, y + 1};
-        target.coords = {x, y};
-        swap_particles(particle, target);
+        auto &current_cell = get_worldcell(x, y);
+        auto &target_cell = get_worldcell(x - 1, y + 1);
+        swap_particles(current_cell.particle, target_cell.particle);
     }
 }
 
-void World::move_gas(Particle &particle)
+void World::move_gas(WorldCell &worldcell)
 {
 }
 
-void World::move_liquid(Particle &particle)
+void World::move_liquid(WorldCell &worldcell)
 {
-    auto x = particle.coords.x;
-    auto y = particle.coords.y;
+    auto x = worldcell.coords.x;
+    auto y = worldcell.coords.y;
 
     if (in_world_range(x, y + 1, m_rows, m_cols))
     {
-        auto &under_particle = get_particle(x, y + 1);
-        if (under_particle.type == ParticleType::EMPTY)
+        auto &under_cell = get_worldcell(x, y + 1);
+        if (under_cell.particle.type == ParticleType::EMPTY)
         {
-            particle.coords.y = y + 1;
-            under_particle.coords.y = y;
-
-            swap_particles(particle, under_particle);
+            auto &current_cell = get_worldcell(x, y);
+            swap_particles(current_cell.particle, under_cell.particle);
             return;
         }
     }
@@ -186,31 +254,29 @@ void World::move_liquid(Particle &particle)
 
     if (in_world_range(x + 1, y + 1, m_rows, m_cols))
     {
-        Particle &under_left = get_particle(x + 1, y + 1);
-        can_under_left = (under_left.type == ParticleType::EMPTY);
+        WorldCell &under_left_cell = get_worldcell(x + 1, y + 1);
+        can_under_left = (under_left_cell.particle.type == ParticleType::EMPTY);
     }
 
     if (in_world_range(x - 1, y + 1, m_rows, m_cols))
     {
-        Particle &under_right = get_particle(x - 1, y + 1);
-        can_under_right = (under_right.type == ParticleType::EMPTY);
+        WorldCell &under_right_cell = get_worldcell(x - 1, y + 1);
+        can_under_right = (under_right_cell.particle.type == ParticleType::EMPTY);
     }
 
     if (can_under_left && can_under_right)
     {
         if (rand() % 2 == 0 && can_under_left)
         {
-            Particle &target = get_particle(x + 1, y + 1);
-            particle.coords = {x + 1, y + 1};
-            target.coords = {x, y};
-            swap_particles(particle, target);
+            auto &current_cell = get_worldcell(x, y);
+            auto &target_cell = get_worldcell(x + 1, y + 1);
+            swap_particles(current_cell.particle, target_cell.particle);
         }
         else if (can_under_right)
         {
-            Particle &target = get_particle(x - 1, y + 1);
-            particle.coords = {x - 1, y + 1};
-            target.coords = {x, y};
-            swap_particles(particle, target);
+            auto &current_cell = get_worldcell(x, y);
+            auto &target_cell = get_worldcell(x - 1, y + 1);
+            swap_particles(current_cell.particle, target_cell.particle);
         }
 
         return;
@@ -218,20 +284,18 @@ void World::move_liquid(Particle &particle)
 
     else if (can_under_left)
     {
-        Particle &target = get_particle(x + 1, y + 1);
-        particle.coords = {x + 1, y + 1};
-        target.coords = {x, y};
-        swap_particles(particle, target);
+        auto &current_cell = get_worldcell(x, y);
+        auto &target_cell = get_worldcell(x + 1, y + 1);
+        swap_particles(current_cell.particle, target_cell.particle);
 
         return;
     }
 
     else if (can_under_right)
     {
-        Particle &target = get_particle(x - 1, y + 1);
-        particle.coords = {x - 1, y + 1};
-        target.coords = {x, y};
-        swap_particles(particle, target);
+        auto &current_cell = get_worldcell(x, y);
+        auto &target_cell = get_worldcell(x - 1, y + 1);
+        swap_particles(current_cell.particle, target_cell.particle);
 
         return;
     }
@@ -240,12 +304,12 @@ void World::move_liquid(Particle &particle)
     bool move_left = false, move_right = false;
     int lengt_left = 0, lengt_right = 0;
 
-    if (get_particle(x + 1, y).state == ParticleState::NONE)
+    if (in_world_range(x + 1, y, m_rows, m_cols) && get_worldcell(x + 1, y).particle.state == ParticleState::NONE)
     {
         move_left = true;
     }
 
-    if (get_particle(x - 1, y).state == ParticleState::NONE)
+    if (in_world_range(x - 1, y, m_rows, m_cols) && get_worldcell(x - 1, y).particle.state == ParticleState::NONE)
     {
         move_right = true;
     }
@@ -254,15 +318,15 @@ void World::move_liquid(Particle &particle)
     {
         if (rand() % 2 == 0)
         {
-            if (move_left && in_world_range(x - 1, y + 1, m_rows, m_cols))
+            if (move_left && in_world_range(x - i, y + 1, m_rows, m_cols))
             {
-                bool empty = (get_particle(x - i, y + 1).state == ParticleState::NONE);
+                bool empty = (get_worldcell(x - i, y + 1).particle.state == ParticleState::NONE);
                 if (empty)
                 {
-                    Particle &target = get_particle(x - 1, y);
-                    particle.coords = {x - 1, y};
-                    target.coords = {x, y};
-                    swap_particles(particle, target);
+                    auto &current_cell = get_worldcell(x, y);
+                    auto &target_cell = get_worldcell(x - 1, y);
+                    swap_particles(current_cell.particle, target_cell.particle);
+                    break;
                 }
             }
         }
@@ -270,13 +334,13 @@ void World::move_liquid(Particle &particle)
         {
             if (move_right && in_world_range(x + i, y + 1, m_rows, m_cols))
             {
-                bool empty = (get_particle(x + i, y + 1).state == ParticleState::NONE);
+                bool empty = (get_worldcell(x + i, y + 1).particle.state == ParticleState::NONE);
                 if (empty)
                 {
-                    Particle &target = get_particle(x + 1, y);
-                    particle.coords = {x + 1, y};
-                    target.coords = {x, y};
-                    swap_particles(particle, target);
+                    auto &current_cell = get_worldcell(x, y);
+                    auto &target_cell = get_worldcell(x + 1, y);
+                    swap_particles(current_cell.particle, target_cell.particle);
+                    break;
                 }
             }
         }
@@ -290,32 +354,20 @@ void World::print_world()
     {
         for (int j = 0; j < m_cols; ++j)
         {
-            const auto &particle = get_particle(j, i);
-            std::cout << static_cast<int>(particle.type) << ' ';
+            const auto &cell = get_worldcell(j, i);
+            std::cout << static_cast<int>(cell.particle.type) << ' ';
         }
 
         std::cout << '\n';
     }
     std::cout << "---------------------------------------\n\n";
 }
-
-// liquid
-// void World::find_place_to_fall(const Particle &particle)
-// {
-//     auto x = particle.coords.x;
-//     auto y = particle.coords.y - 1;
-
-//     for (int i = 0; i < m_cols; i++)
-//     {
-//         if (in_world_range(x - 1, y, m_rows, m_cols))
-//         {
-//             auto &target = get_particle(x - i, y);
 //             bool idk = (target.state == ParticleState::NONE);
 //         }
 
 //         if (in_world_range(x + i, y, m_rows, m_cols))
 //         {
-//             auto &target = get_particle(x + i, y);
+//             auto &target = get_worldcell(x + i, y);
 //             bool idk = (target.state == ParticleState::NONE);
 //         }
 //     }

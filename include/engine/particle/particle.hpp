@@ -33,19 +33,18 @@ class Particle
 public:
     ParticleType type = ParticleType::EMPTY;   // konkretne co to je (Piesok)
     ParticleState state = ParticleState::NONE; // ake skupenstvo ma dana latka
+    Color base_color = Color(0.0f, 0.0f, 0.0f, 0.0f);
     Color color = Color(0.0f, 0.0f, 0.0f, 0.0f);
-    glm::ivec2 coords; // povinne
 
 public:
-    Particle(ParticleType type, ParticleState state, Color color, glm::vec2 coords);
-    Particle(glm::vec2 coords);
-    // Particle() = default;
+    Particle();
+    Particle(ParticleType type, ParticleState state, Color base_color);
     ~Particle() = default;
 };
 
-Particle create_sand(glm::vec2 coords);
-Particle create_water(glm::vec2 coords);
-Particle create_smoke(glm::vec2 coords);
+Particle create_sand();
+Particle create_water();
+Particle create_smoke();
 
 // teplota
 // zivotnost
@@ -59,7 +58,6 @@ Particle create_smoke(glm::vec2 coords);
 //     uint8_t is_reactive : 1;    // Can participate in chemical reactions
 //     uint8_t reserved : 4;
 // } flags = {0};
-
 
 class Solid : public Particle
 {

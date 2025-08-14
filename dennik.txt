@@ -236,3 +236,11 @@ dennik:
         - funguje sand particle!!!
 
     5.8.2025 - utorok
+        - neviem
+    
+    12.8.2025 - utorok
+        - prepisujem padanie particles
+        - pridam premenne ako velocity, gravitaciu aj viscosity
+
+    14.8.2025 - stvrtok
+        - funguje worldcell

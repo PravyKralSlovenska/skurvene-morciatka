@@ -34,7 +34,7 @@ void Controls::handle_input()
         int y = (int)ypos / world->scale;
         // std::cout << x << ';' << y << '\n';
 
-        world->add_particle({x, y}, ParticleType::SAND);
+        world->add_particle({x, y}, ParticleType::SAND, 10);
     }
     
     keyboard_input();
@@ -64,8 +64,7 @@ void Controls::keyboard_input()
     
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
     {
-        // player->move_right();
-        // world->world_curr.clear();
+        world->clear_world();
     }
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)

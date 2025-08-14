@@ -18,8 +18,8 @@ void World_Renderer::init()
     EBO = std::make_unique<ELEMENT_ARRAY_BUFFER>();
     EBO->bind();
 
-    VAO->setup_vertex_attribute_pointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-    VAO->setup_vertex_attribute_pointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+    VAO->setup_vertex_attribute_pointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)0);
+    VAO->setup_vertex_attribute_pointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, color));
 
     shader = std::make_unique<Shader>("../shaders/vertex.glsl", "../shaders/fragment.glsl");
 }
@@ -65,23 +65,22 @@ void World_Renderer::clear_buffers()
 
 void World_Renderer::fill_vertices()
 {
-    auto world_curr = world->get_world();
-
-    for (const auto &particle : world_curr)
+    for (const auto &cell : world->get_world())
     {
-        if (particle.type == ParticleType::EMPTY) {
+        if (cell.particle.type == ParticleType::EMPTY)
+        {
             continue;
         }
 
-        auto x = particle.coords.x * world->scale;
-        auto y = particle.coords.y * world->scale;
+        auto x = cell.coords.x * world->scale;
+        auto y = cell.coords.y * world->scale;
 
         unsigned int last = vertices.size();
 
-        vertices.emplace_back(x, y, particle.color);
-        vertices.emplace_back(x + world->scale, y, particle.color);
-        vertices.emplace_back(x + world->scale, y + world->scale, particle.color);
-        vertices.emplace_back(x, y + world->scale, particle.color);
+        vertices.emplace_back(x, y, cell.particle.color);
+        vertices.emplace_back(x + world->scale, y, cell.particle.color);
+        vertices.emplace_back(x + world->scale, y + world->scale, cell.particle.color);
+        vertices.emplace_back(x, y + world->scale, cell.particle.color);
 
         indices.push_back(last);
         indices.push_back(last + 1);

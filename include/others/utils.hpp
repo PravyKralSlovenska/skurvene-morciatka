@@ -1,5 +1,19 @@
 #pragma once
+
 #include <string>
+#include <random>
+
+class Random
+{
+public:
+    std::random_device rand_dev;
+    // std::mt19937 generator(rand_dev());
+
+public:
+    Random();
+
+    int get_number_from_range(int start, int end);
+};
 
 std::string read_file(const std::string &filepath);
 
