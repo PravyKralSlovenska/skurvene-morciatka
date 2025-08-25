@@ -1,9 +1,3 @@
-#include <iostream>
-#include <algorithm>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
 #include "engine/camera.hpp"
 
 Camera::Camera(float window_width, float window_height)

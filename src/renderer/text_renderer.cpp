@@ -116,9 +116,8 @@ void Text_Renderer::render_text(std::string text, glm::vec2 coords, float scale,
     {
         return;
     }
-    
+
     shader->use();
-    glm::mat4 projection = glm::ortho(0.0f, 1000.0f, 800.0f, 0.0f);
     shader->set_mat4("projection", projection);
 
     glActiveTexture(GL_TEXTURE0);
@@ -162,4 +161,9 @@ void Text_Renderer::render_text(std::string text, glm::vec2 coords, float scale,
 
 void Text_Renderer::clear_buffers()
 {
+}
+
+void Text_Renderer::set_projection(glm::mat4 projection)
+{
+    this->projection = projection;
 }

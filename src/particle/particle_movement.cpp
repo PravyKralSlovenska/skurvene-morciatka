@@ -6,13 +6,13 @@
 
 //     switch (particle->state)
 //     {
-//     case ParticleState::SOLID:
+//     case Particle_State::SOLID:
 //         directions = {{1, -1}, {0, -1}, {-1, -1}};
 //         break;
-//     case ParticleState::LIQUID:
+//     case Particle_State::LIQUID:
 //         directions = {{1, 0}, {-1, 0}, {1, -1}, {0, -1}, {-1, -1}};
 //         break;
-//     case ParticleState::GAS:
+//     case Particle_State::GAS:
 //         directions = {{1, 1}, {0, 1}, {-1, 1}, {1, 0}, {-1, 0}};
 //         break;
 //     default:
@@ -41,7 +41,7 @@
 
 //         Particle &neighbor = world->get_worldcell(dx, dy);
 
-//         if (neighbor.type == ParticleType::EMPTY)
+//         if (neighbor.type == Particle_Type::EMPTY)
 //         {
 //             // neighbors.push_back(neighbor);
 //             neighbors[neighbors_map[coords]] = neighbor;

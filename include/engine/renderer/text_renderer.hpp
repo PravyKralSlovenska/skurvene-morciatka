@@ -48,6 +48,8 @@ private:
     std::map<char, Character> characters;
     std::vector<std::tuple<std::string, glm::vec2, float, Color>> text_to_render;
 
+    glm::mat4 projection;
+
 public:
     Text_Renderer();
     // Text_Renderer(const char *font_path);
@@ -57,6 +59,7 @@ public:
     void load_characters();
     void render_text(std::string text, glm::vec2 coords, float scale, Color color);
     void clear_buffers();
+    void set_projection(glm::mat4 projection);
 
     // test
     void render_triangle();

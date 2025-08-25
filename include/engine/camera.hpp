@@ -1,8 +1,10 @@
 #pragma once
 #include <iostream>
+#include <algorithm>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
 
 /*
  * pohybovat budem hraca a kamera ho bude len prensaldevoat

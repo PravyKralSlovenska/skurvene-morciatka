@@ -1,10 +1,3 @@
-#include "glad/gl.h"
-#include <GLFW/glfw3.h>
-
-#include <iostream>
-#include <fstream>
-#include <sstream>
-
 #include "others/utils.hpp"
 
 Color::Color() {}

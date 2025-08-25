@@ -1,9 +1,3 @@
-#include <iostream>
-#include <memory>
-
-#include "engine/entity.hpp"
-#include "engine/renderer/buffer.hpp"
-#include "engine/renderer/shader.hpp"
 #include "engine/renderer/entities_renderer.hpp"
 
 Entities_Renderer::Entities_Renderer() {}

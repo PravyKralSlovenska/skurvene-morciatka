@@ -35,9 +35,10 @@ public:
 
     void init();
     void set_world(World *world);
+    void set_projection(glm::mat4 projection);
     
     void render_test_triangle();
-    void render_world(const glm::mat4 projection);
+    void render_world();
     
     void clear_buffers();
 

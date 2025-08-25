@@ -29,16 +29,13 @@ bool IRenderer::render_everything()
     // update camera
     update_camera_uniforms();
 
-    // In your main render loop, use bottom-up projection:
-    glm::mat4 projection = glm::ortho(0.0f, m_window_width, m_window_height, 0.0f);
-
     // render renders
-    world_renderer->render_world(projection);
+    world_renderer->render_world();
 
     // entities_renderer->render_entities(world->entities);
-    // text_renderer->render_text("MISKO POZOR ZITRA! :3", {400.0f, 400.0f}, 1.0f, Color(255, 255, 255, 1.0f));
+    text_renderer->render_text("MISKO POZOR ZITRA! :3", {400.0f, 400.0f}, 1.0f, Color(255, 255, 255, 1.0f));
     text_renderer->render_text(std::to_string(frame_count_display) + "FPS", {10.0f, 48.0f}, 1.0f, Color(255, 255, 255, 1));
-    
+
     // FPS
     // mojich max fps je 60 kvoli moonitoru
     double current_time = glfwGetTime();
@@ -80,6 +77,7 @@ void IRenderer::init_glad()
 void IRenderer::create_window()
 {
     window = glfwCreateWindow(m_window_width, m_window_height, "Morciatko", nullptr, nullptr);
+
     if (window == nullptr)
     {
         std::cerr << "Failed to create glfw window\n";
@@ -119,18 +117,12 @@ void IRenderer::enable_blending()
 
 void IRenderer::enable_ortho_projection()
 {
-    // if (camera)
-    // {
-    //     update_camera_uniforms();
-    // }
-    // else
-    // {
-    glm::mat4 projection = glm::ortho(0.0f, m_window_width, 0.0f, m_window_height);
-    // unsigned int projLoc = glGetUniformLocation(shader.ID, "projection");
-    // shader.use();
-    // glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-    // shader.set_mat4("projection", projection);
-    // }
+    // In your main render loop, use bottom-up projection:
+    glm::mat4 projection = glm::ortho(0.0f, m_window_width, m_window_height, 0.0f);
+
+    // set projection to all other renderers
+    text_renderer->set_projection(projection);
+    world_renderer->set_projection(projection);
 
     render_info.push_back("ortho projection enabled");
 }

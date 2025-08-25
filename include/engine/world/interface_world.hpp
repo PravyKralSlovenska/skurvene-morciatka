@@ -12,6 +12,9 @@ private:
     std::unique_ptr<World> world;
 
 public:
-    IWorld(float width, float hight, float scale);
+    IWorld(float width, float height, float scale);
     ~IWorld() = default;
+
+    void update();
+    std::unique_ptr<World>& get_world();
 };

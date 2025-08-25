@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "engine/entity.hpp"
 
 void Entity::set_position(float x, float y)

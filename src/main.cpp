@@ -37,11 +37,12 @@ int main()
         controls.handle_input();
 
         // update sveta
-        world.update_world();
+        world.update_world_loop();
 
         // render everything
         render.render_everything();
     }
+
     render.cleanup();
 
     std::cout << "END\n";

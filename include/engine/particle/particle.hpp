@@ -8,21 +8,51 @@
 
 #include "others/utils.hpp"
 
-enum class ParticleType
-{
-    EMPTY,
-    SAND,
-    WATER,
-    SMOKE
-};
-
-enum class ParticleState
+enum class Particle_State
 {
     NONE,
     SOLID,
     LIQUID,
-    GAS
+    GAS,
+    PLASMA
 };
+
+enum class Particle_Type
+{
+    EMPTY,
+    SAND,
+    WATER,
+    SMOKE,
+    STONE
+};
+
+enum class Particle_Movement : uint8_t
+{
+    NONE        = 0,
+    DOWN        = 1 << 0,
+    UP          = 1 << 1,
+    RIGHT       = 1 << 2,
+    LEFT        = 1 << 3,
+    DOWN_RIGHT  = 1 << 4,
+    DOWN_LEFT   = 1 << 5,
+    UP_RIGHT    = 1 << 6,
+    UP_LEFT     = 1 << 7,
+
+    MOVE_SIDES  = LEFT | RIGHT,
+    MOVE_SOLID  = DOWN | DOWN_LEFT | DOWN_RIGHT, 
+    MOVE_LIQUID = DOWN | DOWN_LEFT | DOWN_RIGHT | MOVE_SIDES,
+    MOVE_GAS    = UP | UP_LEFT | UP_RIGHT | MOVE_SIDES
+};
+
+inline Particle_Movement operator|(Particle_Movement a, Particle_Movement b)
+{
+	return Particle_Movement((int)a | (int)b);
+}
+
+inline auto operator&(Particle_Movement a, Particle_Movement b)
+{
+	return (int)a & (int)b;
+}
 
 /*
  * Particle
@@ -31,20 +61,23 @@ enum class ParticleState
 class Particle
 {
 public:
-    ParticleType type = ParticleType::EMPTY;   // konkretne co to je (Piesok)
-    ParticleState state = ParticleState::NONE; // ake skupenstvo ma dana latka
+    Particle_Type type = Particle_Type::EMPTY;        // konkretne co to je (Piesok)
+    Particle_State state = Particle_State::NONE;      // ake skupenstvo ma dana latka
+    Particle_Movement move = Particle_Movement::NONE; // do akych stran ma padat
+
     Color base_color = Color(0.0f, 0.0f, 0.0f, 0.0f);
     Color color = Color(0.0f, 0.0f, 0.0f, 0.0f);
 
 public:
     Particle();
-    Particle(ParticleType type, ParticleState state, Color base_color);
+    Particle(Particle_Type type, Particle_State state, Particle_Movement move, Color base_color);
     ~Particle() = default;
 };
 
 Particle create_sand();
 Particle create_water();
 Particle create_smoke();
+Particle create_stone();
 
 // teplota
 // zivotnost
@@ -58,8 +91,3 @@ Particle create_smoke();
 //     uint8_t is_reactive : 1;    // Can participate in chemical reactions
 //     uint8_t reserved : 4;
 // } flags = {0};
-
-class Solid : public Particle
-{
-    virtual void move() = 0;
-};

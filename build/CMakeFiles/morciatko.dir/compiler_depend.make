@@ -516,13 +516,16 @@ CMakeFiles/morciatko.dir/src/controls.cpp.o: /home/jakub/programko/cpp/skurvene-
   /usr/include/c++/15.1.1/bits/basic_string.tcc \
   /usr/include/c++/15.1.1/bits/char_traits.h \
   /usr/include/c++/15.1.1/bits/charconv.h \
+  /usr/include/c++/15.1.1/bits/codecvt.h \
   /usr/include/c++/15.1.1/bits/concept_check.h \
   /usr/include/c++/15.1.1/bits/cpp_type_traits.h \
   /usr/include/c++/15.1.1/bits/cxxabi_forced.h \
   /usr/include/c++/15.1.1/bits/cxxabi_init_exception.h \
+  /usr/include/c++/15.1.1/bits/erase_if.h \
   /usr/include/c++/15.1.1/bits/exception.h \
   /usr/include/c++/15.1.1/bits/exception_defines.h \
   /usr/include/c++/15.1.1/bits/exception_ptr.h \
+  /usr/include/c++/15.1.1/bits/fstream.tcc \
   /usr/include/c++/15.1.1/bits/functexcept.h \
   /usr/include/c++/15.1.1/bits/functional_hash.h \
   /usr/include/c++/15.1.1/bits/hash_bytes.h \
@@ -539,6 +542,7 @@ CMakeFiles/morciatko.dir/src/controls.cpp.o: /home/jakub/programko/cpp/skurvene-
   /usr/include/c++/15.1.1/bits/move.h \
   /usr/include/c++/15.1.1/bits/nested_exception.h \
   /usr/include/c++/15.1.1/bits/new_allocator.h \
+  /usr/include/c++/15.1.1/bits/node_handle.h \
   /usr/include/c++/15.1.1/bits/ostream.h \
   /usr/include/c++/15.1.1/bits/ostream.tcc \
   /usr/include/c++/15.1.1/bits/ostream_insert.h \
@@ -554,6 +558,7 @@ CMakeFiles/morciatko.dir/src/controls.cpp.o: /home/jakub/programko/cpp/skurvene-
   /usr/include/c++/15.1.1/bits/shared_ptr_atomic.h \
   /usr/include/c++/15.1.1/bits/shared_ptr_base.h \
   /usr/include/c++/15.1.1/bits/specfun.h \
+  /usr/include/c++/15.1.1/bits/sstream.tcc \
   /usr/include/c++/15.1.1/bits/std_abs.h \
   /usr/include/c++/15.1.1/bits/stl_algobase.h \
   /usr/include/c++/15.1.1/bits/stl_bvector.h \
@@ -562,10 +567,13 @@ CMakeFiles/morciatko.dir/src/controls.cpp.o: /home/jakub/programko/cpp/skurvene-
   /usr/include/c++/15.1.1/bits/stl_iterator.h \
   /usr/include/c++/15.1.1/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/15.1.1/bits/stl_iterator_base_types.h \
+  /usr/include/c++/15.1.1/bits/stl_map.h \
+  /usr/include/c++/15.1.1/bits/stl_multimap.h \
   /usr/include/c++/15.1.1/bits/stl_numeric.h \
   /usr/include/c++/15.1.1/bits/stl_pair.h \
   /usr/include/c++/15.1.1/bits/stl_raw_storage_iter.h \
   /usr/include/c++/15.1.1/bits/stl_tempbuf.h \
+  /usr/include/c++/15.1.1/bits/stl_tree.h \
   /usr/include/c++/15.1.1/bits/stl_uninitialized.h \
   /usr/include/c++/15.1.1/bits/stl_vector.h \
   /usr/include/c++/15.1.1/bits/streambuf.tcc \
@@ -604,12 +612,14 @@ CMakeFiles/morciatko.dir/src/controls.cpp.o: /home/jakub/programko/cpp/skurvene-
   /usr/include/c++/15.1.1/ext/numeric_traits.h \
   /usr/include/c++/15.1.1/ext/string_conversions.h \
   /usr/include/c++/15.1.1/ext/type_traits.h \
+  /usr/include/c++/15.1.1/fstream \
   /usr/include/c++/15.1.1/initializer_list \
   /usr/include/c++/15.1.1/ios \
   /usr/include/c++/15.1.1/iosfwd \
   /usr/include/c++/15.1.1/iostream \
   /usr/include/c++/15.1.1/istream \
   /usr/include/c++/15.1.1/limits \
+  /usr/include/c++/15.1.1/map \
   /usr/include/c++/15.1.1/memory \
   /usr/include/c++/15.1.1/new \
   /usr/include/c++/15.1.1/numeric \
@@ -619,6 +629,7 @@ CMakeFiles/morciatko.dir/src/controls.cpp.o: /home/jakub/programko/cpp/skurvene-
   /usr/include/c++/15.1.1/pstl/glue_numeric_defs.h \
   /usr/include/c++/15.1.1/pstl/pstl_config.h \
   /usr/include/c++/15.1.1/random \
+  /usr/include/c++/15.1.1/sstream \
   /usr/include/c++/15.1.1/stdexcept \
   /usr/include/c++/15.1.1/streambuf \
   /usr/include/c++/15.1.1/string \
@@ -641,8 +652,10 @@ CMakeFiles/morciatko.dir/src/controls.cpp.o: /home/jakub/programko/cpp/skurvene-
   /usr/include/c++/15.1.1/typeinfo \
   /usr/include/c++/15.1.1/vector \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/basic_file.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++io.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++locale.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/ctype_base.h \
@@ -1378,10 +1391,12 @@ CMakeFiles/morciatko.dir/src/main.cpp.o: /home/jakub/programko/cpp/skurvene-morc
   /usr/include/bits/wctype-wchar.h \
   /usr/include/bits/wordsize.h \
   /usr/include/bits/xopen_lim.h \
+  /usr/include/c++/15.1.1/algorithm \
   /usr/include/c++/15.1.1/array \
   /usr/include/c++/15.1.1/backward/auto_ptr.h \
   /usr/include/c++/15.1.1/backward/binders.h \
   /usr/include/c++/15.1.1/bit \
+  /usr/include/c++/15.1.1/bits/algorithmfwd.h \
   /usr/include/c++/15.1.1/bits/align.h \
   /usr/include/c++/15.1.1/bits/alloc_traits.h \
   /usr/include/c++/15.1.1/bits/allocated_ptr.h \
@@ -1394,6 +1409,7 @@ CMakeFiles/morciatko.dir/src/main.cpp.o: /home/jakub/programko/cpp/skurvene-morc
   /usr/include/c++/15.1.1/bits/basic_string.tcc \
   /usr/include/c++/15.1.1/bits/char_traits.h \
   /usr/include/c++/15.1.1/bits/charconv.h \
+  /usr/include/c++/15.1.1/bits/codecvt.h \
   /usr/include/c++/15.1.1/bits/concept_check.h \
   /usr/include/c++/15.1.1/bits/cpp_type_traits.h \
   /usr/include/c++/15.1.1/bits/cxxabi_forced.h \
@@ -1402,6 +1418,7 @@ CMakeFiles/morciatko.dir/src/main.cpp.o: /home/jakub/programko/cpp/skurvene-morc
   /usr/include/c++/15.1.1/bits/exception.h \
   /usr/include/c++/15.1.1/bits/exception_defines.h \
   /usr/include/c++/15.1.1/bits/exception_ptr.h \
+  /usr/include/c++/15.1.1/bits/fstream.tcc \
   /usr/include/c++/15.1.1/bits/functexcept.h \
   /usr/include/c++/15.1.1/bits/functional_hash.h \
   /usr/include/c++/15.1.1/bits/hash_bytes.h \
@@ -1434,11 +1451,14 @@ CMakeFiles/morciatko.dir/src/main.cpp.o: /home/jakub/programko/cpp/skurvene-morc
   /usr/include/c++/15.1.1/bits/shared_ptr_atomic.h \
   /usr/include/c++/15.1.1/bits/shared_ptr_base.h \
   /usr/include/c++/15.1.1/bits/specfun.h \
+  /usr/include/c++/15.1.1/bits/sstream.tcc \
   /usr/include/c++/15.1.1/bits/std_abs.h \
+  /usr/include/c++/15.1.1/bits/stl_algo.h \
   /usr/include/c++/15.1.1/bits/stl_algobase.h \
   /usr/include/c++/15.1.1/bits/stl_bvector.h \
   /usr/include/c++/15.1.1/bits/stl_construct.h \
   /usr/include/c++/15.1.1/bits/stl_function.h \
+  /usr/include/c++/15.1.1/bits/stl_heap.h \
   /usr/include/c++/15.1.1/bits/stl_iterator.h \
   /usr/include/c++/15.1.1/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/15.1.1/bits/stl_iterator_base_types.h \
@@ -1488,6 +1508,7 @@ CMakeFiles/morciatko.dir/src/main.cpp.o: /home/jakub/programko/cpp/skurvene-morc
   /usr/include/c++/15.1.1/ext/numeric_traits.h \
   /usr/include/c++/15.1.1/ext/string_conversions.h \
   /usr/include/c++/15.1.1/ext/type_traits.h \
+  /usr/include/c++/15.1.1/fstream \
   /usr/include/c++/15.1.1/initializer_list \
   /usr/include/c++/15.1.1/ios \
   /usr/include/c++/15.1.1/iosfwd \
@@ -1500,10 +1521,12 @@ CMakeFiles/morciatko.dir/src/main.cpp.o: /home/jakub/programko/cpp/skurvene-morc
   /usr/include/c++/15.1.1/numeric \
   /usr/include/c++/15.1.1/ostream \
   /usr/include/c++/15.1.1/pstl/execution_defs.h \
+  /usr/include/c++/15.1.1/pstl/glue_algorithm_defs.h \
   /usr/include/c++/15.1.1/pstl/glue_memory_defs.h \
   /usr/include/c++/15.1.1/pstl/glue_numeric_defs.h \
   /usr/include/c++/15.1.1/pstl/pstl_config.h \
   /usr/include/c++/15.1.1/random \
+  /usr/include/c++/15.1.1/sstream \
   /usr/include/c++/15.1.1/stdexcept \
   /usr/include/c++/15.1.1/stdlib.h \
   /usr/include/c++/15.1.1/streambuf \
@@ -1527,8 +1550,10 @@ CMakeFiles/morciatko.dir/src/main.cpp.o: /home/jakub/programko/cpp/skurvene-morc
   /usr/include/c++/15.1.1/typeinfo \
   /usr/include/c++/15.1.1/vector \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/basic_file.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++io.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++locale.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/ctype_base.h \
@@ -1774,8 +1799,11 @@ CMakeFiles/morciatko.dir/src/main.cpp.o: /home/jakub/programko/cpp/skurvene-morc
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.1.1/include/syslimits.h
 
 CMakeFiles/morciatko.dir/src/particle/particle.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle.cpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/KHR/khrplatform.h \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/particle/particle.hpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/glad/gl.h \
   /home/jakub/programko/cpp/skurvene-morciatka/include/others/utils.hpp \
+  /usr/include/GLFW/glfw3.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
   /usr/include/asm-generic/errno-base.h \
@@ -1881,6 +1909,7 @@ CMakeFiles/morciatko.dir/src/particle/particle.cpp.o: /home/jakub/programko/cpp/
   /usr/include/c++/15.1.1/bits/basic_string.tcc \
   /usr/include/c++/15.1.1/bits/char_traits.h \
   /usr/include/c++/15.1.1/bits/charconv.h \
+  /usr/include/c++/15.1.1/bits/codecvt.h \
   /usr/include/c++/15.1.1/bits/concept_check.h \
   /usr/include/c++/15.1.1/bits/cpp_type_traits.h \
   /usr/include/c++/15.1.1/bits/cxxabi_forced.h \
@@ -1888,6 +1917,7 @@ CMakeFiles/morciatko.dir/src/particle/particle.cpp.o: /home/jakub/programko/cpp/
   /usr/include/c++/15.1.1/bits/exception.h \
   /usr/include/c++/15.1.1/bits/exception_defines.h \
   /usr/include/c++/15.1.1/bits/exception_ptr.h \
+  /usr/include/c++/15.1.1/bits/fstream.tcc \
   /usr/include/c++/15.1.1/bits/functexcept.h \
   /usr/include/c++/15.1.1/bits/functional_hash.h \
   /usr/include/c++/15.1.1/bits/hash_bytes.h \
@@ -1919,6 +1949,7 @@ CMakeFiles/morciatko.dir/src/particle/particle.cpp.o: /home/jakub/programko/cpp/
   /usr/include/c++/15.1.1/bits/shared_ptr_atomic.h \
   /usr/include/c++/15.1.1/bits/shared_ptr_base.h \
   /usr/include/c++/15.1.1/bits/specfun.h \
+  /usr/include/c++/15.1.1/bits/sstream.tcc \
   /usr/include/c++/15.1.1/bits/std_abs.h \
   /usr/include/c++/15.1.1/bits/stl_algobase.h \
   /usr/include/c++/15.1.1/bits/stl_bvector.h \
@@ -1969,6 +2000,7 @@ CMakeFiles/morciatko.dir/src/particle/particle.cpp.o: /home/jakub/programko/cpp/
   /usr/include/c++/15.1.1/ext/numeric_traits.h \
   /usr/include/c++/15.1.1/ext/string_conversions.h \
   /usr/include/c++/15.1.1/ext/type_traits.h \
+  /usr/include/c++/15.1.1/fstream \
   /usr/include/c++/15.1.1/initializer_list \
   /usr/include/c++/15.1.1/ios \
   /usr/include/c++/15.1.1/iosfwd \
@@ -1984,6 +2016,7 @@ CMakeFiles/morciatko.dir/src/particle/particle.cpp.o: /home/jakub/programko/cpp/
   /usr/include/c++/15.1.1/pstl/glue_numeric_defs.h \
   /usr/include/c++/15.1.1/pstl/pstl_config.h \
   /usr/include/c++/15.1.1/random \
+  /usr/include/c++/15.1.1/sstream \
   /usr/include/c++/15.1.1/stdexcept \
   /usr/include/c++/15.1.1/streambuf \
   /usr/include/c++/15.1.1/string \
@@ -2006,8 +2039,10 @@ CMakeFiles/morciatko.dir/src/particle/particle.cpp.o: /home/jakub/programko/cpp/
   /usr/include/c++/15.1.1/typeinfo \
   /usr/include/c++/15.1.1/vector \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/basic_file.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++io.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++locale.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/ctype_base.h \
@@ -2410,6 +2445,8 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/renderer/entities_renderer.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/renderer/shader.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/glad/gl.h \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/others/utils.hpp \
+  /usr/include/GLFW/glfw3.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
   /usr/include/asm-generic/errno-base.h \
@@ -2514,6 +2551,7 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /usr/include/c++/15.1.1/bits/basic_string.tcc \
   /usr/include/c++/15.1.1/bits/char_traits.h \
   /usr/include/c++/15.1.1/bits/charconv.h \
+  /usr/include/c++/15.1.1/bits/codecvt.h \
   /usr/include/c++/15.1.1/bits/concept_check.h \
   /usr/include/c++/15.1.1/bits/cpp_type_traits.h \
   /usr/include/c++/15.1.1/bits/cxxabi_forced.h \
@@ -2521,6 +2559,7 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /usr/include/c++/15.1.1/bits/exception.h \
   /usr/include/c++/15.1.1/bits/exception_defines.h \
   /usr/include/c++/15.1.1/bits/exception_ptr.h \
+  /usr/include/c++/15.1.1/bits/fstream.tcc \
   /usr/include/c++/15.1.1/bits/functexcept.h \
   /usr/include/c++/15.1.1/bits/functional_hash.h \
   /usr/include/c++/15.1.1/bits/hash_bytes.h \
@@ -2543,6 +2582,8 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /usr/include/c++/15.1.1/bits/postypes.h \
   /usr/include/c++/15.1.1/bits/predefined_ops.h \
   /usr/include/c++/15.1.1/bits/ptr_traits.h \
+  /usr/include/c++/15.1.1/bits/random.h \
+  /usr/include/c++/15.1.1/bits/random.tcc \
   /usr/include/c++/15.1.1/bits/range_access.h \
   /usr/include/c++/15.1.1/bits/refwrap.h \
   /usr/include/c++/15.1.1/bits/requires_hosted.h \
@@ -2550,6 +2591,7 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /usr/include/c++/15.1.1/bits/shared_ptr_atomic.h \
   /usr/include/c++/15.1.1/bits/shared_ptr_base.h \
   /usr/include/c++/15.1.1/bits/specfun.h \
+  /usr/include/c++/15.1.1/bits/sstream.tcc \
   /usr/include/c++/15.1.1/bits/std_abs.h \
   /usr/include/c++/15.1.1/bits/stl_algobase.h \
   /usr/include/c++/15.1.1/bits/stl_bvector.h \
@@ -2558,6 +2600,7 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /usr/include/c++/15.1.1/bits/stl_iterator.h \
   /usr/include/c++/15.1.1/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/15.1.1/bits/stl_iterator_base_types.h \
+  /usr/include/c++/15.1.1/bits/stl_numeric.h \
   /usr/include/c++/15.1.1/bits/stl_pair.h \
   /usr/include/c++/15.1.1/bits/stl_raw_storage_iter.h \
   /usr/include/c++/15.1.1/bits/stl_tempbuf.h \
@@ -2567,6 +2610,7 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /usr/include/c++/15.1.1/bits/streambuf_iterator.h \
   /usr/include/c++/15.1.1/bits/string_view.tcc \
   /usr/include/c++/15.1.1/bits/stringfwd.h \
+  /usr/include/c++/15.1.1/bits/uniform_int_dist.h \
   /usr/include/c++/15.1.1/bits/unique_ptr.h \
   /usr/include/c++/15.1.1/bits/uses_allocator.h \
   /usr/include/c++/15.1.1/bits/uses_allocator_args.h \
@@ -2585,6 +2629,7 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /usr/include/c++/15.1.1/cstdint \
   /usr/include/c++/15.1.1/cstdio \
   /usr/include/c++/15.1.1/cstdlib \
+  /usr/include/c++/15.1.1/cstring \
   /usr/include/c++/15.1.1/cwchar \
   /usr/include/c++/15.1.1/cwctype \
   /usr/include/c++/15.1.1/debug/assertions.h \
@@ -2597,6 +2642,7 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /usr/include/c++/15.1.1/ext/numeric_traits.h \
   /usr/include/c++/15.1.1/ext/string_conversions.h \
   /usr/include/c++/15.1.1/ext/type_traits.h \
+  /usr/include/c++/15.1.1/fstream \
   /usr/include/c++/15.1.1/initializer_list \
   /usr/include/c++/15.1.1/ios \
   /usr/include/c++/15.1.1/iosfwd \
@@ -2605,10 +2651,14 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /usr/include/c++/15.1.1/limits \
   /usr/include/c++/15.1.1/memory \
   /usr/include/c++/15.1.1/new \
+  /usr/include/c++/15.1.1/numeric \
   /usr/include/c++/15.1.1/ostream \
   /usr/include/c++/15.1.1/pstl/execution_defs.h \
   /usr/include/c++/15.1.1/pstl/glue_memory_defs.h \
+  /usr/include/c++/15.1.1/pstl/glue_numeric_defs.h \
   /usr/include/c++/15.1.1/pstl/pstl_config.h \
+  /usr/include/c++/15.1.1/random \
+  /usr/include/c++/15.1.1/sstream \
   /usr/include/c++/15.1.1/stdexcept \
   /usr/include/c++/15.1.1/streambuf \
   /usr/include/c++/15.1.1/string \
@@ -2631,8 +2681,10 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /usr/include/c++/15.1.1/typeinfo \
   /usr/include/c++/15.1.1/vector \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/basic_file.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++io.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++locale.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/ctype_base.h \
@@ -2640,6 +2692,7 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/error_constants.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/gthr-default.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/gthr.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/opt_random.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/os_defines.h \
   /usr/include/ctype.h \
   /usr/include/endian.h \
@@ -2661,6 +2714,7 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /usr/include/glm/detail/func_vector_relational.inl \
   /usr/include/glm/detail/qualifier.hpp \
   /usr/include/glm/detail/setup.hpp \
+  /usr/include/glm/detail/type_float.hpp \
   /usr/include/glm/detail/type_half.hpp \
   /usr/include/glm/detail/type_half.inl \
   /usr/include/glm/detail/type_mat2x2.hpp \
@@ -2681,6 +2735,8 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /usr/include/glm/detail/type_mat4x3.inl \
   /usr/include/glm/detail/type_mat4x4.hpp \
   /usr/include/glm/detail/type_mat4x4.inl \
+  /usr/include/glm/detail/type_quat.hpp \
+  /usr/include/glm/detail/type_quat.inl \
   /usr/include/glm/detail/type_vec1.hpp \
   /usr/include/glm/detail/type_vec1.inl \
   /usr/include/glm/detail/type_vec2.hpp \
@@ -2690,6 +2746,8 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /usr/include/glm/detail/type_vec4.hpp \
   /usr/include/glm/detail/type_vec4.inl \
   /usr/include/glm/exponential.hpp \
+  /usr/include/glm/ext/matrix_clip_space.hpp \
+  /usr/include/glm/ext/matrix_clip_space.inl \
   /usr/include/glm/ext/matrix_double2x2.hpp \
   /usr/include/glm/ext/matrix_double2x2_precision.hpp \
   /usr/include/glm/ext/matrix_double2x3.hpp \
@@ -2726,32 +2784,64 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /usr/include/glm/ext/matrix_float4x3_precision.hpp \
   /usr/include/glm/ext/matrix_float4x4.hpp \
   /usr/include/glm/ext/matrix_float4x4_precision.hpp \
+  /usr/include/glm/ext/matrix_projection.hpp \
+  /usr/include/glm/ext/matrix_projection.inl \
+  /usr/include/glm/ext/matrix_transform.hpp \
+  /usr/include/glm/ext/matrix_transform.inl \
+  /usr/include/glm/ext/quaternion_common.hpp \
+  /usr/include/glm/ext/quaternion_common.inl \
+  /usr/include/glm/ext/quaternion_double.hpp \
+  /usr/include/glm/ext/quaternion_double_precision.hpp \
+  /usr/include/glm/ext/quaternion_float.hpp \
+  /usr/include/glm/ext/quaternion_float_precision.hpp \
+  /usr/include/glm/ext/quaternion_geometric.hpp \
+  /usr/include/glm/ext/quaternion_geometric.inl \
+  /usr/include/glm/ext/quaternion_relational.hpp \
+  /usr/include/glm/ext/quaternion_relational.inl \
+  /usr/include/glm/ext/quaternion_transform.hpp \
+  /usr/include/glm/ext/quaternion_transform.inl \
+  /usr/include/glm/ext/quaternion_trigonometric.hpp \
+  /usr/include/glm/ext/quaternion_trigonometric.inl \
+  /usr/include/glm/ext/scalar_constants.hpp \
+  /usr/include/glm/ext/scalar_constants.inl \
   /usr/include/glm/ext/scalar_int_sized.hpp \
   /usr/include/glm/ext/scalar_uint_sized.hpp \
+  /usr/include/glm/ext/vector_bool1.hpp \
+  /usr/include/glm/ext/vector_bool1_precision.hpp \
   /usr/include/glm/ext/vector_bool2.hpp \
   /usr/include/glm/ext/vector_bool2_precision.hpp \
   /usr/include/glm/ext/vector_bool3.hpp \
   /usr/include/glm/ext/vector_bool3_precision.hpp \
   /usr/include/glm/ext/vector_bool4.hpp \
   /usr/include/glm/ext/vector_bool4_precision.hpp \
+  /usr/include/glm/ext/vector_double1.hpp \
+  /usr/include/glm/ext/vector_double1_precision.hpp \
   /usr/include/glm/ext/vector_double2.hpp \
   /usr/include/glm/ext/vector_double2_precision.hpp \
   /usr/include/glm/ext/vector_double3.hpp \
   /usr/include/glm/ext/vector_double3_precision.hpp \
   /usr/include/glm/ext/vector_double4.hpp \
   /usr/include/glm/ext/vector_double4_precision.hpp \
+  /usr/include/glm/ext/vector_float1.hpp \
+  /usr/include/glm/ext/vector_float1_precision.hpp \
   /usr/include/glm/ext/vector_float2.hpp \
   /usr/include/glm/ext/vector_float2_precision.hpp \
   /usr/include/glm/ext/vector_float3.hpp \
   /usr/include/glm/ext/vector_float3_precision.hpp \
   /usr/include/glm/ext/vector_float4.hpp \
   /usr/include/glm/ext/vector_float4_precision.hpp \
+  /usr/include/glm/ext/vector_int1.hpp \
+  /usr/include/glm/ext/vector_int1_sized.hpp \
   /usr/include/glm/ext/vector_int2.hpp \
   /usr/include/glm/ext/vector_int2_sized.hpp \
   /usr/include/glm/ext/vector_int3.hpp \
   /usr/include/glm/ext/vector_int3_sized.hpp \
   /usr/include/glm/ext/vector_int4.hpp \
   /usr/include/glm/ext/vector_int4_sized.hpp \
+  /usr/include/glm/ext/vector_relational.hpp \
+  /usr/include/glm/ext/vector_relational.inl \
+  /usr/include/glm/ext/vector_uint1.hpp \
+  /usr/include/glm/ext/vector_uint1_sized.hpp \
   /usr/include/glm/ext/vector_uint2.hpp \
   /usr/include/glm/ext/vector_uint2_sized.hpp \
   /usr/include/glm/ext/vector_uint3.hpp \
@@ -2761,6 +2851,17 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /usr/include/glm/fwd.hpp \
   /usr/include/glm/geometric.hpp \
   /usr/include/glm/glm.hpp \
+  /usr/include/glm/gtc/constants.hpp \
+  /usr/include/glm/gtc/constants.inl \
+  /usr/include/glm/gtc/epsilon.hpp \
+  /usr/include/glm/gtc/epsilon.inl \
+  /usr/include/glm/gtc/matrix_transform.hpp \
+  /usr/include/glm/gtc/matrix_transform.inl \
+  /usr/include/glm/gtc/quaternion.hpp \
+  /usr/include/glm/gtc/quaternion.inl \
+  /usr/include/glm/gtc/type_ptr.hpp \
+  /usr/include/glm/gtc/type_ptr.inl \
+  /usr/include/glm/gtc/vec1.hpp \
   /usr/include/glm/integer.hpp \
   /usr/include/glm/mat2x2.hpp \
   /usr/include/glm/mat2x3.hpp \
@@ -2796,6 +2897,8 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /usr/include/stdint.h \
   /usr/include/stdio.h \
   /usr/include/stdlib.h \
+  /usr/include/string.h \
+  /usr/include/strings.h \
   /usr/include/sys/cdefs.h \
   /usr/include/sys/select.h \
   /usr/include/sys/single_threaded.h \
@@ -2915,10 +3018,12 @@ CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o: /home/jakub/programko/cpp/
   /usr/include/bits/wctype-wchar.h \
   /usr/include/bits/wordsize.h \
   /usr/include/bits/xopen_lim.h \
+  /usr/include/c++/15.1.1/algorithm \
   /usr/include/c++/15.1.1/array \
   /usr/include/c++/15.1.1/backward/auto_ptr.h \
   /usr/include/c++/15.1.1/backward/binders.h \
   /usr/include/c++/15.1.1/bit \
+  /usr/include/c++/15.1.1/bits/algorithmfwd.h \
   /usr/include/c++/15.1.1/bits/align.h \
   /usr/include/c++/15.1.1/bits/alloc_traits.h \
   /usr/include/c++/15.1.1/bits/allocated_ptr.h \
@@ -2931,6 +3036,7 @@ CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o: /home/jakub/programko/cpp/
   /usr/include/c++/15.1.1/bits/basic_string.tcc \
   /usr/include/c++/15.1.1/bits/char_traits.h \
   /usr/include/c++/15.1.1/bits/charconv.h \
+  /usr/include/c++/15.1.1/bits/codecvt.h \
   /usr/include/c++/15.1.1/bits/concept_check.h \
   /usr/include/c++/15.1.1/bits/cpp_type_traits.h \
   /usr/include/c++/15.1.1/bits/cxxabi_forced.h \
@@ -2939,6 +3045,7 @@ CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o: /home/jakub/programko/cpp/
   /usr/include/c++/15.1.1/bits/exception.h \
   /usr/include/c++/15.1.1/bits/exception_defines.h \
   /usr/include/c++/15.1.1/bits/exception_ptr.h \
+  /usr/include/c++/15.1.1/bits/fstream.tcc \
   /usr/include/c++/15.1.1/bits/functexcept.h \
   /usr/include/c++/15.1.1/bits/functional_hash.h \
   /usr/include/c++/15.1.1/bits/hash_bytes.h \
@@ -2971,11 +3078,14 @@ CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o: /home/jakub/programko/cpp/
   /usr/include/c++/15.1.1/bits/shared_ptr_atomic.h \
   /usr/include/c++/15.1.1/bits/shared_ptr_base.h \
   /usr/include/c++/15.1.1/bits/specfun.h \
+  /usr/include/c++/15.1.1/bits/sstream.tcc \
   /usr/include/c++/15.1.1/bits/std_abs.h \
+  /usr/include/c++/15.1.1/bits/stl_algo.h \
   /usr/include/c++/15.1.1/bits/stl_algobase.h \
   /usr/include/c++/15.1.1/bits/stl_bvector.h \
   /usr/include/c++/15.1.1/bits/stl_construct.h \
   /usr/include/c++/15.1.1/bits/stl_function.h \
+  /usr/include/c++/15.1.1/bits/stl_heap.h \
   /usr/include/c++/15.1.1/bits/stl_iterator.h \
   /usr/include/c++/15.1.1/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/15.1.1/bits/stl_iterator_base_types.h \
@@ -3025,6 +3135,7 @@ CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o: /home/jakub/programko/cpp/
   /usr/include/c++/15.1.1/ext/numeric_traits.h \
   /usr/include/c++/15.1.1/ext/string_conversions.h \
   /usr/include/c++/15.1.1/ext/type_traits.h \
+  /usr/include/c++/15.1.1/fstream \
   /usr/include/c++/15.1.1/initializer_list \
   /usr/include/c++/15.1.1/ios \
   /usr/include/c++/15.1.1/iosfwd \
@@ -3037,10 +3148,12 @@ CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o: /home/jakub/programko/cpp/
   /usr/include/c++/15.1.1/numeric \
   /usr/include/c++/15.1.1/ostream \
   /usr/include/c++/15.1.1/pstl/execution_defs.h \
+  /usr/include/c++/15.1.1/pstl/glue_algorithm_defs.h \
   /usr/include/c++/15.1.1/pstl/glue_memory_defs.h \
   /usr/include/c++/15.1.1/pstl/glue_numeric_defs.h \
   /usr/include/c++/15.1.1/pstl/pstl_config.h \
   /usr/include/c++/15.1.1/random \
+  /usr/include/c++/15.1.1/sstream \
   /usr/include/c++/15.1.1/stdexcept \
   /usr/include/c++/15.1.1/stdlib.h \
   /usr/include/c++/15.1.1/streambuf \
@@ -3064,8 +3177,10 @@ CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o: /home/jakub/programko/cpp/
   /usr/include/c++/15.1.1/typeinfo \
   /usr/include/c++/15.1.1/vector \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/basic_file.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++io.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++locale.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/ctype_base.h \
@@ -3318,6 +3433,7 @@ CMakeFiles/morciatko.dir/src/renderer/shader.cpp.o: /home/jakub/programko/cpp/sk
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/renderer/shader.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/glad/gl.h \
   /home/jakub/programko/cpp/skurvene-morciatka/include/others/utils.hpp \
+  /usr/include/GLFW/glfw3.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
   /usr/include/asm-generic/errno-base.h \
@@ -3417,6 +3533,7 @@ CMakeFiles/morciatko.dir/src/renderer/shader.cpp.o: /home/jakub/programko/cpp/sk
   /usr/include/c++/15.1.1/bits/basic_string.tcc \
   /usr/include/c++/15.1.1/bits/char_traits.h \
   /usr/include/c++/15.1.1/bits/charconv.h \
+  /usr/include/c++/15.1.1/bits/codecvt.h \
   /usr/include/c++/15.1.1/bits/concept_check.h \
   /usr/include/c++/15.1.1/bits/cpp_type_traits.h \
   /usr/include/c++/15.1.1/bits/cxxabi_forced.h \
@@ -3424,6 +3541,7 @@ CMakeFiles/morciatko.dir/src/renderer/shader.cpp.o: /home/jakub/programko/cpp/sk
   /usr/include/c++/15.1.1/bits/exception.h \
   /usr/include/c++/15.1.1/bits/exception_defines.h \
   /usr/include/c++/15.1.1/bits/exception_ptr.h \
+  /usr/include/c++/15.1.1/bits/fstream.tcc \
   /usr/include/c++/15.1.1/bits/functexcept.h \
   /usr/include/c++/15.1.1/bits/functional_hash.h \
   /usr/include/c++/15.1.1/bits/hash_bytes.h \
@@ -3452,6 +3570,7 @@ CMakeFiles/morciatko.dir/src/renderer/shader.cpp.o: /home/jakub/programko/cpp/sk
   /usr/include/c++/15.1.1/bits/refwrap.h \
   /usr/include/c++/15.1.1/bits/requires_hosted.h \
   /usr/include/c++/15.1.1/bits/specfun.h \
+  /usr/include/c++/15.1.1/bits/sstream.tcc \
   /usr/include/c++/15.1.1/bits/std_abs.h \
   /usr/include/c++/15.1.1/bits/stl_algobase.h \
   /usr/include/c++/15.1.1/bits/stl_bvector.h \
@@ -3497,6 +3616,7 @@ CMakeFiles/morciatko.dir/src/renderer/shader.cpp.o: /home/jakub/programko/cpp/sk
   /usr/include/c++/15.1.1/ext/numeric_traits.h \
   /usr/include/c++/15.1.1/ext/string_conversions.h \
   /usr/include/c++/15.1.1/ext/type_traits.h \
+  /usr/include/c++/15.1.1/fstream \
   /usr/include/c++/15.1.1/initializer_list \
   /usr/include/c++/15.1.1/ios \
   /usr/include/c++/15.1.1/iosfwd \
@@ -3510,6 +3630,7 @@ CMakeFiles/morciatko.dir/src/renderer/shader.cpp.o: /home/jakub/programko/cpp/sk
   /usr/include/c++/15.1.1/pstl/glue_numeric_defs.h \
   /usr/include/c++/15.1.1/pstl/pstl_config.h \
   /usr/include/c++/15.1.1/random \
+  /usr/include/c++/15.1.1/sstream \
   /usr/include/c++/15.1.1/stdexcept \
   /usr/include/c++/15.1.1/streambuf \
   /usr/include/c++/15.1.1/string \
@@ -3532,8 +3653,10 @@ CMakeFiles/morciatko.dir/src/renderer/shader.cpp.o: /home/jakub/programko/cpp/sk
   /usr/include/c++/15.1.1/typeinfo \
   /usr/include/c++/15.1.1/vector \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/basic_file.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++io.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++locale.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/ctype_base.h \
@@ -3769,6 +3892,7 @@ CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.o: /home/jakub/programko
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/renderer/text_renderer.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/glad/gl.h \
   /home/jakub/programko/cpp/skurvene-morciatka/include/others/utils.hpp \
+  /usr/include/GLFW/glfw3.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
   /usr/include/asm-generic/errno-base.h \
@@ -3873,6 +3997,7 @@ CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.o: /home/jakub/programko
   /usr/include/c++/15.1.1/bits/basic_string.tcc \
   /usr/include/c++/15.1.1/bits/char_traits.h \
   /usr/include/c++/15.1.1/bits/charconv.h \
+  /usr/include/c++/15.1.1/bits/codecvt.h \
   /usr/include/c++/15.1.1/bits/concept_check.h \
   /usr/include/c++/15.1.1/bits/cpp_type_traits.h \
   /usr/include/c++/15.1.1/bits/cxxabi_forced.h \
@@ -3881,6 +4006,7 @@ CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.o: /home/jakub/programko
   /usr/include/c++/15.1.1/bits/exception.h \
   /usr/include/c++/15.1.1/bits/exception_defines.h \
   /usr/include/c++/15.1.1/bits/exception_ptr.h \
+  /usr/include/c++/15.1.1/bits/fstream.tcc \
   /usr/include/c++/15.1.1/bits/functexcept.h \
   /usr/include/c++/15.1.1/bits/functional_hash.h \
   /usr/include/c++/15.1.1/bits/hash_bytes.h \
@@ -3913,6 +4039,7 @@ CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.o: /home/jakub/programko
   /usr/include/c++/15.1.1/bits/shared_ptr_atomic.h \
   /usr/include/c++/15.1.1/bits/shared_ptr_base.h \
   /usr/include/c++/15.1.1/bits/specfun.h \
+  /usr/include/c++/15.1.1/bits/sstream.tcc \
   /usr/include/c++/15.1.1/bits/std_abs.h \
   /usr/include/c++/15.1.1/bits/stl_algobase.h \
   /usr/include/c++/15.1.1/bits/stl_bvector.h \
@@ -3966,6 +4093,7 @@ CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.o: /home/jakub/programko
   /usr/include/c++/15.1.1/ext/numeric_traits.h \
   /usr/include/c++/15.1.1/ext/string_conversions.h \
   /usr/include/c++/15.1.1/ext/type_traits.h \
+  /usr/include/c++/15.1.1/fstream \
   /usr/include/c++/15.1.1/initializer_list \
   /usr/include/c++/15.1.1/ios \
   /usr/include/c++/15.1.1/iosfwd \
@@ -3982,6 +4110,7 @@ CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.o: /home/jakub/programko
   /usr/include/c++/15.1.1/pstl/glue_numeric_defs.h \
   /usr/include/c++/15.1.1/pstl/pstl_config.h \
   /usr/include/c++/15.1.1/random \
+  /usr/include/c++/15.1.1/sstream \
   /usr/include/c++/15.1.1/stdexcept \
   /usr/include/c++/15.1.1/stdlib.h \
   /usr/include/c++/15.1.1/streambuf \
@@ -4005,8 +4134,10 @@ CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.o: /home/jakub/programko
   /usr/include/c++/15.1.1/typeinfo \
   /usr/include/c++/15.1.1/vector \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/basic_file.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++io.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++locale.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/ctype_base.h \
@@ -4264,6 +4395,7 @@ CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o: /home/jakub/programk
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/glad/gl.h \
   /home/jakub/programko/cpp/skurvene-morciatka/include/others/utils.hpp \
+  /usr/include/GLFW/glfw3.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
   /usr/include/asm-generic/errno-base.h \
@@ -4369,13 +4501,16 @@ CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o: /home/jakub/programk
   /usr/include/c++/15.1.1/bits/basic_string.tcc \
   /usr/include/c++/15.1.1/bits/char_traits.h \
   /usr/include/c++/15.1.1/bits/charconv.h \
+  /usr/include/c++/15.1.1/bits/codecvt.h \
   /usr/include/c++/15.1.1/bits/concept_check.h \
   /usr/include/c++/15.1.1/bits/cpp_type_traits.h \
   /usr/include/c++/15.1.1/bits/cxxabi_forced.h \
   /usr/include/c++/15.1.1/bits/cxxabi_init_exception.h \
+  /usr/include/c++/15.1.1/bits/erase_if.h \
   /usr/include/c++/15.1.1/bits/exception.h \
   /usr/include/c++/15.1.1/bits/exception_defines.h \
   /usr/include/c++/15.1.1/bits/exception_ptr.h \
+  /usr/include/c++/15.1.1/bits/fstream.tcc \
   /usr/include/c++/15.1.1/bits/functexcept.h \
   /usr/include/c++/15.1.1/bits/functional_hash.h \
   /usr/include/c++/15.1.1/bits/hash_bytes.h \
@@ -4392,6 +4527,7 @@ CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o: /home/jakub/programk
   /usr/include/c++/15.1.1/bits/move.h \
   /usr/include/c++/15.1.1/bits/nested_exception.h \
   /usr/include/c++/15.1.1/bits/new_allocator.h \
+  /usr/include/c++/15.1.1/bits/node_handle.h \
   /usr/include/c++/15.1.1/bits/ostream.h \
   /usr/include/c++/15.1.1/bits/ostream.tcc \
   /usr/include/c++/15.1.1/bits/ostream_insert.h \
@@ -4407,6 +4543,7 @@ CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o: /home/jakub/programk
   /usr/include/c++/15.1.1/bits/shared_ptr_atomic.h \
   /usr/include/c++/15.1.1/bits/shared_ptr_base.h \
   /usr/include/c++/15.1.1/bits/specfun.h \
+  /usr/include/c++/15.1.1/bits/sstream.tcc \
   /usr/include/c++/15.1.1/bits/std_abs.h \
   /usr/include/c++/15.1.1/bits/stl_algobase.h \
   /usr/include/c++/15.1.1/bits/stl_bvector.h \
@@ -4415,10 +4552,13 @@ CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o: /home/jakub/programk
   /usr/include/c++/15.1.1/bits/stl_iterator.h \
   /usr/include/c++/15.1.1/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/15.1.1/bits/stl_iterator_base_types.h \
+  /usr/include/c++/15.1.1/bits/stl_map.h \
+  /usr/include/c++/15.1.1/bits/stl_multimap.h \
   /usr/include/c++/15.1.1/bits/stl_numeric.h \
   /usr/include/c++/15.1.1/bits/stl_pair.h \
   /usr/include/c++/15.1.1/bits/stl_raw_storage_iter.h \
   /usr/include/c++/15.1.1/bits/stl_tempbuf.h \
+  /usr/include/c++/15.1.1/bits/stl_tree.h \
   /usr/include/c++/15.1.1/bits/stl_uninitialized.h \
   /usr/include/c++/15.1.1/bits/stl_vector.h \
   /usr/include/c++/15.1.1/bits/streambuf.tcc \
@@ -4458,12 +4598,14 @@ CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o: /home/jakub/programk
   /usr/include/c++/15.1.1/ext/numeric_traits.h \
   /usr/include/c++/15.1.1/ext/string_conversions.h \
   /usr/include/c++/15.1.1/ext/type_traits.h \
+  /usr/include/c++/15.1.1/fstream \
   /usr/include/c++/15.1.1/initializer_list \
   /usr/include/c++/15.1.1/ios \
   /usr/include/c++/15.1.1/iosfwd \
   /usr/include/c++/15.1.1/iostream \
   /usr/include/c++/15.1.1/istream \
   /usr/include/c++/15.1.1/limits \
+  /usr/include/c++/15.1.1/map \
   /usr/include/c++/15.1.1/memory \
   /usr/include/c++/15.1.1/new \
   /usr/include/c++/15.1.1/numeric \
@@ -4473,6 +4615,7 @@ CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o: /home/jakub/programk
   /usr/include/c++/15.1.1/pstl/glue_numeric_defs.h \
   /usr/include/c++/15.1.1/pstl/pstl_config.h \
   /usr/include/c++/15.1.1/random \
+  /usr/include/c++/15.1.1/sstream \
   /usr/include/c++/15.1.1/stdexcept \
   /usr/include/c++/15.1.1/streambuf \
   /usr/include/c++/15.1.1/string \
@@ -4495,8 +4638,10 @@ CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o: /home/jakub/programk
   /usr/include/c++/15.1.1/typeinfo \
   /usr/include/c++/15.1.1/vector \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/basic_file.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++io.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++locale.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/ctype_base.h \
@@ -4987,10 +5132,14 @@ CMakeFiles/morciatko.dir/src/world/chunk.cpp.o: /home/jakub/programko/cpp/skurve
   /usr/include/stdc-predef.h
 
 CMakeFiles/morciatko.dir/src/world/interface_world.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/world/interface_world.cpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/KHR/khrplatform.h \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/entity.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/particle/particle.hpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/interface_world.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world.hpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/glad/gl.h \
   /home/jakub/programko/cpp/skurvene-morciatka/include/others/utils.hpp \
+  /usr/include/GLFW/glfw3.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
   /usr/include/asm-generic/errno-base.h \
@@ -5096,13 +5245,16 @@ CMakeFiles/morciatko.dir/src/world/interface_world.cpp.o: /home/jakub/programko/
   /usr/include/c++/15.1.1/bits/basic_string.tcc \
   /usr/include/c++/15.1.1/bits/char_traits.h \
   /usr/include/c++/15.1.1/bits/charconv.h \
+  /usr/include/c++/15.1.1/bits/codecvt.h \
   /usr/include/c++/15.1.1/bits/concept_check.h \
   /usr/include/c++/15.1.1/bits/cpp_type_traits.h \
   /usr/include/c++/15.1.1/bits/cxxabi_forced.h \
   /usr/include/c++/15.1.1/bits/cxxabi_init_exception.h \
+  /usr/include/c++/15.1.1/bits/erase_if.h \
   /usr/include/c++/15.1.1/bits/exception.h \
   /usr/include/c++/15.1.1/bits/exception_defines.h \
   /usr/include/c++/15.1.1/bits/exception_ptr.h \
+  /usr/include/c++/15.1.1/bits/fstream.tcc \
   /usr/include/c++/15.1.1/bits/functexcept.h \
   /usr/include/c++/15.1.1/bits/functional_hash.h \
   /usr/include/c++/15.1.1/bits/hash_bytes.h \
@@ -5119,6 +5271,7 @@ CMakeFiles/morciatko.dir/src/world/interface_world.cpp.o: /home/jakub/programko/
   /usr/include/c++/15.1.1/bits/move.h \
   /usr/include/c++/15.1.1/bits/nested_exception.h \
   /usr/include/c++/15.1.1/bits/new_allocator.h \
+  /usr/include/c++/15.1.1/bits/node_handle.h \
   /usr/include/c++/15.1.1/bits/ostream.h \
   /usr/include/c++/15.1.1/bits/ostream.tcc \
   /usr/include/c++/15.1.1/bits/ostream_insert.h \
@@ -5134,6 +5287,7 @@ CMakeFiles/morciatko.dir/src/world/interface_world.cpp.o: /home/jakub/programko/
   /usr/include/c++/15.1.1/bits/shared_ptr_atomic.h \
   /usr/include/c++/15.1.1/bits/shared_ptr_base.h \
   /usr/include/c++/15.1.1/bits/specfun.h \
+  /usr/include/c++/15.1.1/bits/sstream.tcc \
   /usr/include/c++/15.1.1/bits/std_abs.h \
   /usr/include/c++/15.1.1/bits/stl_algobase.h \
   /usr/include/c++/15.1.1/bits/stl_bvector.h \
@@ -5142,10 +5296,13 @@ CMakeFiles/morciatko.dir/src/world/interface_world.cpp.o: /home/jakub/programko/
   /usr/include/c++/15.1.1/bits/stl_iterator.h \
   /usr/include/c++/15.1.1/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/15.1.1/bits/stl_iterator_base_types.h \
+  /usr/include/c++/15.1.1/bits/stl_map.h \
+  /usr/include/c++/15.1.1/bits/stl_multimap.h \
   /usr/include/c++/15.1.1/bits/stl_numeric.h \
   /usr/include/c++/15.1.1/bits/stl_pair.h \
   /usr/include/c++/15.1.1/bits/stl_raw_storage_iter.h \
   /usr/include/c++/15.1.1/bits/stl_tempbuf.h \
+  /usr/include/c++/15.1.1/bits/stl_tree.h \
   /usr/include/c++/15.1.1/bits/stl_uninitialized.h \
   /usr/include/c++/15.1.1/bits/stl_vector.h \
   /usr/include/c++/15.1.1/bits/streambuf.tcc \
@@ -5184,12 +5341,14 @@ CMakeFiles/morciatko.dir/src/world/interface_world.cpp.o: /home/jakub/programko/
   /usr/include/c++/15.1.1/ext/numeric_traits.h \
   /usr/include/c++/15.1.1/ext/string_conversions.h \
   /usr/include/c++/15.1.1/ext/type_traits.h \
+  /usr/include/c++/15.1.1/fstream \
   /usr/include/c++/15.1.1/initializer_list \
   /usr/include/c++/15.1.1/ios \
   /usr/include/c++/15.1.1/iosfwd \
   /usr/include/c++/15.1.1/iostream \
   /usr/include/c++/15.1.1/istream \
   /usr/include/c++/15.1.1/limits \
+  /usr/include/c++/15.1.1/map \
   /usr/include/c++/15.1.1/memory \
   /usr/include/c++/15.1.1/new \
   /usr/include/c++/15.1.1/numeric \
@@ -5199,6 +5358,7 @@ CMakeFiles/morciatko.dir/src/world/interface_world.cpp.o: /home/jakub/programko/
   /usr/include/c++/15.1.1/pstl/glue_numeric_defs.h \
   /usr/include/c++/15.1.1/pstl/pstl_config.h \
   /usr/include/c++/15.1.1/random \
+  /usr/include/c++/15.1.1/sstream \
   /usr/include/c++/15.1.1/stdexcept \
   /usr/include/c++/15.1.1/streambuf \
   /usr/include/c++/15.1.1/string \
@@ -5221,8 +5381,10 @@ CMakeFiles/morciatko.dir/src/world/interface_world.cpp.o: /home/jakub/programko/
   /usr/include/c++/15.1.1/typeinfo \
   /usr/include/c++/15.1.1/vector \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/basic_file.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++io.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++locale.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/ctype_base.h \
@@ -5402,10 +5564,13 @@ CMakeFiles/morciatko.dir/src/world/interface_world.cpp.o: /home/jakub/programko/
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.1.1/include/syslimits.h
 
 CMakeFiles/morciatko.dir/src/world/world.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/world/world.cpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/KHR/khrplatform.h \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/entity.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/particle/particle.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world.hpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/glad/gl.h \
   /home/jakub/programko/cpp/skurvene-morciatka/include/others/utils.hpp \
+  /usr/include/GLFW/glfw3.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
   /usr/include/asm-generic/errno-base.h \
@@ -5511,13 +5676,16 @@ CMakeFiles/morciatko.dir/src/world/world.cpp.o: /home/jakub/programko/cpp/skurve
   /usr/include/c++/15.1.1/bits/basic_string.tcc \
   /usr/include/c++/15.1.1/bits/char_traits.h \
   /usr/include/c++/15.1.1/bits/charconv.h \
+  /usr/include/c++/15.1.1/bits/codecvt.h \
   /usr/include/c++/15.1.1/bits/concept_check.h \
   /usr/include/c++/15.1.1/bits/cpp_type_traits.h \
   /usr/include/c++/15.1.1/bits/cxxabi_forced.h \
   /usr/include/c++/15.1.1/bits/cxxabi_init_exception.h \
+  /usr/include/c++/15.1.1/bits/erase_if.h \
   /usr/include/c++/15.1.1/bits/exception.h \
   /usr/include/c++/15.1.1/bits/exception_defines.h \
   /usr/include/c++/15.1.1/bits/exception_ptr.h \
+  /usr/include/c++/15.1.1/bits/fstream.tcc \
   /usr/include/c++/15.1.1/bits/functexcept.h \
   /usr/include/c++/15.1.1/bits/functional_hash.h \
   /usr/include/c++/15.1.1/bits/hash_bytes.h \
@@ -5534,6 +5702,7 @@ CMakeFiles/morciatko.dir/src/world/world.cpp.o: /home/jakub/programko/cpp/skurve
   /usr/include/c++/15.1.1/bits/move.h \
   /usr/include/c++/15.1.1/bits/nested_exception.h \
   /usr/include/c++/15.1.1/bits/new_allocator.h \
+  /usr/include/c++/15.1.1/bits/node_handle.h \
   /usr/include/c++/15.1.1/bits/ostream.h \
   /usr/include/c++/15.1.1/bits/ostream.tcc \
   /usr/include/c++/15.1.1/bits/ostream_insert.h \
@@ -5549,6 +5718,7 @@ CMakeFiles/morciatko.dir/src/world/world.cpp.o: /home/jakub/programko/cpp/skurve
   /usr/include/c++/15.1.1/bits/shared_ptr_atomic.h \
   /usr/include/c++/15.1.1/bits/shared_ptr_base.h \
   /usr/include/c++/15.1.1/bits/specfun.h \
+  /usr/include/c++/15.1.1/bits/sstream.tcc \
   /usr/include/c++/15.1.1/bits/std_abs.h \
   /usr/include/c++/15.1.1/bits/stl_algobase.h \
   /usr/include/c++/15.1.1/bits/stl_bvector.h \
@@ -5557,10 +5727,13 @@ CMakeFiles/morciatko.dir/src/world/world.cpp.o: /home/jakub/programko/cpp/skurve
   /usr/include/c++/15.1.1/bits/stl_iterator.h \
   /usr/include/c++/15.1.1/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/15.1.1/bits/stl_iterator_base_types.h \
+  /usr/include/c++/15.1.1/bits/stl_map.h \
+  /usr/include/c++/15.1.1/bits/stl_multimap.h \
   /usr/include/c++/15.1.1/bits/stl_numeric.h \
   /usr/include/c++/15.1.1/bits/stl_pair.h \
   /usr/include/c++/15.1.1/bits/stl_raw_storage_iter.h \
   /usr/include/c++/15.1.1/bits/stl_tempbuf.h \
+  /usr/include/c++/15.1.1/bits/stl_tree.h \
   /usr/include/c++/15.1.1/bits/stl_uninitialized.h \
   /usr/include/c++/15.1.1/bits/stl_vector.h \
   /usr/include/c++/15.1.1/bits/streambuf.tcc \
@@ -5599,12 +5772,14 @@ CMakeFiles/morciatko.dir/src/world/world.cpp.o: /home/jakub/programko/cpp/skurve
   /usr/include/c++/15.1.1/ext/numeric_traits.h \
   /usr/include/c++/15.1.1/ext/string_conversions.h \
   /usr/include/c++/15.1.1/ext/type_traits.h \
+  /usr/include/c++/15.1.1/fstream \
   /usr/include/c++/15.1.1/initializer_list \
   /usr/include/c++/15.1.1/ios \
   /usr/include/c++/15.1.1/iosfwd \
   /usr/include/c++/15.1.1/iostream \
   /usr/include/c++/15.1.1/istream \
   /usr/include/c++/15.1.1/limits \
+  /usr/include/c++/15.1.1/map \
   /usr/include/c++/15.1.1/memory \
   /usr/include/c++/15.1.1/new \
   /usr/include/c++/15.1.1/numeric \
@@ -5614,6 +5789,7 @@ CMakeFiles/morciatko.dir/src/world/world.cpp.o: /home/jakub/programko/cpp/skurve
   /usr/include/c++/15.1.1/pstl/glue_numeric_defs.h \
   /usr/include/c++/15.1.1/pstl/pstl_config.h \
   /usr/include/c++/15.1.1/random \
+  /usr/include/c++/15.1.1/sstream \
   /usr/include/c++/15.1.1/stdexcept \
   /usr/include/c++/15.1.1/streambuf \
   /usr/include/c++/15.1.1/string \
@@ -5636,8 +5812,10 @@ CMakeFiles/morciatko.dir/src/world/world.cpp.o: /home/jakub/programko/cpp/skurve
   /usr/include/c++/15.1.1/typeinfo \
   /usr/include/c++/15.1.1/vector \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/basic_file.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++io.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/c++locale.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
   /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/ctype_base.h \
@@ -6888,15 +7066,27 @@ CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.o:
 
 /usr/include/c++/15.1.1/bits/align.h:
 
+/usr/include/c++/15.1.1/memory:
+
+/usr/include/c++/15.1.1/bits/fstream.tcc:
+
 /usr/include/c++/15.1.1/bits/shared_ptr_base.h:
 
+/usr/include/c++/15.1.1/bits/sstream.tcc:
+
 /usr/include/c++/15.1.1/bits/stl_bvector.h:
+
+/usr/lib/libc_nonshared.a:
+
+/usr/include/c++/15.1.1/bits/stl_map.h:
 
 /usr/include/features-time64.h:
 
 /usr/include/glm/ext/matrix_double2x4_precision.hpp:
 
 /usr/include/c++/15.1.1/bits/stl_numeric.h:
+
+/usr/include/c++/15.1.1/bits/stl_tree.h:
 
 /usr/include/c++/15.1.1/x86_64-pc-linux-gnu/bits/error_constants.h:
 
@@ -6943,12 +7133,6 @@ CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.o:
 /usr/include/glm/geometric.hpp:
 
 /home/jakub/programko/cpp/skurvene-morciatka/include/others/GLOBALS.hpp:
-
-/usr/lib/libc_nonshared.a:
-
-/usr/include/c++/15.1.1/bits/stl_map.h:
-
-/usr/include/c++/15.1.1/bits/stl_tree.h:
 
 /usr/include/c++/15.1.1/cstring:
 
@@ -7033,12 +7217,6 @@ CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o:
 /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/world_renderer.cpp:
 
 /home/jakub/programko/cpp/skurvene-morciatka/src/utils.cpp:
-
-/usr/include/c++/15.1.1/memory:
-
-/usr/include/c++/15.1.1/bits/fstream.tcc:
-
-/usr/include/c++/15.1.1/bits/sstream.tcc:
 
 /usr/include/freetype2/freetype/config/integer-types.h:
 

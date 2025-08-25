@@ -1,8 +1,3 @@
-#include <iostream>
-#include <vector>
-
-#include <glad/gl.h>
-
 #include "engine/renderer/buffer.hpp"
 
 Buffer::Buffer()

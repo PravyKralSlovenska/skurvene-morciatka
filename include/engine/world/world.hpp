@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <map>
 
 #include <glm/glm.hpp>
 
@@ -11,13 +12,15 @@
 
 struct WorldCell
 {
-    bool empty = true;
     glm::vec2 coords;
     Particle particle;
 
     WorldCell(glm::vec2);
     ~WorldCell() = default;
 
+    bool visited = false;
+
+    void set_visited();
     void set_particle(Particle particle);
 };
 
@@ -26,7 +29,7 @@ class World
 private:
     int seed; // seed na generovanie nahodneho sveta?
     std::vector<WorldCell> world_curr;
-    // std::vector<Particle> world_next;
+    std::vector<WorldCell> world_next;
     // std::vector<> active_chunks;
 
 public:
@@ -39,19 +42,27 @@ public:
     ~World() = default;
 
 public:
-    void update_world();
-    void clear_world();
-    void add_particle(glm::vec2 coords, ParticleType type, int size);
-    void swap_particles(Particle &this_particle, Particle &that_particle);
+    void update_world_loop();
+    void update_world_decider(int x, int y);
 
-    void move_solid(WorldCell &worldcell);
-    void move_gas(WorldCell &worldcell);
-    void move_liquid(WorldCell &worldcell);
+    void clear_world();
+    
+    void add_particle(glm::vec2 coords, Particle_Type type, int size);
+    void swap_particles(Particle &this_particle, Particle &that_particle);
+    void swap_worlds();
+
+    bool can_move(const int x, const int y);
+    bool move(WorldCell &worldcell, const Particle_Movement movement);
+    glm::vec2 direction_to_offset(Particle_Movement direction);
+    
+    // void move_solid(WorldCell &worldcell);
+    // void move_gas(WorldCell &worldcell);
+    // void move_liquid(WorldCell &worldcell);
     // void find_place_to_move(const Particle &particle);
 
     std::vector<WorldCell> &get_world();
-
     WorldCell &get_worldcell(int x, int y);
-
+    size_t get_index(int x, int y);
     void print_world();
+    void debug_particle(int x, int y);
 };

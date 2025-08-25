@@ -32,8 +32,6 @@ void World_Renderer::set_world(World *world)
 void World_Renderer::render_test_triangle()
 {
     shader->use();
-
-    glm::mat4 projection = glm::ortho(0.0f, 1000.0f, 800.0f, 0.0f);
     shader->set_mat4("projection", projection);
 
     std::vector<float> vertices = {
@@ -67,7 +65,7 @@ void World_Renderer::fill_vertices()
 {
     for (const auto &cell : world->get_world())
     {
-        if (cell.particle.type == ParticleType::EMPTY)
+        if (cell.particle.type == Particle_Type::EMPTY)
         {
             continue;
         }
@@ -91,7 +89,7 @@ void World_Renderer::fill_vertices()
     }
 }
 
-void World_Renderer::render_world(const glm::mat4 projection)
+void World_Renderer::render_world()
 {
     fill_vertices();
 
@@ -115,4 +113,9 @@ void World_Renderer::render_world(const glm::mat4 projection)
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
     clear_buffers();
+}
+
+void World_Renderer::set_projection(glm::mat4 projection)
+{
+    this->projection = projection;
 }
