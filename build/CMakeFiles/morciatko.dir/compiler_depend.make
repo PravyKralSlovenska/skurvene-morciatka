@@ -5760,6 +5760,7 @@ CMakeFiles/morciatko.dir/src/world/world.cpp.o: /home/jakub/programko/cpp/skurve
   /usr/include/c++/15.1.1/cstdint \
   /usr/include/c++/15.1.1/cstdio \
   /usr/include/c++/15.1.1/cstdlib \
+  /usr/include/c++/15.1.1/ctime \
   /usr/include/c++/15.1.1/cwchar \
   /usr/include/c++/15.1.1/cwctype \
   /usr/include/c++/15.1.1/debug/assertions.h \
@@ -6104,6 +6105,8 @@ CMakeFiles/morciatko.dir/src/controls.cpp.o:
 
 /usr/lib/libm.so:
 
+/usr/lib/libgcc_s.so.1:
+
 /usr/include/glm/detail/type_mat4x3.hpp:
 
 /usr/include/glm/detail/type_mat4x2.inl:
@@ -6129,6 +6132,8 @@ CMakeFiles/morciatko.dir/src/controls.cpp.o:
 /usr/include/c++/15.1.1/bits/exception_defines.h:
 
 /usr/include/glm/detail/func_vector_relational.inl:
+
+/usr/include/c++/15.1.1/ctime:
 
 /usr/include/glm/detail/func_packing.inl:
 
@@ -7227,5 +7232,3 @@ CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o:
 /usr/include/linux/limits.h:
 
 /usr/lib/crtn.o:
-
-/usr/lib/libgcc_s.so.1:

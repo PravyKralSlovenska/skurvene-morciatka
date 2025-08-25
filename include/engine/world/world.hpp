@@ -48,7 +48,7 @@ public:
     void clear_world();
     
     void add_particle(glm::vec2 coords, Particle_Type type, int size);
-    void swap_particles(Particle &this_particle, Particle &that_particle);
+    void move_particle(const WorldCell& source_cell, const WorldCell& target_cell);
     void swap_worlds();
 
     bool can_move(const int x, const int y);

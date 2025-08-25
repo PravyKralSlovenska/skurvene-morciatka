@@ -34,9 +34,31 @@ void Controls::handle_input()
         int y = (int)ypos / world->scale;
         // std::cout << x << ';' << y << '\n';
 
+        // world->add_particle({x, y}, Particle_Type::SAND, 3);
+        world->add_particle({x, y}, Particle_Type::WATER, 3);
+        // world->add_particle({x, y}, Particle_Type::SMOKE, 3);
+    }
+
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+    {
+        int x = (int)xpos / world->scale;
+        int y = (int)ypos / world->scale;
+        // std::cout << x << ';' << y << '\n';
+
         world->add_particle({x, y}, Particle_Type::SAND, 3);
         // world->add_particle({x, y}, Particle_Type::WATER, 3);
         // world->add_particle({x, y}, Particle_Type::SMOKE, 3);
+    }
+
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS)
+    {
+        int x = (int)xpos / world->scale;
+        int y = (int)ypos / world->scale;
+        // std::cout << x << ';' << y << '\n';
+
+        // world->add_particle({x, y}, Particle_Type::SAND, 3);
+        // world->add_particle({x, y}, Particle_Type::WATER, 3);
+        world->add_particle({x, y}, Particle_Type::SMOKE, 3);
     }
 
     keyboard_input();
