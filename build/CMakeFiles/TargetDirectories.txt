@@ -1,3 +1,3 @@
-/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/morciatko.dir
-/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/edit_cache.dir
-/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/rebuild_cache.dir
+/home/runner/work/skurvene-morciatka/skurvene-morciatka/build/CMakeFiles/morciatko.dir
+/home/runner/work/skurvene-morciatka/skurvene-morciatka/build/CMakeFiles/edit_cache.dir
+/home/runner/work/skurvene-morciatka/skurvene-morciatka/build/CMakeFiles/rebuild_cache.dir
