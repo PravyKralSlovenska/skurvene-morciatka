@@ -9,6 +9,7 @@
 
 #include "engine/world/world.hpp"
 #include "engine/entity.hpp"
+#include "engine/particle/particle.hpp"
 
 class Controls
 {
@@ -21,6 +22,7 @@ private:
 public:
     glm::vec2 cursor_position;
     bool show_help = false;  // Help display state
+    Particle_Type current_particle = Particle_Type::SAND;  // Current particle type to spawn
 
 public:
     Controls();

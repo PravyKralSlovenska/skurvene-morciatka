@@ -35,6 +35,33 @@ bool IRenderer::render_everything()
     // entities_renderer->render_entities(world->entities);
     text_renderer->render_text("MISKO POZOR ZITRA! :3", {400.0f, 400.0f}, 1.0f, Color(255, 255, 255, 1.0f));
     text_renderer->render_text(std::to_string(frame_count_display) + "FPS", {10.0f, 48.0f}, 1.0f, Color(255, 255, 255, 1));
+    
+    // Display current particle type
+    if (controls)
+    {
+        std::string particle_name = "Unknown";
+        Color particle_color = Color(255, 255, 255, 1.0f);
+        
+        switch (controls->current_particle)
+        {
+            case Particle_Type::SAND:
+                particle_name = "Sand";
+                particle_color = Color(255, 255, 0, 1.0f);  // Yellow
+                break;
+            case Particle_Type::WATER:
+                particle_name = "Water";
+                particle_color = Color(0, 150, 255, 1.0f);  // Blue
+                break;
+            case Particle_Type::SMOKE:
+                particle_name = "Smoke";
+                particle_color = Color(150, 150, 150, 1.0f);  // Gray
+                break;
+            default:
+                break;
+        }
+        
+        text_renderer->render_text("Current: " + particle_name, {10.0f, 75.0f}, 1.0f, particle_color);
+    }
 
     // Help display
     if (controls && controls->show_help)
@@ -53,7 +80,9 @@ bool IRenderer::render_everything()
         help_y += line_height;
         text_renderer->render_text("  WASD - Move player", {10.0f, help_y}, 1.0f, Color(255, 255, 255, 1.0f));
         help_y += line_height;
-        text_renderer->render_text("  Left Mouse - Add sand particles", {10.0f, help_y}, 1.0f, Color(255, 255, 255, 1.0f));
+        text_renderer->render_text("  Left Mouse - Add particles", {10.0f, help_y}, 1.0f, Color(255, 255, 255, 1.0f));
+        help_y += line_height;
+        text_renderer->render_text("  1/2/3 - Select Sand/Water/Smoke", {10.0f, help_y}, 1.0f, Color(255, 255, 255, 1.0f));
         help_y += line_height;
         text_renderer->render_text("  R - Clear world", {10.0f, help_y}, 1.0f, Color(255, 255, 255, 1.0f));
         help_y += line_height;
@@ -64,9 +93,11 @@ bool IRenderer::render_everything()
         
         text_renderer->render_text("PARTICLES:", {10.0f, help_y}, 1.0f, Color(0, 255, 255, 1.0f));
         help_y += line_height;
-        text_renderer->render_text("  Sand - Falls down with physics", {10.0f, help_y}, 1.0f, Color(255, 255, 255, 1.0f));
+        text_renderer->render_text("  Sand (1) - Falls down, solid physics", {10.0f, help_y}, 1.0f, Color(255, 255, 255, 1.0f));
         help_y += line_height;
-        text_renderer->render_text("  Water & Smoke - Available in code", {10.0f, help_y}, 1.0f, Color(255, 255, 255, 1.0f));
+        text_renderer->render_text("  Water (2) - Liquid physics", {10.0f, help_y}, 1.0f, Color(255, 255, 255, 1.0f));
+        help_y += line_height;
+        text_renderer->render_text("  Smoke (3) - Gas physics, rises up", {10.0f, help_y}, 1.0f, Color(255, 255, 255, 1.0f));
         help_y += line_height * 1.5f;
         
         text_renderer->render_text("This is a physics sandbox game!", {10.0f, help_y}, 1.0f, Color(255, 255, 0, 1.0f));
