@@ -34,5 +34,8 @@
 # Log files
 *.log
 
-# 
+# Build directories
+build/
+
+# IDE
 .vscode

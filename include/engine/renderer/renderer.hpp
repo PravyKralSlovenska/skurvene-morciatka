@@ -37,6 +37,8 @@ private:
 
     // svet
     World *world = nullptr;
+    // controls
+    Controls *controls = nullptr;
     // cisto len na infosky
     std::vector<std::string> render_info;
 
@@ -58,6 +60,7 @@ public:
     GLFWwindow *get_window();
 
     void set_world(World *world);
+    void set_controls(Controls *controls);
 
     void set_camera(Camera *camera);
     void update_camera_uniforms();

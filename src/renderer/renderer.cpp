@@ -36,6 +36,44 @@ bool IRenderer::render_everything()
     text_renderer->render_text("MISKO POZOR ZITRA! :3", {400.0f, 400.0f}, 1.0f, Color(255, 255, 255, 1.0f));
     text_renderer->render_text(std::to_string(frame_count_display) + "FPS", {10.0f, 48.0f}, 1.0f, Color(255, 255, 255, 1));
 
+    // Help display
+    if (controls && controls->show_help)
+    {
+        // Help overlay background (semi-transparent black)
+        float help_y = 100.0f;
+        float line_height = 24.0f;
+        
+        text_renderer->render_text("=== SKURVENE MORCIATKA - HELP ===", {10.0f, help_y}, 1.0f, Color(255, 255, 0, 1.0f));
+        help_y += line_height * 1.5f;
+        
+        text_renderer->render_text("What can you do?", {10.0f, help_y}, 1.0f, Color(255, 255, 255, 1.0f));
+        help_y += line_height * 1.2f;
+        
+        text_renderer->render_text("CONTROLS:", {10.0f, help_y}, 1.0f, Color(0, 255, 255, 1.0f));
+        help_y += line_height;
+        text_renderer->render_text("  WASD - Move player", {10.0f, help_y}, 1.0f, Color(255, 255, 255, 1.0f));
+        help_y += line_height;
+        text_renderer->render_text("  Left Mouse - Add sand particles", {10.0f, help_y}, 1.0f, Color(255, 255, 255, 1.0f));
+        help_y += line_height;
+        text_renderer->render_text("  R - Clear world", {10.0f, help_y}, 1.0f, Color(255, 255, 255, 1.0f));
+        help_y += line_height;
+        text_renderer->render_text("  H - Toggle this help", {10.0f, help_y}, 1.0f, Color(255, 255, 255, 1.0f));
+        help_y += line_height;
+        text_renderer->render_text("  ESC - Exit game", {10.0f, help_y}, 1.0f, Color(255, 255, 255, 1.0f));
+        help_y += line_height * 1.5f;
+        
+        text_renderer->render_text("PARTICLES:", {10.0f, help_y}, 1.0f, Color(0, 255, 255, 1.0f));
+        help_y += line_height;
+        text_renderer->render_text("  Sand - Falls down with physics", {10.0f, help_y}, 1.0f, Color(255, 255, 255, 1.0f));
+        help_y += line_height;
+        text_renderer->render_text("  Water & Smoke - Available in code", {10.0f, help_y}, 1.0f, Color(255, 255, 255, 1.0f));
+        help_y += line_height * 1.5f;
+        
+        text_renderer->render_text("This is a physics sandbox game!", {10.0f, help_y}, 1.0f, Color(255, 255, 0, 1.0f));
+        help_y += line_height;
+        text_renderer->render_text("Press H again to hide help", {10.0f, help_y}, 1.0f, Color(200, 200, 200, 1.0f));
+    }
+
     // FPS
     // mojich max fps je 60 kvoli moonitoru
     double current_time = glfwGetTime();
@@ -158,4 +196,9 @@ void IRenderer::set_world(World *world)
 {
     this->world = world;
     world_renderer->set_world(world);
+}
+
+void IRenderer::set_controls(Controls *controls)
+{
+    this->controls = controls;
 }

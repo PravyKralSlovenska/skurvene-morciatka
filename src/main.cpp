@@ -25,6 +25,8 @@ int main()
     controls.set_player(&player);
     controls.set_window(render.get_window());
     controls.set_world(&world);
+    
+    render.set_controls(&controls);
 
     world.entities.push_back(player);
 

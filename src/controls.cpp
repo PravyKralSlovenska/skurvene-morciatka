@@ -69,6 +69,20 @@ void Controls::keyboard_input()
         world->clear_world();
     }
 
+    // Help toggle with H key
+    if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
+    {
+        if (!help_key_pressed)
+        {
+            show_help = !show_help;
+            help_key_pressed = true;
+        }
+    }
+    else
+    {
+        help_key_pressed = false;
+    }
+
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, true);

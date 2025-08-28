@@ -16,9 +16,11 @@ private:
     GLFWwindow *window;
     Player *player;
     World *world;
+    bool help_key_pressed = false;  // Track H key state for toggle
 
 public:
     glm::vec2 cursor_position;
+    bool show_help = false;  // Help display state
 
 public:
     Controls();
