@@ -8,6 +8,7 @@
 
 #include "others/utils.hpp"
 
+// ake skupenstvo ma dana latka
 enum class Particle_State
 {
     NONE,
@@ -17,6 +18,7 @@ enum class Particle_State
     PLASMA
 };
 
+// konkretne co to je (Piesok, ...)
 enum class Particle_Type
 {
     EMPTY,
@@ -28,30 +30,30 @@ enum class Particle_Type
 
 enum class Particle_Movement : uint8_t
 {
-    NONE        = 0,
-    DOWN        = 1 << 0,
-    UP          = 1 << 1,
-    RIGHT       = 1 << 2,
-    LEFT        = 1 << 3,
-    DOWN_RIGHT  = 1 << 4,
-    DOWN_LEFT   = 1 << 5,
-    UP_RIGHT    = 1 << 6,
-    UP_LEFT     = 1 << 7,
+    NONE = 0,
+    DOWN = 1 << 0,
+    UP = 1 << 1,
+    RIGHT = 1 << 2,
+    LEFT = 1 << 3,
+    DOWN_RIGHT = 1 << 4,
+    DOWN_LEFT = 1 << 5,
+    UP_RIGHT = 1 << 6,
+    UP_LEFT = 1 << 7,
 
-    MOVE_SIDES  = LEFT | RIGHT,
-    MOVE_SOLID  = DOWN | DOWN_LEFT | DOWN_RIGHT, 
+    MOVE_SIDES = LEFT | RIGHT,
+    MOVE_SOLID = DOWN | DOWN_LEFT | DOWN_RIGHT,
     MOVE_LIQUID = DOWN | DOWN_LEFT | DOWN_RIGHT | MOVE_SIDES,
-    MOVE_GAS    = UP | UP_LEFT | UP_RIGHT | MOVE_SIDES
+    MOVE_GAS = UP | UP_LEFT | UP_RIGHT | MOVE_SIDES
 };
 
 inline Particle_Movement operator|(Particle_Movement a, Particle_Movement b)
 {
-	return Particle_Movement((int)a | (int)b);
+    return Particle_Movement((int)a | (int)b);
 }
 
 inline auto operator&(Particle_Movement a, Particle_Movement b)
 {
-	return (int)a & (int)b;
+    return (int)a & (int)b;
 }
 
 /*
@@ -61,12 +63,12 @@ inline auto operator&(Particle_Movement a, Particle_Movement b)
 class Particle
 {
 public:
-    Particle_Type type = Particle_Type::EMPTY;        // konkretne co to je (Piesok)
-    Particle_State state = Particle_State::NONE;      // ake skupenstvo ma dana latka
-    Particle_Movement move = Particle_Movement::NONE; // do akych stran ma padat
+    Particle_Type type = Particle_Type::EMPTY;
+    Particle_State state = Particle_State::NONE;
+    Particle_Movement move = Particle_Movement::NONE;
 
-    Color base_color = Color(0.0f, 0.0f, 0.0f, 0.0f);
-    Color color = Color(0.0f, 0.0f, 0.0f, 0.0f);
+    Color base_color = Color(0, 0, 0, 0.0f);
+    Color color = Color(0, 0, 0, 0.0f);
 
 public:
     Particle();

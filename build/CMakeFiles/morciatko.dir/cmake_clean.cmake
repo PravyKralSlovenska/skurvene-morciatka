@@ -1,5 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/morciatko.dir/link.d"
+  "CMakeFiles/morciatko.dir/src/audio_manager.cpp.o"
+  "CMakeFiles/morciatko.dir/src/audio_manager.cpp.o.d"
   "CMakeFiles/morciatko.dir/src/camera.cpp.o"
   "CMakeFiles/morciatko.dir/src/camera.cpp.o.d"
   "CMakeFiles/morciatko.dir/src/controls.cpp.o"

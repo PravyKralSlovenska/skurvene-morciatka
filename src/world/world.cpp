@@ -24,9 +24,10 @@ void WorldCell::set_visited()
 World::World(int w, int h, int scale)
     : m_rows(h / scale), m_cols(w / scale), scale(scale), seed(1)
 {
-    // Seed the random number generator
-    std::srand(static_cast<unsigned int>(std::time(nullptr)));
-    
+    // std::srand(static_cast<unsigned int>(std::time(nullptr)));
+
+    std::cout << m_cols << ';' << m_rows << '\n';
+
     world_curr.reserve(m_rows * m_cols);
     for (size_t i = 0; i < m_rows; ++i)
     {
@@ -38,18 +39,14 @@ World::World(int w, int h, int scale)
     world_next = world_curr;
 }
 
-void World::clear_world()
+std::vector<WorldCell> &World::get_world_curr()
 {
-    for (int i = 0; i < m_rows * m_cols; i++)
-    {
-        world_curr[i].particle = Particle();
-        world_curr[i].visited = false;
-    }
+    return world_curr;
 }
 
-std::vector<WorldCell> &World::get_world()
+std::vector<WorldCell> &World::get_world_next()
 {
-    return world_curr; // Return current world for rendering
+    return world_next;
 }
 
 size_t World::get_index(int x, int y)
@@ -57,69 +54,47 @@ size_t World::get_index(int x, int y)
     return y * m_cols + x;
 }
 
-void World::add_particle(glm::vec2 coords, Particle_Type type, int size)
+bool World::in_world_grid(int x, int y)
 {
-    std::vector<glm::vec2> offsets;
-    for (int y = -size; y <= size; ++y)
+    return in_world_range(x, y, m_rows, m_cols);
+}
+
+void World::clear_world_curr()
+{
+    for (int i = 0; i < m_rows * m_cols; i++)
     {
-        for (int x = -size; x <= size; ++x)
-        {
-            float distance = std::sqrt(x * x + y * y);
-            if (distance <= size)
-            {
-                offsets.push_back({x, y});
-            }
-        }
-    }
-    for (const auto &offset : offsets)
-    {
-        int new_x = coords.x + offset.x;
-        int new_y = coords.y + offset.y;
-        if (in_world_range(new_x, new_y, m_rows, m_cols))
-        {
-            int index = new_y * m_cols + new_x;
-            if (world_curr[index].particle.type == Particle_Type::EMPTY)
-            {
-                switch (type)
-                {
-                case Particle_Type::SAND:
-                    world_curr[index].set_particle(create_sand());
-                    break;
-                case Particle_Type::WATER:
-                    world_curr[index].set_particle(create_water());
-                    break;
-                case Particle_Type::SMOKE:
-                    world_curr[index].set_particle(create_smoke());
-                    break;
-                default:
-                    break;
-                }
-            }
-        }
+        world_curr[i].particle = Particle();
+        // world_curr[i].visited = false;
     }
 }
 
-WorldCell &World::get_worldcell(int x, int y)
+void World::clear_world_next()
 {
-    return world_curr[y * m_cols + x];
+    for (int i = 0; i < m_rows * m_cols; i++)
+    {
+        world_next[i].particle = Particle();
+        // world_next[i].visited = false;
+    }
 }
 
-void World::move_particle(const WorldCell& source_cell, const WorldCell& target_cell)
+WorldCell &World::get_worldcell_curr(int x, int y)
 {
-    int source_x = source_cell.coords.x;
-    int source_y = source_cell.coords.y;
-    int target_x = target_cell.coords.x;
-    int target_y = target_cell.coords.y;
-    
-    // Move particle from source to target in the next buffer
-    world_next[get_index(target_x, target_y)].particle = source_cell.particle;
-    // Clear the source position in the next buffer
-    world_next[get_index(source_x, source_y)].particle = Particle();
+    return world_curr[get_index(x, y)];
 }
 
-void World::swap_worlds()
+WorldCell &World::get_worldcell_next(int x, int y)
 {
-    std::swap(world_curr, world_next);
+    return world_next[get_index(x, y)];
+}
+
+WorldCell &World::get_worldcell_curr(int index)
+{
+    return world_curr[index];
+}
+
+WorldCell &World::get_worldcell_next(int index)
+{
+    return world_next[index];
 }
 
 glm::vec2 World::direction_to_offset(Particle_Movement direction)
@@ -147,142 +122,209 @@ glm::vec2 World::direction_to_offset(Particle_Movement direction)
     }
 }
 
+void World::add_particle(glm::vec2 coords, Particle_Type type, int size)
+{
+    // int index = get_index(coords.x, coords.y);
+    // if (world_curr[index].particle.type == Particle_Type::EMPTY || type == Particle_Type::EMPTY)
+    // {
+    //     switch (type)
+    //     {
+    //     case Particle_Type::EMPTY:
+    //         world_curr[index].set_particle(Particle());
+    //         break;
+    //     case Particle_Type::SAND:
+    //         world_curr[index].set_particle(create_sand());
+    //         break;
+    //     case Particle_Type::WATER:
+    //         world_curr[index].set_particle(create_water());
+    //         break;
+    //     case Particle_Type::SMOKE:
+    //         world_curr[index].set_particle(create_smoke());
+    //         break;
+    //     case Particle_Type::STONE:
+    //         world_curr[index].set_particle(create_stone());
+    //         break;
+    //     default:
+    //         break;
+    //     }
+    // }
+
+    std::vector<glm::vec2> offsets;
+
+    for (int y = -size; y <= size; ++y)
+    {
+        for (int x = -size; x <= size; ++x)
+        {
+            float distance = std::sqrt(x * x + y * y);
+            if (distance <= size)
+            {
+                offsets.push_back({x, y});
+            }
+        }
+    }
+
+    for (const auto &offset : offsets)
+    {
+        int new_x = coords.x + offset.x;
+        int new_y = coords.y + offset.y;
+
+        if (in_world_range(new_x, new_y, m_rows, m_cols))
+        {
+            int index = new_y * m_cols + new_x;
+
+            if (world_curr[index].particle.type == Particle_Type::EMPTY || type == Particle_Type::EMPTY)
+            {
+                switch (type)
+                {
+                case Particle_Type::EMPTY:
+                    world_curr[index].set_particle(Particle());
+                    break;
+
+                case Particle_Type::SAND:
+                    world_curr[index].set_particle(create_sand());
+                    break;
+
+                case Particle_Type::SMOKE:
+                    world_curr[index].set_particle(create_smoke());
+                    break;
+
+                case Particle_Type::STONE:
+                    world_curr[index].set_particle(create_stone());
+                    break;
+
+                case Particle_Type::WATER:
+                    world_curr[index].set_particle(create_water());
+                    break;
+
+                default:
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void World::swap_worlds()
+{
+    std::swap(world_curr, world_next);
+}
+
 void World::update_world_loop()
 {
-    // Copy current state to next buffer at the start of each frame
-    world_next = world_curr;
-    
-    // Clear visited flags
-    for (int i = 0; i < m_rows * m_cols; i++)
+    // apply physics?
+
+    clear_world_next();
+
+    for (int y = m_rows - 1; y >= 0; y--)
     {
-        world_curr[i].visited = false;
-    }
-    
-    // Update from bottom to top
-    for (int i = m_rows - 1; i >= 0; --i)
-    {
-        if (std::rand() % 2)
+        if (rand() % 2)
         {
-            for (int j = 0; j <= m_cols - 1; ++j)
+            for (int x = m_cols - 1; x >= 0; x--)
             {
-                update_world_decider(j, i);
+                update_world_decider(x, y);
             }
         }
         else
         {
-            for (int j = m_cols - 1; j >= 0; --j)
+            for (int x = 0; x < m_cols - 1; x++)
             {
-                update_world_decider(j, i);
+                update_world_decider(x, y);
             }
         }
     }
-    
-    // Swap buffers at the end
+
     swap_worlds();
+    // print_world();
 }
 
 void World::update_world_decider(int x, int y)
 {
-    auto &cell = get_worldcell(x, y);
-    auto &particle = cell.particle;
-    
-    // Skip if already visited this frame
-    if (cell.visited)
+    WorldCell &cell = get_worldcell_curr(x, y);
+
+    if (cell.particle.type == Particle_Type::EMPTY || cell.particle.move == Particle_Movement::NONE) // alebo sa nevie pohnut
+    {
         return;
-        
-    cell.set_visited();
-    
-    if (particle.type == Particle_Type::EMPTY)
-        return;
-    if (particle.move == Particle_Movement::NONE)
-        return;
-    
-    if ((particle.move & Particle_Movement::DOWN) && move(cell, Particle_Movement::DOWN))
-        return;
-    
-    bool try_down_left_first = (std::rand() & 1);
-    if (try_down_left_first)
-    {
-        if ((particle.move & Particle_Movement::DOWN_LEFT) && move(cell, Particle_Movement::DOWN_LEFT))
-            return;
-        if ((particle.move & Particle_Movement::DOWN_RIGHT) && move(cell, Particle_Movement::DOWN_RIGHT))
-            return;
     }
-    else
+
+    switch (cell.particle.state)
     {
-        if ((particle.move & Particle_Movement::DOWN_RIGHT) && move(cell, Particle_Movement::DOWN_RIGHT))
-            return;
-        if ((particle.move & Particle_Movement::DOWN_LEFT) && move(cell, Particle_Movement::DOWN_LEFT))
-            return;
-    }
-    
-    if ((particle.move & Particle_Movement::UP) && move(cell, Particle_Movement::UP))
-        return;
-    
-    bool try_up_left_first = (std::rand() & 1);
-    if (try_up_left_first)
-    {
-        if ((particle.move & Particle_Movement::UP_LEFT) && move(cell, Particle_Movement::UP_LEFT))
-            return;
-        if ((particle.move & Particle_Movement::UP_RIGHT) && move(cell, Particle_Movement::UP_RIGHT))
-            return;
-    }
-    else
-    {
-        if ((particle.move & Particle_Movement::UP_RIGHT) && move(cell, Particle_Movement::UP_RIGHT))
-            return;
-        if ((particle.move & Particle_Movement::UP_LEFT) && move(cell, Particle_Movement::UP_LEFT))
-            return;
-    }
-    
-    bool try_next_left_first = (std::rand() & 1);
-    if (try_next_left_first)
-    {
-        if ((particle.move & Particle_Movement::LEFT) && move(cell, Particle_Movement::LEFT))
-            return;
-        if ((particle.move & Particle_Movement::RIGHT) && move(cell, Particle_Movement::RIGHT))
-            return;
-    }
-    else
-    {
-        if ((particle.move & Particle_Movement::RIGHT) && move(cell, Particle_Movement::RIGHT))
-            return;
-        if ((particle.move & Particle_Movement::LEFT) && move(cell, Particle_Movement::LEFT))
-            return;
+    case Particle_State::SOLID:
+        move_solid(cell);
+        break;
+
+    case Particle_State::LIQUID:
+        break;
+
+    case Particle_State::GAS:
+        break;
+
+    default:
+        break;
     }
 }
 
-bool World::move(WorldCell &worldcell, const Particle_Movement movement)
+void World::swap_particles(WorldCell &current_cell, WorldCell &target_cell)
 {
-    glm::vec2 offset = direction_to_offset(movement);
-    auto x = worldcell.coords.x;
-    auto y = worldcell.coords.y;
-    
-    if (!in_world_range(x + offset.x, y + offset.y, m_rows, m_cols))
+    std::swap(current_cell.particle, target_cell.particle);
+}
+
+void World::move_solid(WorldCell &cell)
+{
+    int cell_x = cell.coords.x;
+    int cell_y = cell.coords.y;
+
+    auto move_lambda = [&](Particle_Movement movement)
     {
-        return false;
-    }
-    
-    WorldCell &neighbor = get_worldcell(x + offset.x, y + offset.y);
-    if (neighbor.particle.type != Particle_Type::EMPTY)
+        glm::vec2 offset = direction_to_offset(movement);
+        WorldCell &neighbor = get_worldcell_next(cell_x + offset.x, cell_y + offset.y);
+
+        if (neighbor.particle.type == Particle_Type::EMPTY || neighbor.particle.state != Particle_State::SOLID)
+        {
+            swap_particles(cell, neighbor);
+        }
+    };
+
+    bool can_down = in_world_grid(cell_x, cell_y + 1);
+
+    if (can_down)
     {
-        return false;
-    }
-    
-    WorldCell &neighbor_next = world_next[get_index(x + offset.x, y + offset.y)];
-    if (neighbor_next.particle.type != Particle_Type::EMPTY)
-    {
-        return false;
+        move_lambda(Particle_Movement::DOWN);
+        return;
     }
 
-    // Move the particle using proper double buffering
-    move_particle(worldcell, neighbor);
-    return true;
+    bool can_down_left = in_world_grid(cell_x - 1, cell_y + 1);
+    bool can_down_right = in_world_grid(cell_x + 1, cell_y + 1);
+
+    if (can_down_left && can_down_right)
+    {
+        if (rand() % 2)
+        {
+            move_lambda(Particle_Movement::DOWN_LEFT);
+        }
+        else
+        {
+            move_lambda(Particle_Movement::DOWN_RIGHT);
+        }
+    }
+
+    else if (can_down_left && !can_down_right)
+    {
+        move_lambda(Particle_Movement::DOWN_LEFT);
+    }
+
+    else if (!can_down_left && can_down_right)
+    {
+        move_lambda(Particle_Movement::DOWN_RIGHT);
+    }
+}
+
+void World::move_liquid(WorldCell &cell)
+{
 }
 
 void World::debug_particle(int x, int y)
 {
-    auto &cell = get_worldcell(x, y);
+    auto &cell = get_worldcell_curr(x, y);
     std::cout << "Particle at (" << x << ", " << y << "): "
               << "Type=" << static_cast<int>(cell.particle.type)
               << ", Move=" << static_cast<int>(cell.particle.move) << std::endl;
@@ -290,12 +332,24 @@ void World::debug_particle(int x, int y)
 
 void World::print_world()
 {
-    std::cout << "mapka:\n";
-    for (int i = m_rows - 1; i >= 0; --i)
+    std::cout << "mapka curr:\n";
+    for (int i = 0; i < m_rows; ++i)
     {
         for (int j = 0; j < m_cols; ++j)
         {
-            const auto &cell = get_worldcell(j, i);
+            const auto &cell = get_worldcell_curr(j, i);
+            std::cout << static_cast<int>(cell.particle.type) << ' ';
+        }
+        std::cout << '\n';
+    }
+    std::cout << "---------------------------------------\n\n";
+
+    std::cout << "mapka next:\n";
+    for (int i = 0; i < m_rows; ++i)
+    {
+        for (int j = 0; j < m_cols; ++j)
+        {
+            const auto &cell = get_worldcell_next(j, i);
             std::cout << static_cast<int>(cell.particle.type) << ' ';
         }
         std::cout << '\n';

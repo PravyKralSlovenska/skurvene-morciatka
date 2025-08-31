@@ -40,6 +40,8 @@ MYSLIENKY/NAPADY:
         . sa mozu WorldCell-y skladat do chunkov, ktore sa budu davat do World array
     . urobit triedu behavior, kde by bolo horenie, apod
     . MAYBACK MUSIC III BUDE MENU PESNICKA A RICK ROSS BUDE POSTAVA
+        . Kontrafakt - ERA 
+        . H16 - ROBIM CO CHCEM
 
 TODO:
     . upravit kod tak aby bol citatelny - ziadne magic numbers
@@ -144,6 +146,7 @@ KNIZNICE/APICKA:
     . glad
     . glm
     . Freetype
+    . OpenAL + dr_mp3 + dr_wav
 
 dennik:
     21.6.2025 - sobota
@@ -244,3 +247,12 @@ dennik:
 
     14.8.2025 - stvrtok
         - funguje worldcell
+
+    25.8.2025 - pondelok
+        - kazdy particle ma mensi odtien farby
+
+    26.8.2025 - utorok
+        - 
+
+    29.8.2025 - piatok
+        - ASI SA ZABIJEM part 34

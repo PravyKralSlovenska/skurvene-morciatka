@@ -45,23 +45,29 @@ public:
     void update_world_loop();
     void update_world_decider(int x, int y);
 
-    void clear_world();
-    
+    void clear_world_curr();
+    void clear_world_next();
+
+    bool in_world_grid(int x, int y);
+
+    WorldCell &get_worldcell_curr(int x, int y);
+    WorldCell &get_worldcell_next(int x, int y);
+    WorldCell &get_worldcell_curr(int index);
+    WorldCell &get_worldcell_next(int index);
+
     void add_particle(glm::vec2 coords, Particle_Type type, int size);
-    void move_particle(const WorldCell& source_cell, const WorldCell& target_cell);
     void swap_worlds();
-
-    bool can_move(const int x, const int y);
-    bool move(WorldCell &worldcell, const Particle_Movement movement);
-    glm::vec2 direction_to_offset(Particle_Movement direction);
     
-    // void move_solid(WorldCell &worldcell);
-    // void move_gas(WorldCell &worldcell);
-    // void move_liquid(WorldCell &worldcell);
-    // void find_place_to_move(const Particle &particle);
+    void swap_particles(WorldCell &current_cell, WorldCell &target_cell);
+    glm::vec2 direction_to_offset(Particle_Movement direction);
 
-    std::vector<WorldCell> &get_world();
-    WorldCell &get_worldcell(int x, int y);
+    void move_solid(WorldCell &cell);
+    void move_liquid(WorldCell &cell);
+    void move_gas(WorldCell &cell);
+
+    std::vector<WorldCell> &get_world_curr();
+    std::vector<WorldCell> &get_world_next();
+
     size_t get_index(int x, int y);
     void print_world();
     void debug_particle(int x, int y);

@@ -18,7 +18,9 @@ void World_Renderer::init()
     EBO = std::make_unique<ELEMENT_ARRAY_BUFFER>();
     EBO->bind();
 
+    // pre suradnice
     VAO->setup_vertex_attribute_pointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)0);
+    // pre farbu
     VAO->setup_vertex_attribute_pointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, color));
 
     shader = std::make_unique<Shader>("../shaders/vertex.glsl", "../shaders/fragment.glsl");
@@ -63,7 +65,7 @@ void World_Renderer::clear_buffers()
 
 void World_Renderer::fill_vertices()
 {
-    for (const auto &cell : world->get_world())
+    for (const auto &cell : world->get_world_curr())
     {
         if (cell.particle.type == Particle_Type::EMPTY)
         {
@@ -87,6 +89,8 @@ void World_Renderer::fill_vertices()
         indices.push_back(last + 2);
         indices.push_back(last + 3);
     }
+
+    // world->swap_worlds();
 }
 
 void World_Renderer::render_world()

@@ -8,7 +8,7 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
 find_path(GLM_INCLUDE_DIR glm/glm.hpp)
 pkg_check_modules(FREETYPE2 REQUIRED freetype2)
-
+pkg_check_modules(OPENAL REQUIRED openal)
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/include
@@ -16,6 +16,7 @@ include_directories(
     ${GLFW_INCLUDE_DIRS}
     ${GLM_INCLUDE_DIR}
     ${FREETYPE2_INCLUDE_DIRS}
+    ${OPENAL_INCLUDE_DIRS}
 )
 
 file(GLOB SOURCES
@@ -32,5 +33,6 @@ target_link_libraries(morciatko
     ${OPENGL_LIBRARIES}
     ${GLFW_LIBRARIES}
     ${FREETYPE2_LIBRARIES}
+    ${OPENAL_LIBRARIES}
     dl
 )

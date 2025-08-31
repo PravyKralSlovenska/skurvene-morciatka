@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 class Random
 {
@@ -37,6 +38,9 @@ struct Color
 
     Color();
     Color(int red, int green, int blue, float alpha);
+
+    Color change_shade();
+    Color change_tint();
 };
 
 struct Vertex

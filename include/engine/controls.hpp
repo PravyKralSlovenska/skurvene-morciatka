@@ -19,6 +19,7 @@ private:
 
 public:
     glm::vec2 cursor_position;
+    Particle_Type selected_particle = Particle_Type::EMPTY;
 
 public:
     Controls();

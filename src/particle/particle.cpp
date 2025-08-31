@@ -5,7 +5,11 @@ Particle::Particle() {}
 Particle::Particle(Particle_Type type, Particle_State state, Particle_Movement move, Color base_color)
     : type(type), state(state), move(move), base_color(base_color)
 {
-    color = base_color;
+    // color = base_color;
+    if (type != Particle_Type::EMPTY)
+    {
+        color = base_color.change_shade();
+    }
 }
 
 Particle create_sand()
@@ -14,7 +18,7 @@ Particle create_sand()
         Particle_Type::SAND,
         Particle_State::SOLID,
         Particle_Movement::MOVE_SOLID,
-        Color(203, 189, 0, 1.0));
+        Color(194, 178, 128, 1.0));
 }
 
 Particle create_water()
@@ -27,7 +31,7 @@ Particle create_water()
             | Particle_Movement::DOWN_RIGHT 
             | Particle_Movement::LEFT 
             | Particle_Movement::RIGHT,
-        Color(0, 0, 255, 0.5));
+        Color(0, 0, 255, 1.0));
 }
 
 Particle create_smoke()
@@ -40,7 +44,7 @@ Particle create_smoke()
             | Particle_Movement::UP_RIGHT 
             | Particle_Movement::LEFT 
             | Particle_Movement::RIGHT, 
-        Color(125, 125, 125, 0.5));
+        Color(50, 50, 50, 1.0));
 }
 
 Particle create_stone()

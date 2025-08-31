@@ -22,7 +22,9 @@ public:
     int sprite;
     float speed;
     float healthpoints;
+
     glm::vec2 coords;
+    glm::vec2 velocity;
 
 public:
     // moving
