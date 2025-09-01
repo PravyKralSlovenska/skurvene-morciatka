@@ -50,16 +50,16 @@ class Audio_Source
 public:
     ALuint id;
     glm::vec3 coords; // suradnice x,y,z kedze sme v 2D, suradnica z bude 1 alebo 0
-    std::unique_ptr<Sound_Buffer> sound;
+    // std::unique_ptr<Sound_Buffer> sound;
 
     bool currently_playing;
 
 public:
-    Audio_Source(float pitch = 1.0f, float gain = 1.0f, glm::ivec3 coords, glm::ivec3 velocity = {0, 0, 0});
+    Audio_Source(glm::ivec3 coords, glm::ivec3 velocity = {0, 0, 0}, float pitch = 1.0f, float gain = 1.0f);
     Audio_Source();
     ~Audio_Source();
 
-    void play_sound(std::unique_ptr<Sound_Buffer> sound);
+    void play_sound(Sound_Buffer sound);
     void stop_sound();
     void pause_sound();
 
@@ -74,10 +74,15 @@ public:
  * Listener
  * - clovek/hrac, ku ktoremu zvuk potuje
  */
-struct Listener
+class Listener
 {
+public:
     glm::vec2 coords;
     glm::vec2 velocity;
+
+public:
+    Listener();
+    ~Listener() = default;
 
     void set_gain(const float gain);
     void set_position(const glm::ivec3 coords);
@@ -90,19 +95,21 @@ class Audio_Manager
 private:
     ALCdevice *device;
     ALCcontext *context;
-    Player *listener;
 
-    std::unordered_map<std::string, std::unique_ptr<Sound_Buffer>> sounds;
+    Listener *listener;
+    Player *player;
+
+    std::unordered_map<std::string, Sound_Buffer> sounds;
     std::vector<Audio_Source> active_sources;
 
 public:
     Audio_Manager();
-    ~Audio_Manager() = default;
+    ~Audio_Manager();
 
     void init();
     void clean_up();
 
-    void set_listener(Player *listener);
+    void set_player(Player *player);
 
     bool load_music(const std::string name, const std::string path_to_sound);
     bool play(const std::string name);
@@ -115,6 +122,9 @@ public:
     bool set_volume();
     bool set_loop();
     bool fade();
+
+    void cleanup_finished_sources();
+    void stop_all();
 };
 
 // queue

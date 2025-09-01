@@ -32,11 +32,11 @@ int main()
     // render.set_world(&world);
 
     audio_manager.init();
-    audio_manager.set_listener(&player);
+    audio_manager.set_player(&player);
     audio_manager.load_music("mulano stylos", "../music/menu/KONTRAFAKT - Mulano stylos.mp3");
-    audio_manager.load_music("nemaj stres", "../music/menu/H16 - Nemaj stres.mp3");
-    audio_manager.load_music("era", "../music/menu/KONTRAFAKT - E.R.A.mp3");
-    audio_manager.load_music("zme uplne na picu", "../music/end/KONTRAFAKT - Zme uplne na picu.mp3");
+    // audio_manager.load_music("era", "../music/menu/KONTRAFAKT - E.R.A.mp3");
+    // audio_manager.load_music("nemaj stres", "../music/menu/H16 - Nemaj stres.mp3");
+    // audio_manager.load_music("zme uplne na picu", "../music/end/KONTRAFAKT - Zme uplne na picu.mp3");
 
     controls.set_player(&player);
     controls.set_window(render.get_window());
@@ -46,6 +46,12 @@ int main()
 
     render.print_render_info();
 
+    // niekedy vyhodi chybu 40961
+    audio_manager.play("mulano stylos");
+    // audio_manager.play("era");
+    // audio_manager.play("nemaj stres");
+    // audio_manager.play("zme uplne na picu");
+    
     // game loop
     while (!render.should_close())
     {
@@ -57,6 +63,9 @@ int main()
 
         // render everything
         render.render_everything();
+
+        // audio
+        // mal by som kontrolovat activne sourcy a mazat ich
     }
 
     render.cleanup();
