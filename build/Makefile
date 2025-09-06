@@ -297,6 +297,30 @@ src/particle/particle.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle.cpp.s
 .PHONY : src/particle/particle.cpp.s
 
+src/particle/particle_mass.o: src/particle/particle_mass.cpp.o
+.PHONY : src/particle/particle_mass.o
+
+# target to build an object file
+src/particle/particle_mass.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_mass.cpp.o
+.PHONY : src/particle/particle_mass.cpp.o
+
+src/particle/particle_mass.i: src/particle/particle_mass.cpp.i
+.PHONY : src/particle/particle_mass.i
+
+# target to preprocess a source file
+src/particle/particle_mass.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_mass.cpp.i
+.PHONY : src/particle/particle_mass.cpp.i
+
+src/particle/particle_mass.s: src/particle/particle_mass.cpp.s
+.PHONY : src/particle/particle_mass.s
+
+# target to generate assembly for a file
+src/particle/particle_mass.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_mass.cpp.s
+.PHONY : src/particle/particle_mass.cpp.s
+
 src/particle/particle_movement.o: src/particle/particle_movement.cpp.o
 .PHONY : src/particle/particle_movement.o
 
@@ -320,6 +344,54 @@ src/particle/particle_movement.s: src/particle/particle_movement.cpp.s
 src/particle/particle_movement.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.s
 .PHONY : src/particle/particle_movement.cpp.s
+
+src/particle/particle_velocity.o: src/particle/particle_velocity.cpp.o
+.PHONY : src/particle/particle_velocity.o
+
+# target to build an object file
+src/particle/particle_velocity.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_velocity.cpp.o
+.PHONY : src/particle/particle_velocity.cpp.o
+
+src/particle/particle_velocity.i: src/particle/particle_velocity.cpp.i
+.PHONY : src/particle/particle_velocity.i
+
+# target to preprocess a source file
+src/particle/particle_velocity.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_velocity.cpp.i
+.PHONY : src/particle/particle_velocity.cpp.i
+
+src/particle/particle_velocity.s: src/particle/particle_velocity.cpp.s
+.PHONY : src/particle/particle_velocity.s
+
+# target to generate assembly for a file
+src/particle/particle_velocity.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_velocity.cpp.s
+.PHONY : src/particle/particle_velocity.cpp.s
+
+src/physics_formulas.o: src/physics_formulas.cpp.o
+.PHONY : src/physics_formulas.o
+
+# target to build an object file
+src/physics_formulas.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/physics_formulas.cpp.o
+.PHONY : src/physics_formulas.cpp.o
+
+src/physics_formulas.i: src/physics_formulas.cpp.i
+.PHONY : src/physics_formulas.i
+
+# target to preprocess a source file
+src/physics_formulas.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/physics_formulas.cpp.i
+.PHONY : src/physics_formulas.cpp.i
+
+src/physics_formulas.s: src/physics_formulas.cpp.s
+.PHONY : src/physics_formulas.s
+
+# target to generate assembly for a file
+src/physics_formulas.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/physics_formulas.cpp.s
+.PHONY : src/physics_formulas.cpp.s
 
 src/renderer/buffer.o: src/renderer/buffer.cpp.o
 .PHONY : src/renderer/buffer.o
@@ -639,9 +711,18 @@ help:
 	@echo "... src/particle/particle.o"
 	@echo "... src/particle/particle.i"
 	@echo "... src/particle/particle.s"
+	@echo "... src/particle/particle_mass.o"
+	@echo "... src/particle/particle_mass.i"
+	@echo "... src/particle/particle_mass.s"
 	@echo "... src/particle/particle_movement.o"
 	@echo "... src/particle/particle_movement.i"
 	@echo "... src/particle/particle_movement.s"
+	@echo "... src/particle/particle_velocity.o"
+	@echo "... src/particle/particle_velocity.i"
+	@echo "... src/particle/particle_velocity.s"
+	@echo "... src/physics_formulas.o"
+	@echo "... src/physics_formulas.i"
+	@echo "... src/physics_formulas.s"
 	@echo "... src/renderer/buffer.o"
 	@echo "... src/renderer/buffer.i"
 	@echo "... src/renderer/buffer.s"
