@@ -2872,6 +2872,7 @@ CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.o: /home/jakub/progr
   /usr/include/stdc-predef.h
 
 CMakeFiles/morciatko.dir/src/particle/particle_velocity.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_velocity.cpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/particle/particle_mass.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/particle/particle_velocity.hpp \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
