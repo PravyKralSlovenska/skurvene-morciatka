@@ -297,6 +297,30 @@ src/particle/particle.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle.cpp.s
 .PHONY : src/particle/particle.cpp.s
 
+src/particle/particle_density.o: src/particle/particle_density.cpp.o
+.PHONY : src/particle/particle_density.o
+
+# target to build an object file
+src/particle/particle_density.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_density.cpp.o
+.PHONY : src/particle/particle_density.cpp.o
+
+src/particle/particle_density.i: src/particle/particle_density.cpp.i
+.PHONY : src/particle/particle_density.i
+
+# target to preprocess a source file
+src/particle/particle_density.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_density.cpp.i
+.PHONY : src/particle/particle_density.cpp.i
+
+src/particle/particle_density.s: src/particle/particle_density.cpp.s
+.PHONY : src/particle/particle_density.s
+
+# target to generate assembly for a file
+src/particle/particle_density.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_density.cpp.s
+.PHONY : src/particle/particle_density.cpp.s
+
 src/particle/particle_mass.o: src/particle/particle_mass.cpp.o
 .PHONY : src/particle/particle_mass.o
 
@@ -585,6 +609,30 @@ src/renderer/world_renderer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.s
 .PHONY : src/renderer/world_renderer.cpp.s
 
+src/time_manager.o: src/time_manager.cpp.o
+.PHONY : src/time_manager.o
+
+# target to build an object file
+src/time_manager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/time_manager.cpp.o
+.PHONY : src/time_manager.cpp.o
+
+src/time_manager.i: src/time_manager.cpp.i
+.PHONY : src/time_manager.i
+
+# target to preprocess a source file
+src/time_manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/time_manager.cpp.i
+.PHONY : src/time_manager.cpp.i
+
+src/time_manager.s: src/time_manager.cpp.s
+.PHONY : src/time_manager.s
+
+# target to generate assembly for a file
+src/time_manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/time_manager.cpp.s
+.PHONY : src/time_manager.cpp.s
+
 src/utils.o: src/utils.cpp.o
 .PHONY : src/utils.o
 
@@ -711,6 +759,9 @@ help:
 	@echo "... src/particle/particle.o"
 	@echo "... src/particle/particle.i"
 	@echo "... src/particle/particle.s"
+	@echo "... src/particle/particle_density.o"
+	@echo "... src/particle/particle_density.i"
+	@echo "... src/particle/particle_density.s"
 	@echo "... src/particle/particle_mass.o"
 	@echo "... src/particle/particle_mass.i"
 	@echo "... src/particle/particle_mass.s"
@@ -747,6 +798,9 @@ help:
 	@echo "... src/renderer/world_renderer.o"
 	@echo "... src/renderer/world_renderer.i"
 	@echo "... src/renderer/world_renderer.s"
+	@echo "... src/time_manager.o"
+	@echo "... src/time_manager.i"
+	@echo "... src/time_manager.s"
 	@echo "... src/utils.o"
 	@echo "... src/utils.i"
 	@echo "... src/utils.s"
