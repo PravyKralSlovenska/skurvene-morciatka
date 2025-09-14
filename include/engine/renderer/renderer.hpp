@@ -17,6 +17,7 @@
 
 #include "engine/camera.hpp"
 #include "engine/controls.hpp"
+#include "engine/time_manager.hpp"
 #include "engine/world/world.hpp"
 
 class IRenderer
@@ -35,8 +36,10 @@ private:
     std::unique_ptr<Entities_Renderer> entities_renderer;
     std::unique_ptr<Text_Renderer> text_renderer;
 
-    // svet
+    // srandy co potrebuhjem
+    Time_Manager *time_manager;
     World *world = nullptr;
+
     // cisto len na infosky
     std::vector<std::string> render_info;
 
@@ -57,6 +60,7 @@ public:
     void create_window();
     GLFWwindow *get_window();
 
+    void set_time_manager(Time_Manager *time_manager);
     void set_world(World *world);
 
     void set_camera(Camera *camera);

@@ -126,7 +126,13 @@ co som sa naucil:
     Entity Compoenent System - ECS design pattern:
         . Entity - je iba ID, ktore sa pouziva na identifikaciu entity
         . Component - data, ktore su priradene k entity
-        . System - logika, ktora pracuje s komponentami a entitami    
+        . System - logika, ktora pracuje s komponentami a entitami   
+    OpenAL:
+        - device
+        - context
+        - buffer
+        - source
+        - listener 
 
 ERRORY:
     . opengl 1281: invalid value

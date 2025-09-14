@@ -61,6 +61,8 @@ public:
     void swap_particles(WorldCell &current_cell, WorldCell &target_cell);
     glm::vec2 direction_to_offset(Particle_Movement direction);
 
+    glm::vec2 find_place_to_fall(WorldCell &cell);
+
     void move_solid(WorldCell &cell);
     void move_liquid(WorldCell &cell);
     void move_gas(WorldCell &cell);

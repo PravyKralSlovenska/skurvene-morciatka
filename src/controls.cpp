@@ -17,6 +17,11 @@ void Controls::set_world(World *world)
     this->world = world;
 }
 
+void Controls::set_time_manager(Time_Manager *time_manager)
+{
+    this->time_manager = time_manager;
+}
+
 void Controls::handle_input()
 {
     if (!window || !player)
@@ -97,6 +102,13 @@ void Controls::keyboard_input()
     {
         selected_particle = Particle_Type::SMOKE;
     }
+
+    // if pressed the world update loop will stop
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+    {
+        time_manager->pause();
+    }
+
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {

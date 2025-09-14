@@ -70,7 +70,7 @@ public:
     void set_looping(const ALboolean yes);
 };
 
-/*
+/*```
  * Listener
  * - clovek/hrac, ku ktoremu zvuk potuje
  */
@@ -107,13 +107,13 @@ public:
     ~Audio_Manager();
 
     void init();
-    void clean_up();
+    void cleanup();
 
     void set_player(Player *player);
 
     bool load_music(const std::string name, const std::string path_to_sound);
     bool play(const std::string name);
-    bool stop();
+    bool stop(const ALuint audio_source_id);
     bool forward();
     bool backward();
     bool skip();

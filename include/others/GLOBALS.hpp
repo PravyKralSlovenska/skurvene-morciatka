@@ -12,8 +12,12 @@ namespace Globals
     const float CHUNK_HEIGHT = 800.0;
 };
 
+// const - klasicka konstanta
+// constexpr - konstanta, ktora musi byt znama uz pocas kompilovania
+
 namespace Physics
 {
+    const int ONE_SIDE_OF_A_PARTICLE = 1;     // m
     const float GRAVITY = 9.81f;              // m/s^2
     const float PI = 3.14159265358979323846f; // Pi constant
     const float AIR_RESISTANCE = 0.47f;       // Drag coefficient for a sphere

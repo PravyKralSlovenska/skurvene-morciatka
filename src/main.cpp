@@ -7,28 +7,38 @@
 #include "engine/entity.hpp"
 #include "engine/controls.hpp"
 #include "engine/audio/audio_manager.hpp"
+#include "engine/time_manager.hpp"
+
+// namespace na globalne premenne
 #include "others/GLOBALS.hpp"
 
-Player player("MISKO", {100.0f, 100.0f});
 Controls controls;
+Audio_Manager audio_manager;
+Time_Manager time_manager;
+Player player("MISKO", {100.0f, 100.0f});
 World world(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT, Globals::PARTICLE_SIZE);
 IRenderer render(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT, Globals::PARTICLE_SIZE, &world);
-Audio_Manager audio_manager;
 
+// chcem pouzit na nejake dalsie renderovanie
+// napriklad chcem vyrenderovat obrazovku ked je hra zastavena ci som len v menu
 enum GAME_STATES
 {
     MENU,
     GAME,
     PAUSE,
+    OPTIONS, // ???
     END
-    // OPTIONS // ???
 };
 
 int main()
 {
+    time_manager.init();
+    time_manager.set_target_fps(60);
+
     render.init();
     render.enable_blending();
     render.enable_ortho_projection();
+    render.set_time_manager(&time_manager);
     // render.set_world(&world);
 
     audio_manager.init();
@@ -41,34 +51,44 @@ int main()
     controls.set_player(&player);
     controls.set_window(render.get_window());
     controls.set_world(&world);
+    controls.set_time_manager(&time_manager);
 
     world.entities.push_back(player);
 
     render.print_render_info();
 
-    // niekedy vyhodi chybu 40961
+    // niekedy vyhodi chybu 40961, 40964
     audio_manager.play("mulano stylos");
     // audio_manager.play("era");
     // audio_manager.play("nemaj stres");
     // audio_manager.play("zme uplne na picu");
-    
+
     // game loop
     while (!render.should_close())
     {
+        // time
+        time_manager.time_update();
+
         // controls
         controls.handle_input();
 
         // update sveta
-        world.update_world_loop();
+        if (!time_manager.is_paused())
+        {
+            world.update_world_loop();
+        }
+
+        // world.update_world_loop();
 
         // render everything
         render.render_everything();
 
-        // audio
+        // audio`
         // mal by som kontrolovat activne sourcy a mazat ich
     }
 
     render.cleanup();
+    // audio_manager.cleanup(); // volam v destructori
 
     std::cout << "END\n";
     return 0;

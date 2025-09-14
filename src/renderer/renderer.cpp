@@ -34,19 +34,12 @@ bool IRenderer::render_everything()
 
     // entities_renderer->render_entities(world->entities);
     // text_renderer->render_text("MISKO POZOR ZITRA! :3", {400.0f, 400.0f}, 1.0f, Color(255, 255, 255, 1.0f));
-    text_renderer->render_text(std::to_string(frame_count_display) + "FPS", {10.0f, 48.0f}, 1.0f, Color(255, 255, 255, 1));
+    // text_renderer->render_text(std::to_string(frame_count_display) + "FPS", {10.0f, 48.0f}, 1.0f, Color(255, 255, 255, 1));
 
-    // FPS
-    // mojich max fps je 60 kvoli moonitoru
-    double current_time = glfwGetTime();
-    frame_count++;
-    if (current_time - previous_time >= 1.0)
-    {
-        // std::cout << "FPS: " << frame_count << '\n';
-        frame_count_display = frame_count;
-        frame_count = 0;
-        previous_time = current_time;
-    }
+    text_renderer->render_text(std::to_string(time_manager->get_frames_per_second()) + "FPS", {10.0, 48.0f}, 1.0f, Color(255, 255, 255, 1.0f));
+    text_renderer->render_text(std::to_string(time_manager->get_updates_per_second()) + "UPS", {10.0, 90.0f}, 1.0f, Color(255, 255, 255, 1.0f));
+
+    
 
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -152,6 +145,11 @@ void IRenderer::checkGLError(const char *operation)
     {
         std::cerr << "OpenGL Error after " << operation << ": " << error << std::endl;
     }
+}
+
+void IRenderer::set_time_manager(Time_Manager *time_manager)
+{
+    this->time_manager = time_manager;
 }
 
 void IRenderer::set_world(World *world)

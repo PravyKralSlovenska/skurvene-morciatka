@@ -6,6 +6,11 @@
 
 #include <glm/glm.hpp>
 
+#include "engine/particle/particle_mass.hpp"
+#include "engine/particle/particle_velocity.hpp"
+#include "engine/particle/particle_density.hpp"
+
+#include "others/GLOBALS.hpp"
 #include "others/utils.hpp"
 
 // ake skupenstvo ma dana latka
@@ -70,9 +75,15 @@ public:
     Color base_color = Color(0, 0, 0, 0.0f);
     Color color = Color(0, 0, 0, 0.0f);
 
+    // physics
+    Particle_Density density = Particle_Density(0);
+    Particle_Mass mass = Particle_Mass(&density, Physics::ONE_SIDE_OF_A_PARTICLE);
+    Particle_Velocity velocity = Particle_Velocity(&density, &mass, Physics::GRAVITY);
+
 public:
     Particle();
-    Particle(Particle_Type type, Particle_State state, Particle_Movement move, Color base_color);
+    Particle(Particle_Type type, Particle_State state, Particle_Movement move, 
+             Color base_color, Particle_Density density);
     ~Particle() = default;
 };
 

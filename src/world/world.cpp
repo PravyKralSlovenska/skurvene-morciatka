@@ -37,6 +37,9 @@ World::World(int w, int h, int scale)
         }
     }
     world_next = world_curr;
+
+    add_particle({30, 10}, Particle_Type::SAND, 5);
+    add_particle({50, 10}, Particle_Type::WATER, 5);
 }
 
 std::vector<WorldCell> &World::get_world_curr()
@@ -124,31 +127,6 @@ glm::vec2 World::direction_to_offset(Particle_Movement direction)
 
 void World::add_particle(glm::vec2 coords, Particle_Type type, int size)
 {
-    // int index = get_index(coords.x, coords.y);
-    // if (world_curr[index].particle.type == Particle_Type::EMPTY || type == Particle_Type::EMPTY)
-    // {
-    //     switch (type)
-    //     {
-    //     case Particle_Type::EMPTY:
-    //         world_curr[index].set_particle(Particle());
-    //         break;
-    //     case Particle_Type::SAND:
-    //         world_curr[index].set_particle(create_sand());
-    //         break;
-    //     case Particle_Type::WATER:
-    //         world_curr[index].set_particle(create_water());
-    //         break;
-    //     case Particle_Type::SMOKE:
-    //         world_curr[index].set_particle(create_smoke());
-    //         break;
-    //     case Particle_Type::STONE:
-    //         world_curr[index].set_particle(create_stone());
-    //         break;
-    //     default:
-    //         break;
-    //     }
-    // }
-
     std::vector<glm::vec2> offsets;
 
     for (int y = -size; y <= size; ++y)
@@ -213,7 +191,10 @@ void World::update_world_loop()
 {
     // apply physics?
 
-    clear_world_next();
+    // clear_world_next();
+
+    // add_particle({30, 10}, Particle_Type::SAND, 5);
+    // add_particle({50, 10}, Particle_Type::WATER, 5);
 
     for (int y = m_rows - 1; y >= 0; y--)
     {
@@ -226,14 +207,14 @@ void World::update_world_loop()
         }
         else
         {
-            for (int x = 0; x < m_cols - 1; x++)
+            for (int x = 0; x < m_cols; x++)
             {
                 update_world_decider(x, y);
             }
         }
     }
 
-    swap_worlds();
+    // swap_worlds();
     // print_world();
 }
 
@@ -253,6 +234,7 @@ void World::update_world_decider(int x, int y)
         break;
 
     case Particle_State::LIQUID:
+        move_liquid(cell);
         break;
 
     case Particle_State::GAS:
@@ -268,58 +250,226 @@ void World::swap_particles(WorldCell &current_cell, WorldCell &target_cell)
     std::swap(current_cell.particle, target_cell.particle);
 }
 
+// nefunguje
+glm::vec2 World::find_place_to_fall(WorldCell &cell)
+{
+    int x = cell.coords.x;
+    int y = cell.coords.y;
+
+    int velocity_x = cell.particle.velocity.velocity.x;
+    int velocity_y = cell.particle.velocity.velocity.y;
+
+    // ak je velocity 0 tak sa ani nespusti
+    for (int i = velocity_y; i >= 1; --i)
+    {
+        int iterator_start = 0;
+        int iterator_end = velocity_y;
+
+        for (int j = iterator_end; j >= 1; --j)
+        {
+            if (!in_world_range(x + j, y + i, m_rows, m_cols))
+            {
+                continue;
+            }
+
+            WorldCell &neighboor = get_worldcell_curr(x, y + i); // CHYBA: x + 0; y + 0
+
+            if (neighboor.particle.type == Particle_Type::EMPTY)
+            {
+                if (cell.particle.velocity.velocity.y <= cell.particle.velocity.terminal_velocity)
+                {
+                    cell.particle.velocity.set_velocity_y((int)sqrt(2 * 10 * y * 0.01));
+                }
+                return neighboor.coords;
+            }
+        }
+    }
+
+    return glm::vec2(0.0f, 0.0f);
+}
+
 void World::move_solid(WorldCell &cell)
 {
-    int cell_x = cell.coords.x;
-    int cell_y = cell.coords.y;
+    int x = cell.coords.x;
+    int y = cell.coords.y;
 
-    auto move_lambda = [&](Particle_Movement movement)
+    auto can_move = [&](WorldCell cell)
     {
-        glm::vec2 offset = direction_to_offset(movement);
-        WorldCell &neighbor = get_worldcell_next(cell_x + offset.x, cell_y + offset.y);
-
-        if (neighbor.particle.type == Particle_Type::EMPTY || neighbor.particle.state != Particle_State::SOLID)
-        {
-            swap_particles(cell, neighbor);
-        }
+        Particle &particle = cell.particle;
+        return particle.type == Particle_Type::EMPTY || particle.state == Particle_State::GAS || particle.state == Particle_State::LIQUID;
     };
 
-    bool can_down = in_world_grid(cell_x, cell_y + 1);
-
-    if (can_down)
+    if (glm::vec2 coords = find_place_to_fall(cell); coords != glm::vec2(0.0f, 0.0f))
     {
-        move_lambda(Particle_Movement::DOWN);
+        auto &neighbor = get_worldcell_curr(coords.x, coords.y);
+        swap_particles(cell, neighbor);
         return;
     }
 
-    bool can_down_left = in_world_grid(cell_x - 1, cell_y + 1);
-    bool can_down_right = in_world_grid(cell_x + 1, cell_y + 1);
-
-    if (can_down_left && can_down_right)
+    if (in_world_range(x, y + 1, m_rows, m_cols))
     {
-        if (rand() % 2)
+        WorldCell &under_cell = get_worldcell_curr(x, y + 1);
+        if (can_move(under_cell))
         {
-            move_lambda(Particle_Movement::DOWN_LEFT);
+            swap_particles(cell, under_cell);
+            return;
+        }
+    }
+
+    bool under_left = false;
+    bool under_right = false;
+
+    if (in_world_range(x - 1, y + 1, m_rows, m_cols))
+    {
+        WorldCell &under_left_cell = get_worldcell_curr(x - 1, y + 1);
+        under_left = can_move(under_left_cell);
+    }
+
+    if (in_world_range(x + 1, y + 1, m_rows, m_cols))
+    {
+        WorldCell &under_right_cell = get_worldcell_curr(x + 1, y + 1);
+        under_right = can_move(under_right_cell);
+    }
+
+    if (under_left && under_right)
+    {
+        if (rand() % 2 == 0)
+        {
+            WorldCell &under_left_cell = get_worldcell_curr(x - 1, y + 1);
+            swap_particles(cell, under_left_cell);
         }
         else
         {
-            move_lambda(Particle_Movement::DOWN_RIGHT);
+            WorldCell &under_right_cell = get_worldcell_curr(x + 1, y + 1);
+            swap_particles(cell, under_right_cell);
         }
     }
 
-    else if (can_down_left && !can_down_right)
+    else if (under_left && !under_right)
     {
-        move_lambda(Particle_Movement::DOWN_LEFT);
+        WorldCell &under_left_cell = get_worldcell_curr(x - 1, y + 1);
+        swap_particles(cell, under_left_cell);
     }
 
-    else if (!can_down_left && can_down_right)
+    else if (!under_left && under_right)
     {
-        move_lambda(Particle_Movement::DOWN_RIGHT);
+        WorldCell &under_right_cell = get_worldcell_curr(x + 1, y + 1);
+        swap_particles(cell, under_right_cell);
+    }
+    else
+    {
+        // cell.particle.velocity.set_velocity({0, 0});
     }
 }
 
 void World::move_liquid(WorldCell &cell)
 {
+    auto x = cell.coords.x;
+    auto y = cell.coords.y;
+
+    auto can_move = [&](WorldCell cell)
+    {
+        Particle &particle = cell.particle;
+        return particle.type == Particle_Type::EMPTY || particle.state == Particle_State::GAS;
+    };
+
+    if (in_world_range(x, y + 1, m_rows, m_cols))
+    {
+        WorldCell &under_cell = get_worldcell_curr(x, y + 1);
+        if (can_move(under_cell))
+        {
+            swap_particles(cell, under_cell);
+            return;
+        }
+    }
+
+    bool under_left = false;
+    bool under_right = false;
+
+    if (in_world_range(x - 1, y + 1, m_rows, m_cols))
+    {
+        WorldCell &under_left_cell = get_worldcell_curr(x - 1, y + 1);
+        under_left = can_move(under_left_cell);
+    }
+
+    if (in_world_range(x + 1, y + 1, m_rows, m_cols))
+    {
+        WorldCell &under_right_cell = get_worldcell_curr(x + 1, y + 1);
+        under_right = can_move(under_right_cell);
+    }
+
+    if (under_left && under_right)
+    {
+        if (rand() % 2 == 0)
+        {
+            WorldCell &under_left_cell = get_worldcell_curr(x - 1, y + 1);
+            swap_particles(cell, under_left_cell);
+        }
+        else
+        {
+            WorldCell &under_right_cell = get_worldcell_curr(x + 1, y + 1);
+            swap_particles(cell, under_right_cell);
+        }
+        return;
+    }
+
+    else if (under_left && !under_right)
+    {
+        WorldCell &under_left_cell = get_worldcell_curr(x - 1, y + 1);
+        swap_particles(cell, under_left_cell);
+        return;
+    }
+
+    else if (!under_left && under_right)
+    {
+        WorldCell &under_right_cell = get_worldcell_curr(x + 1, y + 1);
+        swap_particles(cell, under_right_cell);
+        return;
+    }
+
+    bool next_left = false;
+    bool next_right = false;
+
+    if (in_world_range(x - 1, y, m_rows, m_cols))
+    {
+        WorldCell &next_left_cell = get_worldcell_curr(x - 1, y);
+        next_left = can_move(next_left_cell);
+    }
+
+    if (in_world_range(x + 1, y, m_rows, m_cols))
+    {
+        WorldCell &next_right_cell = get_worldcell_curr(x + 1, y);
+        next_right = can_move(next_right_cell);
+    }
+
+    if (next_left && next_right)
+    {
+        if (rand() % 2 == 0)
+        {
+            WorldCell &next_left_cell = get_worldcell_curr(x - 1, y);
+            swap_particles(cell, next_left_cell);
+        }
+        else
+        {
+            WorldCell &next_right_cell = get_worldcell_curr(x + 1, y);
+            swap_particles(cell, next_right_cell);
+        }
+        return;
+    }
+
+    else if (next_left && !next_right)
+    {
+        WorldCell &next_left_cell = get_worldcell_curr(x - 1, y);
+        swap_particles(cell, next_left_cell);
+        return;
+    }
+
+    else if (!next_left && next_right)
+    {
+        WorldCell &next_right_cell = get_worldcell_curr(x + 1, y);
+        swap_particles(cell, next_right_cell);
+        return;
+    }
 }
 
 void World::debug_particle(int x, int y)

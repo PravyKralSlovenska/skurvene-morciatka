@@ -46,9 +46,9 @@ Sound_Buffer::Sound_Buffer(const std::string path_to_sound)
 
 Sound_Buffer::~Sound_Buffer()
 {
+    // std::cout << "mazem kokotka\n";
     // if (alIsBuffer(id))
     // {
-    //     std::cout << "mazem kokotka\n";
     //     alDeleteBuffers(1, &id);
     // }
 }
@@ -116,7 +116,6 @@ void Sound_Buffer::fill_with_data()
     alBufferData(id, format, pcm_data.data(), pcm_data.size() * sizeof(int16_t), frequency);
 
     check_al_error("nahravanie dat do bufferu s id" + id);
-    std::cout << "HALO?" << '\n';
 }
 
 Audio_Source::Audio_Source(glm::ivec3 coords, glm::ivec3 velocity, float pitch, float gain)
@@ -200,7 +199,7 @@ void Listener::set_orientation(const glm::ivec3 orientation)
 Audio_Manager::Audio_Manager() {}
 Audio_Manager::~Audio_Manager()
 {
-    clean_up();
+    cleanup();
 }
 
 void Audio_Manager::init()
@@ -218,12 +217,12 @@ void Audio_Manager::init()
     if (!context)
     {
         std::cerr << "context error\n";
-        clean_up();
+        cleanup();
         return;
     }
 }
 
-void Audio_Manager::clean_up()
+void Audio_Manager::cleanup()
 {
     alcCloseDevice(device);
     alcDestroyContext(context);
@@ -236,10 +235,9 @@ void Audio_Manager::set_player(Player *player)
 
 bool Audio_Manager::load_music(const std::string name, const std::string path_to_sound)
 {
-    std::cout << "1\n";
+    // sounds.insert({name, std::make_unique<Sound_Buffer>(path_to_sound)});
     sounds.insert({name, Sound_Buffer(path_to_sound)});
     // sounds.emplace(name, Sound_Buffer(path_to_sound));
-    std::cout << "2\n";
     return true;
 }
 
