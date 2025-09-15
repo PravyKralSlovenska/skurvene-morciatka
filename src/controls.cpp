@@ -109,6 +109,11 @@ void Controls::keyboard_input()
         time_manager->pause();
     }
 
+    if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+    {
+        time_manager->resume();
+    }
+
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {

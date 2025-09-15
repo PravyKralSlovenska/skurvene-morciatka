@@ -196,6 +196,11 @@ void Listener::set_orientation(const glm::ivec3 orientation)
     alListener3f(AL_ORIENTATION, orientation.x, orientation.y, orientation.z);
 }
 
+// Pending_Execute::Pending_Execute() {}
+
+Pending_Execute::Pending_Execute(Operations operation, std::string name, std::string path)
+    : operation(operation), name(name), path(path) {}
+
 Audio_Manager::Audio_Manager() {}
 Audio_Manager::~Audio_Manager()
 {
@@ -204,11 +209,16 @@ Audio_Manager::~Audio_Manager()
 
 void Audio_Manager::init()
 {
+    audio_thread = std::thread(&Audio_Manager::audio_thread_loop, this);
+}
+
+bool Audio_Manager::init_openal()
+{
     device = alcOpenDevice(nullptr);
     if (!device)
     {
         std::cerr << "device error\n";
-        return;
+        return false;
     }
 
     context = alcCreateContext(device, nullptr);
@@ -218,8 +228,81 @@ void Audio_Manager::init()
     {
         std::cerr << "context error\n";
         cleanup();
+        return false;
+    }
+
+    return true;
+}
+
+void Audio_Manager::audio_thread_loop()
+{
+    if (!init_openal())
+    {
+        std::cout << "nepodaril sa init";
         return;
     }
+
+    // listener = &Listener();
+
+    while (true)
+    {
+        execute_stuff_from_queue();
+        // remove not active sources
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(16)); // 60 FPS
+    }
+
+    cleanup();
+}
+
+void Audio_Manager::send_execute(const Pending_Execute::Operations operation, const std::string name, const std::string path)
+{
+    audio_thread_queue.push(Pending_Execute(operation, name, path));
+}
+
+void Audio_Manager::execute_stuff_from_queue()
+{
+    while (!audio_thread_queue.empty())
+    {
+        const Pending_Execute &execute = audio_thread_queue.front();
+
+        switch (execute.operation)
+        {
+        case Pending_Execute::Operations::PLAY:
+            // Handle play operation
+            play(execute.name);
+            break;
+
+        case Pending_Execute::Operations::STOP:
+            // Handle stop operation
+            break;
+
+        case Pending_Execute::Operations::RESUME:
+            // Handle resume operation
+            break;
+
+        case Pending_Execute::Operations::SKIP:
+            // Handle skip operation
+            break;
+
+        case Pending_Execute::Operations::FORWARD:
+            // Handle forward operation
+            break;
+
+        case Pending_Execute::Operations::LOAD:
+            // Handle load operation
+            load_music(execute.name, execute.path);
+            /* code */
+            break;
+
+        default:
+            break;
+        }
+
+        audio_thread_queue.pop();
+    }
+
+    // std::cout << "audio thread queue je prazdny\n";
 }
 
 void Audio_Manager::cleanup()
@@ -231,6 +314,11 @@ void Audio_Manager::cleanup()
 void Audio_Manager::set_player(Player *player)
 {
     this->player = player;
+}
+
+void Audio_Manager::set_time_manager(Time_Manager *time_manager)
+{
+    this->time_manager = time_manager;
 }
 
 bool Audio_Manager::load_music(const std::string name, const std::string path_to_sound)

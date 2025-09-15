@@ -5,12 +5,16 @@
 #include <vector>
 #include <memory>
 
-#include <glm/glm.hpp>
+#include <thread>
+#include <queue>
+#include <chrono>
 
+#include <glm/glm.hpp>
 #include <AL/al.h>
 #include <AL/alc.h>
 
 #include "engine/entity.hpp"
+#include "engine/time_manager.hpp"
 
 // dobry napad mat toto na inom thread
 
@@ -36,7 +40,6 @@ public:
 
     void read_data_mp3();
     void read_data_wav();
-
     void fill_with_data();
 };
 
@@ -90,6 +93,24 @@ public:
     void set_orientation(const glm::ivec3 orientation);
 };
 
+struct Pending_Execute
+{
+    enum Operations
+    {
+        PLAY,
+        STOP,
+        RESUME,
+        SKIP,
+        FORWARD,
+        LOAD
+    } operation;
+    std::string name = "";
+    std::string path = "";
+
+    Pending_Execute();
+    Pending_Execute(Operations operation, std::string name = "", std::string path = "");
+};
+
 class Audio_Manager
 {
 private:
@@ -98,18 +119,31 @@ private:
 
     Listener *listener;
     Player *player;
+    Time_Manager *time_manager;
+
+    std::thread audio_thread;
+    std::queue<Pending_Execute> audio_thread_queue;
 
     std::unordered_map<std::string, Sound_Buffer> sounds;
     std::vector<Audio_Source> active_sources;
+
+private:
+    void execute_stuff_from_queue();
+    void remove_not_active_sources();
+
+    bool init_openal();
+    void audio_thread_loop();
+    void cleanup();
 
 public:
     Audio_Manager();
     ~Audio_Manager();
 
-    void init();
-    void cleanup();
+    void init(); // init thread
+    void send_execute(const Pending_Execute::Operations operation, const std::string name, const std::string path);
 
     void set_player(Player *player);
+    void set_time_manager(Time_Manager *time_manager);
 
     bool load_music(const std::string name, const std::string path_to_sound);
     bool play(const std::string name);

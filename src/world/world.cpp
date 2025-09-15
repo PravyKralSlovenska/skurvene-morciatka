@@ -156,6 +156,7 @@ void World::add_particle(glm::vec2 coords, Particle_Type type, int size)
                 {
                 case Particle_Type::EMPTY:
                     world_curr[index].set_particle(Particle());
+                    // world_curr[index].particle.~Particle();
                     break;
 
                 case Particle_Type::SAND:

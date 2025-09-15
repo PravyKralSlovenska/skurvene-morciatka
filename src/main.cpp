@@ -33,20 +33,15 @@ enum GAME_STATES
 int main()
 {
     time_manager.init();
-    time_manager.set_target_fps(60);
+    // time_manager.set_target_fps(60);
+    // time_manager.enable_fps_limiting();
 
     render.init();
     render.enable_blending();
     render.enable_ortho_projection();
     render.set_time_manager(&time_manager);
     // render.set_world(&world);
-
-    audio_manager.init();
-    audio_manager.set_player(&player);
-    audio_manager.load_music("mulano stylos", "../music/menu/KONTRAFAKT - Mulano stylos.mp3");
-    // audio_manager.load_music("era", "../music/menu/KONTRAFAKT - E.R.A.mp3");
-    // audio_manager.load_music("nemaj stres", "../music/menu/H16 - Nemaj stres.mp3");
-    // audio_manager.load_music("zme uplne na picu", "../music/end/KONTRAFAKT - Zme uplne na picu.mp3");
+    render.print_render_info();
 
     controls.set_player(&player);
     controls.set_window(render.get_window());
@@ -54,14 +49,19 @@ int main()
     controls.set_time_manager(&time_manager);
 
     world.entities.push_back(player);
+    // world.set_time_manager(&time_manager);
 
-    render.print_render_info();
-
-    // niekedy vyhodi chybu 40961, 40964
-    audio_manager.play("mulano stylos");
-    // audio_manager.play("era");
-    // audio_manager.play("nemaj stres");
-    // audio_manager.play("zme uplne na picu");
+    audio_manager.init();
+    audio_manager.set_player(&player);
+    audio_manager.set_time_manager(&time_manager);
+    // audio_manager.send_execute(Pending_Execute::Operations::LOAD, "mulano stylos", "../music/menu/KONTRAFAKT - Mulano stylos.mp3");
+    // audio_manager.send_execute(Pending_Execute::Operations::PLAY, "mulano stylos", "");
+    // audio_manager.send_execute(Pending_Execute::Operations::LOAD, "era", "../music/menu/KONTRAFAKT - E.R.A.mp3");
+    // audio_manager.send_execute(Pending_Execute::Operations::PLAY, "era", "");
+    audio_manager.send_execute(Pending_Execute::Operations::LOAD, "nemaj stres", "../music/menu/H16 - Nemaj stres.mp3");
+    audio_manager.send_execute(Pending_Execute::Operations::PLAY, "nemaj stres", "");
+    // audio_manager.send_execute(Pending_Execute::Operations::LOAD, "zme uplne na picu", "../music/end/KONTRAFAKT - Zme uplne na picu.mp3");
+    // audio_manager.send_execute(Pending_Execute::Operations::PLAY, "zme uplne na picu", "");
 
     // game loop
     while (!render.should_close())
@@ -73,17 +73,15 @@ int main()
         controls.handle_input();
 
         // update sveta
-        if (!time_manager.is_paused())
+        if (!time_manager.paused())
         {
             world.update_world_loop();
         }
 
-        // world.update_world_loop();
-
         // render everything
         render.render_everything();
 
-        // audio`
+        // audio
         // mal by som kontrolovat activne sourcy a mazat ich
     }
 
