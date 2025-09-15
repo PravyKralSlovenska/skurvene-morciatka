@@ -7,6 +7,7 @@ CMakeFiles/morciatko.dir/src/audio_manager.cpp.o
  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/audio/dr_mp3.h
  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/audio/dr_wav.h
  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/entity.hpp
+ /home/jakub/programko/cpp/skurvene-morciatka/include/engine/time_manager.hpp
  /usr/include/AL/al.h
  /usr/include/AL/alc.h
  /usr/include/alloca.h
@@ -113,10 +114,12 @@ CMakeFiles/morciatko.dir/src/audio_manager.cpp.o
  /usr/include/c++/15.2.1/bits/basic_string.tcc
  /usr/include/c++/15.2.1/bits/char_traits.h
  /usr/include/c++/15.2.1/bits/charconv.h
+ /usr/include/c++/15.2.1/bits/chrono.h
  /usr/include/c++/15.2.1/bits/concept_check.h
  /usr/include/c++/15.2.1/bits/cpp_type_traits.h
  /usr/include/c++/15.2.1/bits/cxxabi_forced.h
  /usr/include/c++/15.2.1/bits/cxxabi_init_exception.h
+ /usr/include/c++/15.2.1/bits/deque.tcc
  /usr/include/c++/15.2.1/bits/enable_special_members.h
  /usr/include/c++/15.2.1/bits/erase_if.h
  /usr/include/c++/15.2.1/bits/exception.h
@@ -144,6 +147,7 @@ CMakeFiles/morciatko.dir/src/audio_manager.cpp.o
  /usr/include/c++/15.2.1/bits/ostream.h
  /usr/include/c++/15.2.1/bits/ostream.tcc
  /usr/include/c++/15.2.1/bits/ostream_insert.h
+ /usr/include/c++/15.2.1/bits/parse_numbers.h
  /usr/include/c++/15.2.1/bits/postypes.h
  /usr/include/c++/15.2.1/bits/predefined_ops.h
  /usr/include/c++/15.2.1/bits/ptr_traits.h
@@ -155,14 +159,18 @@ CMakeFiles/morciatko.dir/src/audio_manager.cpp.o
  /usr/include/c++/15.2.1/bits/shared_ptr_base.h
  /usr/include/c++/15.2.1/bits/specfun.h
  /usr/include/c++/15.2.1/bits/std_abs.h
+ /usr/include/c++/15.2.1/bits/std_thread.h
  /usr/include/c++/15.2.1/bits/stl_algobase.h
  /usr/include/c++/15.2.1/bits/stl_bvector.h
  /usr/include/c++/15.2.1/bits/stl_construct.h
+ /usr/include/c++/15.2.1/bits/stl_deque.h
  /usr/include/c++/15.2.1/bits/stl_function.h
+ /usr/include/c++/15.2.1/bits/stl_heap.h
  /usr/include/c++/15.2.1/bits/stl_iterator.h
  /usr/include/c++/15.2.1/bits/stl_iterator_base_funcs.h
  /usr/include/c++/15.2.1/bits/stl_iterator_base_types.h
  /usr/include/c++/15.2.1/bits/stl_pair.h
+ /usr/include/c++/15.2.1/bits/stl_queue.h
  /usr/include/c++/15.2.1/bits/stl_raw_storage_iter.h
  /usr/include/c++/15.2.1/bits/stl_tempbuf.h
  /usr/include/c++/15.2.1/bits/stl_uninitialized.h
@@ -171,6 +179,7 @@ CMakeFiles/morciatko.dir/src/audio_manager.cpp.o
  /usr/include/c++/15.2.1/bits/streambuf_iterator.h
  /usr/include/c++/15.2.1/bits/string_view.tcc
  /usr/include/c++/15.2.1/bits/stringfwd.h
+ /usr/include/c++/15.2.1/bits/this_thread_sleep.h
  /usr/include/c++/15.2.1/bits/unique_ptr.h
  /usr/include/c++/15.2.1/bits/unordered_map.h
  /usr/include/c++/15.2.1/bits/uses_allocator.h
@@ -182,6 +191,7 @@ CMakeFiles/morciatko.dir/src/audio_manager.cpp.o
  /usr/include/c++/15.2.1/cctype
  /usr/include/c++/15.2.1/cerrno
  /usr/include/c++/15.2.1/cfloat
+ /usr/include/c++/15.2.1/chrono
  /usr/include/c++/15.2.1/climits
  /usr/include/c++/15.2.1/clocale
  /usr/include/c++/15.2.1/cmath
@@ -190,10 +200,12 @@ CMakeFiles/morciatko.dir/src/audio_manager.cpp.o
  /usr/include/c++/15.2.1/cstdint
  /usr/include/c++/15.2.1/cstdio
  /usr/include/c++/15.2.1/cstdlib
+ /usr/include/c++/15.2.1/ctime
  /usr/include/c++/15.2.1/cwchar
  /usr/include/c++/15.2.1/cwctype
  /usr/include/c++/15.2.1/debug/assertions.h
  /usr/include/c++/15.2.1/debug/debug.h
+ /usr/include/c++/15.2.1/deque
  /usr/include/c++/15.2.1/exception
  /usr/include/c++/15.2.1/ext/aligned_buffer.h
  /usr/include/c++/15.2.1/ext/alloc_traits.h
@@ -214,12 +226,15 @@ CMakeFiles/morciatko.dir/src/audio_manager.cpp.o
  /usr/include/c++/15.2.1/pstl/execution_defs.h
  /usr/include/c++/15.2.1/pstl/glue_memory_defs.h
  /usr/include/c++/15.2.1/pstl/pstl_config.h
+ /usr/include/c++/15.2.1/queue
+ /usr/include/c++/15.2.1/ratio
  /usr/include/c++/15.2.1/stdexcept
  /usr/include/c++/15.2.1/stdlib.h
  /usr/include/c++/15.2.1/streambuf
  /usr/include/c++/15.2.1/string
  /usr/include/c++/15.2.1/string_view
  /usr/include/c++/15.2.1/system_error
+ /usr/include/c++/15.2.1/thread
  /usr/include/c++/15.2.1/tr1/bessel_function.tcc
  /usr/include/c++/15.2.1/tr1/beta_function.tcc
  /usr/include/c++/15.2.1/tr1/ell_integral.tcc
@@ -993,6 +1008,7 @@ CMakeFiles/morciatko.dir/src/controls.cpp.o
  /usr/include/c++/15.2.1/bits/specfun.h
  /usr/include/c++/15.2.1/bits/sstream.tcc
  /usr/include/c++/15.2.1/bits/std_abs.h
+ /usr/include/c++/15.2.1/bits/std_thread.h
  /usr/include/c++/15.2.1/bits/stl_algo.h
  /usr/include/c++/15.2.1/bits/stl_algobase.h
  /usr/include/c++/15.2.1/bits/stl_bvector.h
@@ -1015,6 +1031,7 @@ CMakeFiles/morciatko.dir/src/controls.cpp.o
  /usr/include/c++/15.2.1/bits/streambuf_iterator.h
  /usr/include/c++/15.2.1/bits/string_view.tcc
  /usr/include/c++/15.2.1/bits/stringfwd.h
+ /usr/include/c++/15.2.1/bits/this_thread_sleep.h
  /usr/include/c++/15.2.1/bits/uniform_int_dist.h
  /usr/include/c++/15.2.1/bits/unique_ptr.h
  /usr/include/c++/15.2.1/bits/uses_allocator.h
@@ -1074,6 +1091,7 @@ CMakeFiles/morciatko.dir/src/controls.cpp.o
  /usr/include/c++/15.2.1/string
  /usr/include/c++/15.2.1/string_view
  /usr/include/c++/15.2.1/system_error
+ /usr/include/c++/15.2.1/thread
  /usr/include/c++/15.2.1/tr1/bessel_function.tcc
  /usr/include/c++/15.2.1/tr1/beta_function.tcc
  /usr/include/c++/15.2.1/tr1/ell_integral.tcc
@@ -1863,6 +1881,7 @@ CMakeFiles/morciatko.dir/src/main.cpp.o
  /usr/include/c++/15.2.1/bits/cpp_type_traits.h
  /usr/include/c++/15.2.1/bits/cxxabi_forced.h
  /usr/include/c++/15.2.1/bits/cxxabi_init_exception.h
+ /usr/include/c++/15.2.1/bits/deque.tcc
  /usr/include/c++/15.2.1/bits/enable_special_members.h
  /usr/include/c++/15.2.1/bits/erase_if.h
  /usr/include/c++/15.2.1/bits/exception.h
@@ -1906,10 +1925,12 @@ CMakeFiles/morciatko.dir/src/main.cpp.o
  /usr/include/c++/15.2.1/bits/specfun.h
  /usr/include/c++/15.2.1/bits/sstream.tcc
  /usr/include/c++/15.2.1/bits/std_abs.h
+ /usr/include/c++/15.2.1/bits/std_thread.h
  /usr/include/c++/15.2.1/bits/stl_algo.h
  /usr/include/c++/15.2.1/bits/stl_algobase.h
  /usr/include/c++/15.2.1/bits/stl_bvector.h
  /usr/include/c++/15.2.1/bits/stl_construct.h
+ /usr/include/c++/15.2.1/bits/stl_deque.h
  /usr/include/c++/15.2.1/bits/stl_function.h
  /usr/include/c++/15.2.1/bits/stl_heap.h
  /usr/include/c++/15.2.1/bits/stl_iterator.h
@@ -1919,6 +1940,7 @@ CMakeFiles/morciatko.dir/src/main.cpp.o
  /usr/include/c++/15.2.1/bits/stl_multimap.h
  /usr/include/c++/15.2.1/bits/stl_numeric.h
  /usr/include/c++/15.2.1/bits/stl_pair.h
+ /usr/include/c++/15.2.1/bits/stl_queue.h
  /usr/include/c++/15.2.1/bits/stl_raw_storage_iter.h
  /usr/include/c++/15.2.1/bits/stl_tempbuf.h
  /usr/include/c++/15.2.1/bits/stl_tree.h
@@ -1928,6 +1950,7 @@ CMakeFiles/morciatko.dir/src/main.cpp.o
  /usr/include/c++/15.2.1/bits/streambuf_iterator.h
  /usr/include/c++/15.2.1/bits/string_view.tcc
  /usr/include/c++/15.2.1/bits/stringfwd.h
+ /usr/include/c++/15.2.1/bits/this_thread_sleep.h
  /usr/include/c++/15.2.1/bits/uniform_int_dist.h
  /usr/include/c++/15.2.1/bits/unique_ptr.h
  /usr/include/c++/15.2.1/bits/unordered_map.h
@@ -1956,6 +1979,7 @@ CMakeFiles/morciatko.dir/src/main.cpp.o
  /usr/include/c++/15.2.1/cwctype
  /usr/include/c++/15.2.1/debug/assertions.h
  /usr/include/c++/15.2.1/debug/debug.h
+ /usr/include/c++/15.2.1/deque
  /usr/include/c++/15.2.1/exception
  /usr/include/c++/15.2.1/ext/aligned_buffer.h
  /usr/include/c++/15.2.1/ext/alloc_traits.h
@@ -1981,6 +2005,7 @@ CMakeFiles/morciatko.dir/src/main.cpp.o
  /usr/include/c++/15.2.1/pstl/glue_memory_defs.h
  /usr/include/c++/15.2.1/pstl/glue_numeric_defs.h
  /usr/include/c++/15.2.1/pstl/pstl_config.h
+ /usr/include/c++/15.2.1/queue
  /usr/include/c++/15.2.1/random
  /usr/include/c++/15.2.1/ratio
  /usr/include/c++/15.2.1/sstream
@@ -1990,6 +2015,7 @@ CMakeFiles/morciatko.dir/src/main.cpp.o
  /usr/include/c++/15.2.1/string
  /usr/include/c++/15.2.1/string_view
  /usr/include/c++/15.2.1/system_error
+ /usr/include/c++/15.2.1/thread
  /usr/include/c++/15.2.1/tr1/bessel_function.tcc
  /usr/include/c++/15.2.1/tr1/beta_function.tcc
  /usr/include/c++/15.2.1/tr1/ell_integral.tcc
@@ -4039,6 +4065,7 @@ CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o
  /usr/include/c++/15.2.1/bits/specfun.h
  /usr/include/c++/15.2.1/bits/sstream.tcc
  /usr/include/c++/15.2.1/bits/std_abs.h
+ /usr/include/c++/15.2.1/bits/std_thread.h
  /usr/include/c++/15.2.1/bits/stl_algo.h
  /usr/include/c++/15.2.1/bits/stl_algobase.h
  /usr/include/c++/15.2.1/bits/stl_bvector.h
@@ -4061,6 +4088,7 @@ CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o
  /usr/include/c++/15.2.1/bits/streambuf_iterator.h
  /usr/include/c++/15.2.1/bits/string_view.tcc
  /usr/include/c++/15.2.1/bits/stringfwd.h
+ /usr/include/c++/15.2.1/bits/this_thread_sleep.h
  /usr/include/c++/15.2.1/bits/uniform_int_dist.h
  /usr/include/c++/15.2.1/bits/unique_ptr.h
  /usr/include/c++/15.2.1/bits/uses_allocator.h
@@ -4122,6 +4150,7 @@ CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o
  /usr/include/c++/15.2.1/string
  /usr/include/c++/15.2.1/string_view
  /usr/include/c++/15.2.1/system_error
+ /usr/include/c++/15.2.1/thread
  /usr/include/c++/15.2.1/tr1/bessel_function.tcc
  /usr/include/c++/15.2.1/tr1/beta_function.tcc
  /usr/include/c++/15.2.1/tr1/ell_integral.tcc
@@ -5978,6 +6007,7 @@ CMakeFiles/morciatko.dir/src/time_manager.cpp.o
  /usr/include/c++/15.2.1/bits/refwrap.h
  /usr/include/c++/15.2.1/bits/requires_hosted.h
  /usr/include/c++/15.2.1/bits/std_abs.h
+ /usr/include/c++/15.2.1/bits/std_thread.h
  /usr/include/c++/15.2.1/bits/stl_algobase.h
  /usr/include/c++/15.2.1/bits/stl_construct.h
  /usr/include/c++/15.2.1/bits/stl_function.h
@@ -5989,6 +6019,8 @@ CMakeFiles/morciatko.dir/src/time_manager.cpp.o
  /usr/include/c++/15.2.1/bits/streambuf_iterator.h
  /usr/include/c++/15.2.1/bits/string_view.tcc
  /usr/include/c++/15.2.1/bits/stringfwd.h
+ /usr/include/c++/15.2.1/bits/this_thread_sleep.h
+ /usr/include/c++/15.2.1/bits/unique_ptr.h
  /usr/include/c++/15.2.1/bits/uses_allocator.h
  /usr/include/c++/15.2.1/bits/uses_allocator_args.h
  /usr/include/c++/15.2.1/bits/utility.h
@@ -6028,6 +6060,7 @@ CMakeFiles/morciatko.dir/src/time_manager.cpp.o
  /usr/include/c++/15.2.1/string
  /usr/include/c++/15.2.1/string_view
  /usr/include/c++/15.2.1/system_error
+ /usr/include/c++/15.2.1/thread
  /usr/include/c++/15.2.1/tuple
  /usr/include/c++/15.2.1/type_traits
  /usr/include/c++/15.2.1/typeinfo
