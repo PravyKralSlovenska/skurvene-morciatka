@@ -1,6 +1,4 @@
 #include "engine/world/world.hpp"
-#include <cstdlib>
-#include <ctime>
 
 /*
  * WORLDCELL
@@ -24,8 +22,6 @@ void WorldCell::set_visited()
 World::World(int w, int h, int scale)
     : m_rows(h / scale), m_cols(w / scale), scale(scale), seed(1)
 {
-    // std::srand(static_cast<unsigned int>(std::time(nullptr)));
-
     std::cout << m_cols << ';' << m_rows << '\n';
 
     world_curr.reserve(m_rows * m_cols);
@@ -38,8 +34,8 @@ World::World(int w, int h, int scale)
     }
     world_next = world_curr;
 
-    add_particle({30, 10}, Particle_Type::SAND, 5);
-    add_particle({50, 10}, Particle_Type::WATER, 5);
+    // add_particle({30, 10}, Particle_Type::SAND, 5);
+    // add_particle({50, 10}, Particle_Type::WATER, 5);
 }
 
 std::vector<WorldCell> &World::get_world_curr()
@@ -145,6 +141,9 @@ void World::add_particle(glm::vec2 coords, Particle_Type type, int size)
     {
         int new_x = coords.x + offset.x;
         int new_y = coords.y + offset.y;
+
+        // int new_x = coords.x;
+        // int new_y = coords.y;
 
         if (in_world_range(new_x, new_y, m_rows, m_cols))
         {
@@ -260,33 +259,65 @@ glm::vec2 World::find_place_to_fall(WorldCell &cell)
     int velocity_x = cell.particle.velocity.velocity.x;
     int velocity_y = cell.particle.velocity.velocity.y;
 
-    // ak je velocity 0 tak sa ani nespusti
-    for (int i = velocity_y; i >= 1; --i)
+    int drag;
+
+    std::vector<Particle_State> can_fall_through;
+    // switch(cell.particle.state)
+    // {
+    // case Particle_State::SOLID:
+    //     can_fall_through = {Particle_State::GAS, Particle_State::LIQUID};
+    //     break;
+
+    // case Particle_State::LIQUID:
+    //     can_fall_through = {Particle_State::GAS};
+    //     break;
+
+    // case Particle_State::GAS:
+    //     break;
+
+    // default:
+    //     break;
+    // }
+
+    glm::vec2 last_valid_coords = glm::vec2(-1.0f, -1.0f);
+
+    for (int i = 1; i <= velocity_y; i++)
     {
-        int iterator_start = 0;
-        int iterator_end = velocity_y;
+        int dx = x + (i * velocity_x);
+        int dy = y + i;
 
-        for (int j = iterator_end; j >= 1; --j)
+        if (!in_world_range(dx, dy, m_rows, m_cols))
         {
-            if (!in_world_range(x + j, y + i, m_rows, m_cols))
-            {
-                continue;
-            }
+            break;
+        }
 
-            WorldCell &neighboor = get_worldcell_curr(x, y + i); // CHYBA: x + 0; y + 0
+        WorldCell &next_cell = get_worldcell_curr(dx, dy);
 
-            if (neighboor.particle.type == Particle_Type::EMPTY)
-            {
-                if (cell.particle.velocity.velocity.y <= cell.particle.velocity.terminal_velocity)
-                {
-                    cell.particle.velocity.set_velocity_y((int)sqrt(2 * 10 * y * 0.01));
-                }
-                return neighboor.coords;
-            }
+        if (next_cell.particle.type == Particle_Type::EMPTY)
+        {
+            last_valid_coords = next_cell.coords;
+        }
+        // ak je miesto obsadene, tak don narazy, jak kral, po zrazke je velocity = 0;0
+        else
+        {
+            // cell.particle.velocity.set_velocity({0.0f, 0.0f});
+            break;
         }
     }
 
-    return glm::vec2(0.0f, 0.0f);
+    // pridam akceleraciu
+    if (cell.particle.velocity.velocity.y < cell.particle.velocity.terminal_velocity)
+    {
+        cell.particle.velocity.change_velocity_y(0.1);
+    }
+
+    // pridam pripocitavam nejaky ten drag
+    // if (cell.particle.velocity.get_velocity_x() != 0.0f)
+    // {
+    //     cell.particle.velocity.change_velocity_x(-1); // nejaky drag by tam mal byt
+    // }
+
+    return last_valid_coords;
 }
 
 void World::move_solid(WorldCell &cell)
@@ -294,73 +325,132 @@ void World::move_solid(WorldCell &cell)
     int x = cell.coords.x;
     int y = cell.coords.y;
 
-    auto can_move = [&](WorldCell cell)
-    {
-        Particle &particle = cell.particle;
-        return particle.type == Particle_Type::EMPTY || particle.state == Particle_State::GAS || particle.state == Particle_State::LIQUID;
+    Particle_Velocity *velocity = &cell.particle.velocity;
+
+    WorldCell *neighbors[5] = {nullptr, nullptr, nullptr, nullptr, nullptr};
+    std::vector<std::pair<int, int>> way_to_neighbors = {
+        {1, 0},
+        {-1, 0},
+        {0, 1},
+        {1, 1},
+        {-1, 1},
     };
 
-    if (glm::vec2 coords = find_place_to_fall(cell); coords != glm::vec2(0.0f, 0.0f))
+    for (int i = 0; i < 5; i++)
     {
-        auto &neighbor = get_worldcell_curr(coords.x, coords.y);
-        swap_particles(cell, neighbor);
+        int dx = x + way_to_neighbors[i].first;
+        int dy = y + way_to_neighbors[i].second;
+
+        if (in_world_range(dx, dy, m_rows, m_cols))
+        {
+            neighbors[i] = &get_worldcell_curr(dx, dy);
+        }
+    }
+
+    // dam nejaku velocity particlu
+    if (neighbors[2] != nullptr && neighbors[2]->particle.type == Particle_Type::EMPTY)
+    {
+        velocity->change_velocity_y(1);
+    }
+
+    if (neighbors[3] != nullptr && neighbors[0] != nullptr &&
+        neighbors[0]->particle.type == Particle_Type::EMPTY && neighbors[3]->particle.type == Particle_Type::EMPTY)
+    {
+        // velocity->change_velocity_x(-1);
+
+        // ak miesto pod cell je obsadene, tak sa nenastavy velocity.y na 1
+        // kedze sa hybem stale smerom dole, potrebujem to nastavit na 1
+        // if (velocity->get_velocity_y() == 0.0f)
+        // {
+        //     velocity->change_velocity_y(1);
+        // }
+    }
+
+    if (neighbors[1] != nullptr && neighbors[4] != nullptr &&
+        neighbors[1]->particle.type == Particle_Type::EMPTY && neighbors[4]->particle.type == Particle_Type::EMPTY)
+    {
+        // velocity->change_velocity_x(1);
+
+        // if (velocity->get_velocity_y() == 0.0f)
+        // {
+        //     velocity->change_velocity_y(1);
+        // }
+    }
+
+    if (glm::vec2 coords = find_place_to_fall(cell); coords != glm::vec2(-1.0f, -1.0f))
+    {
+        WorldCell &target_neighbor = get_worldcell_curr(coords.x, coords.y);
+        swap_particles(cell, target_neighbor);
         return;
     }
 
-    if (in_world_range(x, y + 1, m_rows, m_cols))
-    {
-        WorldCell &under_cell = get_worldcell_curr(x, y + 1);
-        if (can_move(under_cell))
-        {
-            swap_particles(cell, under_cell);
-            return;
-        }
-    }
+    // auto can_move = [&](WorldCell cell)
+    // {
+    //     Particle &particle = cell.particle;
+    //     return particle.type == Particle_Type::EMPTY || particle.state == Particle_State::GAS || particle.state == Particle_State::LIQUID;
+    // };
 
-    bool under_left = false;
-    bool under_right = false;
+    // if (glm::vec2 coords = find_place_to_fall(cell); coords != glm::vec2(0.0f, 0.0f))
+    // {
+    //     auto &neighbor = get_worldcell_curr(coords.x, coords.y);
+    //     swap_particles(cell, neighbor);
+    //     return;
+    // }
 
-    if (in_world_range(x - 1, y + 1, m_rows, m_cols))
-    {
-        WorldCell &under_left_cell = get_worldcell_curr(x - 1, y + 1);
-        under_left = can_move(under_left_cell);
-    }
+    // if (in_world_range(x, y + 1, m_rows, m_cols))
+    // {
+    //     WorldCell &under_cell = get_worldcell_curr(x, y + 1);
+    //     if (can_move(under_cell))
+    //     {
+    //         swap_particles(cell, under_cell);
+    //         return;
+    //     }
+    // }
 
-    if (in_world_range(x + 1, y + 1, m_rows, m_cols))
-    {
-        WorldCell &under_right_cell = get_worldcell_curr(x + 1, y + 1);
-        under_right = can_move(under_right_cell);
-    }
+    // bool under_left = false;
+    // bool under_right = false;
 
-    if (under_left && under_right)
-    {
-        if (rand() % 2 == 0)
-        {
-            WorldCell &under_left_cell = get_worldcell_curr(x - 1, y + 1);
-            swap_particles(cell, under_left_cell);
-        }
-        else
-        {
-            WorldCell &under_right_cell = get_worldcell_curr(x + 1, y + 1);
-            swap_particles(cell, under_right_cell);
-        }
-    }
+    // if (in_world_range(x - 1, y + 1, m_rows, m_cols))
+    // {
+    //     WorldCell &under_left_cell = get_worldcell_curr(x - 1, y + 1);
+    //     under_left = can_move(under_left_cell);
+    // }
 
-    else if (under_left && !under_right)
-    {
-        WorldCell &under_left_cell = get_worldcell_curr(x - 1, y + 1);
-        swap_particles(cell, under_left_cell);
-    }
+    // if (in_world_range(x + 1, y + 1, m_rows, m_cols))
+    // {
+    //     WorldCell &under_right_cell = get_worldcell_curr(x + 1, y + 1);
+    //     under_right = can_move(under_right_cell);
+    // }
 
-    else if (!under_left && under_right)
-    {
-        WorldCell &under_right_cell = get_worldcell_curr(x + 1, y + 1);
-        swap_particles(cell, under_right_cell);
-    }
-    else
-    {
-        // cell.particle.velocity.set_velocity({0, 0});
-    }
+    // if (under_left && under_right)
+    // {
+    //     if (rand() % 2 == 0)
+    //     {
+    //         WorldCell &under_left_cell = get_worldcell_curr(x - 1, y + 1);
+    //         swap_particles(cell, under_left_cell);
+    //     }
+    //     else
+    //     {
+    //         WorldCell &under_right_cell = get_worldcell_curr(x + 1, y + 1);
+    //         swap_particles(cell, under_right_cell);
+    //     }
+    // }
+
+    // else if (under_left && !under_right)
+    // {
+    //     WorldCell &under_left_cell = get_worldcell_curr(x - 1, y + 1);
+    //     swap_particles(cell, under_left_cell);
+    // }
+
+    // else if (!under_left && under_right)
+    // {
+    //     WorldCell &under_right_cell = get_worldcell_curr(x + 1, y + 1);
+    //     swap_particles(cell, under_right_cell);
+    // }
+    // else
+    // {
+    //     // cell.particle.velocity.set_velocity({0, 0});
+    // }
 }
 
 void World::move_liquid(WorldCell &cell)

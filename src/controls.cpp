@@ -22,6 +22,11 @@ void Controls::set_time_manager(Time_Manager *time_manager)
     this->time_manager = time_manager;
 }
 
+void Controls::set_audio_manager(Audio_Manager *audio_manager)
+{
+    this->audio_manager = audio_manager;
+}
+
 void Controls::handle_input()
 {
     if (!window || !player)
@@ -114,6 +119,15 @@ void Controls::keyboard_input()
         time_manager->resume();
     }
 
+    if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+    {
+        audio_manager->send_execute(Pending_Execute::PLAY, "background music");
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
+    {
+        // audio_manager->send_execute(Pending_Execute::STOP, "background music");
+    }
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {

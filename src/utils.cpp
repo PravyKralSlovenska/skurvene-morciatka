@@ -59,3 +59,12 @@ bool in_world_range(int x, int y, int world_rows, int world_cols)
 {
     return (x >= 0 && x < world_cols) && (y >= 0 && y < world_rows);
 }
+
+Random::Random()
+: gen(rand_device()) {}
+
+int Random::get_int_from_range(int start, int end)
+{
+    std::uniform_int_distribution<> distrib(start, end);
+    return distrib(gen);
+}

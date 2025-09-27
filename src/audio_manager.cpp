@@ -2,8 +2,9 @@
 
 // kniznice od David Reid
 #define DR_MP3_IMPLEMENTATION
-#define DR_WAV_IMPLEMENTATION
 #include "engine/audio/dr_mp3.h"
+
+#define DR_WAV_IMPLEMENTATION
 #include "engine/audio/dr_wav.h"
 
 void check_al_error(const std::string &operation)
@@ -209,7 +210,15 @@ Audio_Manager::~Audio_Manager()
 
 void Audio_Manager::init()
 {
+    if (!init_openal())
+    {
+        std::cout << "nepodaril sa init";
+        return;
+    }
+
+    audio_thread_running = true;
     audio_thread = std::thread(&Audio_Manager::audio_thread_loop, this);
+    // std::cout << audio_thread.get_id() << std::endl;
 }
 
 bool Audio_Manager::init_openal()
@@ -236,15 +245,9 @@ bool Audio_Manager::init_openal()
 
 void Audio_Manager::audio_thread_loop()
 {
-    if (!init_openal())
-    {
-        std::cout << "nepodaril sa init";
-        return;
-    }
-
     // listener = &Listener();
 
-    while (true)
+    while (audio_thread_running)
     {
         execute_stuff_from_queue();
         // remove not active sources
@@ -252,7 +255,7 @@ void Audio_Manager::audio_thread_loop()
         std::this_thread::sleep_for(std::chrono::milliseconds(16)); // 60 FPS
     }
 
-    cleanup();
+    // cleanup();
 }
 
 void Audio_Manager::send_execute(const Pending_Execute::Operations operation, const std::string name, const std::string path)
@@ -262,6 +265,8 @@ void Audio_Manager::send_execute(const Pending_Execute::Operations operation, co
 
 void Audio_Manager::execute_stuff_from_queue()
 {
+    std::lock_guard<std::mutex> lock(queue_mutex);
+
     while (!audio_thread_queue.empty())
     {
         const Pending_Execute &execute = audio_thread_queue.front();
@@ -274,7 +279,7 @@ void Audio_Manager::execute_stuff_from_queue()
             break;
 
         case Pending_Execute::Operations::STOP:
-            // Handle stop operation
+            audio_thread_running = false;
             break;
 
         case Pending_Execute::Operations::RESUME:
@@ -307,6 +312,14 @@ void Audio_Manager::execute_stuff_from_queue()
 
 void Audio_Manager::cleanup()
 {
+
+    // niekde tu by mal byt prikaz aby sa zastail loop v audio_thread_loop
+
+    if (audio_thread.joinable())
+    {
+        audio_thread.join();
+    }
+
     alcCloseDevice(device);
     alcDestroyContext(context);
 }

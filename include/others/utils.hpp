@@ -12,14 +12,35 @@
 
 class Random
 {
-public:
-    std::random_device rand_dev;
-    // std::mt19937 generator(rand_dev());
+private:
+    std::random_device rand_device;
+    std::mt19937 gen;
 
 public:
     Random();
+    ~Random() = default;
 
-    int get_number_from_range(int start, int end);
+    int get_int_from_range(int start, int end);
+    int get_truly_random_int();
+    
+    template<typename T, std::size_t N>
+    T get_random_element_from_array(const std::array<T, N> &array)
+    {
+        int index = get_int_from_range(0, array.size() - 1);
+        return array[index];
+    }
+
+    template<typename T>
+    T get_random_element_from_vector(const std::vector<T> &vector)
+    {
+        if (vector.empty())
+        {
+            return -1;
+        }
+
+        int index = get_int_from_range(0, vector.size() - 1);
+        return vector[index];
+    }
 };
 
 std::string read_file(const std::string &filepath);
@@ -43,6 +64,12 @@ struct Color
     Color change_tint();
 };
 
+// enum Color_Enum
+// {
+//     RED = Color(255, 0, 0, 1.0f),
+//     GREEN = Color(0, 255, 0, 1.0f)
+// };
+
 struct Vertex
 {
     float x, y;
@@ -64,4 +91,18 @@ public:
 
     void create_file();
     void log_text();
+};
+
+
+// mozno nieco na threads? management multithreadov?
+class Thread_Manager
+{
+    private:
+     unsigned int id;
+    //  thread thread_local;
+
+     private:
+        void create_thread();
+        void join_thread();
+        void detach_thread();
 };

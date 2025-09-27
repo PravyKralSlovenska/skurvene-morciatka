@@ -42,6 +42,7 @@ MYSLIENKY/NAPADY:
     . MAYBACK MUSIC III BUDE MENU PESNICKA A RICK ROSS BUDE POSTAVA
         . Kontrafakt - ERA 
         . H16 - ROBIM CO CHCEM
+        . Welcome To Los Santos - GTA V Soundtrack
 
 TODO:
     . upravit kod tak aby bol citatelny - ziadne magic numbers
@@ -133,6 +134,13 @@ co som sa naucil:
         - buffer
         - source
         - listener 
+    Thread:
+        - std::thread
+            . join
+            . detach
+        - mutex
+        - lock_guard
+
 
 ERRORY:
     . opengl 1281: invalid value
@@ -146,6 +154,7 @@ ERRORY:
     . Bound checking
     . bad optional nieco - std::optional<T> - volam to ked nema ziadnu hodnotu v sebe
     . SEGMENTATION FAULT - 
+    . Thready
 
 KNIZNICE/APICKA:
     . OpenGL
@@ -275,3 +284,10 @@ dennik:
     15.9.2025 - pondelok
         - Audio Manager je na inom Thread-e
         - musim asi este nejake "opatrenia" aby to bolo asi bezpecnejsie
+
+    16.9.2025 - utorok
+        - 
+
+    27.9.2025 - sobota
+        - vytvori sa zatial len mapa ako obrazok sveta 
+            . generujem cez Herringbone Wang Tiles jak frajer ;3

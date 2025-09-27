@@ -7,6 +7,7 @@
 
 #include <glm/glm.hpp>
 
+#include "engine/world/herringbone_world_generation.hpp"
 #include "engine/particle/particle.hpp"
 #include "engine/entity.hpp"
 
@@ -41,7 +42,6 @@ public:
     World(int w, int h, int scale);
     ~World() = default;
 
-public:
     void update_world_loop();
     void update_world_decider(int x, int y);
 

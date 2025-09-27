@@ -10,6 +10,7 @@
 #include "engine/world/world.hpp"
 #include "engine/time_manager.hpp"
 #include "engine/entity.hpp"
+#include "engine/audio/audio_manager.hpp"
 
 class Controls
 {
@@ -18,6 +19,7 @@ private:
     Player *player;
     World *world;
     Time_Manager *time_manager;
+    Audio_Manager *audio_manager;
 
 public:
     glm::vec2 cursor_position;
@@ -31,6 +33,7 @@ public:
     void set_window(GLFWwindow *window);
     void set_world(World *world);
     void set_time_manager(Time_Manager *time_manager);
+    void set_audio_manager(Audio_Manager *audio_manager);
 
     // inputs
     void handle_input();
