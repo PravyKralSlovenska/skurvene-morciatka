@@ -29,6 +29,13 @@ bool IRenderer::render_everything()
     // update camera
     update_camera_uniforms();
 
+    // set projections
+    auto projection = camera->get_view_projection_matrix();
+    world_renderer->set_projection(projection);
+
+    // NA User Interface by nemal platit zoom
+    // text_renderer->set_projection(projection);
+
     // render renders
     world_renderer->render_world();
 
@@ -38,6 +45,7 @@ bool IRenderer::render_everything()
 
     text_renderer->render_text(std::to_string(time_manager->get_frames_per_second()) + "FPS", {10.0, 48.0f}, 1.0f, Color(255, 255, 255, 1.0f));
     text_renderer->render_text(std::to_string(time_manager->get_updates_per_second()) + "UPS", {10.0, 90.0f}, 1.0f, Color(255, 255, 255, 1.0f));
+    text_renderer->render_text(std::to_string(camera->get_zoom()) + " ZOOM", {10.0, 138.0f}, 1.0f, Color(255, 255, 255, 1.0f));
 
     if (time_manager->paused())
     {
@@ -54,7 +62,7 @@ void IRenderer::init_glfw()
 {
     glfwInit();
 
-    // glfwSwapInterval(0); // Vsync 0 = off, 1 = on
+    glfwSwapInterval(0); // Vsync 0 = off, 1 = on
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -159,4 +167,9 @@ void IRenderer::set_world(World *world)
 {
     this->world = world;
     world_renderer->set_world(world);
+}
+
+void IRenderer::set_camera(Camera *camera)
+{
+    this->camera = camera;
 }

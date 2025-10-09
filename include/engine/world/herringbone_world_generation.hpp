@@ -1,8 +1,6 @@
 #pragma once
 
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
 
 #include "stb/stb_herringbone_wang_tile.h"
 #include "others/utils.hpp"
@@ -10,14 +8,18 @@
 class Herringbone_World_Generation
 {
 private:
-    int seed;
+    const int seed;
     stbhw_tileset tileset;
+    unsigned char *image_data_buffer;
 
 public:
-    Herringbone_World_Generation(int seed);
+    Herringbone_World_Generation(const int seed);
     ~Herringbone_World_Generation();
 
     bool load_tileset_from_image(const char *path);
-
-    bool generate_map(const char *output_filename, int output_width, int output_height);
+    bool generate_map(const char *output_filename, const int output_width, const int output_height);
+    
+    unsigned char* get_image_data();
 };
+
+// stbhw_tile genesis_tile = {};

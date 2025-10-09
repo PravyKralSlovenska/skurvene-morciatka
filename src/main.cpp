@@ -7,6 +7,7 @@
 #include "engine/world/herringbone_world_generation.hpp"
 #include "engine/entity.hpp"
 #include "engine/controls.hpp"
+#include "engine/camera.hpp"
 #include "engine/audio/audio_manager.hpp"
 #include "engine/time_manager.hpp"
 
@@ -16,8 +17,8 @@
 Controls controls;
 Audio_Manager audio_manager;
 Time_Manager time_manager;
-// Random random;
-Player player("MISKO", {100.0f, 100.0f});
+Player player("MISKO", {500.0f, 400.0f});
+Camera camera(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT);
 World world(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT, Globals::PARTICLE_SIZE);
 IRenderer render(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT, Globals::PARTICLE_SIZE, &world);
 
@@ -29,50 +30,46 @@ enum GAME_STATES
     GAME,
     PAUSE,
     OPTIONS, // ???
+    LOADING, // ???
     END
 };
 
 int main()
 {
-    Herringbone_World_Generation world_gen(2);
-    world_gen.load_tileset_from_image("../tilesets/template_caves_limit_connectivity.png");
-    // world_gen.load_tileset_from_image("../tilesets/template_ref2_corner_caves.png");
-    // world_gen.load_tileset_from_image("../tilesets/template_sean_dungeon.png");
-    world_gen.generate_map("../map.png", 200, 200);
-
-    time_manager.init();
-    // time_manager.set_target_fps(5);
-    // time_manager.enable_fps_limiting();
-
     render.init();
     render.enable_blending();
     render.enable_ortho_projection();
     render.set_time_manager(&time_manager);
+    render.set_camera(&camera);
+    // render.print_render_info();
     // render.set_world(&world);
-    render.print_render_info();
+    
+    time_manager.init();
+    // time_manager.set_target_fps(5);
+    // time_manager.enable_fps_limiting();
 
     controls.set_player(&player);
     controls.set_window(render.get_window());
     controls.set_world(&world);
     controls.set_audio_manager(&audio_manager);
     controls.set_time_manager(&time_manager);
+    controls.set_camera(&camera);
 
-    world.entities.push_back(player);
+    // world.entities.push_back(player);
     // world.set_time_manager(&time_manager);
 
     // audio_manager.init();
     // audio_manager.set_player(&player);
     // audio_manager.set_time_manager(&time_manager);
-    // audio_manager.send_execute(Pending_Execute::Operations::LOAD, "background music", "../music/menu/KONTRAFAKT - Mulano stylos.mp3");
-    // audio_manager.send_execute(Pending_Execute::Operations::PLAY, "background music");
-    // audio_manager.send_execute(Pending_Execute::Operations::LOAD, "background music", "../music/menu/KONTRAFAKT - E.R.A.mp3");
-    // audio_manager.send_execute(Pending_Execute::Operations::LOAD, "background music", "../music/menu/H16 - Nemaj stres.mp3");
-    // audio_manager.send_execute(Pending_Execute::Operations::LOAD, "background music", "../music/end/KONTRAFAKT - Zme uplne na picu.mp3");
+    // audio_manager.send_execute(Pending_Execute::Operations::LOAD, "background music", "../music/menu/Rick Ross - Maybach Music III.mp3");
     // audio_manager.send_execute(Pending_Execute::Operations::PLAY, "background music");
 
     // game loop
-    // while (!render.should_close())
+    while (!render.should_close())
     {
+        // vsetko by malo dostavat parameter delta_time
+        // float delta_time = time_manager.get_delta();
+
         // time
         time_manager.time_update();
 
@@ -82,9 +79,13 @@ int main()
         // update sveta
         if (!time_manager.paused())
         {
-            world.update_world_loop();
+            // world.update_world_loop();
         }
 
+        // camera update
+        camera.follow_target(player.coords, 1);
+        camera.update();
+        
         // render everything
         render.render_everything();
 
@@ -92,7 +93,7 @@ int main()
         // mal by som kontrolovat activne sourcy a mazat ich
     }
 
-    audio_manager.send_execute(Pending_Execute::Operations::STOP);
+    // audio_manager.send_execute(Pending_Execute::Operations::STOP);
     // audio_manager.cleanup();
     render.cleanup();
 

@@ -22,20 +22,48 @@ void WorldCell::set_visited()
 World::World(int w, int h, int scale)
     : m_rows(h / scale), m_cols(w / scale), scale(scale), seed(1)
 {
-    std::cout << m_cols << ';' << m_rows << '\n';
-
     world_curr.reserve(m_rows * m_cols);
-    for (size_t i = 0; i < m_rows; ++i)
+    for (int i = 0; i < m_rows; ++i)
     {
-        for (size_t j = 0; j < m_cols; ++j)
+        for (int j = 0; j < m_cols; ++j)
         {
             world_curr.emplace_back(glm::vec2(j, i));
         }
     }
     world_next = world_curr;
 
-    // add_particle({30, 10}, Particle_Type::SAND, 5);
-    // add_particle({50, 10}, Particle_Type::WATER, 5);
+    // world_gen = std::make_unique<Herringbone_World_Generation>(seed);
+    // world_gen->load_tileset_from_image("../tilesets/template_caves_limit_connectivity.png");
+    // world_gen->generate_map("../map.png", 500, 500);
+    // will_figure_out_the_name_later();
+}
+
+void World::will_figure_out_the_name_later()
+{
+    unsigned char *pixels = world_gen->get_image_data();
+
+    for (int y = 0; y < 500; y++)
+    {
+        for (int x = 0; x < 500; x += 3)
+        {
+            int index = (y * 500 + x);
+
+            std::cout << "index: " << index << '\n';
+
+            int red = static_cast<int>(pixels[index]);
+            int green = static_cast<int>(pixels[index + 1]);
+            int blue = static_cast<int>(pixels[index + 2]);
+
+            if (red < 255 && green < 255 && blue < 255)
+            {
+                world_curr[index / 3].set_particle(create_stone());
+            }
+            else
+            {
+                world_curr[index / 3].set_particle(create_sand());
+            }
+        }
+    }
 }
 
 std::vector<WorldCell> &World::get_world_curr()
@@ -189,13 +217,6 @@ void World::swap_worlds()
 
 void World::update_world_loop()
 {
-    // apply physics?
-
-    // clear_world_next();
-
-    // add_particle({30, 10}, Particle_Type::SAND, 5);
-    // add_particle({50, 10}, Particle_Type::WATER, 5);
-
     for (int y = m_rows - 1; y >= 0; y--)
     {
         if (rand() % 2)
@@ -213,9 +234,6 @@ void World::update_world_loop()
             }
         }
     }
-
-    // swap_worlds();
-    // print_world();
 }
 
 void World::update_world_decider(int x, int y)

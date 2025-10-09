@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <algorithm>
 
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
@@ -10,7 +11,12 @@
 #include "engine/world/world.hpp"
 #include "engine/time_manager.hpp"
 #include "engine/entity.hpp"
+#include "engine/camera.hpp"
 #include "engine/audio/audio_manager.hpp"
+
+static float zoom = 1.0;
+void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
+// void click_callback() // ???
 
 class Controls
 {
@@ -20,6 +26,7 @@ private:
     World *world;
     Time_Manager *time_manager;
     Audio_Manager *audio_manager;
+    Camera *camera;
 
 public:
     glm::vec2 cursor_position;
@@ -34,6 +41,7 @@ public:
     void set_world(World *world);
     void set_time_manager(Time_Manager *time_manager);
     void set_audio_manager(Audio_Manager *audio_manager);
+    void set_camera(Camera *camera);
 
     // inputs
     void handle_input();
@@ -41,7 +49,6 @@ public:
     // keyboard controls
     void keyboard_input();
     void handle_inventory();
-
     void get_cursor_position();
 
     // mouse controls

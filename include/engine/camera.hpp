@@ -5,11 +5,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-
 /*
  * pohybovat budem hraca a kamera ho bude len prensaldevoat
  */
-
 class Camera
 {
 private:
@@ -17,10 +15,20 @@ private:
 
     float window_width, window_height;
 
+    float old_zoom = 1.0f;
     float zoom = 1.0f;
     float rotate = 0.0f;
 
+    /*
+     * View Matrix
+     * - je to priestor, ktory kamera vnima
+     */
     glm::mat4 view_matrix;
+    
+    /*
+     * Projection Matrix
+     * - 
+     */
     glm::mat4 projection_matrix;
 
     bool needs_update;
@@ -29,12 +37,13 @@ public:
     Camera(float window_width, float window_height);
     ~Camera() = default;
 
-    void set_zoom(float zoom);
-    void zoom_in(float zoom);
-    void zoom_out(float zoom);
+    void set_zoom(const float zoom);
+    void zoom_by(const float zoom); // mozes vlozit zaporne aj kladne hodnoty
+    void zoom_in(const float zoom);
+    void zoom_out(const float zoom);
 
-    void set_rotate(float rotate);
-    void rotate_camera(float degrees);
+    void set_rotate(const float rotate);
+    void rotate_camera(const float degrees);
 
     void set_position(glm::vec2 pos);
 

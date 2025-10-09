@@ -2,11 +2,11 @@
 
 namespace Globals
 {
-    // constexprfloat WINDOW_WIDTH = 1920.0;
-    // constexprfloat WINDOW_HEIGHT = 1080.0;
+    // constexpr float WINDOW_WIDTH = 1920.0;
+    // constexpr float WINDOW_HEIGHT = 1080.0;
     constexpr float WINDOW_WIDTH = 1000.0;
     constexpr float WINDOW_HEIGHT = 800.0;
-    constexpr float PARTICLE_SIZE = 5.0; // particle size 1 == seka idk preco
+    constexpr float PARTICLE_SIZE = 2.0; // particle size 1 == seka idk preco
 
     constexpr float CHUNK_WIDTH = 1000.0;
     constexpr float CHUNK_HEIGHT = 800.0;

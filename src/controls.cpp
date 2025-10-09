@@ -1,5 +1,21 @@
 #include "engine/controls.hpp"
 
+void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
+{
+    // TODO
+    // if (-15.0 < zoom && zoom < 15.0)
+
+    int offset = 2;
+    if (yoffset < 0)
+    {
+        zoom = std::abs(zoom -= offset);
+    }
+    else
+    {
+        zoom += offset;
+    }
+}
+
 Controls::Controls() {}
 
 void Controls::set_player(Player *player)
@@ -10,6 +26,11 @@ void Controls::set_player(Player *player)
 void Controls::set_window(GLFWwindow *window)
 {
     this->window = window;
+
+    // pretoze je to set funkcia tak ju dam do konstruktora
+    // keby bola niekde inde bolo by to furt ze nastavujem tu funkciu
+    // tiez je to tu lebo window je sucast toho
+    glfwSetScrollCallback(window, scroll_callback);
 }
 
 void Controls::set_world(World *world)
@@ -27,12 +48,19 @@ void Controls::set_audio_manager(Audio_Manager *audio_manager)
     this->audio_manager = audio_manager;
 }
 
+void Controls::set_camera(Camera *camera)
+{
+    this->camera = camera;
+}
+
 void Controls::handle_input()
 {
-    if (!window || !player)
+    if (!window || !player || !camera)
     {
         return;
     }
+
+    camera->set_zoom(zoom);
 
     double xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
@@ -58,7 +86,6 @@ void Controls::handle_input()
     {
         int x = (int)xpos / world->scale;
         int y = (int)ypos / world->scale;
-
 
         world->add_particle({x, y}, Particle_Type::EMPTY, 3);
     }

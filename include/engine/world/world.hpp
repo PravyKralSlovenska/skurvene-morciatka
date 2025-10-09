@@ -28,10 +28,15 @@ struct WorldCell
 class World
 {
 private:
-    int seed; // seed na generovanie nahodneho sveta?
+    int seed; // seed na generovanie nahodneho sveta
+    std::unique_ptr<Herringbone_World_Generation> world_gen;
+
     std::vector<WorldCell> world_curr;
     std::vector<WorldCell> world_next;
     // std::vector<> active_chunks;
+
+private:
+    void will_figure_out_the_name_later();
 
 public:
     size_t m_rows, m_cols;

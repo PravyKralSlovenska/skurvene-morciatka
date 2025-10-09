@@ -9,6 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "others/utils.hpp"
+
 class Shader
 {
 private:

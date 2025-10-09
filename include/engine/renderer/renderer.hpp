@@ -1,7 +1,6 @@
 #pragma once
 #include <iostream>
 #include <memory>
-// #include <sstream>
 
 #include "glad/gl.h"
 #include <GLFW/glfw3.h>
@@ -37,17 +36,12 @@ private:
     std::unique_ptr<Text_Renderer> text_renderer;
 
     // srandy co potrebuhjem
+    Camera *camera;
     Time_Manager *time_manager;
     World *world = nullptr;
 
     // cisto len na infosky
     std::vector<std::string> render_info;
-
-    // FPS
-    double start_time = glfwGetTime();
-    double previous_time = glfwGetTime();
-    int frame_count = 0;
-    int frame_count_display = 0;
 
 public:
     IRenderer(float window_width, float window_height, float scale, World *world);
@@ -60,10 +54,13 @@ public:
     void create_window();
     GLFWwindow *get_window();
 
+    // will render everthing
+    bool render_everything();
+    
     void set_time_manager(Time_Manager *time_manager);
     void set_world(World *world);
-
     void set_camera(Camera *camera);
+
     void update_camera_uniforms();
 
     void enable_blending();
@@ -77,7 +74,4 @@ public:
     // debug
     void print_render_info();
     void checkGLError(const char *operation);
-
-    // will render everthing
-    bool render_everything();
 };

@@ -847,6 +847,7 @@ CMakeFiles/morciatko.dir/src/controls.cpp.o
  /home/jakub/programko/cpp/skurvene-morciatka/src/controls.cpp
  /home/jakub/programko/cpp/skurvene-morciatka/include/KHR/khrplatform.h
  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/audio/audio_manager.hpp
+ /home/jakub/programko/cpp/skurvene-morciatka/include/engine/camera.hpp
  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/controls.hpp
  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/entity.hpp
  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/particle/particle.hpp
@@ -1192,6 +1193,8 @@ CMakeFiles/morciatko.dir/src/controls.cpp.o
  /usr/include/glm/detail/type_vec4.hpp
  /usr/include/glm/detail/type_vec4.inl
  /usr/include/glm/exponential.hpp
+ /usr/include/glm/ext/matrix_clip_space.hpp
+ /usr/include/glm/ext/matrix_clip_space.inl
  /usr/include/glm/ext/matrix_double2x2.hpp
  /usr/include/glm/ext/matrix_double2x2_precision.hpp
  /usr/include/glm/ext/matrix_double2x3.hpp
@@ -1228,6 +1231,12 @@ CMakeFiles/morciatko.dir/src/controls.cpp.o
  /usr/include/glm/ext/matrix_float4x3_precision.hpp
  /usr/include/glm/ext/matrix_float4x4.hpp
  /usr/include/glm/ext/matrix_float4x4_precision.hpp
+ /usr/include/glm/ext/matrix_projection.hpp
+ /usr/include/glm/ext/matrix_projection.inl
+ /usr/include/glm/ext/matrix_transform.hpp
+ /usr/include/glm/ext/matrix_transform.inl
+ /usr/include/glm/ext/scalar_constants.hpp
+ /usr/include/glm/ext/scalar_constants.inl
  /usr/include/glm/ext/scalar_int_sized.hpp
  /usr/include/glm/ext/scalar_uint_sized.hpp
  /usr/include/glm/ext/vector_bool2.hpp
@@ -1263,6 +1272,10 @@ CMakeFiles/morciatko.dir/src/controls.cpp.o
  /usr/include/glm/fwd.hpp
  /usr/include/glm/geometric.hpp
  /usr/include/glm/glm.hpp
+ /usr/include/glm/gtc/constants.hpp
+ /usr/include/glm/gtc/constants.inl
+ /usr/include/glm/gtc/matrix_transform.hpp
+ /usr/include/glm/gtc/matrix_transform.inl
  /usr/include/glm/integer.hpp
  /usr/include/glm/mat2x2.hpp
  /usr/include/glm/mat2x3.hpp
@@ -5647,7 +5660,6 @@ CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o
  /usr/include/c++/15.2.1/cstdio
  /usr/include/c++/15.2.1/cstdlib
  /usr/include/c++/15.2.1/cstring
- /usr/include/c++/15.2.1/ctime
  /usr/include/c++/15.2.1/cwchar
  /usr/include/c++/15.2.1/cwctype
  /usr/include/c++/15.2.1/debug/assertions.h
@@ -6604,7 +6616,6 @@ CMakeFiles/morciatko.dir/src/world/herringbone_world_generation.cpp.o
  /usr/include/c++/15.2.1/cstdint
  /usr/include/c++/15.2.1/cstdio
  /usr/include/c++/15.2.1/cstdlib
- /usr/include/c++/15.2.1/ctime
  /usr/include/c++/15.2.1/cwchar
  /usr/include/c++/15.2.1/cwctype
  /usr/include/c++/15.2.1/debug/assertions.h

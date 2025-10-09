@@ -18,32 +18,42 @@ void Camera::move_to(glm::vec2 pos)
     needs_update = true;
 }
 
-void Camera::set_rotate(float degrees)
+void Camera::set_rotate(const float degrees)
 {
     rotate = degrees;
     needs_update = true;
 }
 
-void Camera::rotate_camera(float degrees)
+void Camera::rotate_camera(const float degrees)
 {
     rotate += degrees;
     needs_update = true;
 }
 
-void Camera::set_zoom(float zoom)
+void Camera::set_zoom(const float zoom)
 {
-    this->zoom = zoom;
+    if (this->old_zoom != zoom)
+    {
+        this->old_zoom = this->zoom;
+        this->zoom = zoom;
+        needs_update = true;
+    }
+}
+
+void Camera::zoom_in(const float zoom)
+{
+    
+}
+
+void Camera::zoom_out(const float zoom)
+{
+
+}
+
+void Camera::zoom_by(const float zoom)
+{
+    this->zoom += zoom;
     needs_update = true;
-}
-
-void Camera::zoom_in(float zoom)
-{
-
-}
-
-void Camera::zoom_out(float zoom)
-{
-
 }
 
 glm::vec2 Camera::get_position()

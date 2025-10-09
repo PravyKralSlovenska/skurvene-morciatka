@@ -1,7 +1,9 @@
 #include "engine/world/herringbone_world_generation.hpp"
 
+#define STB_HBWANG_RAND() Random().get_int_from_range(0, 200)
+// #define STB_HBWANG_MAX_X 10000
+// #define STB_HBWANG_MAX_Y 10000
 #define STB_HERRINGBONE_WANG_TILE_IMPLEMENTATION
-#define STB_HBWANG_RAND() Random().get_int_from_range(1, 128)
 #include "stb/stb_herringbone_wang_tile.h"
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -10,11 +12,12 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb/stb_image_write.h"
 
-Herringbone_World_Generation::Herringbone_World_Generation(int seed)
+Herringbone_World_Generation::Herringbone_World_Generation(const int seed)
     : seed(seed) {}
 
 Herringbone_World_Generation::~Herringbone_World_Generation()
 {
+    delete[] image_data_buffer;
     if (&tileset)
     {
         stbhw_free_tileset(&tileset);
@@ -23,8 +26,8 @@ Herringbone_World_Generation::~Herringbone_World_Generation()
 
 bool Herringbone_World_Generation::load_tileset_from_image(const char *path)
 {
-    int width, height, channels;
-    unsigned char *image_data = stbi_load(path, &width, &height, &channels, 3);
+    int width, height;
+    unsigned char *image_data = stbi_load(path, &width, &height, nullptr, 3);
 
     if (!image_data)
     {
@@ -32,23 +35,21 @@ bool Herringbone_World_Generation::load_tileset_from_image(const char *path)
         return false;
     }
 
-    int rv = stbhw_build_tileset_from_image(&tileset, image_data, width * 3, width, height);
-
-    stbi_image_free(image_data);
-
-    if (rv != 1)
+    if (!stbhw_build_tileset_from_image(&tileset, image_data, width * 3, width, height))
     {
         std::cerr << "HW ERROR: getting a tileset\n";
         return false;
     }
 
+    stbi_image_free(image_data);
+
     std::cout << "HW INFO: uspech!\n";
     return true;
 }
 
-bool Herringbone_World_Generation::generate_map(const char *output_filename, int output_width, int output_height)
+bool Herringbone_World_Generation::generate_map(const char *output_filename, const int output_width, const int output_height)
 {
-    unsigned char *image_data_buffer = new unsigned char[output_width * output_height * 3];
+    image_data_buffer = (unsigned char*)malloc(3 * output_width * output_height);
     stbhw_generate_image(&tileset, nullptr, image_data_buffer, output_width * 3, output_width, output_height);
 
     if (stbi_write_png(output_filename, output_width, output_height, 3, image_data_buffer, output_width * 3))
@@ -60,7 +61,10 @@ bool Herringbone_World_Generation::generate_map(const char *output_filename, int
         std::cerr << "Failed to save map to: " << output_filename << '\n';
     }
 
-    delete[] image_data_buffer;
-
     return true;
+}
+
+unsigned char *Herringbone_World_Generation::get_image_data()
+{
+    return image_data_buffer;
 }
