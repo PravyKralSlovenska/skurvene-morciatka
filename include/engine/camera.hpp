@@ -19,6 +19,8 @@ private:
     float zoom = 1.0f;
     float rotate = 0.0f;
 
+    glm::vec2 target_pos;
+
     /*
      * View Matrix
      * - je to priestor, ktory kamera vnima
@@ -50,7 +52,7 @@ public:
     void move_by(float dx, float dy);
     void move_to(glm::vec2 pos);
 
-    void follow_target(glm::vec2 target_pos, float speed);
+    void follow_target(const glm::vec2 &target_pos, float speed);
 
     void update();
 

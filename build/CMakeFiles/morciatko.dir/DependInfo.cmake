@@ -9,7 +9,10 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/jakub/programko/cpp/skurvene-morciatka/src/gl.c" "CMakeFiles/morciatko.dir/src/gl.c.o" "gcc" "CMakeFiles/morciatko.dir/src/gl.c.o.d"
-  "/home/jakub/programko/cpp/skurvene-morciatka/src/audio_manager.cpp" "CMakeFiles/morciatko.dir/src/audio_manager.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/audio_manager.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_buffer.cpp" "CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_manager.cpp" "CMakeFiles/morciatko.dir/src/audio/audio_manager.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/audio/audio_manager.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_source.cpp" "CMakeFiles/morciatko.dir/src/audio/audio_source.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/audio/audio_source.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/src/audio/listener.cpp" "CMakeFiles/morciatko.dir/src/audio/listener.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/audio/listener.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/camera.cpp" "CMakeFiles/morciatko.dir/src/camera.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/camera.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/controls.cpp" "CMakeFiles/morciatko.dir/src/controls.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/controls.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/entity.cpp" "CMakeFiles/morciatko.dir/src/entity.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/entity.cpp.o.d"

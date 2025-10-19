@@ -89,8 +89,6 @@ void World_Renderer::fill_vertices()
         indices.push_back(last + 2);
         indices.push_back(last + 3);
     }
-
-    // world->swap_worlds();
 }
 
 void World_Renderer::render_world()

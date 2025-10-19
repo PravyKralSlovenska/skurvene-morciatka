@@ -2,4 +2,5 @@
 
 int Physics_Formulas::get_distance()
 {
+    return 1;
 }

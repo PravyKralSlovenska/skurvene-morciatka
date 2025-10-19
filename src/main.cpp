@@ -58,11 +58,11 @@ int main()
     // world.entities.push_back(player);
     // world.set_time_manager(&time_manager);
 
-    // audio_manager.init();
-    // audio_manager.set_player(&player);
-    // audio_manager.set_time_manager(&time_manager);
-    // audio_manager.send_execute(Pending_Execute::Operations::LOAD, "background music", "../music/menu/Rick Ross - Maybach Music III.mp3");
-    // audio_manager.send_execute(Pending_Execute::Operations::PLAY, "background music");
+    audio_manager.init();
+    audio_manager.set_player(&player);
+    audio_manager.set_time_manager(&time_manager);
+    audio_manager.send_execute(Pending_Execute::Operations::LOAD, "background music", "../music/menu/Rick Ross - Maybach Music III.mp3");
+    audio_manager.send_execute(Pending_Execute::Operations::PLAY, "background music");
 
     // game loop
     while (!render.should_close())
@@ -79,7 +79,7 @@ int main()
         // update sveta
         if (!time_manager.paused())
         {
-            // world.update_world_loop();
+            world.update_world_loop();
         }
 
         // camera update
@@ -88,12 +88,9 @@ int main()
         
         // render everything
         render.render_everything();
-
-        // audio
-        // mal by som kontrolovat activne sourcy a mazat ich
     }
 
-    // audio_manager.send_execute(Pending_Execute::Operations::STOP);
+    audio_manager.send_execute(Pending_Execute::Operations::STOP);
     // audio_manager.cleanup();
     render.cleanup();
 

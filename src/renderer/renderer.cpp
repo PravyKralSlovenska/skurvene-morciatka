@@ -30,10 +30,10 @@ bool IRenderer::render_everything()
     update_camera_uniforms();
 
     // set projections
-    auto projection = camera->get_view_projection_matrix();
-    world_renderer->set_projection(projection);
+    glm::mat4 view_projection = camera->get_view_projection_matrix();
+    world_renderer->set_projection(view_projection);
 
-    // NA User Interface by nemal platit zoom
+    // Na User Interface by nemal platit zoom
     // text_renderer->set_projection(projection);
 
     // render renders
@@ -62,10 +62,10 @@ void IRenderer::init_glfw()
 {
     glfwInit();
 
-    glfwSwapInterval(0); // Vsync 0 = off, 1 = on
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwSwapInterval(0); // Vsync 0 = off, 1 = on
 }
 
 void IRenderer::init_glad()
@@ -121,10 +121,9 @@ void IRenderer::enable_blending()
 
 void IRenderer::enable_ortho_projection()
 {
-    // In your main render loop, use bottom-up projection:
     glm::mat4 projection = glm::ortho(0.0f, m_window_width, m_window_height, 0.0f);
 
-    // set projection to all other renderers
+    // treba nastavit pre vsetky rendere projection
     text_renderer->set_projection(projection);
     world_renderer->set_projection(projection);
 

@@ -121,6 +121,7 @@ co som sa naucil:
     Voxel Engine - 
         . kazdy moj "particle" je ako kocka v minecrafte
     HEADER FILES - ako funguju, nejaky ten best practise, aj ako compiler pracuje so subormi
+        . 
         . vedia sa zacyklovat  (kokotiny) dependuje na depend a opacne
     Globalne premenne je najlepsie pouzivat len v main.cpp, kvoli hierarchi. Je to lepsie i na 
         . testy, flexibilitu, udzbu a znovu pouzitie

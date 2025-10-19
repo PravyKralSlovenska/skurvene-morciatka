@@ -129,29 +129,101 @@ morciatko/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/build
 .PHONY : morciatko/fast
 
-src/audio_manager.o: src/audio_manager.cpp.o
-.PHONY : src/audio_manager.o
+src/audio/audio_buffer.o: src/audio/audio_buffer.cpp.o
+.PHONY : src/audio/audio_buffer.o
 
 # target to build an object file
-src/audio_manager.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio_manager.cpp.o
-.PHONY : src/audio_manager.cpp.o
+src/audio/audio_buffer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.o
+.PHONY : src/audio/audio_buffer.cpp.o
 
-src/audio_manager.i: src/audio_manager.cpp.i
-.PHONY : src/audio_manager.i
+src/audio/audio_buffer.i: src/audio/audio_buffer.cpp.i
+.PHONY : src/audio/audio_buffer.i
 
 # target to preprocess a source file
-src/audio_manager.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio_manager.cpp.i
-.PHONY : src/audio_manager.cpp.i
+src/audio/audio_buffer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.i
+.PHONY : src/audio/audio_buffer.cpp.i
 
-src/audio_manager.s: src/audio_manager.cpp.s
-.PHONY : src/audio_manager.s
+src/audio/audio_buffer.s: src/audio/audio_buffer.cpp.s
+.PHONY : src/audio/audio_buffer.s
 
 # target to generate assembly for a file
-src/audio_manager.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio_manager.cpp.s
-.PHONY : src/audio_manager.cpp.s
+src/audio/audio_buffer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.s
+.PHONY : src/audio/audio_buffer.cpp.s
+
+src/audio/audio_manager.o: src/audio/audio_manager.cpp.o
+.PHONY : src/audio/audio_manager.o
+
+# target to build an object file
+src/audio/audio_manager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/audio_manager.cpp.o
+.PHONY : src/audio/audio_manager.cpp.o
+
+src/audio/audio_manager.i: src/audio/audio_manager.cpp.i
+.PHONY : src/audio/audio_manager.i
+
+# target to preprocess a source file
+src/audio/audio_manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/audio_manager.cpp.i
+.PHONY : src/audio/audio_manager.cpp.i
+
+src/audio/audio_manager.s: src/audio/audio_manager.cpp.s
+.PHONY : src/audio/audio_manager.s
+
+# target to generate assembly for a file
+src/audio/audio_manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/audio_manager.cpp.s
+.PHONY : src/audio/audio_manager.cpp.s
+
+src/audio/audio_source.o: src/audio/audio_source.cpp.o
+.PHONY : src/audio/audio_source.o
+
+# target to build an object file
+src/audio/audio_source.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/audio_source.cpp.o
+.PHONY : src/audio/audio_source.cpp.o
+
+src/audio/audio_source.i: src/audio/audio_source.cpp.i
+.PHONY : src/audio/audio_source.i
+
+# target to preprocess a source file
+src/audio/audio_source.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/audio_source.cpp.i
+.PHONY : src/audio/audio_source.cpp.i
+
+src/audio/audio_source.s: src/audio/audio_source.cpp.s
+.PHONY : src/audio/audio_source.s
+
+# target to generate assembly for a file
+src/audio/audio_source.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/audio_source.cpp.s
+.PHONY : src/audio/audio_source.cpp.s
+
+src/audio/listener.o: src/audio/listener.cpp.o
+.PHONY : src/audio/listener.o
+
+# target to build an object file
+src/audio/listener.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/listener.cpp.o
+.PHONY : src/audio/listener.cpp.o
+
+src/audio/listener.i: src/audio/listener.cpp.i
+.PHONY : src/audio/listener.i
+
+# target to preprocess a source file
+src/audio/listener.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/listener.cpp.i
+.PHONY : src/audio/listener.cpp.i
+
+src/audio/listener.s: src/audio/listener.cpp.s
+.PHONY : src/audio/listener.s
+
+# target to generate assembly for a file
+src/audio/listener.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/listener.cpp.s
+.PHONY : src/audio/listener.cpp.s
 
 src/camera.o: src/camera.cpp.o
 .PHONY : src/camera.o
@@ -738,9 +810,18 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... morciatko"
-	@echo "... src/audio_manager.o"
-	@echo "... src/audio_manager.i"
-	@echo "... src/audio_manager.s"
+	@echo "... src/audio/audio_buffer.o"
+	@echo "... src/audio/audio_buffer.i"
+	@echo "... src/audio/audio_buffer.s"
+	@echo "... src/audio/audio_manager.o"
+	@echo "... src/audio/audio_manager.i"
+	@echo "... src/audio/audio_manager.s"
+	@echo "... src/audio/audio_source.o"
+	@echo "... src/audio/audio_source.i"
+	@echo "... src/audio/audio_source.s"
+	@echo "... src/audio/listener.o"
+	@echo "... src/audio/listener.i"
+	@echo "... src/audio/listener.s"
 	@echo "... src/camera.o"
 	@echo "... src/camera.i"
 	@echo "... src/camera.s"

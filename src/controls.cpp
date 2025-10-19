@@ -5,7 +5,7 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
     // TODO
     // if (-15.0 < zoom && zoom < 15.0)
 
-    int offset = 2;
+    float offset = 0.1;
     if (yoffset < 0)
     {
         zoom = std::abs(zoom -= offset);

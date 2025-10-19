@@ -248,11 +248,11 @@ void World::update_world_decider(int x, int y)
     switch (cell.particle.state)
     {
     case Particle_State::SOLID:
-        move_solid(cell);
+        // move_solid(cell);
         break;
 
     case Particle_State::LIQUID:
-        move_liquid(cell);
+        // move_liquid(cell);
         break;
 
     case Particle_State::GAS:
