@@ -17,10 +17,10 @@
 Controls controls;
 Audio_Manager audio_manager;
 Time_Manager time_manager;
+World world;
 Player player("MISKO", {500.0f, 400.0f});
 Camera camera(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT);
-World world(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT, Globals::PARTICLE_SIZE);
-IRenderer render(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT, Globals::PARTICLE_SIZE, &world);
+IRenderer render(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT);
 
 // chcem pouzit na nejake dalsie renderovanie
 // napriklad chcem vyrenderovat obrazovku ked je hra zastavena ci som len v menu
@@ -39,10 +39,9 @@ int main()
     render.init();
     render.enable_blending();
     render.enable_ortho_projection();
+    render.set_world(&world);
     render.set_time_manager(&time_manager);
     render.set_camera(&camera);
-    // render.print_render_info();
-    // render.set_world(&world);
     
     time_manager.init();
     // time_manager.set_target_fps(5);
@@ -79,7 +78,7 @@ int main()
         // update sveta
         if (!time_manager.paused())
         {
-            world.update_world_loop();
+            // world.update_world_loop();
         }
 
         // camera update

@@ -729,30 +729,6 @@ src/utils.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/utils.cpp.s
 .PHONY : src/utils.cpp.s
 
-src/world/chunk.o: src/world/chunk.cpp.o
-.PHONY : src/world/chunk.o
-
-# target to build an object file
-src/world/chunk.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/chunk.cpp.o
-.PHONY : src/world/chunk.cpp.o
-
-src/world/chunk.i: src/world/chunk.cpp.i
-.PHONY : src/world/chunk.i
-
-# target to preprocess a source file
-src/world/chunk.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/chunk.cpp.i
-.PHONY : src/world/chunk.cpp.i
-
-src/world/chunk.s: src/world/chunk.cpp.s
-.PHONY : src/world/chunk.s
-
-# target to generate assembly for a file
-src/world/chunk.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/chunk.cpp.s
-.PHONY : src/world/chunk.cpp.s
-
 src/world/herringbone_world_generation.o: src/world/herringbone_world_generation.cpp.o
 .PHONY : src/world/herringbone_world_generation.o
 
@@ -800,6 +776,54 @@ src/world/world.s: src/world/world.cpp.s
 src/world/world.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world.cpp.s
 .PHONY : src/world/world.cpp.s
+
+src/world/world_cell.o: src/world/world_cell.cpp.o
+.PHONY : src/world/world_cell.o
+
+# target to build an object file
+src/world/world_cell.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world_cell.cpp.o
+.PHONY : src/world/world_cell.cpp.o
+
+src/world/world_cell.i: src/world/world_cell.cpp.i
+.PHONY : src/world/world_cell.i
+
+# target to preprocess a source file
+src/world/world_cell.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world_cell.cpp.i
+.PHONY : src/world/world_cell.cpp.i
+
+src/world/world_cell.s: src/world/world_cell.cpp.s
+.PHONY : src/world/world_cell.s
+
+# target to generate assembly for a file
+src/world/world_cell.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world_cell.cpp.s
+.PHONY : src/world/world_cell.cpp.s
+
+src/world/world_chunk.o: src/world/world_chunk.cpp.o
+.PHONY : src/world/world_chunk.o
+
+# target to build an object file
+src/world/world_chunk.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world_chunk.cpp.o
+.PHONY : src/world/world_chunk.cpp.o
+
+src/world/world_chunk.i: src/world/world_chunk.cpp.i
+.PHONY : src/world/world_chunk.i
+
+# target to preprocess a source file
+src/world/world_chunk.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world_chunk.cpp.i
+.PHONY : src/world/world_chunk.cpp.i
+
+src/world/world_chunk.s: src/world/world_chunk.cpp.s
+.PHONY : src/world/world_chunk.s
+
+# target to generate assembly for a file
+src/world/world_chunk.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world_chunk.cpp.s
+.PHONY : src/world/world_chunk.cpp.s
 
 # Help Target
 help:
@@ -885,15 +909,18 @@ help:
 	@echo "... src/utils.o"
 	@echo "... src/utils.i"
 	@echo "... src/utils.s"
-	@echo "... src/world/chunk.o"
-	@echo "... src/world/chunk.i"
-	@echo "... src/world/chunk.s"
 	@echo "... src/world/herringbone_world_generation.o"
 	@echo "... src/world/herringbone_world_generation.i"
 	@echo "... src/world/herringbone_world_generation.s"
 	@echo "... src/world/world.o"
 	@echo "... src/world/world.i"
 	@echo "... src/world/world.s"
+	@echo "... src/world/world_cell.o"
+	@echo "... src/world/world_cell.i"
+	@echo "... src/world/world_cell.s"
+	@echo "... src/world/world_chunk.o"
+	@echo "... src/world/world_chunk.i"
+	@echo "... src/world/world_chunk.s"
 .PHONY : help
 
 

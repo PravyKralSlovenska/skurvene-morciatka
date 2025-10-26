@@ -2,80 +2,46 @@
 
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 #include <memory>
-#include <map>
-
 #include <glm/glm.hpp>
 
+#include "engine/world/world_cell.hpp"
+#include "engine/world/world_chunk.hpp"
 #include "engine/world/herringbone_world_generation.hpp"
 #include "engine/particle/particle.hpp"
 #include "engine/entity.hpp"
 
-struct WorldCell
-{
-    glm::vec2 coords;
-    Particle particle;
-
-    WorldCell(glm::vec2);
-    ~WorldCell() = default;
-
-    bool visited = false;
-
-    void set_visited();
-    void set_particle(Particle particle);
-};
-
+/*
+ * WORLD
+ * - nig
+ */
 class World
 {
 private:
     int seed; // seed na generovanie nahodneho sveta
+    // const Chunk GENESIS_CHUNK(glm::ivec2(0, 0));
+
     std::unique_ptr<Herringbone_World_Generation> world_gen;
+    // std::unordered_map<glm::ivec2, Chunk*> world;
+    std::vector<Chunk*> world;
+    std::vector<Chunk*> active_chunks;
 
-    std::vector<WorldCell> world_curr;
-    std::vector<WorldCell> world_next;
-    // std::vector<> active_chunks;
+private: 
+    int get_index(int x, int y);
 
-private:
-    void will_figure_out_the_name_later();
-
-public:
-    size_t m_rows, m_cols;
-    int scale;
-    std::vector<Entity> entities;
+    Chunk create_chunk();
+    void add_chunk(Chunk chunk);
+    void remove_chunk(int index);
 
 public:
-    World(int w, int h, int scale);
+    int width, height; // width and height are in chunks (world is 3 chunks long and 5 chunks high)
+    float scale;
+
+public:
+    World();
     ~World() = default;
 
-    void update_world_loop();
-    void update_world_decider(int x, int y);
-
-    void clear_world_curr();
-    void clear_world_next();
-
-    bool in_world_grid(int x, int y);
-
-    WorldCell &get_worldcell_curr(int x, int y);
-    WorldCell &get_worldcell_next(int x, int y);
-    WorldCell &get_worldcell_curr(int index);
-    WorldCell &get_worldcell_next(int index);
-
-    void add_particle(glm::vec2 coords, Particle_Type type, int size);
-    void swap_worlds();
-    
-    void swap_particles(WorldCell &current_cell, WorldCell &target_cell);
-    glm::vec2 direction_to_offset(Particle_Movement direction);
-
-    glm::vec2 find_place_to_fall(WorldCell &cell);
-
-    void move_solid(WorldCell &cell);
-    void move_liquid(WorldCell &cell);
-    void move_gas(WorldCell &cell);
-
-    std::vector<WorldCell> &get_world_curr();
-    std::vector<WorldCell> &get_world_next();
-
-    size_t get_index(int x, int y);
-    void print_world();
-    void debug_particle(int x, int y);
+    Chunk& get_chunk(int x, int y);
+    Chunk& get_chunk(int index);
 };

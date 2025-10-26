@@ -23,7 +23,6 @@ class IRenderer
 {
 private:
     float m_window_width, m_window_height;
-    float scale;
     GLFWwindow *window;
 
     // projection
@@ -38,13 +37,13 @@ private:
     // srandy co potrebuhjem
     Camera *camera;
     Time_Manager *time_manager;
-    World *world = nullptr;
+    World *world;
 
     // cisto len na infosky
     std::vector<std::string> render_info;
 
 public:
-    IRenderer(float window_width, float window_height, float scale, World *world);
+    IRenderer(float window_width, float window_height);
     ~IRenderer() = default;
 
     void init();

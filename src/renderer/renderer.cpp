@@ -1,7 +1,7 @@
 #include "engine/renderer/renderer.hpp"
 
-IRenderer::IRenderer(float window_width, float window_height, float scale, World *world)
-    : m_window_width(window_width), m_window_height(window_height), scale(scale), world(world) {}
+IRenderer::IRenderer(float window_width, float window_height)
+    : m_window_width(window_width), m_window_height(window_height) {}
 
 void IRenderer::init()
 {

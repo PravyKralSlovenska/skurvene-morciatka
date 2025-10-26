@@ -151,12 +151,6 @@
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/world/chunk.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/chunk.cpp",
-  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/chunk.cpp",
-  "output": "CMakeFiles/morciatko.dir/src/world/chunk.cpp.o"
-},
-{
-  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
   "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/world/herringbone_world_generation.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/herringbone_world_generation.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/herringbone_world_generation.cpp",
   "output": "CMakeFiles/morciatko.dir/src/world/herringbone_world_generation.cpp.o"
@@ -166,5 +160,17 @@
   "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/world/world.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world.cpp",
   "output": "CMakeFiles/morciatko.dir/src/world/world.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/world/world_cell.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_cell.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world_cell.cpp",
+  "output": "CMakeFiles/morciatko.dir/src/world/world_cell.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/world/world_chunk.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_chunk.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world_chunk.cpp",
+  "output": "CMakeFiles/morciatko.dir/src/world/world_chunk.cpp.o"
 }
 ]

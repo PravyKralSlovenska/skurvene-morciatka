@@ -108,7 +108,8 @@
 				24,
 				25,
 				26,
-				27
+				27,
+				28
 			]
 		},
 		{
@@ -226,7 +227,8 @@
 				24,
 				25,
 				26,
-				27
+				27,
+				28
 			]
 		}
 	],
@@ -385,12 +387,6 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/world/chunk.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
 			"path" : "src/world/herringbone_world_generation.cpp",
 			"sourceGroupIndex" : 0
 		},
@@ -398,6 +394,18 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/world/world.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/world/world_cell.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/world/world_chunk.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

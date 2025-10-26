@@ -65,30 +65,30 @@ void World_Renderer::clear_buffers()
 
 void World_Renderer::fill_vertices()
 {
-    for (const auto &cell : world->get_world_curr())
-    {
-        if (cell.particle.type == Particle_Type::EMPTY)
-        {
-            continue;
-        }
+    // for (const auto &cell : world->get_world_curr())
+    // {
+    //     if (cell.particle.type == Particle_Type::EMPTY)
+    //     {
+    //         continue;
+    //     }
 
-        auto x = cell.coords.x * world->scale;
-        auto y = cell.coords.y * world->scale;
+    //     auto x = cell.coords.x * world->scale;
+    //     auto y = cell.coords.y * world->scale;
 
-        unsigned int last = vertices.size();
+    //     unsigned int last = vertices.size();
 
-        vertices.emplace_back(x, y, cell.particle.color);
-        vertices.emplace_back(x + world->scale, y, cell.particle.color);
-        vertices.emplace_back(x + world->scale, y + world->scale, cell.particle.color);
-        vertices.emplace_back(x, y + world->scale, cell.particle.color);
+    //     vertices.emplace_back(x, y, cell.particle.color);
+    //     vertices.emplace_back(x + world->scale, y, cell.particle.color);
+    //     vertices.emplace_back(x + world->scale, y + world->scale, cell.particle.color);
+    //     vertices.emplace_back(x, y + world->scale, cell.particle.color);
 
-        indices.push_back(last);
-        indices.push_back(last + 1);
-        indices.push_back(last + 2);
-        indices.push_back(last);
-        indices.push_back(last + 2);
-        indices.push_back(last + 3);
-    }
+    //     indices.push_back(last);
+    //     indices.push_back(last + 1);
+    //     indices.push_back(last + 2);
+    //     indices.push_back(last);
+    //     indices.push_back(last + 2);
+    //     indices.push_back(last + 3);
+    // }
 }
 
 void World_Renderer::render_world()
