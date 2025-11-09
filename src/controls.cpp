@@ -68,26 +68,26 @@ void Controls::handle_input()
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
     {
-        int x = (int)xpos / world->scale;
-        int y = (int)ypos / world->scale;
+        // int x = (int)xpos / world->scale;
+        // int y = (int)ypos / world->scale;
 
-        world->add_particle({x, y}, Particle_Type::STONE, 3);
+        // world->add_particle({x, y}, Particle_Type::STONE, 3);
     }
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
     {
-        int x = (int)xpos / world->scale;
-        int y = (int)ypos / world->scale;
+        // int x = (int)xpos / world->scale;
+        // int y = (int)ypos / world->scale;
 
-        world->add_particle({x, y}, selected_particle, 3);
+        // world->add_particle({x, y}, selected_particle, 3);
     }
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_4) == GLFW_PRESS)
     {
-        int x = (int)xpos / world->scale;
-        int y = (int)ypos / world->scale;
+        // int x = (int)xpos / world->scale;
+        // int y = (int)ypos / world->scale;
 
-        world->add_particle({x, y}, Particle_Type::EMPTY, 3);
+        // world->add_particle({x, y}, Particle_Type::EMPTY, 3);
     }
 
     keyboard_input();
@@ -117,7 +117,7 @@ void Controls::keyboard_input()
 
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
     {
-        world->clear_world_curr();
+        // world->clear_world_curr();
     }
 
     if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)

@@ -43,9 +43,12 @@ bool IRenderer::render_everything()
     // text_renderer->render_text("MISKO POZOR ZITRA! :3", {400.0f, 400.0f}, 1.0f, Color(255, 255, 255, 1.0f));
     // text_renderer->render_text(std::to_string(frame_count_display) + "FPS", {10.0f, 48.0f}, 1.0f, Color(255, 255, 255, 1));
 
-    text_renderer->render_text(std::to_string(time_manager->get_frames_per_second()) + "FPS", {10.0, 48.0f}, 1.0f, Color(255, 255, 255, 1.0f));
-    text_renderer->render_text(std::to_string(time_manager->get_updates_per_second()) + "UPS", {10.0, 90.0f}, 1.0f, Color(255, 255, 255, 1.0f));
-    text_renderer->render_text(std::to_string(camera->get_zoom()) + " ZOOM", {10.0, 138.0f}, 1.0f, Color(255, 255, 255, 1.0f));
+    text_renderer->render_text(std::to_string(time_manager->get_frames_per_second()) + "FPS", {10.0, 50.0f}, 1.0f, Color(255, 255, 255, 1.0f));
+    text_renderer->render_text(std::to_string(time_manager->get_updates_per_second()) + "UPS", {10.0, 100.0f}, 1.0f, Color(255, 255, 255, 1.0f));
+    text_renderer->render_text(std::to_string(camera->get_zoom()) + " ZOOM", {10.0, 150.0f}, 1.0f, Color(255, 255, 255, 1.0f));
+
+    auto coords = camera->get_position();
+    text_renderer->render_text(std::to_string(coords.x) + ' ' + std::to_string(coords.y), {10.0, 200.0f}, 1.0f, Color(255, 255, 255, 1.0f));
 
     if (time_manager->paused())
     {

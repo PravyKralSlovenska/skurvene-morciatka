@@ -3,7 +3,7 @@
 World_Renderer::World_Renderer(World *world)
     : world(world) {}
 
-World_Renderer::~World_Renderer() {}
+// World_Renderer::~World_Renderer() {}
 
 void World_Renderer::init()
 {
@@ -24,11 +24,32 @@ void World_Renderer::init()
     VAO->setup_vertex_attribute_pointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, color));
 
     shader = std::make_unique<Shader>("../shaders/vertex.glsl", "../shaders/fragment.glsl");
+
+    chunk_VAO = std::make_unique<VERTEX_ARRAY_OBJECT>();
+    chunk_VAO->bind();
+
+    chunk_VBO = std::make_unique<VERTEX_BUFFER_OBJECT>();
+    chunk_VBO->bind();
+
+    // chunk_EBO = std::make_unique<ELEMENT_ARRAY_BUFFER>();
+    // chunk_EBO->bind();
+
+    // pre suradnice
+    chunk_VAO->setup_vertex_attribute_pointer(0, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
+    // pre farbu
+    chunk_VAO->setup_vertex_attribute_pointer(1, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(2 * sizeof(float)));
+
+    chunk_shader = std::make_unique<Shader>("../shaders/chunk_vertex.glsl", "../shaders/chunk_fragment.glsl");
 }
 
 void World_Renderer::set_world(World *world)
 {
     this->world = world;
+}
+
+void World_Renderer::set_projection(glm::mat4 projection)
+{
+    this->projection = projection;
 }
 
 void World_Renderer::render_test_triangle()
@@ -91,33 +112,91 @@ void World_Renderer::fill_vertices()
     // }
 }
 
-void World_Renderer::render_world()
+void World_Renderer::render_chunks()
 {
-    fill_vertices();
+    // active chunks will be green
+    // all other chunks will be red
 
-    if (vertices.empty())
+    std::vector<float> chunk_vertices;
+
+    auto chunks = world->get_chunks();
+
+    for (auto i = chunks->begin(); i != chunks->end(); i++)
     {
-        clear_buffers();
-        return;
+        // chunk_vertices.push_back(chunks[i);
+        glm::ivec2 coords = i->first;
+        Chunk chunk = *i->second;
+        
+        
+        float r = 1.0f, g = 0.0f, b = 0.0f, a = 1.0f;
+        if (Chunk_States state = chunk.get_state(); state == Chunk_States::LOADED)
+        {
+            r = 0.0f;
+            g = 1.0f;
+        }
+
+        int x = coords.x * chunk.width;
+        int y = coords.y * chunk.height;
+
+        chunk_vertices.push_back((float)x);
+        chunk_vertices.push_back((float)y);
+        chunk_vertices.push_back(r);
+        chunk_vertices.push_back(g);
+        chunk_vertices.push_back(b);
+        chunk_vertices.push_back(a);
+        chunk_vertices.push_back((float)(x + chunk.width));
+        chunk_vertices.push_back((float)y);
+        chunk_vertices.push_back(r);
+        chunk_vertices.push_back(g);
+        chunk_vertices.push_back(b);
+        chunk_vertices.push_back(a);
+        chunk_vertices.push_back((float)(x + chunk.width));
+        chunk_vertices.push_back((float)(y + chunk.height));
+        chunk_vertices.push_back(r);
+        chunk_vertices.push_back(g);
+        chunk_vertices.push_back(b);
+        chunk_vertices.push_back(a);
     }
 
-    // std::cout << "vertices:\t" << vertices.size() << '\n';
-    // std::cout << "indices: \t" << indices.size() << '\n';
+    chunk_vertices.shrink_to_fit();
 
-    shader->use();
-    shader->set_mat4("projection", projection);
+    chunk_shader->use();
+    chunk_shader->set_mat4("projection", projection);
 
-    VAO->bind();
+    chunk_VAO->bind();
 
-    VBO->fill_with_data_vector(vertices, GL_DYNAMIC);
-    EBO->fill_with_data(indices, GL_DYNAMIC);
+    chunk_VBO->fill_with_data_vector(chunk_vertices, GL_DYNAMIC);
 
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    GLsizei vertex_count = static_cast<GLsizei>(chunk_vertices.size() / 6);
+    glDrawArrays(GL_TRIANGLES, 0, vertex_count);
 
-    clear_buffers();
+    chunk_vertices.clear();
 }
 
-void World_Renderer::set_projection(glm::mat4 projection)
+void World_Renderer::render_world()
 {
-    this->projection = projection;
+    render_chunks();
+
+    // fill_vertices();
+
+    // if (vertices.empty())
+    // {
+    //     clear_buffers();
+    //     return;
+    // }
+
+    // std::cout << "vertices:\t" << verticsudoes.size() << '\n';
+    // std::cout << "indices: \t" << indices.size() << '\n';
+
+    // shader->use();
+    // shader->set_mat4("projection", projection);
+
+    // VAO->bind();
+
+    // VBO->fill_with_data_vector(vertices, GL_DYNAMIC);
+    // EBO->fill_with_data(indices, GL_DYNAMIC);
+
+    // glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+
+    // clear_buffers();
 }

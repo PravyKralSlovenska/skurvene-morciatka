@@ -5,7 +5,7 @@
 
 struct WorldCell
 {
-    glm::ivec2 coords;
+    const glm::ivec2 coords;
     Particle particle;
 
     WorldCell(glm::ivec2);
