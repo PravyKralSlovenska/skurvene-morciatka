@@ -29,6 +29,9 @@ private:
     std::unique_ptr<ELEMENT_ARRAY_BUFFER> chunk_EBO;
     std::unique_ptr<Shader> chunk_shader;
 
+    std::vector<Vertex> chunk_vertices;
+    std::vector<unsigned int> chunk_indices;
+
     World *world = nullptr;
 
 public:

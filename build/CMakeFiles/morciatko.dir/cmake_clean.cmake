@@ -32,6 +32,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/morciatko.dir/src/physics_formulas.cpp.o.d"
   "CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.o"
   "CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.o.d"
+  "CMakeFiles/morciatko.dir/src/renderer/debug_renderer.cpp.o"
+  "CMakeFiles/morciatko.dir/src/renderer/debug_renderer.cpp.o.d"
   "CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o"
   "CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o.d"
   "CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o"

@@ -513,6 +513,30 @@ src/renderer/buffer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.s
 .PHONY : src/renderer/buffer.cpp.s
 
+src/renderer/debug_renderer.o: src/renderer/debug_renderer.cpp.o
+.PHONY : src/renderer/debug_renderer.o
+
+# target to build an object file
+src/renderer/debug_renderer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/debug_renderer.cpp.o
+.PHONY : src/renderer/debug_renderer.cpp.o
+
+src/renderer/debug_renderer.i: src/renderer/debug_renderer.cpp.i
+.PHONY : src/renderer/debug_renderer.i
+
+# target to preprocess a source file
+src/renderer/debug_renderer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/debug_renderer.cpp.i
+.PHONY : src/renderer/debug_renderer.cpp.i
+
+src/renderer/debug_renderer.s: src/renderer/debug_renderer.cpp.s
+.PHONY : src/renderer/debug_renderer.s
+
+# target to generate assembly for a file
+src/renderer/debug_renderer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/debug_renderer.cpp.s
+.PHONY : src/renderer/debug_renderer.cpp.s
+
 src/renderer/entities_renderer.o: src/renderer/entities_renderer.cpp.o
 .PHONY : src/renderer/entities_renderer.o
 
@@ -882,6 +906,9 @@ help:
 	@echo "... src/renderer/buffer.o"
 	@echo "... src/renderer/buffer.i"
 	@echo "... src/renderer/buffer.s"
+	@echo "... src/renderer/debug_renderer.o"
+	@echo "... src/renderer/debug_renderer.i"
+	@echo "... src/renderer/debug_renderer.s"
 	@echo "... src/renderer/entities_renderer.o"
 	@echo "... src/renderer/entities_renderer.i"
 	@echo "... src/renderer/entities_renderer.s"

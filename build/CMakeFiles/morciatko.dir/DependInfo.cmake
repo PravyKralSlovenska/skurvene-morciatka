@@ -24,6 +24,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_velocity.cpp" "CMakeFiles/morciatko.dir/src/particle/particle_velocity.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/particle/particle_velocity.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/physics_formulas.cpp" "CMakeFiles/morciatko.dir/src/physics_formulas.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/physics_formulas.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffer.cpp" "CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/debug_renderer.cpp" "CMakeFiles/morciatko.dir/src/renderer/debug_renderer.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/renderer/debug_renderer.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/entities_renderer.cpp" "CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/renderer.cpp" "CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/scenes_renderer.cpp" "CMakeFiles/morciatko.dir/src/renderer/scenes_renderer.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/renderer/scenes_renderer.cpp.o.d"

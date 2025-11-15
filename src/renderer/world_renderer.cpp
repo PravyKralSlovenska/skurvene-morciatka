@@ -31,8 +31,8 @@ void World_Renderer::init()
     chunk_VBO = std::make_unique<VERTEX_BUFFER_OBJECT>();
     chunk_VBO->bind();
 
-    // chunk_EBO = std::make_unique<ELEMENT_ARRAY_BUFFER>();
-    // chunk_EBO->bind();
+    chunk_EBO = std::make_unique<ELEMENT_ARRAY_BUFFER>();
+    chunk_EBO->bind();
 
     // pre suradnice
     chunk_VAO->setup_vertex_attribute_pointer(0, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
@@ -117,8 +117,6 @@ void World_Renderer::render_chunks()
     // active chunks will be green
     // all other chunks will be red
 
-    std::vector<float> chunk_vertices;
-
     auto chunks = world->get_chunks();
 
     for (auto i = chunks->begin(); i != chunks->end(); i++)
@@ -138,27 +136,9 @@ void World_Renderer::render_chunks()
         int x = coords.x * chunk.width;
         int y = coords.y * chunk.height;
 
-        chunk_vertices.push_back((float)x);
-        chunk_vertices.push_back((float)y);
-        chunk_vertices.push_back(r);
-        chunk_vertices.push_back(g);
-        chunk_vertices.push_back(b);
-        chunk_vertices.push_back(a);
-        chunk_vertices.push_back((float)(x + chunk.width));
-        chunk_vertices.push_back((float)y);
-        chunk_vertices.push_back(r);
-        chunk_vertices.push_back(g);
-        chunk_vertices.push_back(b);
-        chunk_vertices.push_back(a);
-        chunk_vertices.push_back((float)(x + chunk.width));
-        chunk_vertices.push_back((float)(y + chunk.height));
-        chunk_vertices.push_back(r);
-        chunk_vertices.push_back(g);
-        chunk_vertices.push_back(b);
-        chunk_vertices.push_back(a);
-    }
 
-    chunk_vertices.shrink_to_fit();
+
+    }
 
     chunk_shader->use();
     chunk_shader->set_mat4("projection", projection);
@@ -166,9 +146,9 @@ void World_Renderer::render_chunks()
     chunk_VAO->bind();
 
     chunk_VBO->fill_with_data_vector(chunk_vertices, GL_DYNAMIC);
+    chunk_EBO->fill_with_data(chunk_indices, GL_DYNAMIC);
 
-    GLsizei vertex_count = static_cast<GLsizei>(chunk_vertices.size() / 6);
-    glDrawArrays(GL_TRIANGLES, 0, vertex_count);
+    glDrawElements(GL_TRIANGLES, chunk_indices.size(), GL_UNSIGNED_INT, 0);
 
     chunk_vertices.clear();
 }
