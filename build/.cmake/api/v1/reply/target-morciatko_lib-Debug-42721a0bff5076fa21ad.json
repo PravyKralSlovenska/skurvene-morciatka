@@ -1,8 +1,9 @@
 {
+	"archive" : {},
 	"artifacts" : 
 	[
 		{
-			"path" : "morciatko"
+			"path" : "libmorciatko_lib.a"
 		}
 	],
 	"backtrace" : 1,
@@ -10,8 +11,7 @@
 	{
 		"commands" : 
 		[
-			"add_executable",
-			"target_link_libraries",
+			"add_library",
 			"include_directories"
 		],
 		"files" : 
@@ -26,19 +26,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 30,
+				"line" : 59,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 32,
-				"parent" : 0
-			},
-			{
-				"command" : 2,
-				"file" : 0,
-				"line" : 13,
+				"line" : 16,
 				"parent" : 0
 			}
 		]
@@ -55,19 +49,19 @@
 			"includes" : 
 			[
 				{
-					"backtrace" : 3,
+					"backtrace" : 2,
 					"path" : "/home/jakub/programko/cpp/skurvene-morciatka/include"
 				},
 				{
-					"backtrace" : 3,
+					"backtrace" : 2,
 					"path" : "/usr/include/freetype2"
 				},
 				{
-					"backtrace" : 3,
+					"backtrace" : 2,
 					"path" : "/usr/include/libpng16"
 				},
 				{
-					"backtrace" : 3,
+					"backtrace" : 2,
 					"path" : "/usr/include/AL"
 				}
 			],
@@ -110,7 +104,9 @@
 				26,
 				27,
 				28,
-				29
+				29,
+				30,
+				31
 			]
 		},
 		{
@@ -123,19 +119,19 @@
 			"includes" : 
 			[
 				{
-					"backtrace" : 3,
+					"backtrace" : 2,
 					"path" : "/home/jakub/programko/cpp/skurvene-morciatka/include"
 				},
 				{
-					"backtrace" : 3,
+					"backtrace" : 2,
 					"path" : "/usr/include/freetype2"
 				},
 				{
-					"backtrace" : 3,
+					"backtrace" : 2,
 					"path" : "/usr/include/libpng16"
 				},
 				{
-					"backtrace" : 3,
+					"backtrace" : 2,
 					"path" : "/usr/include/AL"
 				}
 			],
@@ -146,50 +142,9 @@
 			]
 		}
 	],
-	"id" : "morciatko::@6890427a1f51a3e7e1df",
-	"link" : 
-	{
-		"commandFragments" : 
-		[
-			{
-				"fragment" : "-g",
-				"role" : "flags"
-			},
-			{
-				"backtrace" : 2,
-				"fragment" : "/usr/lib/libGL.so",
-				"role" : "libraries"
-			},
-			{
-				"backtrace" : 2,
-				"fragment" : "/usr/lib/libGLU.so",
-				"role" : "libraries"
-			},
-			{
-				"backtrace" : 2,
-				"fragment" : "-lglfw",
-				"role" : "libraries"
-			},
-			{
-				"backtrace" : 2,
-				"fragment" : "-lfreetype",
-				"role" : "libraries"
-			},
-			{
-				"backtrace" : 2,
-				"fragment" : "-lopenal",
-				"role" : "libraries"
-			},
-			{
-				"backtrace" : 2,
-				"fragment" : "-ldl",
-				"role" : "libraries"
-			}
-		],
-		"language" : "CXX"
-	},
-	"name" : "morciatko",
-	"nameOnDisk" : "morciatko",
+	"id" : "morciatko_lib::@6890427a1f51a3e7e1df",
+	"name" : "morciatko_lib",
+	"nameOnDisk" : "libmorciatko_lib.a",
 	"paths" : 
 	{
 		"build" : ".",
@@ -230,7 +185,9 @@
 				26,
 				27,
 				28,
-				29
+				29,
+				30,
+				31
 			]
 		}
 	],
@@ -287,12 +244,6 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/main.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
 			"path" : "src/particle/particle.cpp",
 			"sourceGroupIndex" : 0
 		},
@@ -329,7 +280,25 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/renderer/buffer.cpp",
+			"path" : "src/renderer/buffers/buffer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/renderer/buffers/element_array_object.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/renderer/buffers/vertex_array_object.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/renderer/buffers/vertex_buffer_object.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
@@ -417,5 +386,5 @@
 			"sourceGroupIndex" : 0
 		}
 	],
-	"type" : "EXECUTABLE"
+	"type" : "STATIC_LIBRARY"
 }

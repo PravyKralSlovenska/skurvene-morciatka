@@ -22,15 +22,15 @@ public:
 
     int get_int_from_range(int start, int end);
     int get_truly_random_int();
-    
-    template<typename T, std::size_t N>
+
+    template <typename T, std::size_t N>
     T get_random_element_from_array(const std::array<T, N> &array)
     {
         int index = get_int_from_range(0, array.size() - 1);
         return array[index];
     }
 
-    template<typename T>
+    template <typename T>
     T get_random_element_from_vector(const std::vector<T> &vector)
     {
         if (vector.empty())
@@ -70,14 +70,19 @@ struct Color
 //     GREEN = Color(0, 255, 0, 1.0f)
 // };
 
-struct Vertex
+class Vertex
 {
+public:
     float x, y;
     Color color;
 
+public:
     Vertex();
     Vertex(float x, float y, Color color);
     ~Vertex() = default;
+
+    // int get_stride();
+    // int get_
 };
 
 class Log
@@ -93,16 +98,15 @@ public:
     void log_text();
 };
 
-
 // mozno nieco na threads? management multithreadov?
 class Thread_Manager
 {
-    private:
-     unsigned int id;
+private:
+    unsigned int id;
     //  thread thread_local;
 
-     private:
-        void create_thread();
-        void join_thread();
-        void detach_thread();
+private:
+    void create_thread();
+    void join_thread();
+    void detach_thread();
 };

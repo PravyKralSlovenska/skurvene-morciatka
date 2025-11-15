@@ -10,7 +10,9 @@
 
 #include "engine/world/world.hpp"
 #include "engine/renderer/shader.hpp"
-#include "engine/renderer/buffer.hpp"
+#include "engine/renderer/buffers/vertex_buffer_object.hpp"
+#include "engine/renderer/buffers/vertex_array_object.hpp"
+#include "engine/renderer/buffers/element_array_object.hpp"
 #include "others/utils.hpp"
 
 class World_Renderer

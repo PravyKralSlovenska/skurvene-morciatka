@@ -65,6 +65,16 @@ CMAKE_BINARY_DIR = /home/jakub/programko/cpp/skurvene-morciatka/build
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running tests..."
+	/usr/bin/ctest $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+.PHONY : test/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running CMake cache editor..."
@@ -129,12 +139,52 @@ morciatko/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/build
 .PHONY : morciatko/fast
 
+#=============================================================================
+# Target rules for targets named morciatko_lib
+
+# Build rule for target.
+morciatko_lib: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 morciatko_lib
+.PHONY : morciatko_lib
+
+# fast build rule for target.
+morciatko_lib/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/build
+.PHONY : morciatko_lib/fast
+
+#=============================================================================
+# Target rules for targets named morciatko_tests
+
+# Build rule for target.
+morciatko_tests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 morciatko_tests
+.PHONY : morciatko_tests
+
+# fast build rule for target.
+morciatko_tests/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/build
+.PHONY : morciatko_tests/fast
+
+#=============================================================================
+# Target rules for targets named run_tests
+
+# Build rule for target.
+run_tests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 run_tests
+.PHONY : run_tests
+
+# fast build rule for target.
+run_tests/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/build
+.PHONY : run_tests/fast
+
 src/audio/audio_buffer.o: src/audio/audio_buffer.cpp.o
 .PHONY : src/audio/audio_buffer.o
 
 # target to build an object file
 src/audio/audio_buffer.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/audio/audio_buffer.cpp.o
 .PHONY : src/audio/audio_buffer.cpp.o
 
 src/audio/audio_buffer.i: src/audio/audio_buffer.cpp.i
@@ -143,6 +193,7 @@ src/audio/audio_buffer.i: src/audio/audio_buffer.cpp.i
 # target to preprocess a source file
 src/audio/audio_buffer.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/audio/audio_buffer.cpp.i
 .PHONY : src/audio/audio_buffer.cpp.i
 
 src/audio/audio_buffer.s: src/audio/audio_buffer.cpp.s
@@ -151,6 +202,7 @@ src/audio/audio_buffer.s: src/audio/audio_buffer.cpp.s
 # target to generate assembly for a file
 src/audio/audio_buffer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/audio/audio_buffer.cpp.s
 .PHONY : src/audio/audio_buffer.cpp.s
 
 src/audio/audio_manager.o: src/audio/audio_manager.cpp.o
@@ -159,6 +211,7 @@ src/audio/audio_manager.o: src/audio/audio_manager.cpp.o
 # target to build an object file
 src/audio/audio_manager.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/audio_manager.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/audio/audio_manager.cpp.o
 .PHONY : src/audio/audio_manager.cpp.o
 
 src/audio/audio_manager.i: src/audio/audio_manager.cpp.i
@@ -167,6 +220,7 @@ src/audio/audio_manager.i: src/audio/audio_manager.cpp.i
 # target to preprocess a source file
 src/audio/audio_manager.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/audio_manager.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/audio/audio_manager.cpp.i
 .PHONY : src/audio/audio_manager.cpp.i
 
 src/audio/audio_manager.s: src/audio/audio_manager.cpp.s
@@ -175,6 +229,7 @@ src/audio/audio_manager.s: src/audio/audio_manager.cpp.s
 # target to generate assembly for a file
 src/audio/audio_manager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/audio_manager.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/audio/audio_manager.cpp.s
 .PHONY : src/audio/audio_manager.cpp.s
 
 src/audio/audio_source.o: src/audio/audio_source.cpp.o
@@ -183,6 +238,7 @@ src/audio/audio_source.o: src/audio/audio_source.cpp.o
 # target to build an object file
 src/audio/audio_source.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/audio_source.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/audio/audio_source.cpp.o
 .PHONY : src/audio/audio_source.cpp.o
 
 src/audio/audio_source.i: src/audio/audio_source.cpp.i
@@ -191,6 +247,7 @@ src/audio/audio_source.i: src/audio/audio_source.cpp.i
 # target to preprocess a source file
 src/audio/audio_source.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/audio_source.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/audio/audio_source.cpp.i
 .PHONY : src/audio/audio_source.cpp.i
 
 src/audio/audio_source.s: src/audio/audio_source.cpp.s
@@ -199,6 +256,7 @@ src/audio/audio_source.s: src/audio/audio_source.cpp.s
 # target to generate assembly for a file
 src/audio/audio_source.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/audio_source.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/audio/audio_source.cpp.s
 .PHONY : src/audio/audio_source.cpp.s
 
 src/audio/listener.o: src/audio/listener.cpp.o
@@ -207,6 +265,7 @@ src/audio/listener.o: src/audio/listener.cpp.o
 # target to build an object file
 src/audio/listener.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/listener.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/audio/listener.cpp.o
 .PHONY : src/audio/listener.cpp.o
 
 src/audio/listener.i: src/audio/listener.cpp.i
@@ -215,6 +274,7 @@ src/audio/listener.i: src/audio/listener.cpp.i
 # target to preprocess a source file
 src/audio/listener.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/listener.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/audio/listener.cpp.i
 .PHONY : src/audio/listener.cpp.i
 
 src/audio/listener.s: src/audio/listener.cpp.s
@@ -223,6 +283,7 @@ src/audio/listener.s: src/audio/listener.cpp.s
 # target to generate assembly for a file
 src/audio/listener.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/audio/listener.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/audio/listener.cpp.s
 .PHONY : src/audio/listener.cpp.s
 
 src/camera.o: src/camera.cpp.o
@@ -231,6 +292,7 @@ src/camera.o: src/camera.cpp.o
 # target to build an object file
 src/camera.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/camera.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/camera.cpp.o
 .PHONY : src/camera.cpp.o
 
 src/camera.i: src/camera.cpp.i
@@ -239,6 +301,7 @@ src/camera.i: src/camera.cpp.i
 # target to preprocess a source file
 src/camera.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/camera.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/camera.cpp.i
 .PHONY : src/camera.cpp.i
 
 src/camera.s: src/camera.cpp.s
@@ -247,6 +310,7 @@ src/camera.s: src/camera.cpp.s
 # target to generate assembly for a file
 src/camera.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/camera.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/camera.cpp.s
 .PHONY : src/camera.cpp.s
 
 src/controls.o: src/controls.cpp.o
@@ -255,6 +319,7 @@ src/controls.o: src/controls.cpp.o
 # target to build an object file
 src/controls.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/controls.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/controls.cpp.o
 .PHONY : src/controls.cpp.o
 
 src/controls.i: src/controls.cpp.i
@@ -263,6 +328,7 @@ src/controls.i: src/controls.cpp.i
 # target to preprocess a source file
 src/controls.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/controls.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/controls.cpp.i
 .PHONY : src/controls.cpp.i
 
 src/controls.s: src/controls.cpp.s
@@ -271,6 +337,7 @@ src/controls.s: src/controls.cpp.s
 # target to generate assembly for a file
 src/controls.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/controls.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/controls.cpp.s
 .PHONY : src/controls.cpp.s
 
 src/entity.o: src/entity.cpp.o
@@ -279,6 +346,7 @@ src/entity.o: src/entity.cpp.o
 # target to build an object file
 src/entity.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/entity.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/entity.cpp.o
 .PHONY : src/entity.cpp.o
 
 src/entity.i: src/entity.cpp.i
@@ -287,6 +355,7 @@ src/entity.i: src/entity.cpp.i
 # target to preprocess a source file
 src/entity.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/entity.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/entity.cpp.i
 .PHONY : src/entity.cpp.i
 
 src/entity.s: src/entity.cpp.s
@@ -295,6 +364,7 @@ src/entity.s: src/entity.cpp.s
 # target to generate assembly for a file
 src/entity.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/entity.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/entity.cpp.s
 .PHONY : src/entity.cpp.s
 
 src/gl.o: src/gl.c.o
@@ -303,6 +373,7 @@ src/gl.o: src/gl.c.o
 # target to build an object file
 src/gl.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/gl.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/gl.c.o
 .PHONY : src/gl.c.o
 
 src/gl.i: src/gl.c.i
@@ -311,6 +382,7 @@ src/gl.i: src/gl.c.i
 # target to preprocess a source file
 src/gl.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/gl.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/gl.c.i
 .PHONY : src/gl.c.i
 
 src/gl.s: src/gl.c.s
@@ -319,6 +391,7 @@ src/gl.s: src/gl.c.s
 # target to generate assembly for a file
 src/gl.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/gl.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/gl.c.s
 .PHONY : src/gl.c.s
 
 src/main.o: src/main.cpp.o
@@ -351,6 +424,7 @@ src/particle/particle.o: src/particle/particle.cpp.o
 # target to build an object file
 src/particle/particle.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/particle/particle.cpp.o
 .PHONY : src/particle/particle.cpp.o
 
 src/particle/particle.i: src/particle/particle.cpp.i
@@ -359,6 +433,7 @@ src/particle/particle.i: src/particle/particle.cpp.i
 # target to preprocess a source file
 src/particle/particle.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/particle/particle.cpp.i
 .PHONY : src/particle/particle.cpp.i
 
 src/particle/particle.s: src/particle/particle.cpp.s
@@ -367,6 +442,7 @@ src/particle/particle.s: src/particle/particle.cpp.s
 # target to generate assembly for a file
 src/particle/particle.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/particle/particle.cpp.s
 .PHONY : src/particle/particle.cpp.s
 
 src/particle/particle_density.o: src/particle/particle_density.cpp.o
@@ -375,6 +451,7 @@ src/particle/particle_density.o: src/particle/particle_density.cpp.o
 # target to build an object file
 src/particle/particle_density.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_density.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/particle/particle_density.cpp.o
 .PHONY : src/particle/particle_density.cpp.o
 
 src/particle/particle_density.i: src/particle/particle_density.cpp.i
@@ -383,6 +460,7 @@ src/particle/particle_density.i: src/particle/particle_density.cpp.i
 # target to preprocess a source file
 src/particle/particle_density.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_density.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/particle/particle_density.cpp.i
 .PHONY : src/particle/particle_density.cpp.i
 
 src/particle/particle_density.s: src/particle/particle_density.cpp.s
@@ -391,6 +469,7 @@ src/particle/particle_density.s: src/particle/particle_density.cpp.s
 # target to generate assembly for a file
 src/particle/particle_density.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_density.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/particle/particle_density.cpp.s
 .PHONY : src/particle/particle_density.cpp.s
 
 src/particle/particle_mass.o: src/particle/particle_mass.cpp.o
@@ -399,6 +478,7 @@ src/particle/particle_mass.o: src/particle/particle_mass.cpp.o
 # target to build an object file
 src/particle/particle_mass.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_mass.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/particle/particle_mass.cpp.o
 .PHONY : src/particle/particle_mass.cpp.o
 
 src/particle/particle_mass.i: src/particle/particle_mass.cpp.i
@@ -407,6 +487,7 @@ src/particle/particle_mass.i: src/particle/particle_mass.cpp.i
 # target to preprocess a source file
 src/particle/particle_mass.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_mass.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/particle/particle_mass.cpp.i
 .PHONY : src/particle/particle_mass.cpp.i
 
 src/particle/particle_mass.s: src/particle/particle_mass.cpp.s
@@ -415,6 +496,7 @@ src/particle/particle_mass.s: src/particle/particle_mass.cpp.s
 # target to generate assembly for a file
 src/particle/particle_mass.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_mass.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/particle/particle_mass.cpp.s
 .PHONY : src/particle/particle_mass.cpp.s
 
 src/particle/particle_movement.o: src/particle/particle_movement.cpp.o
@@ -423,6 +505,7 @@ src/particle/particle_movement.o: src/particle/particle_movement.cpp.o
 # target to build an object file
 src/particle/particle_movement.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/particle/particle_movement.cpp.o
 .PHONY : src/particle/particle_movement.cpp.o
 
 src/particle/particle_movement.i: src/particle/particle_movement.cpp.i
@@ -431,6 +514,7 @@ src/particle/particle_movement.i: src/particle/particle_movement.cpp.i
 # target to preprocess a source file
 src/particle/particle_movement.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/particle/particle_movement.cpp.i
 .PHONY : src/particle/particle_movement.cpp.i
 
 src/particle/particle_movement.s: src/particle/particle_movement.cpp.s
@@ -439,6 +523,7 @@ src/particle/particle_movement.s: src/particle/particle_movement.cpp.s
 # target to generate assembly for a file
 src/particle/particle_movement.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/particle/particle_movement.cpp.s
 .PHONY : src/particle/particle_movement.cpp.s
 
 src/particle/particle_velocity.o: src/particle/particle_velocity.cpp.o
@@ -447,6 +532,7 @@ src/particle/particle_velocity.o: src/particle/particle_velocity.cpp.o
 # target to build an object file
 src/particle/particle_velocity.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_velocity.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/particle/particle_velocity.cpp.o
 .PHONY : src/particle/particle_velocity.cpp.o
 
 src/particle/particle_velocity.i: src/particle/particle_velocity.cpp.i
@@ -455,6 +541,7 @@ src/particle/particle_velocity.i: src/particle/particle_velocity.cpp.i
 # target to preprocess a source file
 src/particle/particle_velocity.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_velocity.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/particle/particle_velocity.cpp.i
 .PHONY : src/particle/particle_velocity.cpp.i
 
 src/particle/particle_velocity.s: src/particle/particle_velocity.cpp.s
@@ -463,6 +550,7 @@ src/particle/particle_velocity.s: src/particle/particle_velocity.cpp.s
 # target to generate assembly for a file
 src/particle/particle_velocity.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/particle_velocity.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/particle/particle_velocity.cpp.s
 .PHONY : src/particle/particle_velocity.cpp.s
 
 src/physics_formulas.o: src/physics_formulas.cpp.o
@@ -471,6 +559,7 @@ src/physics_formulas.o: src/physics_formulas.cpp.o
 # target to build an object file
 src/physics_formulas.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/physics_formulas.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/physics_formulas.cpp.o
 .PHONY : src/physics_formulas.cpp.o
 
 src/physics_formulas.i: src/physics_formulas.cpp.i
@@ -479,6 +568,7 @@ src/physics_formulas.i: src/physics_formulas.cpp.i
 # target to preprocess a source file
 src/physics_formulas.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/physics_formulas.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/physics_formulas.cpp.i
 .PHONY : src/physics_formulas.cpp.i
 
 src/physics_formulas.s: src/physics_formulas.cpp.s
@@ -487,31 +577,116 @@ src/physics_formulas.s: src/physics_formulas.cpp.s
 # target to generate assembly for a file
 src/physics_formulas.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/physics_formulas.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/physics_formulas.cpp.s
 .PHONY : src/physics_formulas.cpp.s
 
-src/renderer/buffer.o: src/renderer/buffer.cpp.o
-.PHONY : src/renderer/buffer.o
+src/renderer/buffers/buffer.o: src/renderer/buffers/buffer.cpp.o
+.PHONY : src/renderer/buffers/buffer.o
 
 # target to build an object file
-src/renderer/buffer.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.o
-.PHONY : src/renderer/buffer.cpp.o
+src/renderer/buffers/buffer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffers/buffer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/buffers/buffer.cpp.o
+.PHONY : src/renderer/buffers/buffer.cpp.o
 
-src/renderer/buffer.i: src/renderer/buffer.cpp.i
-.PHONY : src/renderer/buffer.i
+src/renderer/buffers/buffer.i: src/renderer/buffers/buffer.cpp.i
+.PHONY : src/renderer/buffers/buffer.i
 
 # target to preprocess a source file
-src/renderer/buffer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.i
-.PHONY : src/renderer/buffer.cpp.i
+src/renderer/buffers/buffer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffers/buffer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/buffers/buffer.cpp.i
+.PHONY : src/renderer/buffers/buffer.cpp.i
 
-src/renderer/buffer.s: src/renderer/buffer.cpp.s
-.PHONY : src/renderer/buffer.s
+src/renderer/buffers/buffer.s: src/renderer/buffers/buffer.cpp.s
+.PHONY : src/renderer/buffers/buffer.s
 
 # target to generate assembly for a file
-src/renderer/buffer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffer.cpp.s
-.PHONY : src/renderer/buffer.cpp.s
+src/renderer/buffers/buffer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffers/buffer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/buffers/buffer.cpp.s
+.PHONY : src/renderer/buffers/buffer.cpp.s
+
+src/renderer/buffers/element_array_object.o: src/renderer/buffers/element_array_object.cpp.o
+.PHONY : src/renderer/buffers/element_array_object.o
+
+# target to build an object file
+src/renderer/buffers/element_array_object.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffers/element_array_object.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/buffers/element_array_object.cpp.o
+.PHONY : src/renderer/buffers/element_array_object.cpp.o
+
+src/renderer/buffers/element_array_object.i: src/renderer/buffers/element_array_object.cpp.i
+.PHONY : src/renderer/buffers/element_array_object.i
+
+# target to preprocess a source file
+src/renderer/buffers/element_array_object.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffers/element_array_object.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/buffers/element_array_object.cpp.i
+.PHONY : src/renderer/buffers/element_array_object.cpp.i
+
+src/renderer/buffers/element_array_object.s: src/renderer/buffers/element_array_object.cpp.s
+.PHONY : src/renderer/buffers/element_array_object.s
+
+# target to generate assembly for a file
+src/renderer/buffers/element_array_object.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffers/element_array_object.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/buffers/element_array_object.cpp.s
+.PHONY : src/renderer/buffers/element_array_object.cpp.s
+
+src/renderer/buffers/vertex_array_object.o: src/renderer/buffers/vertex_array_object.cpp.o
+.PHONY : src/renderer/buffers/vertex_array_object.o
+
+# target to build an object file
+src/renderer/buffers/vertex_array_object.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_array_object.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_array_object.cpp.o
+.PHONY : src/renderer/buffers/vertex_array_object.cpp.o
+
+src/renderer/buffers/vertex_array_object.i: src/renderer/buffers/vertex_array_object.cpp.i
+.PHONY : src/renderer/buffers/vertex_array_object.i
+
+# target to preprocess a source file
+src/renderer/buffers/vertex_array_object.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_array_object.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_array_object.cpp.i
+.PHONY : src/renderer/buffers/vertex_array_object.cpp.i
+
+src/renderer/buffers/vertex_array_object.s: src/renderer/buffers/vertex_array_object.cpp.s
+.PHONY : src/renderer/buffers/vertex_array_object.s
+
+# target to generate assembly for a file
+src/renderer/buffers/vertex_array_object.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_array_object.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_array_object.cpp.s
+.PHONY : src/renderer/buffers/vertex_array_object.cpp.s
+
+src/renderer/buffers/vertex_buffer_object.o: src/renderer/buffers/vertex_buffer_object.cpp.o
+.PHONY : src/renderer/buffers/vertex_buffer_object.o
+
+# target to build an object file
+src/renderer/buffers/vertex_buffer_object.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_buffer_object.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_buffer_object.cpp.o
+.PHONY : src/renderer/buffers/vertex_buffer_object.cpp.o
+
+src/renderer/buffers/vertex_buffer_object.i: src/renderer/buffers/vertex_buffer_object.cpp.i
+.PHONY : src/renderer/buffers/vertex_buffer_object.i
+
+# target to preprocess a source file
+src/renderer/buffers/vertex_buffer_object.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_buffer_object.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_buffer_object.cpp.i
+.PHONY : src/renderer/buffers/vertex_buffer_object.cpp.i
+
+src/renderer/buffers/vertex_buffer_object.s: src/renderer/buffers/vertex_buffer_object.cpp.s
+.PHONY : src/renderer/buffers/vertex_buffer_object.s
+
+# target to generate assembly for a file
+src/renderer/buffers/vertex_buffer_object.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_buffer_object.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_buffer_object.cpp.s
+.PHONY : src/renderer/buffers/vertex_buffer_object.cpp.s
 
 src/renderer/debug_renderer.o: src/renderer/debug_renderer.cpp.o
 .PHONY : src/renderer/debug_renderer.o
@@ -519,6 +694,7 @@ src/renderer/debug_renderer.o: src/renderer/debug_renderer.cpp.o
 # target to build an object file
 src/renderer/debug_renderer.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/debug_renderer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/debug_renderer.cpp.o
 .PHONY : src/renderer/debug_renderer.cpp.o
 
 src/renderer/debug_renderer.i: src/renderer/debug_renderer.cpp.i
@@ -527,6 +703,7 @@ src/renderer/debug_renderer.i: src/renderer/debug_renderer.cpp.i
 # target to preprocess a source file
 src/renderer/debug_renderer.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/debug_renderer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/debug_renderer.cpp.i
 .PHONY : src/renderer/debug_renderer.cpp.i
 
 src/renderer/debug_renderer.s: src/renderer/debug_renderer.cpp.s
@@ -535,6 +712,7 @@ src/renderer/debug_renderer.s: src/renderer/debug_renderer.cpp.s
 # target to generate assembly for a file
 src/renderer/debug_renderer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/debug_renderer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/debug_renderer.cpp.s
 .PHONY : src/renderer/debug_renderer.cpp.s
 
 src/renderer/entities_renderer.o: src/renderer/entities_renderer.cpp.o
@@ -543,6 +721,7 @@ src/renderer/entities_renderer.o: src/renderer/entities_renderer.cpp.o
 # target to build an object file
 src/renderer/entities_renderer.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/entities_renderer.cpp.o
 .PHONY : src/renderer/entities_renderer.cpp.o
 
 src/renderer/entities_renderer.i: src/renderer/entities_renderer.cpp.i
@@ -551,6 +730,7 @@ src/renderer/entities_renderer.i: src/renderer/entities_renderer.cpp.i
 # target to preprocess a source file
 src/renderer/entities_renderer.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/entities_renderer.cpp.i
 .PHONY : src/renderer/entities_renderer.cpp.i
 
 src/renderer/entities_renderer.s: src/renderer/entities_renderer.cpp.s
@@ -559,6 +739,7 @@ src/renderer/entities_renderer.s: src/renderer/entities_renderer.cpp.s
 # target to generate assembly for a file
 src/renderer/entities_renderer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/entities_renderer.cpp.s
 .PHONY : src/renderer/entities_renderer.cpp.s
 
 src/renderer/renderer.o: src/renderer/renderer.cpp.o
@@ -567,6 +748,7 @@ src/renderer/renderer.o: src/renderer/renderer.cpp.o
 # target to build an object file
 src/renderer/renderer.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/renderer.cpp.o
 .PHONY : src/renderer/renderer.cpp.o
 
 src/renderer/renderer.i: src/renderer/renderer.cpp.i
@@ -575,6 +757,7 @@ src/renderer/renderer.i: src/renderer/renderer.cpp.i
 # target to preprocess a source file
 src/renderer/renderer.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/renderer.cpp.i
 .PHONY : src/renderer/renderer.cpp.i
 
 src/renderer/renderer.s: src/renderer/renderer.cpp.s
@@ -583,6 +766,7 @@ src/renderer/renderer.s: src/renderer/renderer.cpp.s
 # target to generate assembly for a file
 src/renderer/renderer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/renderer.cpp.s
 .PHONY : src/renderer/renderer.cpp.s
 
 src/renderer/scenes_renderer.o: src/renderer/scenes_renderer.cpp.o
@@ -591,6 +775,7 @@ src/renderer/scenes_renderer.o: src/renderer/scenes_renderer.cpp.o
 # target to build an object file
 src/renderer/scenes_renderer.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/scenes_renderer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/scenes_renderer.cpp.o
 .PHONY : src/renderer/scenes_renderer.cpp.o
 
 src/renderer/scenes_renderer.i: src/renderer/scenes_renderer.cpp.i
@@ -599,6 +784,7 @@ src/renderer/scenes_renderer.i: src/renderer/scenes_renderer.cpp.i
 # target to preprocess a source file
 src/renderer/scenes_renderer.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/scenes_renderer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/scenes_renderer.cpp.i
 .PHONY : src/renderer/scenes_renderer.cpp.i
 
 src/renderer/scenes_renderer.s: src/renderer/scenes_renderer.cpp.s
@@ -607,6 +793,7 @@ src/renderer/scenes_renderer.s: src/renderer/scenes_renderer.cpp.s
 # target to generate assembly for a file
 src/renderer/scenes_renderer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/scenes_renderer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/scenes_renderer.cpp.s
 .PHONY : src/renderer/scenes_renderer.cpp.s
 
 src/renderer/shader.o: src/renderer/shader.cpp.o
@@ -615,6 +802,7 @@ src/renderer/shader.o: src/renderer/shader.cpp.o
 # target to build an object file
 src/renderer/shader.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/shader.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/shader.cpp.o
 .PHONY : src/renderer/shader.cpp.o
 
 src/renderer/shader.i: src/renderer/shader.cpp.i
@@ -623,6 +811,7 @@ src/renderer/shader.i: src/renderer/shader.cpp.i
 # target to preprocess a source file
 src/renderer/shader.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/shader.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/shader.cpp.i
 .PHONY : src/renderer/shader.cpp.i
 
 src/renderer/shader.s: src/renderer/shader.cpp.s
@@ -631,6 +820,7 @@ src/renderer/shader.s: src/renderer/shader.cpp.s
 # target to generate assembly for a file
 src/renderer/shader.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/shader.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/shader.cpp.s
 .PHONY : src/renderer/shader.cpp.s
 
 src/renderer/text_renderer.o: src/renderer/text_renderer.cpp.o
@@ -639,6 +829,7 @@ src/renderer/text_renderer.o: src/renderer/text_renderer.cpp.o
 # target to build an object file
 src/renderer/text_renderer.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/text_renderer.cpp.o
 .PHONY : src/renderer/text_renderer.cpp.o
 
 src/renderer/text_renderer.i: src/renderer/text_renderer.cpp.i
@@ -647,6 +838,7 @@ src/renderer/text_renderer.i: src/renderer/text_renderer.cpp.i
 # target to preprocess a source file
 src/renderer/text_renderer.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/text_renderer.cpp.i
 .PHONY : src/renderer/text_renderer.cpp.i
 
 src/renderer/text_renderer.s: src/renderer/text_renderer.cpp.s
@@ -655,6 +847,7 @@ src/renderer/text_renderer.s: src/renderer/text_renderer.cpp.s
 # target to generate assembly for a file
 src/renderer/text_renderer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/text_renderer.cpp.s
 .PHONY : src/renderer/text_renderer.cpp.s
 
 src/renderer/ui_renderer.o: src/renderer/ui_renderer.cpp.o
@@ -663,6 +856,7 @@ src/renderer/ui_renderer.o: src/renderer/ui_renderer.cpp.o
 # target to build an object file
 src/renderer/ui_renderer.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/ui_renderer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/ui_renderer.cpp.o
 .PHONY : src/renderer/ui_renderer.cpp.o
 
 src/renderer/ui_renderer.i: src/renderer/ui_renderer.cpp.i
@@ -671,6 +865,7 @@ src/renderer/ui_renderer.i: src/renderer/ui_renderer.cpp.i
 # target to preprocess a source file
 src/renderer/ui_renderer.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/ui_renderer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/ui_renderer.cpp.i
 .PHONY : src/renderer/ui_renderer.cpp.i
 
 src/renderer/ui_renderer.s: src/renderer/ui_renderer.cpp.s
@@ -679,6 +874,7 @@ src/renderer/ui_renderer.s: src/renderer/ui_renderer.cpp.s
 # target to generate assembly for a file
 src/renderer/ui_renderer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/ui_renderer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/ui_renderer.cpp.s
 .PHONY : src/renderer/ui_renderer.cpp.s
 
 src/renderer/world_renderer.o: src/renderer/world_renderer.cpp.o
@@ -687,6 +883,7 @@ src/renderer/world_renderer.o: src/renderer/world_renderer.cpp.o
 # target to build an object file
 src/renderer/world_renderer.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/world_renderer.cpp.o
 .PHONY : src/renderer/world_renderer.cpp.o
 
 src/renderer/world_renderer.i: src/renderer/world_renderer.cpp.i
@@ -695,6 +892,7 @@ src/renderer/world_renderer.i: src/renderer/world_renderer.cpp.i
 # target to preprocess a source file
 src/renderer/world_renderer.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/world_renderer.cpp.i
 .PHONY : src/renderer/world_renderer.cpp.i
 
 src/renderer/world_renderer.s: src/renderer/world_renderer.cpp.s
@@ -703,6 +901,7 @@ src/renderer/world_renderer.s: src/renderer/world_renderer.cpp.s
 # target to generate assembly for a file
 src/renderer/world_renderer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/world_renderer.cpp.s
 .PHONY : src/renderer/world_renderer.cpp.s
 
 src/time_manager.o: src/time_manager.cpp.o
@@ -711,6 +910,7 @@ src/time_manager.o: src/time_manager.cpp.o
 # target to build an object file
 src/time_manager.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/time_manager.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/time_manager.cpp.o
 .PHONY : src/time_manager.cpp.o
 
 src/time_manager.i: src/time_manager.cpp.i
@@ -719,6 +919,7 @@ src/time_manager.i: src/time_manager.cpp.i
 # target to preprocess a source file
 src/time_manager.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/time_manager.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/time_manager.cpp.i
 .PHONY : src/time_manager.cpp.i
 
 src/time_manager.s: src/time_manager.cpp.s
@@ -727,6 +928,7 @@ src/time_manager.s: src/time_manager.cpp.s
 # target to generate assembly for a file
 src/time_manager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/time_manager.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/time_manager.cpp.s
 .PHONY : src/time_manager.cpp.s
 
 src/utils.o: src/utils.cpp.o
@@ -735,6 +937,7 @@ src/utils.o: src/utils.cpp.o
 # target to build an object file
 src/utils.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/utils.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/utils.cpp.o
 .PHONY : src/utils.cpp.o
 
 src/utils.i: src/utils.cpp.i
@@ -743,6 +946,7 @@ src/utils.i: src/utils.cpp.i
 # target to preprocess a source file
 src/utils.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/utils.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/utils.cpp.i
 .PHONY : src/utils.cpp.i
 
 src/utils.s: src/utils.cpp.s
@@ -751,6 +955,7 @@ src/utils.s: src/utils.cpp.s
 # target to generate assembly for a file
 src/utils.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/utils.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/utils.cpp.s
 .PHONY : src/utils.cpp.s
 
 src/world/herringbone_world_generation.o: src/world/herringbone_world_generation.cpp.o
@@ -759,6 +964,7 @@ src/world/herringbone_world_generation.o: src/world/herringbone_world_generation
 # target to build an object file
 src/world/herringbone_world_generation.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/herringbone_world_generation.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/world/herringbone_world_generation.cpp.o
 .PHONY : src/world/herringbone_world_generation.cpp.o
 
 src/world/herringbone_world_generation.i: src/world/herringbone_world_generation.cpp.i
@@ -767,6 +973,7 @@ src/world/herringbone_world_generation.i: src/world/herringbone_world_generation
 # target to preprocess a source file
 src/world/herringbone_world_generation.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/herringbone_world_generation.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/world/herringbone_world_generation.cpp.i
 .PHONY : src/world/herringbone_world_generation.cpp.i
 
 src/world/herringbone_world_generation.s: src/world/herringbone_world_generation.cpp.s
@@ -775,6 +982,7 @@ src/world/herringbone_world_generation.s: src/world/herringbone_world_generation
 # target to generate assembly for a file
 src/world/herringbone_world_generation.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/herringbone_world_generation.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/world/herringbone_world_generation.cpp.s
 .PHONY : src/world/herringbone_world_generation.cpp.s
 
 src/world/world.o: src/world/world.cpp.o
@@ -783,6 +991,7 @@ src/world/world.o: src/world/world.cpp.o
 # target to build an object file
 src/world/world.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/world/world.cpp.o
 .PHONY : src/world/world.cpp.o
 
 src/world/world.i: src/world/world.cpp.i
@@ -791,6 +1000,7 @@ src/world/world.i: src/world/world.cpp.i
 # target to preprocess a source file
 src/world/world.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/world/world.cpp.i
 .PHONY : src/world/world.cpp.i
 
 src/world/world.s: src/world/world.cpp.s
@@ -799,6 +1009,7 @@ src/world/world.s: src/world/world.cpp.s
 # target to generate assembly for a file
 src/world/world.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/world/world.cpp.s
 .PHONY : src/world/world.cpp.s
 
 src/world/world_cell.o: src/world/world_cell.cpp.o
@@ -807,6 +1018,7 @@ src/world/world_cell.o: src/world/world_cell.cpp.o
 # target to build an object file
 src/world/world_cell.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world_cell.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.o
 .PHONY : src/world/world_cell.cpp.o
 
 src/world/world_cell.i: src/world/world_cell.cpp.i
@@ -815,6 +1027,7 @@ src/world/world_cell.i: src/world/world_cell.cpp.i
 # target to preprocess a source file
 src/world/world_cell.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world_cell.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.i
 .PHONY : src/world/world_cell.cpp.i
 
 src/world/world_cell.s: src/world/world_cell.cpp.s
@@ -823,6 +1036,7 @@ src/world/world_cell.s: src/world/world_cell.cpp.s
 # target to generate assembly for a file
 src/world/world_cell.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world_cell.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.s
 .PHONY : src/world/world_cell.cpp.s
 
 src/world/world_chunk.o: src/world/world_chunk.cpp.o
@@ -831,6 +1045,7 @@ src/world/world_chunk.o: src/world/world_chunk.cpp.o
 # target to build an object file
 src/world/world_chunk.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world_chunk.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.o
 .PHONY : src/world/world_chunk.cpp.o
 
 src/world/world_chunk.i: src/world/world_chunk.cpp.i
@@ -839,6 +1054,7 @@ src/world/world_chunk.i: src/world/world_chunk.cpp.i
 # target to preprocess a source file
 src/world/world_chunk.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world_chunk.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.i
 .PHONY : src/world/world_chunk.cpp.i
 
 src/world/world_chunk.s: src/world/world_chunk.cpp.s
@@ -847,7 +1063,80 @@ src/world/world_chunk.s: src/world/world_chunk.cpp.s
 # target to generate assembly for a file
 src/world/world_chunk.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world_chunk.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.s
 .PHONY : src/world/world_chunk.cpp.s
+
+tests/unit/particle_test.o: tests/unit/particle_test.cpp.o
+.PHONY : tests/unit/particle_test.o
+
+# target to build an object file
+tests/unit/particle_test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/particle_test.cpp.o
+.PHONY : tests/unit/particle_test.cpp.o
+
+tests/unit/particle_test.i: tests/unit/particle_test.cpp.i
+.PHONY : tests/unit/particle_test.i
+
+# target to preprocess a source file
+tests/unit/particle_test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/particle_test.cpp.i
+.PHONY : tests/unit/particle_test.cpp.i
+
+tests/unit/particle_test.s: tests/unit/particle_test.cpp.s
+.PHONY : tests/unit/particle_test.s
+
+# target to generate assembly for a file
+tests/unit/particle_test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/particle_test.cpp.s
+.PHONY : tests/unit/particle_test.cpp.s
+
+tests/unit/utils_test.o: tests/unit/utils_test.cpp.o
+.PHONY : tests/unit/utils_test.o
+
+# target to build an object file
+tests/unit/utils_test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/utils_test.cpp.o
+.PHONY : tests/unit/utils_test.cpp.o
+
+tests/unit/utils_test.i: tests/unit/utils_test.cpp.i
+.PHONY : tests/unit/utils_test.i
+
+# target to preprocess a source file
+tests/unit/utils_test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/utils_test.cpp.i
+.PHONY : tests/unit/utils_test.cpp.i
+
+tests/unit/utils_test.s: tests/unit/utils_test.cpp.s
+.PHONY : tests/unit/utils_test.s
+
+# target to generate assembly for a file
+tests/unit/utils_test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/utils_test.cpp.s
+.PHONY : tests/unit/utils_test.cpp.s
+
+tests/unit/world_test.o: tests/unit/world_test.cpp.o
+.PHONY : tests/unit/world_test.o
+
+# target to build an object file
+tests/unit/world_test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/world_test.cpp.o
+.PHONY : tests/unit/world_test.cpp.o
+
+tests/unit/world_test.i: tests/unit/world_test.cpp.i
+.PHONY : tests/unit/world_test.i
+
+# target to preprocess a source file
+tests/unit/world_test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/world_test.cpp.i
+.PHONY : tests/unit/world_test.cpp.i
+
+tests/unit/world_test.s: tests/unit/world_test.cpp.s
+.PHONY : tests/unit/world_test.s
+
+# target to generate assembly for a file
+tests/unit/world_test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/world_test.cpp.s
+.PHONY : tests/unit/world_test.cpp.s
 
 # Help Target
 help:
@@ -857,7 +1146,11 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... test"
+	@echo "... run_tests"
 	@echo "... morciatko"
+	@echo "... morciatko_lib"
+	@echo "... morciatko_tests"
 	@echo "... src/audio/audio_buffer.o"
 	@echo "... src/audio/audio_buffer.i"
 	@echo "... src/audio/audio_buffer.s"
@@ -903,9 +1196,18 @@ help:
 	@echo "... src/physics_formulas.o"
 	@echo "... src/physics_formulas.i"
 	@echo "... src/physics_formulas.s"
-	@echo "... src/renderer/buffer.o"
-	@echo "... src/renderer/buffer.i"
-	@echo "... src/renderer/buffer.s"
+	@echo "... src/renderer/buffers/buffer.o"
+	@echo "... src/renderer/buffers/buffer.i"
+	@echo "... src/renderer/buffers/buffer.s"
+	@echo "... src/renderer/buffers/element_array_object.o"
+	@echo "... src/renderer/buffers/element_array_object.i"
+	@echo "... src/renderer/buffers/element_array_object.s"
+	@echo "... src/renderer/buffers/vertex_array_object.o"
+	@echo "... src/renderer/buffers/vertex_array_object.i"
+	@echo "... src/renderer/buffers/vertex_array_object.s"
+	@echo "... src/renderer/buffers/vertex_buffer_object.o"
+	@echo "... src/renderer/buffers/vertex_buffer_object.i"
+	@echo "... src/renderer/buffers/vertex_buffer_object.s"
 	@echo "... src/renderer/debug_renderer.o"
 	@echo "... src/renderer/debug_renderer.i"
 	@echo "... src/renderer/debug_renderer.s"
@@ -948,6 +1250,15 @@ help:
 	@echo "... src/world/world_chunk.o"
 	@echo "... src/world/world_chunk.i"
 	@echo "... src/world/world_chunk.s"
+	@echo "... tests/unit/particle_test.o"
+	@echo "... tests/unit/particle_test.i"
+	@echo "... tests/unit/particle_test.s"
+	@echo "... tests/unit/utils_test.o"
+	@echo "... tests/unit/utils_test.i"
+	@echo "... tests/unit/utils_test.s"
+	@echo "... tests/unit/world_test.o"
+	@echo "... tests/unit/world_test.i"
+	@echo "... tests/unit/world_test.s"
 .PHONY : help
 
 

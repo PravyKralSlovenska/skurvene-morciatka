@@ -1,0 +1,5 @@
+if(EXISTS "/home/jakub/programko/cpp/skurvene-morciatka/build/morciatko_tests[1]_tests.cmake")
+  include("/home/jakub/programko/cpp/skurvene-morciatka/build/morciatko_tests[1]_tests.cmake")
+else()
+  add_test(morciatko_tests_NOT_BUILT morciatko_tests_NOT_BUILT)
+endif()

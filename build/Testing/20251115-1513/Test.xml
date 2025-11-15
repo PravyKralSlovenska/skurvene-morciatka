@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="(empty)"
+	BuildStamp="20251115-1513-Experimental"
+	Name="(empty)"
+	Generator="ctest-4.1.2"
+	CompilerName=""
+	CompilerVersion=""
+	OSName="Linux"
+	Hostname="stefancik"
+	OSRelease="6.17.7-arch1-2"
+	OSVersion="#1 SMP PREEMPT_DYNAMIC Wed, 12 Nov 2025 14:41:18 +0000"
+	OSPlatform="x86_64"
+	Is64Bits="1"
+	VendorString="GenuineIntel"
+	VendorID="Intel Corporation"
+	FamilyID="6"
+	ModelID="142"
+	ModelName="Intel(R) Core(TM) i5-8350U CPU @ 1.70GHz"
+	ProcessorCacheSize="6144"
+	NumberOfLogicalCPU="8"
+	NumberOfPhysicalCPU="4"
+	TotalVirtualMemory="0"
+	TotalPhysicalMemory="15861"
+	LogicalProcessorsPerPhysical="2"
+	ProcessorClockFrequency="2099.33"
+	>
+	<Testing>
+		<StartDateTime>Nov 15 16:34 CET</StartDateTime>
+		<StartTestTime>1763220888</StartTestTime>
+		<TestList/>
+		<EndDateTime>Nov 15 16:34 CET</EndDateTime>
+		<EndTestTime>1763220888</EndTestTime>
+		<ElapsedMinutes>0</ElapsedMinutes>
+	</Testing>
+</Site>

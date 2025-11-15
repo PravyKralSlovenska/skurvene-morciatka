@@ -1,0 +1,5 @@
+add_test([=[UtilsTest.InWorldRange_BasicTest]=]  /home/jakub/programko/cpp/skurvene-morciatka/build/morciatko_tests [==[--gtest_filter=UtilsTest.InWorldRange_BasicTest]==] --gtest_also_run_disabled_tests)
+set_tests_properties([=[UtilsTest.InWorldRange_BasicTest]=]  PROPERTIES WORKING_DIRECTORY /home/jakub/programko/cpp/skurvene-morciatka/build SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
+add_test([=[ColorTest.ColorConversion]=]  /home/jakub/programko/cpp/skurvene-morciatka/build/morciatko_tests [==[--gtest_filter=ColorTest.ColorConversion]==] --gtest_also_run_disabled_tests)
+set_tests_properties([=[ColorTest.ColorConversion]=]  PROPERTIES WORKING_DIRECTORY /home/jakub/programko/cpp/skurvene-morciatka/build SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
+set(  morciatko_tests_TESTS UtilsTest.InWorldRange_BasicTest ColorTest.ColorConversion)

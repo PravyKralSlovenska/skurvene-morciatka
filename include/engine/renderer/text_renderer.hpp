@@ -14,7 +14,9 @@
 
 #include "engine/renderer/text_renderer.hpp"
 #include "engine/renderer/shader.hpp"
-#include "engine/renderer/buffer.hpp"
+#include "engine/renderer/buffers/vertex_buffer_object.hpp"
+#include "engine/renderer/buffers/vertex_array_object.hpp"
+
 #include "others/utils.hpp"
 
 #include <ft2build.h>

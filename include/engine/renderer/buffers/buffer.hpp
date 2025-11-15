@@ -4,7 +4,7 @@
 
 /*
  * BUFFER:
- * - base class for other classes I think im fucked
+ * - base class for other classes
  */
 class Buffer
 {
@@ -14,6 +14,8 @@ public:
 public:
     virtual void bind() = 0;
     virtual void unbind() = 0;
+
+    bool is_valid() const;
 };
 
 // this for VERTEX_BUFFER_OBJECT on how should be the thing drawed
