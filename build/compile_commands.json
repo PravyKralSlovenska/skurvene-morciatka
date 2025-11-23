@@ -391,6 +391,12 @@
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/g++ -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_tests.dir/tests/benchmarks/performance.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/tests/benchmarks/performance.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/tests/benchmarks/performance.cpp",
+  "output": "CMakeFiles/morciatko_tests.dir/tests/benchmarks/performance.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
   "command": "/usr/bin/g++ -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_tests.dir/tests/unit/particle_test.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/tests/unit/particle_test.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/tests/unit/particle_test.cpp",
   "output": "CMakeFiles/morciatko_tests.dir/tests/unit/particle_test.cpp.o"

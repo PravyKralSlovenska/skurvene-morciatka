@@ -1,0 +1,28 @@
+{
+  "tests": 2,
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "UtilsTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "InWorldRange_BasicTest",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/utils_test.cpp",
+          "line": 4
+        }
+      ]
+    },
+    {
+      "name": "ColorTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "ColorConversion",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/utils_test.cpp",
+          "line": 12
+        }
+      ]
+    }
+  ]
+}

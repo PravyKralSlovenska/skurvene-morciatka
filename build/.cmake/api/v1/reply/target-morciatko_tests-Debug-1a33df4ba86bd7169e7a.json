@@ -14,12 +14,15 @@
 			"target_link_libraries",
 			"__gtest_define_backwards_compatible_library_targets",
 			"find_package",
+			"add_custom_command",
+			"gtest_discover_tests",
 			"include_directories"
 		],
 		"files" : 
 		[
 			"CMakeLists.txt",
-			"/usr/share/cmake/Modules/FindGTest.cmake"
+			"/usr/share/cmake/Modules/FindGTest.cmake",
+			"/usr/share/cmake/Modules/GoogleTest.cmake"
 		],
 		"nodes" : 
 		[
@@ -57,29 +60,61 @@
 			{
 				"command" : 2,
 				"file" : 1,
-				"line" : 347,
+				"line" : 355,
 				"parent" : 5
 			},
 			{
 				"command" : 1,
 				"file" : 1,
-				"line" : 328,
+				"line" : 336,
 				"parent" : 6
 			},
 			{
 				"command" : 1,
 				"file" : 1,
-				"line" : 324,
+				"line" : 332,
 				"parent" : 6
 			},
 			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 83,
+				"parent" : 0
+			},
+			{
 				"command" : 4,
+				"file" : 2,
+				"line" : 687,
+				"parent" : 9
+			},
+			{
+				"command" : 6,
 				"file" : 0,
 				"line" : 16,
 				"parent" : 0
 			}
 		]
 	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 9
+	},
+	"compileDependencies" : 
+	[
+		{
+			"backtrace" : 2,
+			"id" : "morciatko_lib::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "GTest::GTest::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "GTest::Main::@6890427a1f51a3e7e1df"
+		}
+	],
 	"compileGroups" : 
 	[
 		{
@@ -99,19 +134,19 @@
 			"includes" : 
 			[
 				{
-					"backtrace" : 9,
+					"backtrace" : 11,
 					"path" : "/home/jakub/programko/cpp/skurvene-morciatka/include"
 				},
 				{
-					"backtrace" : 9,
+					"backtrace" : 11,
 					"path" : "/usr/include/freetype2"
 				},
 				{
-					"backtrace" : 9,
+					"backtrace" : 11,
 					"path" : "/usr/include/libpng16"
 				},
 				{
-					"backtrace" : 9,
+					"backtrace" : 11,
 					"path" : "/usr/include/AL"
 				}
 			],
@@ -128,7 +163,8 @@
 			[
 				0,
 				1,
-				2
+				2,
+				3
 			]
 		}
 	],
@@ -206,8 +242,34 @@
 		],
 		"language" : "CXX"
 	},
+	"linkLibraries" : 
+	[
+		{
+			"backtrace" : 2,
+			"id" : "morciatko_lib::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "GTest::GTest::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "GTest::Main::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 2,
+			"fragment" : "pthread"
+		}
+	],
 	"name" : "morciatko_tests",
 	"nameOnDisk" : "morciatko_tests",
+	"orderDependencies" : 
+	[
+		{
+			"backtrace" : 10,
+			"id" : "morciatko_tests::@6890427a1f51a3e7e1df"
+		}
+	],
 	"paths" : 
 	{
 		"build" : ".",
@@ -221,12 +283,19 @@
 			[
 				0,
 				1,
-				2
+				2,
+				3
 			]
 		}
 	],
 	"sources" : 
 	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "tests/benchmarks/performance.cpp",
+			"sourceGroupIndex" : 0
+		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,

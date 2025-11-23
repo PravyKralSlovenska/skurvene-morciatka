@@ -2,13 +2,13 @@
 <Site BuildName="(empty)"
 	BuildStamp="20251115-1513-Experimental"
 	Name="(empty)"
-	Generator="ctest-4.1.2"
+	Generator="ctest-4.2.0"
 	CompilerName=""
 	CompilerVersion=""
 	OSName="Linux"
 	Hostname="stefancik"
-	OSRelease="6.17.7-arch1-2"
-	OSVersion="#1 SMP PREEMPT_DYNAMIC Wed, 12 Nov 2025 14:41:18 +0000"
+	OSRelease="6.17.8-arch1-1"
+	OSVersion="#1 SMP PREEMPT_DYNAMIC Fri, 14 Nov 2025 06:54:20 +0000"
 	OSPlatform="x86_64"
 	Is64Bits="1"
 	VendorString="GenuineIntel"
@@ -22,14 +22,14 @@
 	TotalVirtualMemory="0"
 	TotalPhysicalMemory="15861"
 	LogicalProcessorsPerPhysical="2"
-	ProcessorClockFrequency="2099.33"
+	ProcessorClockFrequency="2400.13"
 	>
 	<Testing>
-		<StartDateTime>Nov 15 16:34 CET</StartDateTime>
-		<StartTestTime>1763220888</StartTestTime>
+		<StartDateTime>Nov 23 16:51 CET</StartDateTime>
+		<StartTestTime>1763913114</StartTestTime>
 		<TestList/>
-		<EndDateTime>Nov 15 16:34 CET</EndDateTime>
-		<EndTestTime>1763220888</EndTestTime>
+		<EndDateTime>Nov 23 16:51 CET</EndDateTime>
+		<EndTestTime>1763913114</EndTestTime>
 		<ElapsedMinutes>0</ElapsedMinutes>
 	</Testing>
 </Site>

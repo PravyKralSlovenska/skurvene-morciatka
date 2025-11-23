@@ -90,7 +90,7 @@ int main()
         render.render_everything();
     }
 
-    audio_manager.send_execute(Pending_Execute::Operations::STOP);
+    // audio_manager.send_execute(Pending_Execute::Operations::STOP);
     // audio_manager.cleanup();
     render.cleanup();
 
