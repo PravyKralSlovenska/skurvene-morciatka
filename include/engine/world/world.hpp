@@ -69,8 +69,9 @@ public:
     void update();
 
     std::unordered_map<glm::ivec2, std::unique_ptr<Chunk>, Chunk_Coords_to_Hash>* get_chunks();
-    void get_active_chunks();
+    std::unordered_set<glm::ivec2, Chunk_Coords_to_Hash>* get_active_chunks();
 
+    std::pair<int, int> get_chunk_dimensions();
     Chunk *get_chunk(const int x, const int y);
     Chunk *get_chunk(const Chunk_Coords_to_Hash something);
 };

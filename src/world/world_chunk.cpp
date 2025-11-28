@@ -31,6 +31,16 @@ void Chunk::move_cell()
     
 }
 
+void Chunk::make_cached_verticies()
+{
+
+}
+
+void Chunk::make_cached_indicies()
+{
+
+}
+
 Chunk_States Chunk::get_state()
 {
     return state;
@@ -39,6 +49,11 @@ Chunk_States Chunk::get_state()
 void Chunk::set_state(Chunk_States state)
 {
     this->state = state;
+}
+
+bool Chunk::is_dirty()
+{
+    return is_dirty;
 }
 
 bool Chunk::is_empty(int x, int y)
@@ -69,4 +84,14 @@ WorldCell* Chunk::get_worldcell(int x, int y)
 WorldCell* Chunk::get_worldcell(int index)
 {
     return &chunk_data[index];
+}
+
+std::vector<Vertex>* Chunk::get_cached_verticies()
+{
+    return &cached_verticies;
+}
+
+std::vector<unsigned int>* Chunk::get_cached_indicies()
+{
+    return &cached_indicies;
 }

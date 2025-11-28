@@ -1,11 +1,6 @@
 #include "engine/world/world.hpp"
 #include "engine/entity.hpp"
 
-int floor_integer(int a, int b)
-{
-    return 1;
-}
-
 World::World()
     : seed(1) {}
 
@@ -72,8 +67,6 @@ void World::calculate_active_chunks()
 
     // std::cout << active_chunks.size() << '\n';
     // std::cout << world.size() << '\n';
-
-    // should set all other chunks to     
 }
 
 void World::update()
@@ -88,14 +81,19 @@ void World::update()
     }
 }
 
+std::pair<int, int> World::get_chunk_dimensions()
+{
+    return std::pair<int, int>(chunk_width, chunk_height);
+}
+
 std::unordered_map<glm::ivec2, std::unique_ptr<Chunk>, Chunk_Coords_to_Hash>* World::get_chunks()
 {
     return &world;
 }
 
-void World::get_active_chunks()
+std::unordered_set<glm::ivec2, Chunk_Coords_to_Hash>* World::get_active_chunks()
 {
-    std::vector<Chunk*> return_chunks;
+    return &active_chunks;
 }
 
 Chunk *World::get_chunk(const int x, const int y)

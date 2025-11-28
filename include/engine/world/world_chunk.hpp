@@ -25,12 +25,20 @@ private:
 
     Chunk_States state = Chunk_States::UNLOADED;
 
+    // pre renderer
+    bool is_dirty = true;
+    std::vector<Vertex> cached_verticies;
+    std::vector<unsigned int> cached_indicies;
+
 private:
     void init_chunk_data();
     inline int get_index(int x, int y);
 
     void move_cell();
     // void commit_cells();
+
+    void make_cached_verticies();
+    void make_cached_indicies();
 
 public:
     const int width, height;
@@ -43,6 +51,7 @@ public:
     Chunk_States get_state();
     void set_state(Chunk_States state);
 
+    bool is_dirty();
     bool is_empty(int x, int y);
     bool is_empty(int index);
 
@@ -50,4 +59,8 @@ public:
     void set_worldcell(int index, Particle* particle);
     WorldCell* get_worldcell(int x, int y);
     WorldCell* get_worldcell(int index);
+
+    // get render data
+    std::vector<Vertex>* get_cached_verticies();
+    std::vector<unsigned int>* get_cached_indicies();
 };

@@ -22,17 +22,22 @@ private:
     std::unique_ptr<VERTEX_BUFFER_OBJECT> VBO;
     std::unique_ptr<ELEMENT_ARRAY_BUFFER> EBO;
     std::unique_ptr<Shader> shader;
-    
+
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    
-    std::unique_ptr<VERTEX_ARRAY_OBJECT> chunk_VAO;
-    std::unique_ptr<VERTEX_BUFFER_OBJECT> chunk_VBO;
-    std::unique_ptr<ELEMENT_ARRAY_BUFFER> chunk_EBO;
-    std::unique_ptr<Shader> chunk_shader;
 
-    std::vector<Vertex> chunk_vertices;
-    std::vector<unsigned int> chunk_indices;
+    static constexpr std::array<unsigned int, 6> QUAD_INDICES = {
+        0, 1, 2,
+        0, 2, 3
+    };
+
+    // std::unique_ptr<VERTEX_ARRAY_OBJECT> chunk_VAO;
+    // std::unique_ptr<VERTEX_BUFFER_OBJECT> chunk_VBO;
+    // std::unique_ptr<ELEMENT_ARRAY_BUFFER> chunk_EBO;
+    // std::unique_ptr<Shader> chunk_shader;
+
+    // std::vector<Vertex> chunk_vertices;
+    // std::vector<unsigned int> chunk_indices;
 
     World *world = nullptr;
 
@@ -46,12 +51,14 @@ public:
     void init();
     void set_world(World *world);
     void set_projection(glm::mat4 projection);
-    
+
     void render_test_triangle();
+
+    void add_chunk_to_batch(Chunk *chunk);
 
     void render_chunks();
     void render_world();
-    
+
     void clear_buffers();
 
     void fill_vertices();
