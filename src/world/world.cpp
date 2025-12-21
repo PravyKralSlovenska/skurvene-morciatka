@@ -26,12 +26,17 @@ int World::change_height(int n)
 
 Chunk World::create_chunk(int x, int y)
 {
-    Chunk chunk(glm::ivec2(x, y), chunk_width, chunk_height);
+    auto chunk = std::make_unique<Chunk>(glm::ivec2(x, y), chunk_width, chunk_height);
 }
 
 void World::add_chunk(int x, int y)
 {
-    Chunk chunk = create_chunk(x, y);
+    add_chunk(glm::ivec2{x, y});
+}
+
+void World::add_chunk(glm::ivec2 coords)
+{
+    world.try_emplace(coords, std::make_unique<Chunk>(coords, chunk_width, chunk_height));
 }
 
 void World::calculate_active_chunks()
@@ -54,12 +59,16 @@ void World::calculate_active_chunks()
 
     for (const auto &offset : offsets)
     {
-        int x = (player->coords.x / chunk_width) + offset.x;
-        int y = (player->coords.y / chunk_height) + offset.y;
+        int particle_size = 10;
+        int chunk_pixel_width = chunk_width * particle_size;
+        int chunk_pixel_height = chunk_height * particle_size;
+
+        int x = floor(player->coords.x / chunk_pixel_width) + offset.x;
+        int y = floor(player->coords.y / chunk_pixel_height) + offset.y;
 
         glm::ivec2 coords = {x, y};
 
-        world.try_emplace(coords, std::make_unique<Chunk>(coords, chunk_width, chunk_height));
+        add_chunk(coords);
         // world[coords]->set_state(Chunk_States::LOADED);
 
         active_chunks.insert({x, y});
@@ -81,23 +90,47 @@ void World::update()
     }
 }
 
+void World::place_particle(glm::ivec2 position)
+{
+    int chunk_x = position.x / chunk_width;
+    int chunk_y = position.y / chunk_height;
+
+    // Chunk *chunk = get_chunk(chunk_x, chunk_y);
+
+    // auto chunk = world[{chunk_x, chunk_y}];
+
+    int cell_x = position.x - chunk_x;
+    int cell_y = position.y - chunk_y;
+
+    // WorldCell *cell = chunk->get_worldcell(cell_x, cell_y);
+
+    // cell->set_particle(create_stone());
+}
+
 std::pair<int, int> World::get_chunk_dimensions()
 {
     return std::pair<int, int>(chunk_width, chunk_height);
 }
 
-std::unordered_map<glm::ivec2, std::unique_ptr<Chunk>, Chunk_Coords_to_Hash>* World::get_chunks()
+std::unordered_map<glm::ivec2, std::unique_ptr<Chunk>, Chunk_Coords_to_Hash> *World::get_chunks()
 {
     return &world;
 }
 
-std::unordered_set<glm::ivec2, Chunk_Coords_to_Hash>* World::get_active_chunks()
+int World::get_chunks_size()
+{
+    return world.size();
+}
+
+std::unordered_set<glm::ivec2, Chunk_Coords_to_Hash> *World::get_active_chunks()
 {
     return &active_chunks;
 }
 
 Chunk *World::get_chunk(const int x, const int y)
 {
+    auto it = world.find(glm::ivec2{x, y});
+    return it == world.end() ? nullptr : it->second.get();
 }
 
 Chunk *World::get_chunk(const Chunk_Coords_to_Hash something)

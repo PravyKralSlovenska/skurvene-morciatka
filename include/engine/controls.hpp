@@ -48,7 +48,7 @@ public:
 
     // keyboard controls
     void keyboard_input();
-    void handle_inventory();
+    // void handle_inventory();
     void get_cursor_position();
 
     // mouse controls

@@ -1,0 +1,2494 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" width="1200" height="998" onload="init(evt)" viewBox="0 0 1200 998" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<!-- Flame graph stack visualization. See https://github.com/brendangregg/FlameGraph for latest version, and http://www.brendangregg.com/flamegraphs.html for examples. -->
+<!-- NOTES:  -->
+<defs >
+	<linearGradient id="background" y1="0" y2="1" x1="0" x2="0" >
+		<stop stop-color="#eeeeee" offset="5%" />
+		<stop stop-color="#eeeeb0" offset="95%" />
+	</linearGradient>
+</defs>
+<style type="text/css">
+	.func_g:hover { stroke:black; stroke-width:0.5; cursor:pointer; }
+</style>
+<script type="text/ecmascript">
+<![CDATA[
+	var details, searchbtn, matchedtxt, svg;
+	function init(evt) {
+		details = document.getElementById("details").firstChild;
+		searchbtn = document.getElementById("search");
+		matchedtxt = document.getElementById("matched");
+		svg = document.getElementsByTagName("svg")[0];
+		searching = 0;
+	}
+
+	// mouse-over for info
+	function s(node) {		// show
+		info = g_to_text(node);
+		details.nodeValue = "Function: " + info;
+	}
+	function c() {			// clear
+		details.nodeValue = ' ';
+	}
+
+	// ctrl-F for search
+	window.addEventListener("keydown",function (e) {
+		if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) {
+			e.preventDefault();
+			search_prompt();
+		}
+	})
+
+	// functions
+	function find_child(parent, name, attr) {
+		var children = parent.childNodes;
+		for (var i=0; i<children.length;i++) {
+			if (children[i].tagName == name)
+				return (attr != undefined) ? children[i].attributes[attr].value : children[i];
+		}
+		return;
+	}
+	function orig_save(e, attr, val) {
+		if (e.attributes["_orig_"+attr] != undefined) return;
+		if (e.attributes[attr] == undefined) return;
+		if (val == undefined) val = e.attributes[attr].value;
+		e.setAttribute("_orig_"+attr, val);
+	}
+	function orig_load(e, attr) {
+		if (e.attributes["_orig_"+attr] == undefined) return;
+		e.attributes[attr].value = e.attributes["_orig_"+attr].value;
+		e.removeAttribute("_orig_"+attr);
+	}
+	function g_to_text(e) {
+		var text = find_child(e, "title").firstChild.nodeValue;
+		return (text)
+	}
+	function g_to_func(e) {
+		var func = g_to_text(e);
+		// if there's any manipulation we want to do to the function
+		// name before it's searched, do it here before returning.
+		return (func);
+	}
+	function update_text(e) {
+		var r = find_child(e, "rect");
+		var t = find_child(e, "text");
+		var w = parseFloat(r.attributes["width"].value) -3;
+		var txt = find_child(e, "title").textContent.replace(/\([^(]*\)$/,"");
+		t.attributes["x"].value = parseFloat(r.attributes["x"].value) +3;
+
+		// Smaller than this size won't fit anything
+		if (w < 2*12*0.59) {
+			t.textContent = "";
+			return;
+		}
+
+		t.textContent = txt;
+		// Fit in full text width
+		if (/^ *$/.test(txt) || t.getSubStringLength(0, txt.length) < w)
+			return;
+
+		for (var x=txt.length-2; x>0; x--) {
+			if (t.getSubStringLength(0, x+2) <= w) {
+				t.textContent = txt.substring(0,x) + "..";
+				return;
+			}
+		}
+		t.textContent = "";
+	}
+
+	// zoom
+	function zoom_reset(e) {
+		if (e.attributes != undefined) {
+			orig_load(e, "x");
+			orig_load(e, "width");
+		}
+		if (e.childNodes == undefined) return;
+		for(var i=0, c=e.childNodes; i<c.length; i++) {
+			zoom_reset(c[i]);
+		}
+	}
+	function zoom_child(e, x, ratio) {
+		if (e.attributes != undefined) {
+			if (e.attributes["x"] != undefined) {
+				orig_save(e, "x");
+				e.attributes["x"].value = (parseFloat(e.attributes["x"].value) - x - 10) * ratio + 10;
+				if(e.tagName == "text") e.attributes["x"].value = find_child(e.parentNode, "rect", "x") + 3;
+			}
+			if (e.attributes["width"] != undefined) {
+				orig_save(e, "width");
+				e.attributes["width"].value = parseFloat(e.attributes["width"].value) * ratio;
+			}
+		}
+
+		if (e.childNodes == undefined) return;
+		for(var i=0, c=e.childNodes; i<c.length; i++) {
+			zoom_child(c[i], x-10, ratio);
+		}
+	}
+	function zoom_parent(e) {
+		if (e.attributes) {
+			if (e.attributes["x"] != undefined) {
+				orig_save(e, "x");
+				e.attributes["x"].value = 10;
+			}
+			if (e.attributes["width"] != undefined) {
+				orig_save(e, "width");
+				e.attributes["width"].value = parseInt(svg.width.baseVal.value) - (10*2);
+			}
+		}
+		if (e.childNodes == undefined) return;
+		for(var i=0, c=e.childNodes; i<c.length; i++) {
+			zoom_parent(c[i]);
+		}
+	}
+	function zoom(node) {
+		var attr = find_child(node, "rect").attributes;
+		var width = parseFloat(attr["width"].value);
+		var xmin = parseFloat(attr["x"].value);
+		var xmax = parseFloat(xmin + width);
+		var ymin = parseFloat(attr["y"].value);
+		var ratio = (svg.width.baseVal.value - 2*10) / width;
+
+		// XXX: Workaround for JavaScript float issues (fix me)
+		var fudge = 0.0001;
+
+		var unzoombtn = document.getElementById("unzoom");
+		unzoombtn.style["opacity"] = "1.0";
+
+		var el = document.getElementsByTagName("g");
+		for(var i=0;i<el.length;i++){
+			var e = el[i];
+			var a = find_child(e, "rect").attributes;
+			var ex = parseFloat(a["x"].value);
+			var ew = parseFloat(a["width"].value);
+			// Is it an ancestor
+			if (0 == 0) {
+				var upstack = parseFloat(a["y"].value) > ymin;
+			} else {
+				var upstack = parseFloat(a["y"].value) < ymin;
+			}
+			if (upstack) {
+				// Direct ancestor
+				if (ex <= xmin && (ex+ew+fudge) >= xmax) {
+					e.style["opacity"] = "0.5";
+					zoom_parent(e);
+					e.onclick = function(e){unzoom(); zoom(this);};
+					update_text(e);
+				}
+				// not in current path
+				else
+					e.style["display"] = "none";
+			}
+			// Children maybe
+			else {
+				// no common path
+				if (ex < xmin || ex + fudge >= xmax) {
+					e.style["display"] = "none";
+				}
+				else {
+					zoom_child(e, xmin, ratio);
+					e.onclick = function(e){zoom(this);};
+					update_text(e);
+				}
+			}
+		}
+	}
+	function unzoom() {
+		var unzoombtn = document.getElementById("unzoom");
+		unzoombtn.style["opacity"] = "0.0";
+
+		var el = document.getElementsByTagName("g");
+		for(i=0;i<el.length;i++) {
+			el[i].style["display"] = "block";
+			el[i].style["opacity"] = "1";
+			zoom_reset(el[i]);
+			update_text(el[i]);
+		}
+	}
+
+	// search
+	function reset_search() {
+		var el = document.getElementsByTagName("rect");
+		for (var i=0; i < el.length; i++) {
+			orig_load(el[i], "fill")
+		}
+	}
+	function search_prompt() {
+		if (!searching) {
+			var term = prompt("Enter a search term (regexp " +
+			    "allowed, eg: ^ext4_)", "");
+			if (term != null) {
+				search(term)
+			}
+		} else {
+			reset_search();
+			searching = 0;
+			searchbtn.style["opacity"] = "0.1";
+			searchbtn.firstChild.nodeValue = "Search"
+			matchedtxt.style["opacity"] = "0.0";
+			matchedtxt.firstChild.nodeValue = ""
+		}
+	}
+	function search(term) {
+		var re = new RegExp(term);
+		var el = document.getElementsByTagName("g");
+		var matches = new Object();
+		var maxwidth = 0;
+		for (var i = 0; i < el.length; i++) {
+			var e = el[i];
+			if (e.attributes["class"].value != "func_g")
+				continue;
+			var func = g_to_func(e);
+			var rect = find_child(e, "rect");
+			if (rect == null) {
+				// the rect might be wrapped in an anchor
+				// if nameattr href is being used
+				if (rect = find_child(e, "a")) {
+				    rect = find_child(r, "rect");
+				}
+			}
+			if (func == null || rect == null)
+				continue;
+
+			// Save max width. Only works as we have a root frame
+			var w = parseFloat(rect.attributes["width"].value);
+			if (w > maxwidth)
+				maxwidth = w;
+
+			if (func.match(re)) {
+				// highlight
+				var x = parseFloat(rect.attributes["x"].value);
+				orig_save(rect, "fill");
+				rect.attributes["fill"].value =
+				    "rgb(230,0,230)";
+
+				// remember matches
+				if (matches[x] == undefined) {
+					matches[x] = w;
+				} else {
+					if (w > matches[x]) {
+						// overwrite with parent
+						matches[x] = w;
+					}
+				}
+				searching = 1;
+			}
+		}
+		if (!searching)
+			return;
+
+		searchbtn.style["opacity"] = "1.0";
+		searchbtn.firstChild.nodeValue = "Reset Search"
+
+		// calculate percent matched, excluding vertical overlap
+		var count = 0;
+		var lastx = -1;
+		var lastw = 0;
+		var keys = Array();
+		for (k in matches) {
+			if (matches.hasOwnProperty(k))
+				keys.push(k);
+		}
+		// sort the matched frames by their x location
+		// ascending, then width descending
+		keys.sort(function(a, b){
+			return a - b;
+		});
+		// Step through frames saving only the biggest bottom-up frames
+		// thanks to the sort order. This relies on the tree property
+		// where children are always smaller than their parents.
+		var fudge = 0.0001;	// JavaScript floating point
+		for (var k in keys) {
+			var x = parseFloat(keys[k]);
+			var w = matches[keys[k]];
+			if (x >= lastx + lastw - fudge) {
+				count += w;
+				lastx = x;
+				lastw = w;
+			}
+		}
+		// display matched percent
+		matchedtxt.style["opacity"] = "1.0";
+		pct = 100 * count / maxwidth;
+		if (pct == 100)
+			pct = "100"
+		else
+			pct = pct.toFixed(1)
+		matchedtxt.firstChild.nodeValue = "Matched: " + pct + "%";
+	}
+	function searchover(e) {
+		searchbtn.style["opacity"] = "1.0";
+	}
+	function searchout(e) {
+		if (searching) {
+			searchbtn.style["opacity"] = "1.0";
+		} else {
+			searchbtn.style["opacity"] = "0.1";
+		}
+	}
+]]>
+</script>
+<rect x="0.0" y="0" width="1200.0" height="998.0" fill="url(#background)"  />
+<text text-anchor="middle" x="600.00" y="24" font-size="17" font-family="Verdana" fill="rgb(0,0,0)"  >Flame Graph</text>
+<text text-anchor="" x="10.00" y="981" font-size="12" font-family="Verdana" fill="rgb(0,0,0)" id="details" > </text>
+<text text-anchor="" x="10.00" y="24" font-size="12" font-family="Verdana" fill="rgb(0,0,0)" id="unzoom" onclick="unzoom()" style="opacity:0.0;cursor:pointer" >Reset Zoom</text>
+<text text-anchor="" x="1090.00" y="24" font-size="12" font-family="Verdana" fill="rgb(0,0,0)" id="search" onmouseover="searchover()" onmouseout="searchout()" onclick="search_prompt()" style="opacity:0.1;cursor:pointer" >Search</text>
+<text text-anchor="" x="1090.00" y="981" font-size="12" font-family="Verdana" fill="rgb(0,0,0)" id="matched" > </text>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1172.4" y="501" width="1.0" height="15.0" fill="rgb(223,153,28)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="511.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libwayland-client.so.0.24.0] (1 samples, 0.09%)</title><rect x="500.6" y="757" width="1.1" height="15.0" fill="rgb(223,134,49)" rx="2" ry="2" />
+<text text-anchor="" x="503.63" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>libdecor_frame_commit (2 samples, 0.18%)</title><rect x="1170.3" y="821" width="2.1" height="15.0" fill="rgb(247,9,53)" rx="2" ry="2" />
+<text text-anchor="" x="1173.33" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1144.5" y="389" width="1.0" height="15.0" fill="rgb(210,213,51)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="399.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1144.5" y="501" width="1.0" height="15.0" fill="rgb(233,221,29)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="511.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (2 samples, 0.18%)</title><rect x="515.1" y="661" width="2.1" height="15.0" fill="rgb(245,101,0)" rx="2" ry="2" />
+<text text-anchor="" x="518.12" y="671.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_get_preferred_width (1 samples, 0.09%)</title><rect x="1171.4" y="453" width="1.0" height="15.0" fill="rgb(252,50,13)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="463.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>Particle_Velocity::Particle_Velocity (191 samples, 16.75%)</title><rect x="597.9" y="901" width="197.7" height="15.0" fill="rgb(214,155,42)" rx="2" ry="2" />
+<text text-anchor="" x="600.93" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  >Particle_Velocity::Partic..</text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>_start (28 samples, 2.46%)</title><rect x="1161.0" y="917" width="29.0" height="15.0" fill="rgb(220,44,25)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="927.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  >_s..</text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1144.5" y="533" width="1.0" height="15.0" fill="rgb(205,213,17)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="543.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1144.5" y="725" width="2.0" height="15.0" fill="rgb(240,84,36)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_signal_emit_valist (3 samples, 0.26%)</title><rect x="1146.5" y="661" width="3.1" height="15.0" fill="rgb(236,211,46)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="671.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>wl_display_dispatch_queue (8 samples, 0.70%)</title><rect x="497.5" y="821" width="8.3" height="15.0" fill="rgb(219,162,0)" rx="2" ry="2" />
+<text text-anchor="" x="500.53" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1145.5" y="581" width="1.0" height="15.0" fill="rgb(245,114,37)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="591.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libfreetype.so.6.20.4] (1 samples, 0.09%)</title><rect x="395.1" y="805" width="1.0" height="15.0" fill="rgb(232,20,5)" rx="2" ry="2" />
+<text text-anchor="" x="398.05" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1187.9" y="837" width="1.1" height="15.0" fill="rgb(225,155,44)" rx="2" ry="2" />
+<text text-anchor="" x="1190.93" y="847.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1172.4" y="549" width="1.0" height="15.0" fill="rgb(208,79,34)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="559.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1189.0" y="885" width="1.0" height="15.0" fill="rgb(206,163,15)" rx="2" ry="2" />
+<text text-anchor="" x="1191.96" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="1161.0" y="645" width="1.1" height="15.0" fill="rgb(247,54,21)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="655.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libdecor-gtk.so] (5 samples, 0.44%)</title><rect x="1144.5" y="821" width="5.1" height="15.0" fill="rgb(230,186,47)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="410.6" y="709" width="1.0" height="15.0" fill="rgb(240,93,37)" rx="2" ry="2" />
+<text text-anchor="" x="413.58" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1145.5" y="597" width="1.0" height="15.0" fill="rgb(245,28,1)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="607.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (8 samples, 0.70%)</title><rect x="509.9" y="725" width="8.3" height="15.0" fill="rgb(250,50,26)" rx="2" ry="2" />
+<text text-anchor="" x="512.95" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>glfwCreateWindow (11 samples, 0.96%)</title><rect x="1161.0" y="869" width="11.4" height="15.0" fill="rgb(237,82,24)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="879.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libglib-2.0.so.0.8600.2] (2 samples, 0.18%)</title><rect x="10.0" y="885" width="2.1" height="15.0" fill="rgb(223,90,21)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="410.6" y="693" width="1.0" height="15.0" fill="rgb(233,4,4)" rx="2" ry="2" />
+<text text-anchor="" x="413.58" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="213" width="2.1" height="15.0" fill="rgb(247,124,48)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="223.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="10.0" y="725" width="1.0" height="15.0" fill="rgb(212,199,37)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libwayland-client.so.0.24.0] (1 samples, 0.09%)</title><rect x="500.6" y="773" width="1.1" height="15.0" fill="rgb(216,71,0)" rx="2" ry="2" />
+<text text-anchor="" x="503.63" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="613" width="1.0" height="15.0" fill="rgb(249,212,38)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="623.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="533" width="1.0" height="15.0" fill="rgb(234,129,38)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="543.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (17 samples, 1.49%)</title><rect x="398.2" y="901" width="17.6" height="15.0" fill="rgb(232,84,1)" rx="2" ry="2" />
+<text text-anchor="" x="401.16" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libcairo.so.2.11804.4] (1 samples, 0.09%)</title><rect x="1170.3" y="741" width="1.1" height="15.0" fill="rgb(213,59,20)" rx="2" ry="2" />
+<text text-anchor="" x="1173.33" y="751.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_signal_emit (3 samples, 0.26%)</title><rect x="1178.6" y="725" width="3.1" height="15.0" fill="rgb(210,3,44)" rx="2" ry="2" />
+<text text-anchor="" x="1181.61" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>clock_gettime (1 samples, 0.09%)</title><rect x="412.6" y="837" width="1.1" height="15.0" fill="rgb(215,53,39)" rx="2" ry="2" />
+<text text-anchor="" x="415.65" y="847.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libcairo.so.2.11804.4] (1 samples, 0.09%)</title><rect x="1165.2" y="693" width="1.0" height="15.0" fill="rgb(229,1,21)" rx="2" ry="2" />
+<text text-anchor="" x="1168.16" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>Particle_Density::Particle_Density (16 samples, 1.40%)</title><rect x="563.8" y="901" width="16.5" height="15.0" fill="rgb(245,14,27)" rx="2" ry="2" />
+<text text-anchor="" x="566.77" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgobject-2.0.so.0.8600.2] (3 samples, 0.26%)</title><rect x="1146.5" y="549" width="3.1" height="15.0" fill="rgb(230,117,36)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="559.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libEGL.so.1.1.0] (3 samples, 0.26%)</title><rect x="1166.2" y="773" width="3.1" height="15.0" fill="rgb(254,108,7)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>Text_Renderer::render_text (19 samples, 1.67%)</title><rect x="396.1" y="917" width="19.7" height="15.0" fill="rgb(230,85,14)" rx="2" ry="2" />
+<text text-anchor="" x="399.09" y="927.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>libdecor_frame_commit (5 samples, 0.44%)</title><rect x="1144.5" y="853" width="5.1" height="15.0" fill="rgb(221,104,14)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libfontconfig.so.1.16.0] (2 samples, 0.18%)</title><rect x="10.0" y="837" width="2.1" height="15.0" fill="rgb(238,72,31)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="847.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1164.1" y="773" width="1.1" height="15.0" fill="rgb(229,57,47)" rx="2" ry="2" />
+<text text-anchor="" x="1167.12" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libEGL_mesa.so.0.0.0] (1 samples, 0.09%)</title><rect x="1161.0" y="789" width="1.1" height="15.0" fill="rgb(240,12,11)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libharfbuzz.so.0.61220.0] (1 samples, 0.09%)</title><rect x="1145.5" y="357" width="1.0" height="15.0" fill="rgb(237,34,28)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="367.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libatk-1.0.so.0.25811.1] (1 samples, 0.09%)</title><rect x="1177.6" y="485" width="1.0" height="15.0" fill="rgb(251,101,49)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="495.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>driCreateContextAttribs (1 samples, 0.09%)</title><rect x="1162.1" y="789" width="1.0" height="15.0" fill="rgb(229,24,46)" rx="2" ry="2" />
+<text text-anchor="" x="1165.05" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>wl_display_dispatch_queue_pending (1 samples, 0.09%)</title><rect x="500.6" y="789" width="1.1" height="15.0" fill="rgb(230,129,18)" rx="2" ry="2" />
+<text text-anchor="" x="503.63" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (2 samples, 0.18%)</title><rect x="10.0" y="917" width="2.1" height="15.0" fill="rgb(232,113,32)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="927.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (1 samples, 0.09%)</title><rect x="414.7" y="837" width="1.1" height="15.0" fill="rgb(241,148,17)" rx="2" ry="2" />
+<text text-anchor="" x="417.72" y="847.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1177.6" y="581" width="1.0" height="15.0" fill="rgb(241,203,33)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="591.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (13 samples, 1.14%)</title><rect x="506.8" y="789" width="13.5" height="15.0" fill="rgb(224,199,2)" rx="2" ry="2" />
+<text text-anchor="" x="509.84" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (1 samples, 0.09%)</title><rect x="1162.1" y="645" width="1.0" height="15.0" fill="rgb(226,81,53)" rx="2" ry="2" />
+<text text-anchor="" x="1165.05" y="655.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libcairo.so.2.11804.4] (1 samples, 0.09%)</title><rect x="1170.3" y="709" width="1.1" height="15.0" fill="rgb(232,99,15)" rx="2" ry="2" />
+<text text-anchor="" x="1173.33" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="293" width="1.0" height="15.0" fill="rgb(210,59,34)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="303.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1144.5" y="709" width="1.0" height="15.0" fill="rgb(245,163,23)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libwayland-client.so.0.24.0] (1 samples, 0.09%)</title><rect x="497.5" y="789" width="1.1" height="15.0" fill="rgb(208,74,29)" rx="2" ry="2" />
+<text text-anchor="" x="500.53" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libwayland-cursor.so.0.24.0] (3 samples, 0.26%)</title><rect x="1184.8" y="821" width="3.1" height="15.0" fill="rgb(235,120,34)" rx="2" ry="2" />
+<text text-anchor="" x="1187.82" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (1 samples, 0.09%)</title><rect x="521.3" y="853" width="1.1" height="15.0" fill="rgb(207,215,5)" rx="2" ry="2" />
+<text text-anchor="" x="524.33" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_map (3 samples, 0.26%)</title><rect x="1146.5" y="613" width="3.1" height="15.0" fill="rgb(243,164,18)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="623.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>clock_gettime (1 samples, 0.09%)</title><rect x="413.7" y="853" width="1.0" height="15.0" fill="rgb(216,182,48)" rx="2" ry="2" />
+<text text-anchor="" x="416.68" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1187.9" y="821" width="1.1" height="15.0" fill="rgb(219,132,54)" rx="2" ry="2" />
+<text text-anchor="" x="1190.93" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>pango_context_get_metrics (1 samples, 0.09%)</title><rect x="1145.5" y="517" width="1.0" height="15.0" fill="rgb(208,46,23)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="527.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="453" width="2.1" height="15.0" fill="rgb(249,197,28)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="463.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1147.6" y="485" width="2.0" height="15.0" fill="rgb(207,64,54)" rx="2" ry="2" />
+<text text-anchor="" x="1150.56" y="495.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_realize (3 samples, 0.26%)</title><rect x="1146.5" y="597" width="3.1" height="15.0" fill="rgb(205,169,33)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="607.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1172.4" y="485" width="1.0" height="15.0" fill="rgb(219,42,33)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="495.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>_dl_catch_exception (3 samples, 0.26%)</title><rect x="1166.2" y="693" width="3.1" height="15.0" fill="rgb(212,137,8)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1187.9" y="853" width="1.1" height="15.0" fill="rgb(216,103,9)" rx="2" ry="2" />
+<text text-anchor="" x="1190.93" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libxkbcommon.so.0.13.0] (1 samples, 0.09%)</title><rect x="1149.6" y="805" width="1.1" height="15.0" fill="rgb(242,200,33)" rx="2" ry="2" />
+<text text-anchor="" x="1152.63" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="389" width="1.0" height="15.0" fill="rgb(252,79,41)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="399.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (10 samples, 0.88%)</title><rect x="403.3" y="853" width="10.4" height="15.0" fill="rgb(250,30,26)" rx="2" ry="2" />
+<text text-anchor="" x="406.33" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libffi.so.8.2.0] (6 samples, 0.53%)</title><rect x="1144.5" y="901" width="6.2" height="15.0" fill="rgb(220,2,2)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libfreetype.so.6.20.4] (1 samples, 0.09%)</title><rect x="395.1" y="901" width="1.0" height="15.0" fill="rgb(241,53,41)" rx="2" ry="2" />
+<text text-anchor="" x="398.05" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="421" width="2.1" height="15.0" fill="rgb(219,150,16)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="431.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="389" width="2.1" height="15.0" fill="rgb(253,41,42)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="399.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>pixman_image_composite32 (1 samples, 0.09%)</title><rect x="1165.2" y="661" width="1.0" height="15.0" fill="rgb(243,228,31)" rx="2" ry="2" />
+<text text-anchor="" x="1168.16" y="671.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_signal_emit (3 samples, 0.26%)</title><rect x="1146.5" y="581" width="3.1" height="15.0" fill="rgb(249,108,22)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="591.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (3 samples, 0.26%)</title><rect x="1166.2" y="789" width="3.1" height="15.0" fill="rgb(222,53,18)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="410.6" y="661" width="1.0" height="15.0" fill="rgb(242,218,5)" rx="2" ry="2" />
+<text text-anchor="" x="413.58" y="671.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libdecor-gtk.so] (3 samples, 0.26%)</title><rect x="1163.1" y="805" width="3.1" height="15.0" fill="rgb(224,10,1)" rx="2" ry="2" />
+<text text-anchor="" x="1166.09" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_signal_emit (3 samples, 0.26%)</title><rect x="1146.5" y="789" width="3.1" height="15.0" fill="rgb(228,39,51)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="261" width="2.1" height="15.0" fill="rgb(236,124,3)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="271.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (3 samples, 0.26%)</title><rect x="1146.5" y="533" width="3.1" height="15.0" fill="rgb(250,185,24)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="543.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>clock_gettime (1 samples, 0.09%)</title><rect x="518.2" y="725" width="1.1" height="15.0" fill="rgb(221,125,19)" rx="2" ry="2" />
+<text text-anchor="" x="521.23" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>std::__detail::_Prime_rehash_policy::_M_need_rehash (2 samples, 0.18%)</title><rect x="1158.9" y="901" width="2.1" height="15.0" fill="rgb(207,198,51)" rx="2" ry="2" />
+<text text-anchor="" x="1161.95" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="437" width="2.1" height="15.0" fill="rgb(252,121,34)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="447.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1172.4" y="565" width="1.0" height="15.0" fill="rgb(237,22,2)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="575.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>glycin-svg (1 samples, 0.09%)</title><rect x="12.1" y="933" width="1.0" height="15.0" fill="rgb(215,48,54)" rx="2" ry="2" />
+<text text-anchor="" x="15.07" y="943.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (8 samples, 0.70%)</title><rect x="404.4" y="837" width="8.2" height="15.0" fill="rgb(229,220,30)" rx="2" ry="2" />
+<text text-anchor="" x="407.37" y="847.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (3 samples, 0.26%)</title><rect x="1166.2" y="581" width="3.1" height="15.0" fill="rgb(248,76,43)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="591.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>recvmsg (1 samples, 0.09%)</title><rect x="499.6" y="789" width="1.0" height="15.0" fill="rgb(239,202,52)" rx="2" ry="2" />
+<text text-anchor="" x="502.60" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libglfw.so.3.4] (11 samples, 0.96%)</title><rect x="1161.0" y="853" width="11.4" height="15.0" fill="rgb(241,83,48)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1179.6" y="149" width="1.1" height="15.0" fill="rgb(241,86,2)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="159.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_hash_table_lookup (1 samples, 0.09%)</title><rect x="1144.5" y="325" width="1.0" height="15.0" fill="rgb(249,104,28)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="335.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="410.6" y="613" width="1.0" height="15.0" fill="rgb(208,139,10)" rx="2" ry="2" />
+<text text-anchor="" x="413.58" y="623.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="432.3" y="917" width="1.1" height="15.0" fill="rgb(215,153,12)" rx="2" ry="2" />
+<text text-anchor="" x="435.32" y="927.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_init_check (7 samples, 0.61%)</title><rect x="1174.5" y="805" width="7.2" height="15.0" fill="rgb(249,115,50)" rx="2" ry="2" />
+<text text-anchor="" x="1177.47" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1150.7" y="837" width="1.0" height="15.0" fill="rgb(222,223,10)" rx="2" ry="2" />
+<text text-anchor="" x="1153.67" y="847.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (16 samples, 1.40%)</title><rect x="399.2" y="885" width="16.6" height="15.0" fill="rgb(222,83,3)" rx="2" ry="2" />
+<text text-anchor="" x="402.19" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libpango-1.0.so.0.5700.0] (1 samples, 0.09%)</title><rect x="1145.5" y="453" width="1.0" height="15.0" fill="rgb(207,149,13)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="463.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_type_check_instance_is_fundamentally_a (1 samples, 0.09%)</title><rect x="1177.6" y="453" width="1.0" height="15.0" fill="rgb(231,120,46)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="463.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_signal_emit_valist (3 samples, 0.26%)</title><rect x="1146.5" y="773" width="3.1" height="15.0" fill="rgb(250,3,40)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libglfw.so.3.4] (15 samples, 1.32%)</title><rect x="1172.4" y="853" width="15.5" height="15.0" fill="rgb(234,65,40)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libpango-1.0.so.0.5700.0] (1 samples, 0.09%)</title><rect x="1145.5" y="469" width="1.0" height="15.0" fill="rgb(222,80,36)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="479.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libdecor-gtk.so] (1 samples, 0.09%)</title><rect x="1163.1" y="757" width="1.0" height="15.0" fill="rgb(211,209,8)" rx="2" ry="2" />
+<text text-anchor="" x="1166.09" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (3 samples, 0.26%)</title><rect x="1178.6" y="661" width="3.1" height="15.0" fill="rgb(235,166,18)" rx="2" ry="2" />
+<text text-anchor="" x="1181.61" y="671.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>cairo_mask (1 samples, 0.09%)</title><rect x="1165.2" y="773" width="1.0" height="15.0" fill="rgb(222,125,52)" rx="2" ry="2" />
+<text text-anchor="" x="1168.16" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (2 samples, 0.18%)</title><rect x="372.3" y="885" width="2.1" height="15.0" fill="rgb(212,138,47)" rx="2" ry="2" />
+<text text-anchor="" x="375.28" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>libdecor_decorate (1 samples, 0.09%)</title><rect x="1169.3" y="821" width="1.0" height="15.0" fill="rgb(241,215,54)" rx="2" ry="2" />
+<text text-anchor="" x="1172.30" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1179.6" y="85" width="1.1" height="15.0" fill="rgb(254,43,46)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="95.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="10.0" y="533" width="1.0" height="15.0" fill="rgb(219,190,21)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="543.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1144.5" y="645" width="1.0" height="15.0" fill="rgb(254,139,21)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="655.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_signal_emit (1 samples, 0.09%)</title><rect x="1177.6" y="677" width="1.0" height="15.0" fill="rgb(244,187,19)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="687.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1144.5" y="549" width="1.0" height="15.0" fill="rgb(233,104,27)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="559.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>IRenderer::init (15 samples, 1.32%)</title><rect x="1172.4" y="885" width="15.5" height="15.0" fill="rgb(215,119,20)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="229" width="2.1" height="15.0" fill="rgb(229,67,14)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="239.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>Chunk::init_chunk_data (2 samples, 0.18%)</title><rect x="433.4" y="901" width="2.0" height="15.0" fill="rgb(209,12,29)" rx="2" ry="2" />
+<text text-anchor="" x="436.35" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="11.0" y="741" width="1.1" height="15.0" fill="rgb(210,38,7)" rx="2" ry="2" />
+<text text-anchor="" x="14.04" y="751.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libffi.so.8.2.0] (1 samples, 0.09%)</title><rect x="520.3" y="789" width="1.0" height="15.0" fill="rgb(251,21,31)" rx="2" ry="2" />
+<text text-anchor="" x="523.30" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgobject-2.0.so.0.8600.2] (2 samples, 0.18%)</title><rect x="1172.4" y="693" width="2.1" height="15.0" fill="rgb(247,58,36)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>World_Renderer::add_chunk_to_batch (288 samples, 25.26%)</title><rect x="815.3" y="853" width="298.1" height="15.0" fill="rgb(246,91,5)" rx="2" ry="2" />
+<text text-anchor="" x="818.30" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  >World_Renderer::add_chunk_to_batch</text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libpixman-1.so.0.46.4] (1 samples, 0.09%)</title><rect x="1165.2" y="645" width="1.0" height="15.0" fill="rgb(239,188,52)" rx="2" ry="2" />
+<text text-anchor="" x="1168.16" y="655.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gdk_display_manager_open_display (7 samples, 0.61%)</title><rect x="1174.5" y="789" width="7.2" height="15.0" fill="rgb(244,177,10)" rx="2" ry="2" />
+<text text-anchor="" x="1177.47" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>IRenderer::render_everything (25 samples, 2.19%)</title><rect x="496.5" y="901" width="25.9" height="15.0" fill="rgb(218,99,30)" rx="2" ry="2" />
+<text text-anchor="" x="499.49" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  >I..</text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_object_notify (1 samples, 0.09%)</title><rect x="1177.6" y="709" width="1.0" height="15.0" fill="rgb(225,33,54)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgobject-2.0.so.0.8600.2] (2 samples, 0.18%)</title><rect x="1172.4" y="757" width="2.1" height="15.0" fill="rgb(244,68,26)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgobject-2.0.so.0.8600.2] (1 samples, 0.09%)</title><rect x="12.1" y="853" width="1.0" height="15.0" fill="rgb(219,199,15)" rx="2" ry="2" />
+<text text-anchor="" x="15.07" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gdk_wayland_display_set_cursor_theme (3 samples, 0.26%)</title><rect x="1174.5" y="741" width="3.1" height="15.0" fill="rgb(208,174,46)" rx="2" ry="2" />
+<text text-anchor="" x="1177.47" y="751.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="677" width="1.0" height="15.0" fill="rgb(211,103,5)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="687.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgobject-2.0.so.0.8600.2] (4 samples, 0.35%)</title><rect x="1177.6" y="741" width="4.1" height="15.0" fill="rgb(253,217,30)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="751.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (3 samples, 0.26%)</title><rect x="1181.7" y="677" width="3.1" height="15.0" fill="rgb(222,92,49)" rx="2" ry="2" />
+<text text-anchor="" x="1184.72" y="687.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libfontconfig.so.1.16.0] (1 samples, 0.09%)</title><rect x="11.0" y="773" width="1.1" height="15.0" fill="rgb(247,0,35)" rx="2" ry="2" />
+<text text-anchor="" x="14.04" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_realize (2 samples, 0.18%)</title><rect x="1147.6" y="501" width="2.0" height="15.0" fill="rgb(249,164,43)" rx="2" ry="2" />
+<text text-anchor="" x="1150.56" y="511.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_closure_invoke (3 samples, 0.26%)</title><rect x="1146.5" y="725" width="3.1" height="15.0" fill="rgb(252,85,41)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1187.9" y="869" width="1.1" height="15.0" fill="rgb(213,193,4)" rx="2" ry="2" />
+<text text-anchor="" x="1190.93" y="879.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libwayland-cursor.so.0.24.0] (3 samples, 0.26%)</title><rect x="1174.5" y="693" width="3.1" height="15.0" fill="rgb(220,8,7)" rx="2" ry="2" />
+<text text-anchor="" x="1177.47" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_show (3 samples, 0.26%)</title><rect x="1146.5" y="805" width="3.1" height="15.0" fill="rgb(218,218,42)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (3 samples, 0.26%)</title><rect x="514.1" y="677" width="3.1" height="15.0" fill="rgb(211,192,37)" rx="2" ry="2" />
+<text text-anchor="" x="517.09" y="687.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>eglQueryString (3 samples, 0.26%)</title><rect x="1166.2" y="821" width="3.1" height="15.0" fill="rgb(251,8,43)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>Text_Renderer::render_text (1 samples, 0.09%)</title><rect x="795.6" y="901" width="1.1" height="15.0" fill="rgb(213,128,51)" rx="2" ry="2" />
+<text text-anchor="" x="798.63" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="501" width="2.1" height="15.0" fill="rgb(254,39,19)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="511.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libharfbuzz.so.0.61220.0] (1 samples, 0.09%)</title><rect x="1145.5" y="373" width="1.0" height="15.0" fill="rgb(233,99,19)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="383.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="410.6" y="757" width="1.0" height="15.0" fill="rgb(220,199,19)" rx="2" ry="2" />
+<text text-anchor="" x="413.58" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="277" width="1.0" height="15.0" fill="rgb(244,80,18)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="287.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_object_new_with_properties (1 samples, 0.09%)</title><rect x="1148.6" y="325" width="1.0" height="15.0" fill="rgb(244,201,44)" rx="2" ry="2" />
+<text text-anchor="" x="1151.60" y="335.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgobject-2.0.so.0.8600.2] (1 samples, 0.09%)</title><rect x="12.1" y="869" width="1.0" height="15.0" fill="rgb(223,163,40)" rx="2" ry="2" />
+<text text-anchor="" x="15.07" y="879.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_slice_free1 (1 samples, 0.09%)</title><rect x="1172.4" y="357" width="1.0" height="15.0" fill="rgb(234,62,5)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="367.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libfontconfig.so.1.16.0] (1 samples, 0.09%)</title><rect x="10.0" y="661" width="1.0" height="15.0" fill="rgb(231,101,13)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="671.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1144.5" y="773" width="2.0" height="15.0" fill="rgb(206,18,53)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (3 samples, 0.26%)</title><rect x="1178.6" y="645" width="3.1" height="15.0" fill="rgb(237,12,43)" rx="2" ry="2" />
+<text text-anchor="" x="1181.61" y="655.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="410.6" y="549" width="1.0" height="15.0" fill="rgb(226,149,18)" rx="2" ry="2" />
+<text text-anchor="" x="413.58" y="559.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1147.6" y="357" width="2.0" height="15.0" fill="rgb(206,9,32)" rx="2" ry="2" />
+<text text-anchor="" x="1150.56" y="367.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[unknown] (306 samples, 26.84%)</title><rect x="796.7" y="869" width="316.7" height="15.0" fill="rgb(245,127,36)" rx="2" ry="2" />
+<text text-anchor="" x="799.67" y="879.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  >[unknown]</text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>wl_cursor_theme_load (3 samples, 0.26%)</title><rect x="1174.5" y="725" width="3.1" height="15.0" fill="rgb(216,39,9)" rx="2" ry="2" />
+<text text-anchor="" x="1177.47" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libglib-2.0.so.0.8600.2] (1 samples, 0.09%)</title><rect x="1171.4" y="165" width="1.0" height="15.0" fill="rgb(246,196,17)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="175.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="693" width="1.0" height="15.0" fill="rgb(220,75,21)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>VERTEX_ARRAY_OBJECT::unbind (306 samples, 26.84%)</title><rect x="796.7" y="901" width="316.7" height="15.0" fill="rgb(237,103,29)" rx="2" ry="2" />
+<text text-anchor="" x="799.67" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  >VERTEX_ARRAY_OBJECT::unbind</text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>all (1,140 samples, 100%)</title><rect x="10.0" y="949" width="1180.0" height="15.0" fill="rgb(227,152,9)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="959.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1172.4" y="661" width="2.1" height="15.0" fill="rgb(226,51,27)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="671.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (3 samples, 0.26%)</title><rect x="1181.7" y="757" width="3.1" height="15.0" fill="rgb(223,37,49)" rx="2" ry="2" />
+<text text-anchor="" x="1184.72" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (15 samples, 1.32%)</title><rect x="400.2" y="869" width="15.6" height="15.0" fill="rgb(245,31,7)" rx="2" ry="2" />
+<text text-anchor="" x="403.23" y="879.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>wl_display_dispatch_queue_timeout (1 samples, 0.09%)</title><rect x="505.8" y="821" width="1.0" height="15.0" fill="rgb(210,224,7)" rx="2" ry="2" />
+<text text-anchor="" x="508.81" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="469" width="1.0" height="15.0" fill="rgb(243,38,37)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="479.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libfontconfig.so.1.16.0] (1 samples, 0.09%)</title><rect x="10.0" y="517" width="1.0" height="15.0" fill="rgb(228,121,29)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="527.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1172.4" y="469" width="1.0" height="15.0" fill="rgb(233,31,52)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="479.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libcairo.so.2.11804.4] (1 samples, 0.09%)</title><rect x="1165.2" y="741" width="1.0" height="15.0" fill="rgb(223,29,12)" rx="2" ry="2" />
+<text text-anchor="" x="1168.16" y="751.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>operator new (2 samples, 0.18%)</title><rect x="372.3" y="901" width="2.1" height="15.0" fill="rgb(210,23,51)" rx="2" ry="2" />
+<text text-anchor="" x="375.28" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (1 samples, 0.09%)</title><rect x="521.3" y="821" width="1.1" height="15.0" fill="rgb(217,193,26)" rx="2" ry="2" />
+<text text-anchor="" x="524.33" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1144.5" y="565" width="1.0" height="15.0" fill="rgb(218,121,48)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="575.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libEGL_mesa.so.0.0.0] (23 samples, 2.02%)</title><rect x="496.5" y="869" width="23.8" height="15.0" fill="rgb(209,183,18)" rx="2" ry="2" />
+<text text-anchor="" x="499.49" y="879.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  >[..</text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgdk-3.so.0.2419.32] (3 samples, 0.26%)</title><rect x="1174.5" y="757" width="3.1" height="15.0" fill="rgb(240,149,47)" rx="2" ry="2" />
+<text text-anchor="" x="1177.47" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libglib-2.0.so.0.8600.2] (1 samples, 0.09%)</title><rect x="1171.4" y="181" width="1.0" height="15.0" fill="rgb(244,213,31)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="191.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgobject-2.0.so.0.8600.2] (1 samples, 0.09%)</title><rect x="1177.6" y="629" width="1.0" height="15.0" fill="rgb(216,161,20)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="639.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="245" width="1.0" height="15.0" fill="rgb(244,88,1)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="255.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="565" width="1.0" height="15.0" fill="rgb(209,229,19)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="575.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libdecor-gtk.so] (1 samples, 0.09%)</title><rect x="1163.1" y="741" width="1.0" height="15.0" fill="rgb(224,210,26)" rx="2" ry="2" />
+<text text-anchor="" x="1166.09" y="751.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="421" width="1.0" height="15.0" fill="rgb(240,153,50)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="431.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (3 samples, 0.26%)</title><rect x="1166.2" y="597" width="3.1" height="15.0" fill="rgb(246,26,17)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="607.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1162.1" y="773" width="1.0" height="15.0" fill="rgb(234,195,54)" rx="2" ry="2" />
+<text text-anchor="" x="1165.05" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libxkbcommon.so.0.13.0] (1 samples, 0.09%)</title><rect x="1149.6" y="837" width="1.1" height="15.0" fill="rgb(207,3,23)" rx="2" ry="2" />
+<text text-anchor="" x="1152.63" y="847.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libharfbuzz.so.0.61220.0] (1 samples, 0.09%)</title><rect x="1145.5" y="405" width="1.0" height="15.0" fill="rgb(253,223,38)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="415.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>_IO_fread (1 samples, 0.09%)</title><rect x="1186.9" y="789" width="1.0" height="15.0" fill="rgb(211,101,16)" rx="2" ry="2" />
+<text text-anchor="" x="1189.89" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libglfw.so.3.4] (11 samples, 0.96%)</title><rect x="1161.0" y="837" width="11.4" height="15.0" fill="rgb(217,65,33)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="847.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1150.7" y="789" width="1.0" height="15.0" fill="rgb(227,153,6)" rx="2" ry="2" />
+<text text-anchor="" x="1153.67" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1145.5" y="549" width="1.0" height="15.0" fill="rgb(241,223,39)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="559.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (3 samples, 0.26%)</title><rect x="1166.2" y="709" width="3.1" height="15.0" fill="rgb(209,19,0)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>__errno_location (1 samples, 0.09%)</title><rect x="498.6" y="789" width="1.0" height="15.0" fill="rgb(237,125,33)" rx="2" ry="2" />
+<text text-anchor="" x="501.56" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (4 samples, 0.35%)</title><rect x="1151.7" y="869" width="4.1" height="15.0" fill="rgb(243,61,47)" rx="2" ry="2" />
+<text text-anchor="" x="1154.70" y="879.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="10.0" y="581" width="1.0" height="15.0" fill="rgb(245,194,52)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="591.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="410.6" y="581" width="1.0" height="15.0" fill="rgb(236,159,20)" rx="2" ry="2" />
+<text text-anchor="" x="413.58" y="591.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="517" width="2.1" height="15.0" fill="rgb(228,216,4)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="527.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libEGL_mesa.so.0.0.0] (1 samples, 0.09%)</title><rect x="1161.0" y="725" width="1.1" height="15.0" fill="rgb(246,136,42)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_type_class_get (1 samples, 0.09%)</title><rect x="1177.6" y="533" width="1.0" height="15.0" fill="rgb(210,92,11)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="543.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (3 samples, 0.26%)</title><rect x="1166.2" y="533" width="3.1" height="15.0" fill="rgb(229,183,14)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="543.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="469" width="2.1" height="15.0" fill="rgb(247,40,20)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="479.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (1 samples, 0.09%)</title><rect x="10.0" y="469" width="1.0" height="15.0" fill="rgb(242,52,30)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="479.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libharfbuzz.so.0.61220.0] (1 samples, 0.09%)</title><rect x="1145.5" y="325" width="1.0" height="15.0" fill="rgb(245,38,44)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="335.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_type_class_get (1 samples, 0.09%)</title><rect x="1177.6" y="517" width="1.0" height="15.0" fill="rgb(245,205,10)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="527.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="10.0" y="741" width="1.0" height="15.0" fill="rgb(254,177,51)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="751.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1145.5" y="565" width="1.0" height="15.0" fill="rgb(221,174,48)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="575.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1145.5" y="661" width="1.0" height="15.0" fill="rgb(236,198,16)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="671.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1177.6" y="597" width="1.0" height="15.0" fill="rgb(209,229,41)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="607.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="10.0" y="709" width="1.0" height="15.0" fill="rgb(245,37,44)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (1 samples, 0.09%)</title><rect x="12.1" y="917" width="1.0" height="15.0" fill="rgb(206,195,54)" rx="2" ry="2" />
+<text text-anchor="" x="15.07" y="927.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>__strdup (1 samples, 0.09%)</title><rect x="10.0" y="501" width="1.0" height="15.0" fill="rgb(234,202,27)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="511.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgdk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1177.6" y="725" width="1.0" height="15.0" fill="rgb(253,136,12)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[unknown] (7 samples, 0.61%)</title><rect x="1150.7" y="901" width="7.2" height="15.0" fill="rgb(233,216,28)" rx="2" ry="2" />
+<text text-anchor="" x="1153.67" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1172.4" y="389" width="1.0" height="15.0" fill="rgb(247,11,18)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="399.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libdecor-0.so.0.200.4] (5 samples, 0.44%)</title><rect x="1144.5" y="885" width="5.1" height="15.0" fill="rgb(235,96,23)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_get_preferred_height_and_baseline_for_width (1 samples, 0.09%)</title><rect x="1144.5" y="597" width="1.0" height="15.0" fill="rgb(226,202,34)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="607.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>_dl_catch_exception (3 samples, 0.26%)</title><rect x="1181.7" y="693" width="3.1" height="15.0" fill="rgb(248,60,37)" rx="2" ry="2" />
+<text text-anchor="" x="1184.72" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>__vdso_clock_gettime (1 samples, 0.09%)</title><rect x="412.6" y="821" width="1.1" height="15.0" fill="rgb(222,12,12)" rx="2" ry="2" />
+<text text-anchor="" x="415.65" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1162.1" y="725" width="1.0" height="15.0" fill="rgb(219,20,14)" rx="2" ry="2" />
+<text text-anchor="" x="1165.05" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libglib-2.0.so.0.8600.2] (1 samples, 0.09%)</title><rect x="1171.4" y="149" width="1.0" height="15.0" fill="rgb(238,90,22)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="159.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libfontconfig.so.1.16.0] (1 samples, 0.09%)</title><rect x="10.0" y="645" width="1.0" height="15.0" fill="rgb(241,128,23)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="655.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (3 samples, 0.26%)</title><rect x="1181.7" y="661" width="3.1" height="15.0" fill="rgb(238,115,3)" rx="2" ry="2" />
+<text text-anchor="" x="1184.72" y="671.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_signal_emit (2 samples, 0.18%)</title><rect x="1172.4" y="741" width="2.1" height="15.0" fill="rgb(223,34,17)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="751.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="309" width="1.0" height="15.0" fill="rgb(240,29,29)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="319.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1147.6" y="373" width="2.0" height="15.0" fill="rgb(239,16,27)" rx="2" ry="2" />
+<text text-anchor="" x="1150.56" y="383.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="229" width="1.0" height="15.0" fill="rgb(211,91,10)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="239.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1156.9" y="885" width="1.0" height="15.0" fill="rgb(214,65,40)" rx="2" ry="2" />
+<text text-anchor="" x="1159.88" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; __gnu_cxx::__to_xstring&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, char&gt; (1 samples, 0.09%)</title><rect x="521.3" y="885" width="1.1" height="15.0" fill="rgb(209,155,32)" rx="2" ry="2" />
+<text text-anchor="" x="524.33" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="741" width="1.0" height="15.0" fill="rgb(236,2,36)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="751.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>cfree (1 samples, 0.09%)</title><rect x="1173.4" y="533" width="1.1" height="15.0" fill="rgb(210,41,29)" rx="2" ry="2" />
+<text text-anchor="" x="1176.44" y="543.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (3 samples, 0.26%)</title><rect x="1178.6" y="533" width="3.1" height="15.0" fill="rgb(235,147,38)" rx="2" ry="2" />
+<text text-anchor="" x="1181.61" y="543.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libfreetype.so.6.20.4] (1 samples, 0.09%)</title><rect x="395.1" y="853" width="1.0" height="15.0" fill="rgb(217,214,20)" rx="2" ry="2" />
+<text text-anchor="" x="398.05" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libpixman-1.so.0.46.4] (1 samples, 0.09%)</title><rect x="1165.2" y="629" width="1.0" height="15.0" fill="rgb(220,26,21)" rx="2" ry="2" />
+<text text-anchor="" x="1168.16" y="639.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libfontconfig.so.1.16.0] (2 samples, 0.18%)</title><rect x="10.0" y="821" width="2.1" height="15.0" fill="rgb(218,72,14)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="11.0" y="693" width="1.1" height="15.0" fill="rgb(229,164,24)" rx="2" ry="2" />
+<text text-anchor="" x="14.04" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1144.5" y="405" width="1.0" height="15.0" fill="rgb(251,184,38)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="415.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_get_preferred_width (1 samples, 0.09%)</title><rect x="1171.4" y="549" width="1.0" height="15.0" fill="rgb(246,37,41)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="559.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libxkbcommon.so.0.13.0] (1 samples, 0.09%)</title><rect x="1149.6" y="853" width="1.1" height="15.0" fill="rgb(251,84,11)" rx="2" ry="2" />
+<text text-anchor="" x="1152.63" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libfreetype.so.6.20.4] (1 samples, 0.09%)</title><rect x="395.1" y="869" width="1.0" height="15.0" fill="rgb(213,102,45)" rx="2" ry="2" />
+<text text-anchor="" x="398.05" y="879.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_malloc (1 samples, 0.09%)</title><rect x="1179.6" y="53" width="1.1" height="15.0" fill="rgb(252,11,53)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="63.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="629" width="1.0" height="15.0" fill="rgb(231,129,16)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="639.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1144.5" y="661" width="1.0" height="15.0" fill="rgb(219,206,21)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="671.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[unknown] (703 samples, 61.67%)</title><rect x="433.4" y="917" width="727.6" height="15.0" fill="rgb(223,103,38)" rx="2" ry="2" />
+<text text-anchor="" x="436.35" y="927.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  >[unknown]</text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="1161.0" y="693" width="1.1" height="15.0" fill="rgb(235,62,29)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libdecor-gtk.so] (2 samples, 0.18%)</title><rect x="1170.3" y="805" width="2.1" height="15.0" fill="rgb(208,23,52)" rx="2" ry="2" />
+<text text-anchor="" x="1173.33" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (3 samples, 0.26%)</title><rect x="1178.6" y="629" width="3.1" height="15.0" fill="rgb(211,110,17)" rx="2" ry="2" />
+<text text-anchor="" x="1181.61" y="639.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="410.6" y="677" width="1.0" height="15.0" fill="rgb(232,60,14)" rx="2" ry="2" />
+<text text-anchor="" x="413.58" y="687.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>XML_ParseBuffer (1 samples, 0.09%)</title><rect x="11.0" y="757" width="1.1" height="15.0" fill="rgb(239,151,15)" rx="2" ry="2" />
+<text text-anchor="" x="14.04" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libwayland-cursor.so.0.24.0] (3 samples, 0.26%)</title><rect x="1174.5" y="677" width="3.1" height="15.0" fill="rgb(225,134,46)" rx="2" ry="2" />
+<text text-anchor="" x="1177.47" y="687.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>IRenderer::create_window (11 samples, 0.96%)</title><rect x="1161.0" y="885" width="11.4" height="15.0" fill="rgb(218,26,31)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libEGL_mesa.so.0.0.0] (10 samples, 0.88%)</title><rect x="496.5" y="837" width="10.3" height="15.0" fill="rgb(248,174,50)" rx="2" ry="2" />
+<text text-anchor="" x="499.49" y="847.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_get_preferred_width (1 samples, 0.09%)</title><rect x="1171.4" y="757" width="1.0" height="15.0" fill="rgb(216,109,11)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>hb_shape_plan_execute (1 samples, 0.09%)</title><rect x="1145.5" y="421" width="1.0" height="15.0" fill="rgb(215,70,8)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="431.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1147.6" y="389" width="2.0" height="15.0" fill="rgb(208,4,13)" rx="2" ry="2" />
+<text text-anchor="" x="1150.56" y="399.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="405" width="1.0" height="15.0" fill="rgb(247,47,17)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="415.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="309" width="2.1" height="15.0" fill="rgb(254,209,13)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="319.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_css_provider_load_from_resource (2 samples, 0.18%)</title><rect x="1172.4" y="629" width="2.1" height="15.0" fill="rgb(254,186,22)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="639.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgobject-2.0.so.0.8600.2] (1 samples, 0.09%)</title><rect x="1144.5" y="357" width="1.0" height="15.0" fill="rgb(209,90,53)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="367.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="410.6" y="725" width="1.0" height="15.0" fill="rgb(232,50,42)" rx="2" ry="2" />
+<text text-anchor="" x="413.58" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>Particle::Particle (40 samples, 3.51%)</title><rect x="522.4" y="901" width="41.4" height="15.0" fill="rgb(235,14,32)" rx="2" ry="2" />
+<text text-anchor="" x="525.37" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  >Par..</text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1172.4" y="517" width="1.0" height="15.0" fill="rgb(207,73,43)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="527.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libdecor-gtk.so] (2 samples, 0.18%)</title><rect x="1170.3" y="789" width="2.1" height="15.0" fill="rgb(243,183,4)" rx="2" ry="2" />
+<text text-anchor="" x="1173.33" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1179.6" y="133" width="1.1" height="15.0" fill="rgb(242,216,46)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="143.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (1 samples, 0.09%)</title><rect x="373.3" y="869" width="1.1" height="15.0" fill="rgb(217,159,51)" rx="2" ry="2" />
+<text text-anchor="" x="376.32" y="879.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (2 samples, 0.18%)</title><rect x="430.2" y="885" width="2.1" height="15.0" fill="rgb(210,180,35)" rx="2" ry="2" />
+<text text-anchor="" x="433.25" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1145.5" y="533" width="1.0" height="15.0" fill="rgb(252,195,40)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="543.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_signal_emit_valist (3 samples, 0.26%)</title><rect x="1146.5" y="565" width="3.1" height="15.0" fill="rgb(220,20,24)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="575.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>glfwInit (15 samples, 1.32%)</title><rect x="1172.4" y="869" width="15.5" height="15.0" fill="rgb(219,33,28)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="879.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>IRenderer::render_everything (1 samples, 0.09%)</title><rect x="1187.9" y="885" width="1.1" height="15.0" fill="rgb(218,203,6)" rx="2" ry="2" />
+<text text-anchor="" x="1190.93" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>pango_shape_full (1 samples, 0.09%)</title><rect x="1145.5" y="501" width="1.0" height="15.0" fill="rgb(227,13,40)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="511.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="341" width="1.0" height="15.0" fill="rgb(235,110,22)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="351.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (3 samples, 0.26%)</title><rect x="1181.7" y="805" width="3.1" height="15.0" fill="rgb(253,76,51)" rx="2" ry="2" />
+<text text-anchor="" x="1184.72" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_queue_draw (1 samples, 0.09%)</title><rect x="1146.5" y="485" width="1.1" height="15.0" fill="rgb(242,152,22)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="495.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1172.4" y="373" width="1.0" height="15.0" fill="rgb(229,174,9)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="383.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1144.5" y="469" width="1.0" height="15.0" fill="rgb(251,129,33)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="479.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_get_preferred_height_and_baseline_for_width (1 samples, 0.09%)</title><rect x="1145.5" y="613" width="1.0" height="15.0" fill="rgb(241,170,8)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="623.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>World::calculate_active_chunks (29 samples, 2.54%)</title><rect x="1113.4" y="901" width="30.0" height="15.0" fill="rgb(229,93,15)" rx="2" ry="2" />
+<text text-anchor="" x="1116.40" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  >Wo..</text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1172.4" y="533" width="1.0" height="15.0" fill="rgb(216,127,14)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="543.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_queue_resize (1 samples, 0.09%)</title><rect x="1146.5" y="501" width="1.1" height="15.0" fill="rgb(244,211,45)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="511.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>operator new (1 samples, 0.09%)</title><rect x="1157.9" y="901" width="1.0" height="15.0" fill="rgb(212,91,7)" rx="2" ry="2" />
+<text text-anchor="" x="1160.91" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (2 samples, 0.18%)</title><rect x="430.2" y="917" width="2.1" height="15.0" fill="rgb(221,86,15)" rx="2" ry="2" />
+<text text-anchor="" x="433.25" y="927.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>Chunk::init_chunk_data (349 samples, 30.61%)</title><rect x="13.1" y="917" width="361.3" height="15.0" fill="rgb(224,211,22)" rx="2" ry="2" />
+<text text-anchor="" x="16.11" y="927.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  >Chunk::init_chunk_data</text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libdecor-gtk.so] (9 samples, 0.79%)</title><rect x="1172.4" y="821" width="9.3" height="15.0" fill="rgb(234,184,31)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libwayland-cursor.so.0.24.0] (3 samples, 0.26%)</title><rect x="1184.8" y="805" width="3.1" height="15.0" fill="rgb(244,43,26)" rx="2" ry="2" />
+<text text-anchor="" x="1187.82" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="10.0" y="597" width="1.0" height="15.0" fill="rgb(225,45,52)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="607.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>XML_ParseBuffer (1 samples, 0.09%)</title><rect x="1161.0" y="709" width="1.1" height="15.0" fill="rgb(218,70,42)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>XML_ParseBuffer (1 samples, 0.09%)</title><rect x="10.0" y="613" width="1.0" height="15.0" fill="rgb(216,127,14)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="623.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="709" width="1.0" height="15.0" fill="rgb(210,211,14)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_object_new (1 samples, 0.09%)</title><rect x="1148.6" y="341" width="1.0" height="15.0" fill="rgb(225,132,33)" rx="2" ry="2" />
+<text text-anchor="" x="1151.60" y="351.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libEGL_mesa.so.0.0.0] (23 samples, 2.02%)</title><rect x="496.5" y="853" width="23.8" height="15.0" fill="rgb(248,24,22)" rx="2" ry="2" />
+<text text-anchor="" x="499.49" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  >[..</text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>wl_display_read_events (4 samples, 0.35%)</title><rect x="501.7" y="789" width="4.1" height="15.0" fill="rgb(244,209,12)" rx="2" ry="2" />
+<text text-anchor="" x="504.67" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="357" width="2.1" height="15.0" fill="rgb(245,45,11)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="367.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1144.5" y="789" width="2.0" height="15.0" fill="rgb(252,115,13)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="325" width="2.1" height="15.0" fill="rgb(209,193,15)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="335.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1179.6" y="117" width="1.1" height="15.0" fill="rgb(212,142,49)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="127.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>Chunk::get_worldcell (18 samples, 1.58%)</title><rect x="796.7" y="853" width="18.6" height="15.0" fill="rgb(218,177,53)" rx="2" ry="2" />
+<text text-anchor="" x="799.67" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libfontconfig.so.1.16.0] (1 samples, 0.09%)</title><rect x="10.0" y="629" width="1.0" height="15.0" fill="rgb(248,81,22)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="639.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_signal_emit_valist (1 samples, 0.09%)</title><rect x="1177.6" y="661" width="1.0" height="15.0" fill="rgb(250,76,8)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="671.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="261" width="1.0" height="15.0" fill="rgb(221,107,26)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="271.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_css_provider_load_from_file (3 samples, 0.26%)</title><rect x="1178.6" y="581" width="3.1" height="15.0" fill="rgb(235,122,17)" rx="2" ry="2" />
+<text text-anchor="" x="1181.61" y="591.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[unknown] (306 samples, 26.84%)</title><rect x="796.7" y="885" width="316.7" height="15.0" fill="rgb(240,137,42)" rx="2" ry="2" />
+<text text-anchor="" x="799.67" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  >[unknown]</text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="293" width="2.1" height="15.0" fill="rgb(215,145,32)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="303.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="485" width="1.0" height="15.0" fill="rgb(217,35,18)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="495.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>libdecor_new (12 samples, 1.05%)</title><rect x="1172.4" y="837" width="12.4" height="15.0" fill="rgb(218,8,42)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="847.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_list_prepend (1 samples, 0.09%)</title><rect x="1179.6" y="69" width="1.1" height="15.0" fill="rgb(219,105,47)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="79.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1172.4" y="597" width="2.1" height="15.0" fill="rgb(212,169,31)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="607.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1179.6" y="101" width="1.1" height="15.0" fill="rgb(226,170,12)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="111.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1172.4" y="645" width="2.1" height="15.0" fill="rgb(252,62,27)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="655.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_slice_free_chain_with_offset (1 samples, 0.09%)</title><rect x="1180.7" y="149" width="1.0" height="15.0" fill="rgb(240,127,40)" rx="2" ry="2" />
+<text text-anchor="" x="1183.68" y="159.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgobject-2.0.so.0.8600.2] (2 samples, 0.18%)</title><rect x="1172.4" y="709" width="2.1" height="15.0" fill="rgb(254,14,48)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1144.5" y="581" width="1.0" height="15.0" fill="rgb(233,99,35)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="591.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1147.6" y="453" width="2.0" height="15.0" fill="rgb(208,121,37)" rx="2" ry="2" />
+<text text-anchor="" x="1150.56" y="463.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libpixman-1.so.0.46.4] (1 samples, 0.09%)</title><rect x="1170.3" y="629" width="1.1" height="15.0" fill="rgb(210,43,25)" rx="2" ry="2" />
+<text text-anchor="" x="1173.33" y="639.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>pango_shape_with_flags (1 samples, 0.09%)</title><rect x="1145.5" y="485" width="1.0" height="15.0" fill="rgb(213,171,43)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="495.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_signal_emit_by_name (4 samples, 0.35%)</title><rect x="1177.6" y="757" width="4.1" height="15.0" fill="rgb(225,69,1)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libcairo.so.2.11804.4] (1 samples, 0.09%)</title><rect x="1165.2" y="709" width="1.0" height="15.0" fill="rgb(237,169,9)" rx="2" ry="2" />
+<text text-anchor="" x="1168.16" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>Shader::compile_shader (1 samples, 0.09%)</title><rect x="1150.7" y="869" width="1.0" height="15.0" fill="rgb(222,13,0)" rx="2" ry="2" />
+<text text-anchor="" x="1153.67" y="879.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="517" width="1.0" height="15.0" fill="rgb(223,145,42)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="527.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libEGL_mesa.so.0.0.0] (1 samples, 0.09%)</title><rect x="1161.0" y="757" width="1.1" height="15.0" fill="rgb(246,9,0)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_map (3 samples, 0.26%)</title><rect x="1146.5" y="693" width="3.1" height="15.0" fill="rgb(214,141,0)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgobject-2.0.so.0.8600.2] (1 samples, 0.09%)</title><rect x="1177.6" y="693" width="1.0" height="15.0" fill="rgb(228,96,26)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="357" width="1.0" height="15.0" fill="rgb(205,167,35)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="367.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="373" width="1.0" height="15.0" fill="rgb(205,93,1)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="383.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libxkbcommon.so.0.13.0] (1 samples, 0.09%)</title><rect x="1149.6" y="821" width="1.1" height="15.0" fill="rgb(252,32,51)" rx="2" ry="2" />
+<text text-anchor="" x="1152.63" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="410.6" y="629" width="1.0" height="15.0" fill="rgb(225,216,48)" rx="2" ry="2" />
+<text text-anchor="" x="413.58" y="639.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1172.4" y="405" width="1.0" height="15.0" fill="rgb(209,10,6)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="415.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="11.0" y="725" width="1.1" height="15.0" fill="rgb(215,140,51)" rx="2" ry="2" />
+<text text-anchor="" x="14.04" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_get_clip (1 samples, 0.09%)</title><rect x="1146.5" y="469" width="1.1" height="15.0" fill="rgb(211,211,27)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="479.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>FcInit (2 samples, 0.18%)</title><rect x="10.0" y="853" width="2.1" height="15.0" fill="rgb(211,118,28)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>pthread_once (3 samples, 0.26%)</title><rect x="1166.2" y="805" width="3.1" height="15.0" fill="rgb(242,159,46)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1147.6" y="437" width="2.0" height="15.0" fill="rgb(242,93,10)" rx="2" ry="2" />
+<text text-anchor="" x="1150.56" y="447.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="485" width="2.1" height="15.0" fill="rgb(210,14,0)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="495.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (1 samples, 0.09%)</title><rect x="10.0" y="485" width="1.0" height="15.0" fill="rgb(230,68,37)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="495.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (1 samples, 0.09%)</title><rect x="521.3" y="837" width="1.1" height="15.0" fill="rgb(207,174,53)" rx="2" ry="2" />
+<text text-anchor="" x="524.33" y="847.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (3 samples, 0.26%)</title><rect x="1181.7" y="645" width="3.1" height="15.0" fill="rgb(228,17,17)" rx="2" ry="2" />
+<text text-anchor="" x="1184.72" y="655.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>__vdso_clock_gettime (1 samples, 0.09%)</title><rect x="413.7" y="837" width="1.0" height="15.0" fill="rgb(232,36,11)" rx="2" ry="2" />
+<text text-anchor="" x="416.68" y="847.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libcairo.so.2.11804.4] (1 samples, 0.09%)</title><rect x="1165.2" y="757" width="1.0" height="15.0" fill="rgb(234,164,16)" rx="2" ry="2" />
+<text text-anchor="" x="1168.16" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="11.0" y="677" width="1.1" height="15.0" fill="rgb(206,116,49)" rx="2" ry="2" />
+<text text-anchor="" x="14.04" y="687.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1144.5" y="437" width="1.0" height="15.0" fill="rgb(246,63,41)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="447.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>wl_cursor_theme_load (3 samples, 0.26%)</title><rect x="1184.8" y="837" width="3.1" height="15.0" fill="rgb(212,181,6)" rx="2" ry="2" />
+<text text-anchor="" x="1187.82" y="847.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libwayland-cursor.so.0.24.0] (3 samples, 0.26%)</title><rect x="1174.5" y="709" width="3.1" height="15.0" fill="rgb(222,30,32)" rx="2" ry="2" />
+<text text-anchor="" x="1177.47" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1162.1" y="693" width="1.0" height="15.0" fill="rgb(240,199,35)" rx="2" ry="2" />
+<text text-anchor="" x="1165.05" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>wl_display_dispatch_queue_timeout (8 samples, 0.70%)</title><rect x="497.5" y="805" width="8.3" height="15.0" fill="rgb(248,138,19)" rx="2" ry="2" />
+<text text-anchor="" x="500.53" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (1 samples, 0.09%)</title><rect x="12.1" y="885" width="1.0" height="15.0" fill="rgb(226,226,46)" rx="2" ry="2" />
+<text text-anchor="" x="15.07" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libcairo.so.2.11804.4] (1 samples, 0.09%)</title><rect x="1165.2" y="725" width="1.0" height="15.0" fill="rgb(224,159,20)" rx="2" ry="2" />
+<text text-anchor="" x="1168.16" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_get_preferred_height (1 samples, 0.09%)</title><rect x="1144.5" y="693" width="1.0" height="15.0" fill="rgb(240,212,11)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>Color::Color (59 samples, 5.18%)</title><rect x="435.4" y="901" width="61.1" height="15.0" fill="rgb(251,53,13)" rx="2" ry="2" />
+<text text-anchor="" x="438.42" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  >Color:..</text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_type_class_get (1 samples, 0.09%)</title><rect x="1177.6" y="565" width="1.0" height="15.0" fill="rgb(242,113,50)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="575.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="405" width="2.1" height="15.0" fill="rgb(221,108,37)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="415.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libEGL_mesa.so.0.0.0] (2 samples, 0.18%)</title><rect x="1161.0" y="805" width="2.1" height="15.0" fill="rgb(241,150,47)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[pango]_fontcon (2 samples, 0.18%)</title><rect x="10.0" y="933" width="2.1" height="15.0" fill="rgb(254,33,47)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="943.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="725" width="1.0" height="15.0" fill="rgb(208,46,44)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1162.1" y="741" width="1.0" height="15.0" fill="rgb(214,85,54)" rx="2" ry="2" />
+<text text-anchor="" x="1165.05" y="751.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="1161.0" y="677" width="1.1" height="15.0" fill="rgb(245,15,27)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="687.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>Particle_Density::~Particle_Density (7 samples, 0.61%)</title><rect x="580.3" y="901" width="7.3" height="15.0" fill="rgb(207,167,50)" rx="2" ry="2" />
+<text text-anchor="" x="583.33" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="245" width="2.1" height="15.0" fill="rgb(234,38,40)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="255.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libm.so.6] (1 samples, 0.09%)</title><rect x="431.3" y="853" width="1.0" height="15.0" fill="rgb(243,100,25)" rx="2" ry="2" />
+<text text-anchor="" x="434.28" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_get_preferred_width (1 samples, 0.09%)</title><rect x="1171.4" y="645" width="1.0" height="15.0" fill="rgb(228,170,43)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="655.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libEGL_mesa.so.0.0.0] (2 samples, 0.18%)</title><rect x="1161.0" y="821" width="2.1" height="15.0" fill="rgb(229,55,51)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (1 samples, 0.09%)</title><rect x="12.1" y="901" width="1.0" height="15.0" fill="rgb(235,40,20)" rx="2" ry="2" />
+<text text-anchor="" x="15.07" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libcairo.so.2.11804.4] (1 samples, 0.09%)</title><rect x="1165.2" y="677" width="1.0" height="15.0" fill="rgb(218,218,32)" rx="2" ry="2" />
+<text text-anchor="" x="1168.16" y="687.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1145.5" y="693" width="1.0" height="15.0" fill="rgb(225,50,14)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libcairo.so.2.11804.4] (1 samples, 0.09%)</title><rect x="1170.3" y="677" width="1.1" height="15.0" fill="rgb(245,218,37)" rx="2" ry="2" />
+<text text-anchor="" x="1173.33" y="687.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>dlopen (3 samples, 0.26%)</title><rect x="1166.2" y="741" width="3.1" height="15.0" fill="rgb(232,5,42)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="751.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libfontconfig.so.1.16.0] (2 samples, 0.18%)</title><rect x="10.0" y="789" width="2.1" height="15.0" fill="rgb(247,139,7)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1144.5" y="629" width="1.0" height="15.0" fill="rgb(250,182,19)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="639.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libdecor-gtk.so] (1 samples, 0.09%)</title><rect x="1169.3" y="789" width="1.0" height="15.0" fill="rgb(211,124,30)" rx="2" ry="2" />
+<text text-anchor="" x="1172.30" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libdecor-gtk.so] (3 samples, 0.26%)</title><rect x="1163.1" y="789" width="3.1" height="15.0" fill="rgb(248,212,1)" rx="2" ry="2" />
+<text text-anchor="" x="1166.09" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="373" width="2.1" height="15.0" fill="rgb(219,59,31)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="383.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_container_get_type (1 samples, 0.09%)</title><rect x="1163.1" y="725" width="1.0" height="15.0" fill="rgb(205,160,16)" rx="2" ry="2" />
+<text text-anchor="" x="1166.09" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (3 samples, 0.26%)</title><rect x="1181.7" y="789" width="3.1" height="15.0" fill="rgb(252,127,1)" rx="2" ry="2" />
+<text text-anchor="" x="1184.72" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (1 samples, 0.09%)</title><rect x="10.0" y="453" width="1.0" height="15.0" fill="rgb(242,1,42)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="463.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1162.1" y="661" width="1.0" height="15.0" fill="rgb(245,48,8)" rx="2" ry="2" />
+<text text-anchor="" x="1165.05" y="671.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libEGL_mesa.so.0.0.0] (1 samples, 0.09%)</title><rect x="1143.4" y="901" width="1.1" height="15.0" fill="rgb(240,166,39)" rx="2" ry="2" />
+<text text-anchor="" x="1146.42" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libdecor-gtk.so] (1 samples, 0.09%)</title><rect x="1169.3" y="805" width="1.0" height="15.0" fill="rgb(245,115,45)" rx="2" ry="2" />
+<text text-anchor="" x="1172.30" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1172.4" y="581" width="2.1" height="15.0" fill="rgb(250,133,12)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="591.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>pixman_image_composite32 (1 samples, 0.09%)</title><rect x="1170.3" y="645" width="1.1" height="15.0" fill="rgb(215,206,46)" rx="2" ry="2" />
+<text text-anchor="" x="1173.33" y="655.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="10.0" y="693" width="1.0" height="15.0" fill="rgb(214,11,23)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libfreetype.so.6.20.4] (1 samples, 0.09%)</title><rect x="395.1" y="821" width="1.0" height="15.0" fill="rgb(220,92,8)" rx="2" ry="2" />
+<text text-anchor="" x="398.05" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (3 samples, 0.26%)</title><rect x="1166.2" y="565" width="3.1" height="15.0" fill="rgb(210,177,0)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="575.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1172.4" y="421" width="1.0" height="15.0" fill="rgb(211,42,20)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="431.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgobject-2.0.so.0.8600.2] (3 samples, 0.26%)</title><rect x="1146.5" y="757" width="3.1" height="15.0" fill="rgb(230,167,3)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_hash_table_insert (1 samples, 0.09%)</title><rect x="1173.4" y="565" width="1.1" height="15.0" fill="rgb(244,146,35)" rx="2" ry="2" />
+<text text-anchor="" x="1176.44" y="575.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="581" width="1.0" height="15.0" fill="rgb(252,139,20)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="591.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (2 samples, 0.18%)</title><rect x="430.2" y="901" width="2.1" height="15.0" fill="rgb(245,150,22)" rx="2" ry="2" />
+<text text-anchor="" x="433.25" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (3 samples, 0.26%)</title><rect x="1178.6" y="549" width="3.1" height="15.0" fill="rgb(224,72,18)" rx="2" ry="2" />
+<text text-anchor="" x="1181.61" y="559.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libffi.so.8.2.0] (1 samples, 0.09%)</title><rect x="520.3" y="805" width="1.0" height="15.0" fill="rgb(214,172,3)" rx="2" ry="2" />
+<text text-anchor="" x="523.30" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1150.7" y="805" width="1.0" height="15.0" fill="rgb(220,88,30)" rx="2" ry="2" />
+<text text-anchor="" x="1153.67" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1150.7" y="853" width="1.0" height="15.0" fill="rgb(231,8,44)" rx="2" ry="2" />
+<text text-anchor="" x="1153.67" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>vsnprintf (1 samples, 0.09%)</title><rect x="521.3" y="869" width="1.1" height="15.0" fill="rgb(232,27,40)" rx="2" ry="2" />
+<text text-anchor="" x="524.33" y="879.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>morciatko (1,137 samples, 99.74%)</title><rect x="13.1" y="933" width="1176.9" height="15.0" fill="rgb(218,207,44)" rx="2" ry="2" />
+<text text-anchor="" x="16.11" y="943.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  >morciatko</text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libglfw.so.3.4] (1 samples, 0.09%)</title><rect x="520.3" y="869" width="1.0" height="15.0" fill="rgb(219,51,3)" rx="2" ry="2" />
+<text text-anchor="" x="523.30" y="879.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libcairo.so.2.11804.4] (1 samples, 0.09%)</title><rect x="1170.3" y="693" width="1.1" height="15.0" fill="rgb(215,152,30)" rx="2" ry="2" />
+<text text-anchor="" x="1173.33" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="197" width="2.1" height="15.0" fill="rgb(229,212,10)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="207.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (13 samples, 1.14%)</title><rect x="506.8" y="773" width="13.5" height="15.0" fill="rgb(251,176,26)" rx="2" ry="2" />
+<text text-anchor="" x="509.84" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libGLdispatch.so.0.0.0] (1 samples, 0.09%)</title><rect x="1155.8" y="885" width="1.1" height="15.0" fill="rgb(209,138,8)" rx="2" ry="2" />
+<text text-anchor="" x="1158.84" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (3 samples, 0.26%)</title><rect x="1146.5" y="709" width="3.1" height="15.0" fill="rgb(249,150,9)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (2 samples, 0.18%)</title><rect x="1153.8" y="853" width="2.0" height="15.0" fill="rgb(222,107,25)" rx="2" ry="2" />
+<text text-anchor="" x="1156.77" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_list_prepend (1 samples, 0.09%)</title><rect x="1171.4" y="133" width="1.0" height="15.0" fill="rgb(250,229,30)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="143.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgobject-2.0.so.0.8600.2] (3 samples, 0.26%)</title><rect x="1146.5" y="741" width="3.1" height="15.0" fill="rgb(248,46,31)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="751.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="10.0" y="757" width="1.0" height="15.0" fill="rgb(211,113,5)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libfontconfig.so.1.16.0] (1 samples, 0.09%)</title><rect x="10.0" y="677" width="1.0" height="15.0" fill="rgb(224,181,3)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="687.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1144.5" y="757" width="2.0" height="15.0" fill="rgb(234,198,3)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>_dl_catch_exception (3 samples, 0.26%)</title><rect x="1181.7" y="773" width="3.1" height="15.0" fill="rgb(248,104,49)" rx="2" ry="2" />
+<text text-anchor="" x="1184.72" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_object_set_valist (2 samples, 0.18%)</title><rect x="1172.4" y="789" width="2.1" height="15.0" fill="rgb(239,179,12)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>WorldCell::WorldCell (14 samples, 1.23%)</title><rect x="415.8" y="917" width="14.4" height="15.0" fill="rgb(220,191,18)" rx="2" ry="2" />
+<text text-anchor="" x="418.75" y="927.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>wl_display_dispatch_queue_pending (1 samples, 0.09%)</title><rect x="520.3" y="853" width="1.0" height="15.0" fill="rgb(250,146,44)" rx="2" ry="2" />
+<text text-anchor="" x="523.30" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (2 samples, 0.18%)</title><rect x="409.5" y="789" width="2.1" height="15.0" fill="rgb(216,37,50)" rx="2" ry="2" />
+<text text-anchor="" x="412.54" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (13 samples, 1.14%)</title><rect x="506.8" y="821" width="13.5" height="15.0" fill="rgb(246,217,9)" rx="2" ry="2" />
+<text text-anchor="" x="509.84" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>cfree (1 samples, 0.09%)</title><rect x="411.6" y="789" width="1.0" height="15.0" fill="rgb(206,85,37)" rx="2" ry="2" />
+<text text-anchor="" x="414.61" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>_IO_fread (3 samples, 0.26%)</title><rect x="1174.5" y="661" width="3.1" height="15.0" fill="rgb(246,42,18)" rx="2" ry="2" />
+<text text-anchor="" x="1177.47" y="671.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1147.6" y="421" width="2.0" height="15.0" fill="rgb(213,89,54)" rx="2" ry="2" />
+<text text-anchor="" x="1150.56" y="431.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>xkb_compose_table_new_from_locale (1 samples, 0.09%)</title><rect x="1149.6" y="869" width="1.1" height="15.0" fill="rgb(224,177,20)" rx="2" ry="2" />
+<text text-anchor="" x="1152.63" y="879.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libglfw.so.3.4] (1 samples, 0.09%)</title><rect x="1149.6" y="885" width="1.1" height="15.0" fill="rgb(238,195,27)" rx="2" ry="2" />
+<text text-anchor="" x="1152.63" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libwayland-client.so.0.24.0] (1 samples, 0.09%)</title><rect x="520.3" y="821" width="1.0" height="15.0" fill="rgb(215,57,4)" rx="2" ry="2" />
+<text text-anchor="" x="523.30" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>_dl_catch_exception (3 samples, 0.26%)</title><rect x="1181.7" y="725" width="3.1" height="15.0" fill="rgb(214,40,1)" rx="2" ry="2" />
+<text text-anchor="" x="1184.72" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_signal_emit_valist (2 samples, 0.18%)</title><rect x="1172.4" y="725" width="2.1" height="15.0" fill="rgb(224,205,16)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="11.0" y="709" width="1.1" height="15.0" fill="rgb(211,209,23)" rx="2" ry="2" />
+<text text-anchor="" x="14.04" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>Text_Renderer::load_characters (1 samples, 0.09%)</title><rect x="395.1" y="917" width="1.0" height="15.0" fill="rgb(221,60,29)" rx="2" ry="2" />
+<text text-anchor="" x="398.05" y="927.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>cfree (1 samples, 0.09%)</title><rect x="519.3" y="741" width="1.0" height="15.0" fill="rgb(215,7,12)" rx="2" ry="2" />
+<text text-anchor="" x="522.26" y="751.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1144.5" y="677" width="1.0" height="15.0" fill="rgb(242,116,8)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="687.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>_dl_catch_exception (3 samples, 0.26%)</title><rect x="1166.2" y="645" width="3.1" height="15.0" fill="rgb(223,228,43)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="655.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libfontconfig.so.1.16.0] (2 samples, 0.18%)</title><rect x="10.0" y="805" width="2.1" height="15.0" fill="rgb(213,18,33)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="181" width="2.1" height="15.0" fill="rgb(214,68,50)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="191.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>Particle::Particle (20 samples, 1.75%)</title><rect x="374.4" y="917" width="20.7" height="15.0" fill="rgb(251,151,6)" rx="2" ry="2" />
+<text text-anchor="" x="377.35" y="927.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgobject-2.0.so.0.8600.2] (2 samples, 0.18%)</title><rect x="1172.4" y="773" width="2.1" height="15.0" fill="rgb(245,185,5)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (5 samples, 0.44%)</title><rect x="512.0" y="709" width="5.2" height="15.0" fill="rgb(216,202,0)" rx="2" ry="2" />
+<text text-anchor="" x="515.02" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (3 samples, 0.26%)</title><rect x="1146.5" y="629" width="3.1" height="15.0" fill="rgb(249,28,43)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="639.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1144.5" y="613" width="1.0" height="15.0" fill="rgb(231,217,43)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="623.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="661" width="1.0" height="15.0" fill="rgb(248,212,5)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="671.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libharfbuzz.so.0.61220.0] (1 samples, 0.09%)</title><rect x="1145.5" y="389" width="1.0" height="15.0" fill="rgb(237,70,9)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="399.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgobject-2.0.so.0.8600.2] (3 samples, 0.26%)</title><rect x="1146.5" y="645" width="3.1" height="15.0" fill="rgb(209,84,15)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="655.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1145.5" y="645" width="1.0" height="15.0" fill="rgb(247,151,9)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="655.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libEGL_mesa.so.0.0.0] (1 samples, 0.09%)</title><rect x="1161.0" y="773" width="1.1" height="15.0" fill="rgb(221,180,21)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (3 samples, 0.26%)</title><rect x="1166.2" y="629" width="3.1" height="15.0" fill="rgb(245,21,15)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="639.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_malloc (1 samples, 0.09%)</title><rect x="1171.4" y="117" width="1.0" height="15.0" fill="rgb(252,200,7)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="127.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="597" width="1.0" height="15.0" fill="rgb(228,150,48)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="607.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>FT_Outline_Decompose (1 samples, 0.09%)</title><rect x="395.1" y="837" width="1.0" height="15.0" fill="rgb(250,156,7)" rx="2" ry="2" />
+<text text-anchor="" x="398.05" y="847.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (12 samples, 1.05%)</title><rect x="506.8" y="741" width="12.5" height="15.0" fill="rgb(208,56,37)" rx="2" ry="2" />
+<text text-anchor="" x="509.84" y="751.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (3 samples, 0.26%)</title><rect x="1166.2" y="725" width="3.1" height="15.0" fill="rgb(220,38,26)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>Shader::create_shader (1 samples, 0.09%)</title><rect x="1150.7" y="885" width="1.0" height="15.0" fill="rgb(205,10,19)" rx="2" ry="2" />
+<text text-anchor="" x="1153.67" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>XML_ParseBuffer (1 samples, 0.09%)</title><rect x="10.0" y="773" width="1.0" height="15.0" fill="rgb(249,189,23)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_set_parent (3 samples, 0.26%)</title><rect x="1146.5" y="517" width="3.1" height="15.0" fill="rgb(242,140,21)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="527.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1147.6" y="405" width="2.0" height="15.0" fill="rgb(227,101,46)" rx="2" ry="2" />
+<text text-anchor="" x="1150.56" y="415.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_get_preferred_height (2 samples, 0.18%)</title><rect x="1144.5" y="805" width="2.0" height="15.0" fill="rgb(215,26,18)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>hb_shape_full (1 samples, 0.09%)</title><rect x="1145.5" y="437" width="1.0" height="15.0" fill="rgb(244,154,28)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="447.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_object_unref (1 samples, 0.09%)</title><rect x="1144.5" y="373" width="1.0" height="15.0" fill="rgb(207,199,18)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="383.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_get_preferred_height_and_baseline_for_width (1 samples, 0.09%)</title><rect x="1144.5" y="517" width="1.0" height="15.0" fill="rgb(245,132,38)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="527.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (3 samples, 0.26%)</title><rect x="1166.2" y="661" width="3.1" height="15.0" fill="rgb(214,181,53)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="671.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libwayland-client.so.0.24.0] (1 samples, 0.09%)</title><rect x="520.3" y="837" width="1.0" height="15.0" fill="rgb(206,211,20)" rx="2" ry="2" />
+<text text-anchor="" x="523.30" y="847.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gdk_display_is_closed (1 samples, 0.09%)</title><rect x="1164.1" y="757" width="1.1" height="15.0" fill="rgb(229,165,1)" rx="2" ry="2" />
+<text text-anchor="" x="1167.12" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="1161.0" y="629" width="1.1" height="15.0" fill="rgb(227,201,54)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="639.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="437" width="1.0" height="15.0" fill="rgb(217,228,35)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="447.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="410.6" y="741" width="1.0" height="15.0" fill="rgb(235,123,2)" rx="2" ry="2" />
+<text text-anchor="" x="413.58" y="751.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_key_file_load_from_file (1 samples, 0.09%)</title><rect x="1171.4" y="213" width="1.0" height="15.0" fill="rgb(240,65,33)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="223.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libcairo.so.2.11804.4] (1 samples, 0.09%)</title><rect x="1170.3" y="725" width="1.1" height="15.0" fill="rgb(221,39,19)" rx="2" ry="2" />
+<text text-anchor="" x="1173.33" y="735.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_object_set (2 samples, 0.18%)</title><rect x="1172.4" y="805" width="2.1" height="15.0" fill="rgb(239,101,28)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1147.6" y="469" width="2.0" height="15.0" fill="rgb(241,129,39)" rx="2" ry="2" />
+<text text-anchor="" x="1150.56" y="479.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_signal_emit (3 samples, 0.26%)</title><rect x="1146.5" y="677" width="3.1" height="15.0" fill="rgb(252,104,22)" rx="2" ry="2" />
+<text text-anchor="" x="1149.53" y="687.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (3 samples, 0.26%)</title><rect x="514.1" y="693" width="3.1" height="15.0" fill="rgb(237,68,18)" rx="2" ry="2" />
+<text text-anchor="" x="517.09" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libfreetype.so.6.20.4] (1 samples, 0.09%)</title><rect x="395.1" y="885" width="1.0" height="15.0" fill="rgb(226,177,29)" rx="2" ry="2" />
+<text text-anchor="" x="398.05" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="277" width="2.1" height="15.0" fill="rgb(214,145,46)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="287.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1145.5" y="629" width="1.0" height="15.0" fill="rgb(221,49,16)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="639.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libcairo.so.2.11804.4] (1 samples, 0.09%)</title><rect x="1170.3" y="661" width="1.1" height="15.0" fill="rgb(239,22,26)" rx="2" ry="2" />
+<text text-anchor="" x="1173.33" y="671.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="410.6" y="565" width="1.0" height="15.0" fill="rgb(224,66,18)" rx="2" ry="2" />
+<text text-anchor="" x="413.58" y="575.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="410.6" y="533" width="1.0" height="15.0" fill="rgb(249,44,48)" rx="2" ry="2" />
+<text text-anchor="" x="413.58" y="543.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libdecor-gtk.so] (2 samples, 0.18%)</title><rect x="1170.3" y="773" width="2.1" height="15.0" fill="rgb(218,210,40)" rx="2" ry="2" />
+<text text-anchor="" x="1173.33" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>cairo_mask (1 samples, 0.09%)</title><rect x="1170.3" y="757" width="1.1" height="15.0" fill="rgb(216,120,18)" rx="2" ry="2" />
+<text text-anchor="" x="1173.33" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>_dl_catch_exception (3 samples, 0.26%)</title><rect x="1166.2" y="613" width="3.1" height="15.0" fill="rgb(235,54,47)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="623.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_css_provider_load_from_file (2 samples, 0.18%)</title><rect x="1172.4" y="613" width="2.1" height="15.0" fill="rgb(238,131,52)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="623.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgobject-2.0.so.0.8600.2] (1 samples, 0.09%)</title><rect x="1177.6" y="645" width="1.0" height="15.0" fill="rgb(226,47,37)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="655.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1162.1" y="709" width="1.0" height="15.0" fill="rgb(241,213,41)" rx="2" ry="2" />
+<text text-anchor="" x="1165.05" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libdecor-0.so.0.200.4] (5 samples, 0.44%)</title><rect x="1144.5" y="837" width="5.1" height="15.0" fill="rgb(244,221,20)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="847.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="325" width="1.0" height="15.0" fill="rgb(208,64,11)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="335.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_widget_get_preferred_height (1 samples, 0.09%)</title><rect x="1145.5" y="709" width="1.0" height="15.0" fill="rgb(247,53,3)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libglib-2.0.so.0.8600.2] (1 samples, 0.09%)</title><rect x="1171.4" y="197" width="1.0" height="15.0" fill="rgb(250,204,3)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="207.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>Particle_Mass::Particle_Mass (10 samples, 0.88%)</title><rect x="587.6" y="901" width="10.3" height="15.0" fill="rgb(248,34,48)" rx="2" ry="2" />
+<text text-anchor="" x="590.58" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libEGL_mesa.so.0.0.0] (1 samples, 0.09%)</title><rect x="1161.0" y="741" width="1.1" height="15.0" fill="rgb(226,44,29)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="751.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libopenal.so.1.24.3] (2 samples, 0.18%)</title><rect x="430.2" y="869" width="2.1" height="15.0" fill="rgb(224,165,38)" rx="2" ry="2" />
+<text text-anchor="" x="433.25" y="879.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1144.5" y="741" width="2.0" height="15.0" fill="rgb(224,91,49)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="751.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="10.0" y="565" width="1.0" height="15.0" fill="rgb(208,169,43)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="575.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (13 samples, 1.14%)</title><rect x="506.8" y="757" width="13.5" height="15.0" fill="rgb(222,114,2)" rx="2" ry="2" />
+<text text-anchor="" x="509.84" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (1 samples, 0.09%)</title><rect x="414.7" y="821" width="1.1" height="15.0" fill="rgb(232,42,31)" rx="2" ry="2" />
+<text text-anchor="" x="417.72" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>__libc_calloc (1 samples, 0.09%)</title><rect x="504.8" y="773" width="1.0" height="15.0" fill="rgb(232,67,19)" rx="2" ry="2" />
+<text text-anchor="" x="507.77" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (3 samples, 0.26%)</title><rect x="1166.2" y="549" width="3.1" height="15.0" fill="rgb(208,73,5)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="559.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (3 samples, 0.26%)</title><rect x="1181.7" y="741" width="3.1" height="15.0" fill="rgb(239,117,2)" rx="2" ry="2" />
+<text text-anchor="" x="1184.72" y="751.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="410.6" y="597" width="1.0" height="15.0" fill="rgb(249,73,34)" rx="2" ry="2" />
+<text text-anchor="" x="413.58" y="607.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1171.4" y="501" width="1.0" height="15.0" fill="rgb(213,172,26)" rx="2" ry="2" />
+<text text-anchor="" x="1174.37" y="511.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1154.8" y="837" width="1.0" height="15.0" fill="rgb(252,209,22)" rx="2" ry="2" />
+<text text-anchor="" x="1157.81" y="847.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1172.4" y="453" width="1.0" height="15.0" fill="rgb(241,51,34)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="463.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_signal_handlers_destroy (1 samples, 0.09%)</title><rect x="1144.5" y="341" width="1.0" height="15.0" fill="rgb(231,33,4)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="351.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgobject-2.0.so.0.8600.2] (1 samples, 0.09%)</title><rect x="1177.6" y="469" width="1.0" height="15.0" fill="rgb(242,0,51)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="479.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libharfbuzz.so.0.61220.0] (1 samples, 0.09%)</title><rect x="1145.5" y="341" width="1.0" height="15.0" fill="rgb(237,160,48)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="351.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="1161.0" y="661" width="1.1" height="15.0" fill="rgb(226,155,29)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="671.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="410.6" y="645" width="1.0" height="15.0" fill="rgb(222,145,33)" rx="2" ry="2" />
+<text text-anchor="" x="413.58" y="655.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libdecor-gtk.so] (3 samples, 0.26%)</title><rect x="1163.1" y="821" width="3.1" height="15.0" fill="rgb(212,152,52)" rx="2" ry="2" />
+<text text-anchor="" x="1166.09" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="341" width="2.1" height="15.0" fill="rgb(250,94,41)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="351.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>dlopen (3 samples, 0.26%)</title><rect x="1181.7" y="821" width="3.1" height="15.0" fill="rgb(213,187,13)" rx="2" ry="2" />
+<text text-anchor="" x="1184.72" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (3 samples, 0.26%)</title><rect x="1181.7" y="709" width="3.1" height="15.0" fill="rgb(237,200,1)" rx="2" ry="2" />
+<text text-anchor="" x="1184.72" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>gtk_css_provider_load_from_resource (3 samples, 0.26%)</title><rect x="1178.6" y="597" width="3.1" height="15.0" fill="rgb(237,205,32)" rx="2" ry="2" />
+<text text-anchor="" x="1181.61" y="607.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (3 samples, 0.26%)</title><rect x="1181.7" y="629" width="3.1" height="15.0" fill="rgb(241,169,20)" rx="2" ry="2" />
+<text text-anchor="" x="1184.72" y="639.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1172.4" y="437" width="1.0" height="15.0" fill="rgb(205,95,35)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="447.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libglib-2.0.so.0.8600.2] (1 samples, 0.09%)</title><rect x="1173.4" y="549" width="1.1" height="15.0" fill="rgb(251,21,14)" rx="2" ry="2" />
+<text text-anchor="" x="1176.44" y="559.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (3 samples, 0.26%)</title><rect x="1178.6" y="613" width="3.1" height="15.0" fill="rgb(216,93,36)" rx="2" ry="2" />
+<text text-anchor="" x="1181.61" y="623.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (1 samples, 0.09%)</title><rect x="1179.6" y="37" width="1.1" height="15.0" fill="rgb(243,144,9)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="47.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1162.1" y="677" width="1.0" height="15.0" fill="rgb(206,102,13)" rx="2" ry="2" />
+<text text-anchor="" x="1165.05" y="687.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_type_class_get (1 samples, 0.09%)</title><rect x="1177.6" y="549" width="1.0" height="15.0" fill="rgb(210,78,53)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="559.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (3 samples, 0.26%)</title><rect x="409.5" y="821" width="3.1" height="15.0" fill="rgb(238,95,50)" rx="2" ry="2" />
+<text text-anchor="" x="412.54" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libpangoft2-1.0.so.0.5700.0] (2 samples, 0.18%)</title><rect x="10.0" y="869" width="2.1" height="15.0" fill="rgb(247,91,33)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="879.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libEGL_mesa.so.0.0.0] (23 samples, 2.02%)</title><rect x="496.5" y="885" width="23.8" height="15.0" fill="rgb(216,111,21)" rx="2" ry="2" />
+<text text-anchor="" x="499.49" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  >[..</text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_closure_invoke (2 samples, 0.18%)</title><rect x="1172.4" y="677" width="2.1" height="15.0" fill="rgb(252,12,22)" rx="2" ry="2" />
+<text text-anchor="" x="1175.40" y="687.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>__vdso_clock_gettime (1 samples, 0.09%)</title><rect x="517.2" y="693" width="1.0" height="15.0" fill="rgb(228,221,16)" rx="2" ry="2" />
+<text text-anchor="" x="520.19" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgobject-2.0.so.0.8600.2] (3 samples, 0.26%)</title><rect x="1178.6" y="693" width="3.1" height="15.0" fill="rgb(239,221,12)" rx="2" ry="2" />
+<text text-anchor="" x="1181.61" y="703.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (13 samples, 1.14%)</title><rect x="506.8" y="805" width="13.5" height="15.0" fill="rgb(254,201,29)" rx="2" ry="2" />
+<text text-anchor="" x="509.84" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[ld-linux-x86-64.so.2] (3 samples, 0.26%)</title><rect x="1181.7" y="613" width="3.1" height="15.0" fill="rgb(233,227,25)" rx="2" ry="2" />
+<text text-anchor="" x="1184.72" y="623.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>vsnprintf (1 samples, 0.09%)</title><rect x="414.7" y="853" width="1.1" height="15.0" fill="rgb(249,110,37)" rx="2" ry="2" />
+<text text-anchor="" x="417.72" y="863.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (3 samples, 0.26%)</title><rect x="1166.2" y="677" width="3.1" height="15.0" fill="rgb(243,104,54)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="687.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1145.5" y="677" width="1.0" height="15.0" fill="rgb(244,112,28)" rx="2" ry="2" />
+<text text-anchor="" x="1148.49" y="687.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libdecor-gtk.so] (1 samples, 0.09%)</title><rect x="1163.1" y="773" width="1.0" height="15.0" fill="rgb(206,109,8)" rx="2" ry="2" />
+<text text-anchor="" x="1166.09" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_cclosure_marshal_VOID__OBJECTv (3 samples, 0.26%)</title><rect x="1178.6" y="677" width="3.1" height="15.0" fill="rgb(242,166,34)" rx="2" ry="2" />
+<text text-anchor="" x="1181.61" y="687.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>dri_flush (13 samples, 1.14%)</title><rect x="506.8" y="837" width="13.5" height="15.0" fill="rgb(212,13,47)" rx="2" ry="2" />
+<text text-anchor="" x="509.84" y="847.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libwayland-cursor.so.0.24.0] (2 samples, 0.18%)</title><rect x="1184.8" y="789" width="2.1" height="15.0" fill="rgb(230,45,16)" rx="2" ry="2" />
+<text text-anchor="" x="1187.82" y="799.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (3 samples, 0.26%)</title><rect x="1178.6" y="565" width="3.1" height="15.0" fill="rgb(226,123,26)" rx="2" ry="2" />
+<text text-anchor="" x="1181.61" y="575.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1144.5" y="421" width="1.0" height="15.0" fill="rgb(227,14,47)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="431.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libglfw.so.3.4] (5 samples, 0.44%)</title><rect x="1144.5" y="869" width="5.1" height="15.0" fill="rgb(233,118,0)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="879.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1144.5" y="485" width="1.0" height="15.0" fill="rgb(208,199,39)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="495.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1162.1" y="757" width="1.0" height="15.0" fill="rgb(218,26,11)" rx="2" ry="2" />
+<text text-anchor="" x="1165.05" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgdk-3.so.0.2419.32] (7 samples, 0.61%)</title><rect x="1174.5" y="773" width="7.2" height="15.0" fill="rgb(227,34,46)" rx="2" ry="2" />
+<text text-anchor="" x="1177.47" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libglfw.so.3.4] (1 samples, 0.09%)</title><rect x="520.3" y="885" width="1.0" height="15.0" fill="rgb(222,215,36)" rx="2" ry="2" />
+<text text-anchor="" x="523.30" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>_IO_fread (2 samples, 0.18%)</title><rect x="1184.8" y="773" width="2.1" height="15.0" fill="rgb(251,189,51)" rx="2" ry="2" />
+<text text-anchor="" x="1187.82" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (2 samples, 0.18%)</title><rect x="1179.6" y="165" width="2.1" height="15.0" fill="rgb(215,215,15)" rx="2" ry="2" />
+<text text-anchor="" x="1182.65" y="175.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_type_class_get (1 samples, 0.09%)</title><rect x="1177.6" y="501" width="1.0" height="15.0" fill="rgb(246,65,42)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="511.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_signal_emit_valist (3 samples, 0.26%)</title><rect x="1178.6" y="709" width="3.1" height="15.0" fill="rgb(225,61,12)" rx="2" ry="2" />
+<text text-anchor="" x="1181.61" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (3 samples, 0.26%)</title><rect x="409.5" y="805" width="3.1" height="15.0" fill="rgb(247,57,19)" rx="2" ry="2" />
+<text text-anchor="" x="412.54" y="815.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgtk-3.so.0.2419.32] (1 samples, 0.09%)</title><rect x="1144.5" y="453" width="1.0" height="15.0" fill="rgb(240,194,48)" rx="2" ry="2" />
+<text text-anchor="" x="1147.46" y="463.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>g_closure_invoke (1 samples, 0.09%)</title><rect x="1177.6" y="613" width="1.0" height="15.0" fill="rgb(223,152,48)" rx="2" ry="2" />
+<text text-anchor="" x="1180.58" y="623.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libc.so.6] (2 samples, 0.18%)</title><rect x="10.0" y="901" width="2.1" height="15.0" fill="rgb(252,78,50)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>__libc_start_main (28 samples, 2.46%)</title><rect x="1161.0" y="901" width="29.0" height="15.0" fill="rgb(213,217,13)" rx="2" ry="2" />
+<text text-anchor="" x="1164.02" y="911.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  >__..</text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>Text_Renderer::render_text (4 samples, 0.35%)</title><rect x="1151.7" y="885" width="4.1" height="15.0" fill="rgb(222,221,21)" rx="2" ry="2" />
+<text text-anchor="" x="1154.70" y="895.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (2 samples, 0.18%)</title><rect x="409.5" y="773" width="2.1" height="15.0" fill="rgb(231,5,42)" rx="2" ry="2" />
+<text text-anchor="" x="412.54" y="783.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libgallium-25.2.7-arch1.1.so] (1 samples, 0.09%)</title><rect x="1150.7" y="821" width="1.0" height="15.0" fill="rgb(251,182,26)" rx="2" ry="2" />
+<text text-anchor="" x="1153.67" y="831.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libexpat.so.1.11.1] (1 samples, 0.09%)</title><rect x="10.0" y="549" width="1.0" height="15.0" fill="rgb(230,25,21)" rx="2" ry="2" />
+<text text-anchor="" x="13.00" y="559.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>[libEGL.so.1.1.0] (3 samples, 0.26%)</title><rect x="1166.2" y="757" width="3.1" height="15.0" fill="rgb(246,191,45)" rx="2" ry="2" />
+<text text-anchor="" x="1169.19" y="767.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+<g class="func_g" onmouseover="s(this)" onmouseout="c()" onclick="zoom(this)">
+<title>clock_gettime (1 samples, 0.09%)</title><rect x="517.2" y="709" width="1.0" height="15.0" fill="rgb(228,197,21)" rx="2" ry="2" />
+<text text-anchor="" x="520.19" y="719.5" font-size="12" font-family="Verdana" fill="rgb(0,0,0)"  ></text>
+</g>
+</svg>

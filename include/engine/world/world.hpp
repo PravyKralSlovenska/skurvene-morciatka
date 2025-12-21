@@ -37,9 +37,9 @@ private:
     const int seed; // seed na generovanie nahodneho sveta
     Player *player;
 
-    const int chunk_width = 100;
-    const int chunk_height = 100;
-    const int chunk_radius = 2; // kolko chunkov by sa malo aktualizovat/generovat okolo hraca
+    const int chunk_width = 10;
+    const int chunk_height = 10;
+    const int chunk_radius = 16; // kolko chunkov by sa malo aktualizovat/generovat okolo hraca
 
     std::unordered_map<glm::ivec2, std::unique_ptr<Chunk>, Chunk_Coords_to_Hash> world; // chunks
     std::unordered_set<glm::ivec2, Chunk_Coords_to_Hash> active_chunks;
@@ -50,12 +50,14 @@ private:
 
     int change_width(int n);
     int change_height(int n);
-
+    
+    void calculate_active_chunks();
+    
     Chunk create_chunk(int x, int y);
     void add_chunk(int x, int y);
+    void add_chunk(glm::ivec2 coords);
     void remove_chunk(int x, int y);
     void remove_chunk(int index);
-    void calculate_active_chunks();
 
 public:
     int width, height; // width and height are in chunks (world is 3 chunks long and 5 chunks high)
@@ -68,10 +70,14 @@ public:
 
     void update();
 
-    std::unordered_map<glm::ivec2, std::unique_ptr<Chunk>, Chunk_Coords_to_Hash>* get_chunks();
-    std::unordered_set<glm::ivec2, Chunk_Coords_to_Hash>* get_active_chunks();
+    void place_particle(glm::ivec2 position);
+
+    std::unordered_map<glm::ivec2, std::unique_ptr<Chunk>, Chunk_Coords_to_Hash> *get_chunks();
+    int get_chunks_size();
+    std::unordered_set<glm::ivec2, Chunk_Coords_to_Hash> *get_active_chunks();
 
     std::pair<int, int> get_chunk_dimensions();
     Chunk *get_chunk(const int x, const int y);
+    Chunk *get_chunk(const glm::ivec2 &coords);
     Chunk *get_chunk(const Chunk_Coords_to_Hash something);
 };

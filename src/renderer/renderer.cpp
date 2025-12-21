@@ -44,11 +44,12 @@ bool IRenderer::render_everything()
     // text_renderer->render_text(std::to_string(frame_count_display) + "FPS", {10.0f, 48.0f}, 1.0f, Color(255, 255, 255, 1));
 
     text_renderer->render_text(std::to_string(time_manager->get_frames_per_second()) + "FPS", {10.0, 50.0f}, 1.0f, Color(255, 255, 255, 1.0f));
-    text_renderer->render_text(std::to_string(time_manager->get_updates_per_second()) + "UPS", {10.0, 100.0f}, 1.0f, Color(255, 255, 255, 1.0f));
-    text_renderer->render_text(std::to_string(camera->get_zoom()) + " ZOOM", {10.0, 150.0f}, 1.0f, Color(255, 255, 255, 1.0f));
+    text_renderer->render_text(std::to_string(time_manager->get_updates_per_second()) + "UPS", {10.0, 100.0f}, 0.5f, Color(0, 255, 0, 1.0f));
+    text_renderer->render_text(std::to_string(camera->get_zoom()) + " ZOOM", {10.0, 150.0f}, 0.5f, Color(0, 0, 255, 1.0f));
+    text_renderer->render_text(std::to_string(world->get_chunks_size()) + " CHUNKS", {10.0, 200.0f}, 0.5f, Color(125, 125, 125, 1.0f));
 
     auto coords = camera->get_position();
-    text_renderer->render_text(std::to_string(coords.x) + ' ' + std::to_string(coords.y), {10.0, 200.0f}, 1.0f, Color(255, 255, 255, 1.0f));
+    text_renderer->render_text(std::to_string(coords.x) + ' ' + std::to_string(coords.y), {10.0, 250.0f}, 0.5f, Color(255, 0, 255, 1.0f));
 
     if (time_manager->paused())
     {

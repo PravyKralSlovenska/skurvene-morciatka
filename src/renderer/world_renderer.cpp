@@ -98,17 +98,17 @@ void World_Renderer::fill_vertices()
 
     //     unsigned int last = vertices.size();
 
-        // vertices.emplace_back(x, y, cell.particle.color);
-        // vertices.emplace_back(x + world->scale, y, cell.particle.color);
-        // vertices.emplace_back(x + world->scale, y + world->scale, cell.particle.color);
-        // vertices.emplace_back(x, y + world->scale, cell.particle.color);
+    // vertices.emplace_back(x, y, cell.particle.color);
+    // vertices.emplace_back(x + world->scale, y, cell.particle.color);
+    // vertices.emplace_back(x + world->scale, y + world->scale, cell.particle.color);
+    // vertices.emplace_back(x, y + world->scale, cell.particle.color);
 
-        // indices.push_back(last);
-        // indices.push_back(last + 1);
-        // indices.push_back(last + 2);
-        // indices.push_back(last);
-        // indices.push_back(last + 2);
-        // indices.push_back(last + 3);
+    // indices.push_back(last);
+    // indices.push_back(last + 1);
+    // indices.push_back(last + 2);
+    // indices.push_back(last);
+    // indices.push_back(last + 2);
+    // indices.push_back(last + 3);
     // }
 }
 
@@ -154,52 +154,69 @@ void World_Renderer::add_chunk_to_batch(Chunk *chunk)
     auto [chunk_width, chunk_height] = world->get_chunk_dimensions();
     auto coords = chunk->coords;
 
-    int world_x = coords.x * chunk_width;
-    int world_y = coords.y * chunk_height;
+    int size_of_a_particle = 10;
+
+    int world_x = coords.x * chunk_width * size_of_a_particle;
+    int world_y = coords.y * chunk_height * size_of_a_particle;
 
     unsigned int last = vertices.size();
 
-    int size_of_a_particle = 10;
+    // std::cout << coords.x << ';' << coords.y << '\n';
 
     // vymysliet
-    for (int i = 0; i < chunk_height; i++) // vyska
-    for (int j = 0; j < chunk_width; j++)  // sirka
-    {
-        auto cell = chunk->get_worldcell(j, i);
-        
-        Particle *particle = &cell->particle;
-        Color *color = &particle->color;
-
-        unsigned int base = vertices.size();
-
-        int offset_x = j * size_of_a_particle;
-        int offset_y = i * size_of_a_particle;
-
-        vertices.insert(vertices.end(), {
-            Vertex(world_x                     , world_y                     , *color),
-            Vertex(world_x + size_of_a_particle, world_y                     , *color),
-            Vertex(world_x                     , world_y + size_of_a_particle, *color),
-            Vertex(world_x + size_of_a_particle, world_y + size_of_a_particle, *color),
-        });
-
-        for (const auto indice : QUAD_INDICES)
+    for (int i = 0; i < chunk_height; i++)    // vyska
+        for (int j = 0; j < chunk_width; j++) // sirka
         {
-            indices.push_back(indice + base);
+            // std::cout << i << ' ' << j << '\n';
+
+            auto cell = chunk->get_worldcell(j, i);
+
+            Particle *particle = &cell->particle;
+
+            if (particle->type == Particle_Type::EMPTY)
+            {
+                continue;
+            }
+
+            Color *color = &particle->color;
+
+            unsigned int base = vertices.size();
+
+            int offset_x = j * size_of_a_particle;
+            int offset_y = i * size_of_a_particle;
+
+            vertices.insert(vertices.end(), {
+                Vertex(world_x + offset_x, world_y + offset_y, *color),
+                Vertex(world_x + offset_x + size_of_a_particle, world_y + offset_y, *color),
+                Vertex(world_x + offset_x, world_y + offset_y + size_of_a_particle, *color),
+                Vertex(world_x + offset_x + size_of_a_particle, world_y + offset_y + size_of_a_particle, *color),
+            });
+
+            for (const auto indice : QUAD_INDICES)
+            {
+                indices.push_back(indice + base);
+            }
         }
-    }
 }
 
 void World_Renderer::render_world()
 {
+    clear_buffers();
+
+    // reserve verticies
+    // reserve indicies
+
+    // render_chunks();
     auto all_chunks = world->get_chunks();
     auto active_chunks = world->get_active_chunks();
 
+    // len aktivne chunky
     for (const auto &active_coords : *active_chunks)
     {
         auto it = all_chunks->find(active_coords);
         if (it == all_chunks->end())
         {
-            // nenasiel activny render chunk
+            // nenasiel aktivny render chunk
             continue;
         }
 
@@ -208,15 +225,17 @@ void World_Renderer::render_world()
         add_chunk_to_batch(chunk);
     }
 
-    // render_chunks();
-
-    // fill_vertices();
-
-    // if (vertices.empty())
+    // vsetky chunky
+    // for (const auto &entry : *all_chunks)
     // {
-    //     clear_buffers();
-    //     return;
+    //     if (!entry.second) continue;
+    //     add_chunk_to_batch(entry.second.get());
     // }
+
+    if (vertices.empty())
+    {
+        return;
+    }
 
     // std::cout << "vertices:\t" << verticsudoes.size() << '\n';
     // std::cout << "indices: \t" << indices.size() << '\n';

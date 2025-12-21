@@ -28,7 +28,7 @@ private:
 
     static constexpr std::array<unsigned int, 6> QUAD_INDICES = {
         0, 1, 2,
-        0, 2, 3
+        1, 2, 3
     };
 
     // std::unique_ptr<VERTEX_ARRAY_OBJECT> chunk_VAO;

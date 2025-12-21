@@ -14,11 +14,11 @@ void Chunk::init_chunk_data()
     {
         for (size_t x = 0; x < width; x++)
         {
-            chunk_data.emplace_back(glm::ivec2(x, y));
+            chunk_data.emplace_back(glm::ivec2(x, y), create_sand());
         }
     }
 
-    chunk_data.shrink_to_fit();
+    // chunk_data.shrink_to_fit();
 }
 
 inline int Chunk::get_index(int x, int y)
@@ -53,7 +53,7 @@ void Chunk::set_state(Chunk_States state)
 
 bool Chunk::is_dirty()
 {
-    return is_dirty;
+    // return is_dirty;
 }
 
 bool Chunk::is_empty(int x, int y)
@@ -66,14 +66,14 @@ bool Chunk::is_empty(int index)
     return chunk_data[index].particle.type == Particle_Type::EMPTY;
 }
 
-void Chunk::set_worldcell(int x, int y, Particle *particle)
+void Chunk::set_worldcell(int x, int y, Particle_Type particle)
 {
-    set_worldcell(get_index(x, y), particle);
+    // set_worldcell(get_index(x, y), particle);
 }
 
-void Chunk::set_worldcell(int index, Particle *particle)
+void Chunk::set_worldcell(int index, Particle_Type particle)
 {
-    chunk_data[index].set_particle(*particle);
+    // chunk_data[index].set_particle(particle);
 }
 
 WorldCell* Chunk::get_worldcell(int x, int y)

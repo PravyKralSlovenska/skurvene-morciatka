@@ -72,6 +72,11 @@ void Controls::handle_input()
         // int y = (int)ypos / world->scale;
 
         // world->add_particle({x, y}, Particle_Type::STONE, 3);
+
+        glm::ivec2 world_pos = camera->screen_to_world(xpos, ypos);
+        // std::cout << world_pos.x << ';' << world_pos.y << '\n';
+
+        std::cout << "CLICK LAVE TLACIDLO\n";
     }
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
@@ -80,14 +85,18 @@ void Controls::handle_input()
         // int y = (int)ypos / world->scale;
 
         // world->add_particle({x, y}, selected_particle, 3);
-    }
 
+        std::cout << "CLICK PRAVE TLACIDLO\n";
+    }
+    
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_4) == GLFW_PRESS)
     {
         // int x = (int)xpos / world->scale;
         // int y = (int)ypos / world->scale;
-
+        
         // world->add_particle({x, y}, Particle_Type::EMPTY, 3);
+        
+        std::cout << "CLICK STREDNE TLACIDLO\n";
     }
 
     keyboard_input();

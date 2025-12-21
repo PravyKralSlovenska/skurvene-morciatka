@@ -9,6 +9,7 @@ struct WorldCell
     Particle particle;
 
     WorldCell(glm::ivec2);
+    WorldCell(glm::ivec2, Particle particle);
     ~WorldCell() = default;
 
     bool visited = false;

@@ -6,5 +6,5 @@ CXX_DEFINES = -DGTEST_LINKED_AS_SHARED_LIBRARY=1
 
 CXX_INCLUDES = -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL
 
-CXX_FLAGS = -g -std=gnu++17
+CXX_FLAGS = -O2 -g -DNDEBUG -std=gnu++17
 
