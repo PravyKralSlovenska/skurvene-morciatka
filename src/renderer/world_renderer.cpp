@@ -86,67 +86,12 @@ void World_Renderer::clear_buffers()
 
 void World_Renderer::fill_vertices()
 {
-    // for (const auto &cell : world->get_world_curr())
-    // {
-    //     if (cell.particle.type == Particle_Type::EMPTY)
-    //     {
-    //         continue;
-    //     }
 
-    //     auto x = cell.coords.x * world->scale;
-    //     auto y = cell.coords.y * world->scale;
-
-    //     unsigned int last = vertices.size();
-
-    // vertices.emplace_back(x, y, cell.particle.color);
-    // vertices.emplace_back(x + world->scale, y, cell.particle.color);
-    // vertices.emplace_back(x + world->scale, y + world->scale, cell.particle.color);
-    // vertices.emplace_back(x, y + world->scale, cell.particle.color);
-
-    // indices.push_back(last);
-    // indices.push_back(last + 1);
-    // indices.push_back(last + 2);
-    // indices.push_back(last);
-    // indices.push_back(last + 2);
-    // indices.push_back(last + 3);
-    // }
 }
 
-void World_Renderer::render_chunks()
+void World_Renderer::render_chunk_borders()
 {
-    // active chunks will be green
-    // all other chunks will be red
 
-    // auto chunks = world->get_chunks();
-
-    // for (auto i = chunks->begin(); i != chunks->end(); i++)
-    // {
-    //     // chunk_vertices.push_back(chunks[i);
-    //     glm::ivec2 coords = i->first;
-    //     Chunk chunk = *i->second;
-
-    //     float r = 1.0f, g = 0.0f, b = 0.0f, a = 1.0f;
-    //     if (Chunk_States state = chunk.get_state(); state == Chunk_States::LOADED)
-    //     {
-    //         r = 0.0f;
-    //         g = 1.0f;
-    //     }
-
-    //     int x = coords.x * chunk.width;
-    //     int y = coords.y * chunk.height;
-    // }
-
-    // chunk_shader->use();
-    // chunk_shader->set_mat4("projection", projection);
-
-    // chunk_VAO->bind();
-
-    // chunk_VBO->fill_with_data_vector(chunk_vertices, GL_DYNAMIC);
-    // chunk_EBO->fill_with_data(chunk_indices, GL_DYNAMIC);
-
-    // glDrawElements(GL_TRIANGLES, chunk_indices.size(), GL_UNSIGNED_INT, 0);
-
-    // chunk_vertices.clear();
 }
 
 void World_Renderer::add_chunk_to_batch(Chunk *chunk)
@@ -154,10 +99,8 @@ void World_Renderer::add_chunk_to_batch(Chunk *chunk)
     auto [chunk_width, chunk_height] = world->get_chunk_dimensions();
     auto coords = chunk->coords;
 
-    int size_of_a_particle = 10;
-
-    int world_x = coords.x * chunk_width * size_of_a_particle;
-    int world_y = coords.y * chunk_height * size_of_a_particle;
+    int world_x = coords.x * chunk_width * Globals::PARTICLE_SIZE;
+    int world_y = coords.y * chunk_height * Globals::PARTICLE_SIZE;
 
     unsigned int last = vertices.size();
 
@@ -182,14 +125,14 @@ void World_Renderer::add_chunk_to_batch(Chunk *chunk)
 
             unsigned int base = vertices.size();
 
-            int offset_x = j * size_of_a_particle;
-            int offset_y = i * size_of_a_particle;
+            int offset_x = j * Globals::PARTICLE_SIZE;
+            int offset_y = i * Globals::PARTICLE_SIZE;
 
             vertices.insert(vertices.end(), {
                 Vertex(world_x + offset_x, world_y + offset_y, *color),
-                Vertex(world_x + offset_x + size_of_a_particle, world_y + offset_y, *color),
-                Vertex(world_x + offset_x, world_y + offset_y + size_of_a_particle, *color),
-                Vertex(world_x + offset_x + size_of_a_particle, world_y + offset_y + size_of_a_particle, *color),
+                Vertex(world_x + offset_x + Globals::PARTICLE_SIZE, world_y + offset_y, *color),
+                Vertex(world_x + offset_x, world_y + offset_y + Globals::PARTICLE_SIZE, *color),
+                Vertex(world_x + offset_x + Globals::PARTICLE_SIZE, world_y + offset_y + Globals::PARTICLE_SIZE, *color),
             });
 
             for (const auto indice : QUAD_INDICES)

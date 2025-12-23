@@ -43,35 +43,23 @@ void World::calculate_active_chunks()
 {
     active_chunks.clear();
 
-    std::vector<glm::ivec2> offsets;
-
-    for (int i = -chunk_radius; i <= chunk_radius; i++)
-    {
-        for (int j = -chunk_radius; j <= chunk_radius; j++)
-        {
-            float distance_from_player = std::sqrt(i * i + j * j);
-            if (distance_from_player <= chunk_radius)
-            {
-                offsets.push_back({j, i});
-            }
-        }
-    }
+    std::vector<glm::ivec2> offsets = calculate_offsets(chunk_radius);
 
     for (const auto &offset : offsets)
     {
-        int particle_size = 10;
-        int chunk_pixel_width = chunk_width * particle_size;
-        int chunk_pixel_height = chunk_height * particle_size;
+        int chunk_pixel_width = chunk_width * Globals::PARTICLE_SIZE;
+        int chunk_pixel_height = chunk_height * Globals::PARTICLE_SIZE;
 
         int x = floor(player->coords.x / chunk_pixel_width) + offset.x;
         int y = floor(player->coords.y / chunk_pixel_height) + offset.y;
 
-        glm::ivec2 coords = {x, y};
+        glm::ivec2 coords{x, y};
 
         add_chunk(coords);
         // world[coords]->set_state(Chunk_States::LOADED);
 
-        active_chunks.insert({x, y});
+        // std::cout << x << ';' << y << '\n';
+        active_chunks.insert(coords);
     }
 
     // std::cout << active_chunks.size() << '\n';
@@ -90,21 +78,47 @@ void World::update()
     }
 }
 
-void World::place_particle(glm::ivec2 position)
+void World::place_particle(const glm::ivec2 position, const Particle_Type particle_type)
 {
-    int chunk_x = position.x / chunk_width;
-    int chunk_y = position.y / chunk_height;
+    // potrebujem nejaky offset kvoli pixelom na obrazovke
+    int chunk_pixel_width = chunk_width * Globals::PARTICLE_SIZE;
+    int chunk_pixel_height = chunk_height * Globals::PARTICLE_SIZE;
 
-    // Chunk *chunk = get_chunk(chunk_x, chunk_y);
+    glm::ivec2 chunk_pos{
+        (int)floor((float)position.x / chunk_pixel_width),
+        (int)floor((float)position.y / chunk_pixel_height)};
 
-    // auto chunk = world[{chunk_x, chunk_y}];
+    Chunk *chunk = get_chunk(chunk_pos);
+    if (!chunk)
+    {
+        std::cerr << "nullptr chunk: " << chunk_pos.x << ';' << chunk_pos.y << '\n';
+        return;
+    }
 
-    int cell_x = position.x - chunk_x;
-    int cell_y = position.y - chunk_y;
+    // std::vector<glm::ivec2> offsets = calculate_offsets(2);
 
-    // WorldCell *cell = chunk->get_worldcell(cell_x, cell_y);
+    // for (const auto &offset : offsets)
+    {
+        int pixel_offset_x = position.x - (chunk_pos.x * chunk_pixel_width);
+        int pixel_offset_y = position.y - (chunk_pos.y * chunk_pixel_height);
 
-    // cell->set_particle(create_stone());
+        glm::ivec2 worldcell_pos{
+            pixel_offset_x / Globals::PARTICLE_SIZE,
+            pixel_offset_y / Globals::PARTICLE_SIZE};
+
+        if (worldcell_pos.x < 0)
+            worldcell_pos.x += chunk_width;
+        if (worldcell_pos.y < 0)
+            worldcell_pos.y += chunk_height;
+
+        if (!in_world_range(worldcell_pos.x, worldcell_pos.y, chunk_height, chunk_width))
+        {
+            std::cerr << "suradnice su mimo: " << worldcell_pos.x << ';' << worldcell_pos.y << '\n';
+            return;
+        }
+
+        chunk->set_worldcell(worldcell_pos, particle_type);
+    }
 }
 
 std::pair<int, int> World::get_chunk_dimensions()
@@ -127,10 +141,20 @@ std::unordered_set<glm::ivec2, Chunk_Coords_to_Hash> *World::get_active_chunks()
     return &active_chunks;
 }
 
+Chunk *World::get_chunk(const glm::ivec2 &coords)
+{
+    auto it = world.find(coords);
+    if (it == world.end())
+    {
+        return nullptr;
+    }
+
+    return it->second.get();
+}
+
 Chunk *World::get_chunk(const int x, const int y)
 {
-    auto it = world.find(glm::ivec2{x, y});
-    return it == world.end() ? nullptr : it->second.get();
+    return get_chunk(glm::ivec2{x, y});
 }
 
 Chunk *World::get_chunk(const Chunk_Coords_to_Hash something)

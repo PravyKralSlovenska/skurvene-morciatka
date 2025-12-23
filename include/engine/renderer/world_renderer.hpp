@@ -28,8 +28,7 @@ private:
 
     static constexpr std::array<unsigned int, 6> QUAD_INDICES = {
         0, 1, 2,
-        1, 2, 3
-    };
+        1, 2, 3};
 
     // std::unique_ptr<VERTEX_ARRAY_OBJECT> chunk_VAO;
     // std::unique_ptr<VERTEX_BUFFER_OBJECT> chunk_VBO;
@@ -56,7 +55,7 @@ public:
 
     void add_chunk_to_batch(Chunk *chunk);
 
-    void render_chunks();
+    void render_chunk_borders();
     void render_world();
 
     void clear_buffers();

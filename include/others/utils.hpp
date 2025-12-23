@@ -1,14 +1,18 @@
 #pragma once
 
-#include <string>
 #include <random>
-#include "glad/gl.h"
-#include <GLFW/glfw3.h>
+#include <vector>
+#include <glm/glm.hpp>
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <algorithm>
+std::string read_file(const std::string &filepath);
+
+std::vector<glm::ivec2> calculate_offsets(const int radius);
+
+/*
+ * v utils.hpp
+ * - pomocne funkcia na zistenie ci je WorldCell/Particle validny v mriezke sveta
+ */
+bool in_world_range(int x, int y, int world_rows, int world_cols);
 
 class Random
 {
@@ -42,14 +46,6 @@ public:
         return vector[index];
     }
 };
-
-std::string read_file(const std::string &filepath);
-
-/*
- * v utils.hpp
- * - pomocne funkcia na zistenie ci je WorldCell/Particle validny v mriezke sveta
- */
-bool in_world_range(int x, int y, int world_rows, int world_cols);
 
 // chcem lepsie pracovat s farbou
 // -  upravujem farbu tak aby vedel opengl s tym pracovat

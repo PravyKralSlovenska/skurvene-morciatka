@@ -20,7 +20,7 @@ public:
     Entity_States state;
     int size;
     int sprite;
-    float speed = 100;
+    float speed = 10;
     float healthpoints;
 
     glm::vec2 coords;

@@ -18,7 +18,7 @@ Controls controls;
 Audio_Manager audio_manager;
 Time_Manager time_manager;
 World world;
-Player player("MISKO", {500.0f, 400.0f});
+Player player("MISKO", {0.0f, 0.0f});
 Camera camera(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT);
 IRenderer render(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT);
 

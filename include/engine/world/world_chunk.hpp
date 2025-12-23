@@ -11,10 +11,10 @@ enum class Chunk_States
     LOADED    // active
 };
 
-/* 
+/*
  * Chunk
- * @param width - , 
- * @param height - , 
+ * @param width - ,
+ * @param height - ,
  * @param coords coords in the world
  */
 class Chunk
@@ -55,12 +55,13 @@ public:
     bool is_empty(int x, int y);
     bool is_empty(int index);
 
+    void set_worldcell(const glm::ivec2 &coords, Particle_Type particle);
     void set_worldcell(int x, int y, Particle_Type particle);
     void set_worldcell(int index, Particle_Type particle);
-    WorldCell* get_worldcell(int x, int y);
-    WorldCell* get_worldcell(int index);
+    WorldCell *get_worldcell(int x, int y);
+    WorldCell *get_worldcell(int index);
 
     // get render data
-    std::vector<Vertex>* get_cached_verticies();
-    std::vector<unsigned int>* get_cached_indicies();
+    std::vector<Vertex> *get_cached_verticies();
+    std::vector<unsigned int> *get_cached_indicies();
 };

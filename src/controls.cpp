@@ -66,17 +66,34 @@ void Controls::handle_input()
     glfwGetCursorPos(window, &xpos, &ypos);
     cursor_position = {xpos, ypos};
 
+    // if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+    // {
+    //     // int x = (int)xpos / world->scale;
+    //     // int y = (int)ypos / world->scale;
+
+    //     // world->add_particle({x, y}, Particle_Type::STONE, 3);
+
+    //     glm::ivec2 world_pos = camera->screen_to_world(xpos, ypos);
+    //     // std::cout << world_pos.x << ';' << world_pos.y << '\n';
+    //     world->place_particle(glm::ivec2(xpos, ypos), Particle_Type::STONE);
+
+    //     // std::cout << "CLICK LAVE TLACIDLO\n";
+    // }
+
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
     {
-        // int x = (int)xpos / world->scale;
-        // int y = (int)ypos / world->scale;
+        // Get camera position
+        glm::vec2 cam_pos = camera->get_position();
 
-        // world->add_particle({x, y}, Particle_Type::STONE, 3);
+        // Convert screen coordinates to world coordinates
+        // Account for camera offset and zoom
+        float zoom_factor = camera->get_zoom();
 
-        glm::ivec2 world_pos = camera->screen_to_world(xpos, ypos);
-        // std::cout << world_pos.x << ';' << world_pos.y << '\n';
+        glm::ivec2 world_pos;
+        world_pos.x = (xpos - Globals::WINDOW_WIDTH / 2.0f) / zoom_factor + cam_pos.x;
+        world_pos.y = (ypos - Globals::WINDOW_HEIGHT / 2.0f) / zoom_factor + cam_pos.y;
 
-        std::cout << "CLICK LAVE TLACIDLO\n";
+        world->place_particle(world_pos, Particle_Type::WATER);
     }
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
@@ -88,14 +105,14 @@ void Controls::handle_input()
 
         std::cout << "CLICK PRAVE TLACIDLO\n";
     }
-    
+
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_4) == GLFW_PRESS)
     {
         // int x = (int)xpos / world->scale;
         // int y = (int)ypos / world->scale;
-        
+
         // world->add_particle({x, y}, Particle_Type::EMPTY, 3);
-        
+
         std::cout << "CLICK STREDNE TLACIDLO\n";
     }
 

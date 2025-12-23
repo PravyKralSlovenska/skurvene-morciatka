@@ -1,9 +1,19 @@
 #include "others/utils.hpp"
 
+#include <string>
+#include "glad/gl.h"
+#include <GLFW/glfw3.h>
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+
 Color::Color() {}
 Color::Color(int red, int green, int blue, float alpha)
     : r(red / 255.0f), g(green / 255.0f), b(blue / 255.0f), a(alpha)
-    {}
+{
+}
 
 Color Color::change_shade()
 {
@@ -61,10 +71,33 @@ bool in_world_range(int x, int y, int world_rows, int world_cols)
 }
 
 Random::Random()
-: gen(rand_device()) {}
+    : gen(rand_device()) {}
 
 int Random::get_int_from_range(int start, int end)
 {
     std::uniform_int_distribution<> distrib(start, end);
     return distrib(gen);
+}
+
+/*
+ * z utils.hpp
+ * vrati vector
+ */
+std::vector<glm::ivec2> calculate_offsets(const int radius)
+{
+    std::vector<glm::ivec2> offsets;
+
+    for (int i = -radius; i <= radius; i++)
+    {
+        for (int j = -radius; j <= radius; j++)
+        {
+            float distance_from_player = std::sqrt(i * i + j * j);
+            if (distance_from_player <= radius)
+            {
+                offsets.push_back({j, i});
+            }
+        }
+    }
+
+    return offsets;
 }

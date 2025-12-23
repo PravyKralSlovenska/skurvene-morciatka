@@ -50,9 +50,9 @@ private:
 
     int change_width(int n);
     int change_height(int n);
-    
+
     void calculate_active_chunks();
-    
+
     Chunk create_chunk(int x, int y);
     void add_chunk(int x, int y);
     void add_chunk(glm::ivec2 coords);
@@ -70,7 +70,7 @@ public:
 
     void update();
 
-    void place_particle(glm::ivec2 position);
+    void place_particle(const glm::ivec2 position, const Particle_Type particle_type);
 
     std::unordered_map<glm::ivec2, std::unique_ptr<Chunk>, Chunk_Coords_to_Hash> *get_chunks();
     int get_chunks_size();

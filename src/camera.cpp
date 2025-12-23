@@ -119,6 +119,8 @@ glm::ivec2 Camera::screen_to_world(float screen_x, float screen_y)
     glm::mat4 inverse_view_proj = glm::inverse(get_view_projection_matrix());
     glm::vec4 world_pos = inverse_view_proj * ndc_pos;
     
+    // std::cout << world_pos.x << ';' << world_pos.y << '\n';
+
     return glm::ivec2(world_pos.x, world_pos.y);
 }
 
@@ -132,6 +134,8 @@ glm::vec2 Camera::world_to_screen(float world_x, float world_y)
     float screen_x = (ndc.x + 1.0f) * 0.5f * window_width;
     float screen_y = (ndc.y + 1.0f) * 0.5f * window_height;
     
+    // std::cout << screen_x << ';' << screen_y << '\n';
+
     return glm::vec2(screen_x, screen_y);
 }
 
