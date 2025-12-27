@@ -181,6 +181,12 @@
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -O2 -g -DNDEBUG -std=gnu++17 -o CMakeFiles/morciatko.dir/src/world/world_ca_generation.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_ca_generation.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world_ca_generation.cpp",
+  "output": "CMakeFiles/morciatko.dir/src/world/world_ca_generation.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
   "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -O2 -g -DNDEBUG -std=gnu++17 -o CMakeFiles/morciatko.dir/src/world/world_cell.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_cell.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world_cell.cpp",
   "output": "CMakeFiles/morciatko.dir/src/world/world_cell.cpp.o"
@@ -379,6 +385,12 @@
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -O2 -g -DNDEBUG -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_ca_generation.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world_ca_generation.cpp",
+  "output": "CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
   "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -O2 -g -DNDEBUG -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_cell.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world_cell.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.o"
@@ -400,6 +412,12 @@
   "command": "/usr/bin/g++ -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -O2 -g -DNDEBUG -std=gnu++17 -o CMakeFiles/morciatko_tests.dir/tests/unit/particle_test.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/tests/unit/particle_test.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/tests/unit/particle_test.cpp",
   "output": "CMakeFiles/morciatko_tests.dir/tests/unit/particle_test.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/g++ -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -O2 -g -DNDEBUG -std=gnu++17 -o CMakeFiles/morciatko_tests.dir/tests/unit/random_test.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/tests/unit/random_test.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/tests/unit/random_test.cpp",
+  "output": "CMakeFiles/morciatko_tests.dir/tests/unit/random_test.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",

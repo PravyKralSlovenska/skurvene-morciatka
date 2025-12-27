@@ -1,7 +1,20 @@
 #include "engine/renderer/world_renderer.hpp"
 
+#include "engine/renderer/buffers/vertex_buffer_object.hpp"
+#include "engine/renderer/buffers/vertex_array_object.hpp"
+#include "engine/renderer/buffers/element_array_object.hpp"
+#include "engine/particle/particle.hpp"
+#include "engine/world/world.hpp"
+#include "engine/world/world_chunk.hpp"
+#include "engine/world/world_cell.hpp"
+#include "engine/renderer/shader.hpp"
+#include "others/GLOBALS.hpp"
+#include "others/utils.hpp"
+
 World_Renderer::World_Renderer(World *world)
     : world(world) {}
+
+World_Renderer::~World_Renderer() = default;
 
 // World_Renderer::~World_Renderer() {}
 
@@ -86,12 +99,10 @@ void World_Renderer::clear_buffers()
 
 void World_Renderer::fill_vertices()
 {
-
 }
 
 void World_Renderer::render_chunk_borders()
 {
-
 }
 
 void World_Renderer::add_chunk_to_batch(Chunk *chunk)
@@ -129,11 +140,11 @@ void World_Renderer::add_chunk_to_batch(Chunk *chunk)
             int offset_y = i * Globals::PARTICLE_SIZE;
 
             vertices.insert(vertices.end(), {
-                Vertex(world_x + offset_x, world_y + offset_y, *color),
-                Vertex(world_x + offset_x + Globals::PARTICLE_SIZE, world_y + offset_y, *color),
-                Vertex(world_x + offset_x, world_y + offset_y + Globals::PARTICLE_SIZE, *color),
-                Vertex(world_x + offset_x + Globals::PARTICLE_SIZE, world_y + offset_y + Globals::PARTICLE_SIZE, *color),
-            });
+                                                Vertex(world_x + offset_x, world_y + offset_y, *color),
+                                                Vertex(world_x + offset_x + Globals::PARTICLE_SIZE, world_y + offset_y, *color),
+                                                Vertex(world_x + offset_x, world_y + offset_y + Globals::PARTICLE_SIZE, *color),
+                                                Vertex(world_x + offset_x + Globals::PARTICLE_SIZE, world_y + offset_y + Globals::PARTICLE_SIZE, *color),
+                                            });
 
             for (const auto indice : QUAD_INDICES)
             {

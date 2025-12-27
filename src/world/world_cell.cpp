@@ -8,8 +8,7 @@ WorldCell::WorldCell(glm::ivec2 coords, Particle particle)
 
 void WorldCell::set_particle(Particle particle)
 {
-    this->particle = particle;    // ...existing code...
-    // ...existing code...
+    this->particle = particle;
 }
 
 void WorldCell::set_visited()

@@ -59,6 +59,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/morciatko_lib.dir/src/world/herringbone_world_generation.cpp.o.d"
   "CMakeFiles/morciatko_lib.dir/src/world/world.cpp.o"
   "CMakeFiles/morciatko_lib.dir/src/world/world.cpp.o.d"
+  "CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.o"
+  "CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.o.d"
   "CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.o"
   "CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.o.d"
   "CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.o"

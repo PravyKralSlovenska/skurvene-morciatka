@@ -109,16 +109,24 @@ void Camera::update()
     needs_update = false;
 }
 
+void Camera::set_window_dimensions(float width, float height)
+{
+    window_width = width;
+    window_height = height;
+    projection_matrix = glm::ortho(0.0f, window_width, window_height, 0.0f);
+    needs_update = true;
+}
+
 glm::ivec2 Camera::screen_to_world(float screen_x, float screen_y)
 {
     float ndc_x = (2.0f * screen_x) / window_width - 1.0f;
     float ndc_y = (2.0f * screen_y) / window_height - 1.0f;
-    
+
     glm::vec4 ndc_pos(ndc_x, ndc_y, 0.0f, 1.0f);
-    
+
     glm::mat4 inverse_view_proj = glm::inverse(get_view_projection_matrix());
     glm::vec4 world_pos = inverse_view_proj * ndc_pos;
-    
+
     // std::cout << world_pos.x << ';' << world_pos.y << '\n';
 
     return glm::ivec2(world_pos.x, world_pos.y);
@@ -128,12 +136,12 @@ glm::vec2 Camera::world_to_screen(float world_x, float world_y)
 {
     glm::vec4 world_pos(world_x, world_y, 0.0f, 1.0f);
     glm::vec4 clip_pos = get_view_projection_matrix() * world_pos;
-    
+
     glm::vec3 ndc = glm::vec3(clip_pos) / clip_pos.w;
-    
+
     float screen_x = (ndc.x + 1.0f) * 0.5f * window_width;
     float screen_y = (ndc.y + 1.0f) * 0.5f * window_height;
-    
+
     // std::cout << screen_x << ';' << screen_y << '\n';
 
     return glm::vec2(screen_x, screen_y);

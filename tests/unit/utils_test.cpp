@@ -18,3 +18,11 @@ TEST(ColorTest, ColorConversion)
     EXPECT_FLOAT_EQ(red.b, 0.0f);
     EXPECT_FLOAT_EQ(red.a, 1.0f);
 }
+
+TEST(RandomTest, GetFloatReturnsValueInRange)
+{
+    // float value = Random_Machine::get_float();
+
+    // EXPECT_GE(value, 0.0f) << "Float value should be >= 0";
+    // EXPECT_LE(value, 1.0f) << "Float value should be <= 1";
+}

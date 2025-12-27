@@ -1,19 +1,21 @@
 #pragma once
 
-#include <iostream>
+// #include <iostream>
 #include <memory>
 #include <vector>
 
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+// #include <glm/gtc/matrix_transform.hpp>
+// #include <glm/gtc/type_ptr.hpp>
 
-#include "engine/world/world.hpp"
-#include "engine/renderer/shader.hpp"
-#include "engine/renderer/buffers/vertex_buffer_object.hpp"
-#include "engine/renderer/buffers/vertex_array_object.hpp"
-#include "engine/renderer/buffers/element_array_object.hpp"
-#include "others/utils.hpp"
+// forward declarations
+class VERTEX_ARRAY_OBJECT;
+class VERTEX_BUFFER_OBJECT;
+class ELEMENT_ARRAY_BUFFER;
+class Shader;
+class World;
+class Chunk;
+class Vertex;
 
 class World_Renderer
 {
@@ -45,7 +47,7 @@ public:
 
 public:
     World_Renderer(World *world);
-    ~World_Renderer() = default;
+    ~World_Renderer();
 
     void init();
     void set_world(World *world);

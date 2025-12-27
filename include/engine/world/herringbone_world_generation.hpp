@@ -1,9 +1,6 @@
 #pragma once
 
-#include <iostream>
-
 #include "stb/stb_herringbone_wang_tile.h"
-#include "others/utils.hpp"
 
 class Herringbone_World_Generation
 {
@@ -18,8 +15,8 @@ public:
 
     bool load_tileset_from_image(const char *path);
     bool generate_map(const char *output_filename, const int output_width, const int output_height);
-    
-    unsigned char* get_image_data();
+
+    unsigned char *get_image_data();
 };
 
 // stbhw_tile genesis_tile = {};

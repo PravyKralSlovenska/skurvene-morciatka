@@ -42,7 +42,12 @@ int main()
     render.set_world(&world);
     render.set_time_manager(&time_manager);
     render.set_camera(&camera);
-    
+
+    int window_width = 0, window_height = 0;
+    GLFWwindow *glfw_window = render.get_window();
+    glfwGetWindowSize(glfw_window, &window_width, &window_height);
+    camera.set_window_dimensions(static_cast<float>(window_width), static_cast<float>(window_height));
+
     time_manager.init();
     // time_manager.set_target_fps(5);
     // time_manager.enable_fps_limiting();
@@ -53,6 +58,7 @@ int main()
     controls.set_audio_manager(&audio_manager);
     controls.set_time_manager(&time_manager);
     controls.set_camera(&camera);
+    controls.set_renderer(&render);
 
     // world.entities.push_back(player);
     // world.set_time_manager(&time_manager);
@@ -85,7 +91,7 @@ int main()
         // camera update
         camera.follow_target(player.coords, 1);
         camera.update();
-        
+
         // render everything
         render.render_everything();
     }

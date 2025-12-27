@@ -6,7 +6,20 @@
 
 std::string read_file(const std::string &filepath);
 
+/*
+ * v kruznici
+ */
 std::vector<glm::ivec2> calculate_offsets(const int radius);
+
+/*
+ * v stvorci
+ */
+std::vector<glm::ivec2> calculate_offsets_square(const int radius);
+
+/*
+ * deterministicke
+ */
+int hash_coords(int x, int y, int seed);
 
 /*
  * v utils.hpp
@@ -14,28 +27,31 @@ std::vector<glm::ivec2> calculate_offsets(const int radius);
  */
 bool in_world_range(int x, int y, int world_rows, int world_cols);
 
-class Random
+class Random_Machine
 {
 private:
-    std::random_device rand_device;
-    std::mt19937 gen;
+    static std::random_device rand_device; // thread_local ?
+    static std::mt19937 gen;
+
+private:
+    Random_Machine() = delete;
+    Random_Machine(const Random_Machine &) = delete;
+    Random_Machine &operator=(const Random_Machine &) = delete;
+    ~Random_Machine() = delete;
 
 public:
-    Random();
-    ~Random() = default;
-
-    int get_int_from_range(int start, int end);
-    int get_truly_random_int();
+    static int get_int_from_range(int start, int end);
+    static float get_float();
 
     template <typename T, std::size_t N>
-    T get_random_element_from_array(const std::array<T, N> &array)
+    static T get_random_element_from_array(const std::array<T, N> &array)
     {
         int index = get_int_from_range(0, array.size() - 1);
         return array[index];
     }
 
     template <typename T>
-    T get_random_element_from_vector(const std::vector<T> &vector)
+    static T get_random_element_from_vector(const std::vector<T> &vector)
     {
         if (vector.empty())
         {
@@ -60,12 +76,6 @@ struct Color
     Color change_tint();
 };
 
-// enum Color_Enum
-// {
-//     RED = Color(255, 0, 0, 1.0f),
-//     GREEN = Color(0, 255, 0, 1.0f)
-// };
-
 class Vertex
 {
 public:
@@ -84,7 +94,7 @@ public:
 class Log
 {
 private:
-    std::string path_to_log_folder = "/log";
+    const std::string path_to_log_folder = "/log";
 
 public:
     Log();

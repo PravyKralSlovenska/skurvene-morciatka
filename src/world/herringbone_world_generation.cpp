@@ -1,6 +1,10 @@
 #include "engine/world/herringbone_world_generation.hpp"
 
-#define STB_HBWANG_RAND() Random().get_int_from_range(0, 200)
+#include <iostream>
+
+#include "others/utils.hpp"
+
+// #define STB_HBWANG_RAND() Random_Machine::get_int_from_range(0, 200)
 // #define STB_HBWANG_MAX_X 10000
 // #define STB_HBWANG_MAX_Y 10000
 #define STB_HERRINGBONE_WANG_TILE_IMPLEMENTATION
@@ -49,7 +53,7 @@ bool Herringbone_World_Generation::load_tileset_from_image(const char *path)
 
 bool Herringbone_World_Generation::generate_map(const char *output_filename, const int output_width, const int output_height)
 {
-    image_data_buffer = (unsigned char*)malloc(3 * output_width * output_height);
+    image_data_buffer = (unsigned char *)malloc(3 * output_width * output_height);
     stbhw_generate_image(&tileset, nullptr, image_data_buffer, output_width * 3, output_width, output_height);
 
     if (stbi_write_png(output_filename, output_width, output_height, 3, image_data_buffer, output_width * 3))

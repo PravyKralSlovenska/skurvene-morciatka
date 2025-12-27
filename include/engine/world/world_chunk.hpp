@@ -3,7 +3,10 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-#include "engine/world/world_cell.hpp"
+// forward declarations
+struct WorldCell;
+class Vertex;
+enum class Particle_Type;
 
 enum class Chunk_States
 {
@@ -34,7 +37,7 @@ private:
     void init_chunk_data();
     inline int get_index(int x, int y);
 
-    void move_cell();
+    void move_worldcell(WorldCell &from, WorldCell &to);
     // void commit_cells();
 
     void make_cached_verticies();
@@ -48,12 +51,21 @@ public:
     Chunk(glm::ivec2 coords, int width, int height);
     ~Chunk() = default;
 
+    void update(); // nieco
+
+    void set_chunk_data(std::vector<WorldCell> &chunk_data);
+
     Chunk_States get_state();
     void set_state(Chunk_States state);
 
     bool is_dirty();
+
     bool is_empty(int x, int y);
     bool is_empty(int index);
+    // vrati worldcell ak worldcell nie je prazdny
+    WorldCell *get_if_not_empty(const int x, const int y);
+    // vrati worldcell ak worldcell nie je prazdny
+    WorldCell *get_if_not_empty(const int index);
 
     void set_worldcell(const glm::ivec2 &coords, Particle_Type particle);
     void set_worldcell(int x, int y, Particle_Type particle);

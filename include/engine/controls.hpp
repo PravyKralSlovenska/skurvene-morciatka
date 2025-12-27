@@ -1,18 +1,15 @@
 #pragma once
 
-#include <iostream>
-#include <algorithm>
+#include "engine/particle/particle.hpp"
 
-#include <glad/gl.h>
-#include <GLFW/glfw3.h>
-
-#include <glm/glm.hpp>
-
-#include "engine/world/world.hpp"
-#include "engine/time_manager.hpp"
-#include "engine/entity.hpp"
-#include "engine/camera.hpp"
-#include "engine/audio/audio_manager.hpp"
+// forward declarations
+class Player;
+class World;
+class Time_Manager;
+class Audio_Manager;
+class Camera;
+class IRenderer;
+class GLFWwindow;
 
 static float zoom = 1.0;
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
@@ -27,6 +24,7 @@ private:
     Time_Manager *time_manager;
     Audio_Manager *audio_manager;
     Camera *camera;
+    IRenderer *renderer;
 
 public:
     glm::vec2 cursor_position;
@@ -42,6 +40,7 @@ public:
     void set_time_manager(Time_Manager *time_manager);
     void set_audio_manager(Audio_Manager *audio_manager);
     void set_camera(Camera *camera);
+    void set_renderer(IRenderer *renderer);
 
     // inputs
     void handle_input();

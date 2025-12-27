@@ -24,6 +24,9 @@ class IRenderer
 private:
     float m_window_width, m_window_height;
     GLFWwindow *window;
+    bool is_fullscreen = false;
+    int windowed_xpos, windowed_ypos;
+    int windowed_width, windowed_height;
 
     // projection
     glm::mat4 projection;
@@ -55,7 +58,7 @@ public:
 
     // will render everthing
     bool render_everything();
-    
+
     void set_time_manager(Time_Manager *time_manager);
     void set_world(World *world);
     void set_camera(Camera *camera);
@@ -65,8 +68,13 @@ public:
     void enable_blending();
     void enable_ortho_projection();
     void enable_pixel_perfect_rendering();
+    void update_projection_on_resize();
 
     bool should_close();
+
+    void toggle_fullscreen();
+    void maximize_window();
+    bool get_fullscreen_state();
 
     void cleanup();
 

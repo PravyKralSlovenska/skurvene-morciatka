@@ -26,10 +26,10 @@ private:
      * - je to priestor, ktory kamera vnima
      */
     glm::mat4 view_matrix;
-    
+
     /*
      * Projection Matrix
-     * - 
+     * -
      */
     glm::mat4 projection_matrix;
 
@@ -55,6 +55,8 @@ public:
     void follow_target(const glm::vec2 &target_pos, float speed);
 
     void update();
+
+    void set_window_dimensions(float width, float height);
 
     glm::vec2 get_position();
     float get_rotate();

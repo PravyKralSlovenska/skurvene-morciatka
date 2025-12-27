@@ -1,5 +1,5 @@
 {
-  "tests": 2,
+  "tests": 3,
   "name": "AllTests",
   "testsuites": [
     {
@@ -21,6 +21,17 @@
           "name": "ColorConversion",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/utils_test.cpp",
           "line": 12
+        }
+      ]
+    },
+    {
+      "name": "RandomTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "GetFloatReturnsValueInRange",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/utils_test.cpp",
+          "line": 22
         }
       ]
     }

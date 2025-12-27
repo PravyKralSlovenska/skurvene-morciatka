@@ -1,5 +1,11 @@
 #include "engine/world/world_chunk.hpp"
 
+#include <iostream>
+
+#include "engine/world/world_cell.hpp"
+#include "engine/particle/particle.hpp"
+#include "others/utils.hpp"
+
 Chunk::Chunk(glm::ivec2 coords, int width, int height)
     : coords(coords), width(width), height(height)
 {
@@ -10,16 +16,15 @@ void Chunk::init_chunk_data()
 {
     chunk_data.reserve(width * height);
 
-    for (size_t y = 0; y < height; y++)
+    for (int y{0}; y < height; y++)
     {
-        for (size_t x = 0; x < width; x++)
+        for (int x{0}; x < width; x++)
         {
-            chunk_data.emplace_back(glm::ivec2(y, x));
-            // chunk_data.emplace_back(glm::ivec2(x, y), create_sand());
+            chunk_data.emplace_back(glm::ivec2(x, y));
         }
     }
 
-    // chunk_data.shrink_to_fit();
+    chunk_data.shrink_to_fit();
 }
 
 inline int Chunk::get_index(int x, int y)
@@ -27,8 +32,9 @@ inline int Chunk::get_index(int x, int y)
     return y * width + x;
 }
 
-void Chunk::move_cell()
+void Chunk::move_worldcell(WorldCell &from, WorldCell &to)
 {
+    std::swap(from.particle, to.particle);
 }
 
 void Chunk::make_cached_verticies()
@@ -37,6 +43,17 @@ void Chunk::make_cached_verticies()
 
 void Chunk::make_cached_indicies()
 {
+}
+
+void Chunk::set_chunk_data(std::vector<WorldCell> &new_chunk_data)
+{
+    if (new_chunk_data.size() != width * height)
+    {
+        std::cerr << "chunk data nemaju dobry rozmer\n";
+        return;
+    }
+
+    chunk_data = std::move(new_chunk_data);
 }
 
 Chunk_States Chunk::get_state()
@@ -61,7 +78,24 @@ bool Chunk::is_empty(int x, int y)
 
 bool Chunk::is_empty(int index)
 {
-    return chunk_data[index].particle.type == Particle_Type::EMPTY;
+    return get_worldcell(index)->particle.type == Particle_Type::EMPTY;
+}
+
+WorldCell *Chunk::get_if_not_empty(const int x, const int y)
+{
+    return get_if_not_empty(get_index(x, y));
+}
+
+WorldCell *Chunk::get_if_not_empty(const int index)
+{
+    auto cell = get_worldcell(index);
+
+    if (cell->particle.type != Particle_Type::EMPTY)
+    {
+        return cell;
+    }
+
+    return nullptr;
 }
 
 void Chunk::set_worldcell(const glm::ivec2 &coords, Particle_Type particle)

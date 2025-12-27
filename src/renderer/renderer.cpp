@@ -22,6 +22,14 @@ void IRenderer::init()
 
 bool IRenderer::render_everything()
 {
+    // Check for window resize and update projection if needed
+    int width, height;
+    glfwGetWindowSize(window, &width, &height);
+    if (width != (int)m_window_width || height != (int)m_window_height)
+    {
+        update_projection_on_resize();
+    }
+
     // toto bude surovy backround background
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -69,7 +77,8 @@ void IRenderer::init_glfw()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwSwapInterval(0); // Vsync 0 = off, 1 = on
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // Make window resizable
+    glfwSwapInterval(0);                       // Vsync 0 = off, 1 = on
 }
 
 void IRenderer::init_glad()
@@ -80,10 +89,21 @@ void IRenderer::init_glad()
         glfwTerminate();
         return;
     }
+
+    // Set initial viewport
+    glViewport(0, 0, static_cast<int>(m_window_width), static_cast<int>(m_window_height));
 }
 
 void IRenderer::create_window()
 {
+    const GLFWvidmode *mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+    glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+    glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+    glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+    glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+
+    // Create windowed window by default
     window = glfwCreateWindow(m_window_width, m_window_height, "Morciatko", nullptr, nullptr);
 
     if (window == nullptr)
@@ -94,6 +114,11 @@ void IRenderer::create_window()
     }
 
     glfwMakeContextCurrent(window);
+
+    // Store windowed dimensions for fullscreen toggle
+    windowed_width = m_window_width;
+    windowed_height = m_window_height;
+    glfwGetWindowPos(window, &windowed_xpos, &windowed_ypos);
 }
 
 GLFWwindow *IRenderer::get_window()
@@ -132,6 +157,29 @@ void IRenderer::enable_ortho_projection()
     world_renderer->set_projection(projection);
 
     render_info.push_back("ortho projection enabled");
+}
+
+void IRenderer::update_projection_on_resize()
+{
+    int width, height;
+    glfwGetWindowSize(window, &width, &height);
+
+    m_window_width = static_cast<float>(width);
+    m_window_height = static_cast<float>(height);
+
+    // Update OpenGL viewport
+    glViewport(0, 0, width, height);
+
+    // Update projection matrix
+    glm::mat4 projection = glm::ortho(0.0f, m_window_width, m_window_height, 0.0f);
+    text_renderer->set_projection(projection);
+    world_renderer->set_projection(projection);
+
+    // Update camera window dimensions
+    if (camera)
+    {
+        camera->set_window_dimensions(m_window_width, m_window_height);
+    }
 }
 
 void IRenderer::cleanup()
@@ -175,4 +223,39 @@ void IRenderer::set_world(World *world)
 void IRenderer::set_camera(Camera *camera)
 {
     this->camera = camera;
+}
+
+void IRenderer::toggle_fullscreen()
+{
+    const GLFWvidmode *mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+    if (!is_fullscreen)
+    {
+        // Store current windowed position and size
+        glfwGetWindowPos(window, &windowed_xpos, &windowed_ypos);
+        glfwGetWindowSize(window, &windowed_width, &windowed_height);
+
+        // Switch to fullscreen
+        glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, mode->width, mode->height, mode->refreshRate);
+        is_fullscreen = true;
+    }
+    else
+    {
+        // Switch back to windowed
+        glfwSetWindowMonitor(window, nullptr, windowed_xpos, windowed_ypos, windowed_width, windowed_height, 0);
+        is_fullscreen = false;
+    }
+}
+
+bool IRenderer::get_fullscreen_state()
+{
+    return is_fullscreen;
+}
+
+void IRenderer::maximize_window()
+{
+    if (!is_fullscreen)
+    {
+        glfwMaximizeWindow(window);
+    }
 }

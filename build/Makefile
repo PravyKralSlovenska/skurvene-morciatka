@@ -1012,6 +1012,33 @@ src/world/world.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/world/world.cpp.s
 .PHONY : src/world/world.cpp.s
 
+src/world/world_ca_generation.o: src/world/world_ca_generation.cpp.o
+.PHONY : src/world/world_ca_generation.o
+
+# target to build an object file
+src/world/world_ca_generation.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world_ca_generation.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.o
+.PHONY : src/world/world_ca_generation.cpp.o
+
+src/world/world_ca_generation.i: src/world/world_ca_generation.cpp.i
+.PHONY : src/world/world_ca_generation.i
+
+# target to preprocess a source file
+src/world/world_ca_generation.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world_ca_generation.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.i
+.PHONY : src/world/world_ca_generation.cpp.i
+
+src/world/world_ca_generation.s: src/world/world_ca_generation.cpp.s
+.PHONY : src/world/world_ca_generation.s
+
+# target to generate assembly for a file
+src/world/world_ca_generation.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/world/world_ca_generation.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.s
+.PHONY : src/world/world_ca_generation.cpp.s
+
 src/world/world_cell.o: src/world/world_cell.cpp.o
 .PHONY : src/world/world_cell.o
 
@@ -1113,6 +1140,30 @@ tests/unit/particle_test.s: tests/unit/particle_test.cpp.s
 tests/unit/particle_test.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/particle_test.cpp.s
 .PHONY : tests/unit/particle_test.cpp.s
+
+tests/unit/random_test.o: tests/unit/random_test.cpp.o
+.PHONY : tests/unit/random_test.o
+
+# target to build an object file
+tests/unit/random_test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/random_test.cpp.o
+.PHONY : tests/unit/random_test.cpp.o
+
+tests/unit/random_test.i: tests/unit/random_test.cpp.i
+.PHONY : tests/unit/random_test.i
+
+# target to preprocess a source file
+tests/unit/random_test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/random_test.cpp.i
+.PHONY : tests/unit/random_test.cpp.i
+
+tests/unit/random_test.s: tests/unit/random_test.cpp.s
+.PHONY : tests/unit/random_test.s
+
+# target to generate assembly for a file
+tests/unit/random_test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/random_test.cpp.s
+.PHONY : tests/unit/random_test.cpp.s
 
 tests/unit/utils_test.o: tests/unit/utils_test.cpp.o
 .PHONY : tests/unit/utils_test.o
@@ -1268,6 +1319,9 @@ help:
 	@echo "... src/world/world.o"
 	@echo "... src/world/world.i"
 	@echo "... src/world/world.s"
+	@echo "... src/world/world_ca_generation.o"
+	@echo "... src/world/world_ca_generation.i"
+	@echo "... src/world/world_ca_generation.s"
 	@echo "... src/world/world_cell.o"
 	@echo "... src/world/world_cell.i"
 	@echo "... src/world/world_cell.s"
@@ -1280,6 +1334,9 @@ help:
 	@echo "... tests/unit/particle_test.o"
 	@echo "... tests/unit/particle_test.i"
 	@echo "... tests/unit/particle_test.s"
+	@echo "... tests/unit/random_test.o"
+	@echo "... tests/unit/random_test.i"
+	@echo "... tests/unit/random_test.s"
 	@echo "... tests/unit/utils_test.o"
 	@echo "... tests/unit/utils_test.i"
 	@echo "... tests/unit/utils_test.s"
