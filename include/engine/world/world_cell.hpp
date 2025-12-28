@@ -9,6 +9,11 @@
 
 struct WorldCell
 {
+    bool operator==(const WorldCell &other) const
+    {
+        return coords == other.coords && particle == other.particle;
+    }
+
     const glm::ivec2 coords;
     Particle particle;
 

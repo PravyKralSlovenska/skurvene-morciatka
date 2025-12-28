@@ -9,7 +9,7 @@
 Chunk::Chunk(glm::ivec2 coords, int width, int height)
     : coords(coords), width(width), height(height)
 {
-    init_chunk_data();
+    // init_chunk_data();
 }
 
 void Chunk::init_chunk_data()
@@ -21,6 +21,7 @@ void Chunk::init_chunk_data()
         for (int x{0}; x < width; x++)
         {
             chunk_data.emplace_back(glm::ivec2(x, y));
+            // chunk_data.emplace_back(glm::ivec2(x, y), create_stone());
         }
     }
 
@@ -43,6 +44,11 @@ void Chunk::make_cached_verticies()
 
 void Chunk::make_cached_indicies()
 {
+}
+
+std::vector<WorldCell> *Chunk::get_chunk_data()
+{
+    return &chunk_data;
 }
 
 void Chunk::set_chunk_data(std::vector<WorldCell> &new_chunk_data)

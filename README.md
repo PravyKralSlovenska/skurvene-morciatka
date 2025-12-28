@@ -2,6 +2,14 @@
 
 - maturitny projekt 2026
 
+# FLAME CHART
+
+```bash
+perf record -F 99 -g ./morciatko
+perf script | stackcollapse-perf.pl | flamegraph.pl > flame.svg
+firefox flame.svg
+```
+
 # hellou
 
 ## hellou

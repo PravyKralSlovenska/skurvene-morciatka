@@ -113,6 +113,8 @@ void World_Renderer::add_chunk_to_batch(Chunk *chunk)
     int world_x = coords.x * chunk_width * Globals::PARTICLE_SIZE;
     int world_y = coords.y * chunk_height * Globals::PARTICLE_SIZE;
 
+    const auto *chunk_data = chunk->get_chunk_data();
+
     unsigned int last = vertices.size();
 
     // std::cout << coords.x << ';' << coords.y << '\n';
@@ -123,16 +125,19 @@ void World_Renderer::add_chunk_to_batch(Chunk *chunk)
         {
             // std::cout << i << ' ' << j << '\n';
 
-            auto cell = chunk->get_worldcell(j, i);
+            // auto cell = chunk->get_worldcell(j, i);
 
-            Particle *particle = &cell->particle;
+            int index = i * chunk_width + j;
+            const WorldCell &cell = (*chunk_data)[index];
 
-            if (particle->type == Particle_Type::EMPTY)
+            const Particle &particle = cell.particle;
+
+            if (particle.type == Particle_Type::EMPTY)
             {
                 continue;
             }
 
-            Color *color = &particle->color;
+            const Color &color = particle.color;
 
             unsigned int base = vertices.size();
 
@@ -140,10 +145,10 @@ void World_Renderer::add_chunk_to_batch(Chunk *chunk)
             int offset_y = i * Globals::PARTICLE_SIZE;
 
             vertices.insert(vertices.end(), {
-                                                Vertex(world_x + offset_x, world_y + offset_y, *color),
-                                                Vertex(world_x + offset_x + Globals::PARTICLE_SIZE, world_y + offset_y, *color),
-                                                Vertex(world_x + offset_x, world_y + offset_y + Globals::PARTICLE_SIZE, *color),
-                                                Vertex(world_x + offset_x + Globals::PARTICLE_SIZE, world_y + offset_y + Globals::PARTICLE_SIZE, *color),
+                                                Vertex(world_x + offset_x, world_y + offset_y, color),
+                                                Vertex(world_x + offset_x + Globals::PARTICLE_SIZE, world_y + offset_y, color),
+                                                Vertex(world_x + offset_x, world_y + offset_y + Globals::PARTICLE_SIZE, color),
+                                                Vertex(world_x + offset_x + Globals::PARTICLE_SIZE, world_y + offset_y + Globals::PARTICLE_SIZE, color),
                                             });
 
             for (const auto indice : QUAD_INDICES)
@@ -157,49 +162,36 @@ void World_Renderer::render_world()
 {
     clear_buffers();
 
-    // reserve verticies
-    // reserve indicies
-
-    // render_chunks();
-    auto all_chunks = world->get_chunks();
     auto active_chunks = world->get_active_chunks();
 
-    // len aktivne chunky
+    if (active_chunks->empty())
+        return;
+
+    // Pre-allocate to avoid reallocations during rendering
+    size_t chunk_count = active_chunks->size();
+    vertices.reserve(chunk_count * 5000); // Assume ~50% filled chunks
+    indices.reserve(chunk_count * 7500);
+
+    // Render active chunks
     for (const auto &active_coords : *active_chunks)
     {
-        auto it = all_chunks->find(active_coords);
-        if (it == all_chunks->end())
-        {
-            // nenasiel aktivny render chunk
+        auto it = world->get_chunks()->find(active_coords);
+        if (it == world->get_chunks()->end())
             continue;
-        }
 
         auto chunk = it->second.get();
-
         add_chunk_to_batch(chunk);
     }
 
-    // vsetky chunky
-    // for (const auto &entry : *all_chunks)
-    // {
-    //     if (!entry.second) continue;
-    //     add_chunk_to_batch(entry.second.get());
-    // }
-
     if (vertices.empty())
-    {
         return;
-    }
-
-    // std::cout << "vertices:\t" << verticsudoes.size() << '\n';
-    // std::cout << "indices: \t" << indices.size() << '\n';
 
     shader->use();
     shader->set_mat4("projection", projection);
 
     VAO->bind();
-    VBO->fill_with_data_vector(vertices, GL_DYNAMIC);
-    EBO->fill_with_data(indices, GL_DYNAMIC);
+    VBO->fill_with_data_vector(vertices, GL_STREAM); // GL_STREAM for per-frame data
+    EBO->fill_with_data(indices, GL_STREAM);
 
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }

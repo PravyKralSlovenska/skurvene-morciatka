@@ -1,37 +1,29 @@
 #pragma once
 
-#include <vector>
-#include <glm/glm.hpp>
+#include "others/GLOBALS.hpp"
 
+// forward declarations
 class Chunk;
-class WorldCell;
 
 /*
  * World_CA_Generation
- * - Generates cave-like structures using Cellular Automata
- * - Works with chunk-based world system
+ * FAZY:
+ *  1. BIOME MAP
+ *  2. TEREN
+ *  3. ZMEN TEREN PODLA BIOME
+ *  4. STRUKTURY
+ *  5. DEKORACIE
  */
 class World_CA_Generation
 {
 private:
-    int seed;
-    float initial_fill_percent;
-    int iterations;
-    int birth_threshold; // Cells with >= this many neighbors become solid
-    int death_threshold; // Cells with <= this many neighbors become empty
+    const int NOISE_DENSITY = 47; // v percentach
+    // const int NOISE_DENSITY = Globals::FILL_PERCENT; // v percentach
 
 public:
-    World_CA_Generation(int seed, float fill_percent = 0.45f, int iterations = 4);
-    ~World_CA_Generation() = default;
-
-    // Generate terrain for a chunk
-    void generate_chunk(Chunk *chunk);
-
-    // Individual CA steps
-    void random_fill(Chunk *chunk);
-    void apply_ca_iteration(Chunk *chunk, const std::vector<WorldCell *> &neighbors_data);
-
-    // Configuration
-    void set_parameters(float fill_percent, int iterations, int birth, int death);
-    void set_seed(int seed);
+    void make_noise_data(Chunk *chunk);
+    // kazdy biome by mohol mat x iteracii
+    void iteration(Chunk *chunk);
+    void erosion(Chunk *chunk);
+    void swap_datas();
 };

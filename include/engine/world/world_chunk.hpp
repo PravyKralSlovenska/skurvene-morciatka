@@ -11,7 +11,8 @@ enum class Particle_Type;
 enum class Chunk_States
 {
     UNLOADED, // non active
-    LOADED    // active
+    LOADED,   // active
+    FINALL_FORM
 };
 
 /*
@@ -53,6 +54,7 @@ public:
 
     void update(); // nieco
 
+    std::vector<WorldCell> *get_chunk_data();
     void set_chunk_data(std::vector<WorldCell> &chunk_data);
 
     Chunk_States get_state();
@@ -62,7 +64,7 @@ public:
 
     bool is_empty(int x, int y);
     bool is_empty(int index);
-    // vrati worldcell ak worldcell nie je prazdny
+    // vrati worldcell ak worldcell particle je typu empty
     WorldCell *get_if_not_empty(const int x, const int y);
     // vrati worldcell ak worldcell nie je prazdny
     WorldCell *get_if_not_empty(const int index);

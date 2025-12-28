@@ -155,8 +155,8 @@ void Text_Renderer::render_text(std::string text, glm::vec2 coords, float scale,
         x += (ch.Advance >> 6) * scale;
     }
 
-    glBindVertexArray(0);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    // glBindVertexArray(0);
+    // glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Text_Renderer::clear_buffers()

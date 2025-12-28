@@ -78,7 +78,6 @@ void IRenderer::init_glfw()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // Make window resizable
-    glfwSwapInterval(0);                       // Vsync 0 = off, 1 = on
 }
 
 void IRenderer::init_glad()
@@ -114,6 +113,8 @@ void IRenderer::create_window()
     }
 
     glfwMakeContextCurrent(window);
+
+    glfwSwapInterval(0); // Vsync 0 = off, 1 = on
 
     // Store windowed dimensions for fullscreen toggle
     windowed_width = m_window_width;

@@ -17,6 +17,11 @@ std::vector<glm::ivec2> calculate_offsets(const int radius);
 std::vector<glm::ivec2> calculate_offsets_square(const int radius);
 
 /*
+ * oblznik
+ */
+std::vector<glm::ivec2> calculate_offsets_rectangle(const int width, const int height);
+
+/*
  * deterministicke
  */
 int hash_coords(int x, int y, int seed);
@@ -26,6 +31,12 @@ int hash_coords(int x, int y, int seed);
  * - pomocne funkcia na zistenie ci je WorldCell/Particle validny v mriezke sveta
  */
 bool in_world_range(int x, int y, int world_rows, int world_cols);
+bool in_range(const int start, const int end, const int value);
+
+/*
+ *
+ */
+int get_index_custom(const int x, const int y, const int width);
 
 class Random_Machine
 {

@@ -8,7 +8,6 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include "others/utils.hpp"
 
 Color::Color() {}
 Color::Color(int red, int green, int blue, float alpha)
@@ -16,6 +15,7 @@ Color::Color(int red, int green, int blue, float alpha)
 {
 }
 
+// polymorfizmus ???
 Color Color::change_shade()
 {
     // float shader_factor = 0.1f + (static_cast<float>(rand()) / RAND_MAX) * 0.05f;
@@ -79,10 +79,11 @@ std::mt19937 Random_Machine::gen(Random_Machine::rand_device());
 
 int Random_Machine::get_int_from_range(int start, int end)
 {
-    std::uniform_int_distribution<> distrib(start, end);
+    std::uniform_int_distribution<int> distrib(start, end);
     return distrib(gen);
 }
 
+// od 0 do 1
 float Random_Machine::get_float()
 {
     std::uniform_real_distribution<float> distrib(0.0f, 1.0f);
@@ -124,7 +125,29 @@ std::vector<glm::ivec2> calculate_offsets_square(const int radius)
     return offsets;
 }
 
+std::vector<glm::ivec2> calculate_offsets_rectangle(const int width, const int height)
+{
+    std::vector<glm::ivec2> offsets;
+    offsets.reserve(width * height);
+
+    int new_height = height / 2 + 1;
+    int new_width = width / 2 + 1;
+
+    for (int y = -new_height; y <= new_height; y++)
+        for (int x = -new_width; x <= new_width; x++)
+        {
+            offsets.push_back({x, y});
+        }
+
+    return offsets;
+}
+
 int hash_coords(int x, int y, int seed)
 {
     return ((x * 374761393) + (y * 668265263) + seed) % 1000000007;
+}
+
+int get_index_custom(const int x, const int y, const int width)
+{
+    return y * width + x;
 }

@@ -1,5 +1,0 @@
-morciatko_tests_NOT_BUILT 0 0
-UtilsTest.InWorldRange_BasicTest 9 0.00234444
-ColorTest.ColorConversion 8 0.00229559
-RandomTest.GetFloatReturnsValueInRange 2 0.00920209
----

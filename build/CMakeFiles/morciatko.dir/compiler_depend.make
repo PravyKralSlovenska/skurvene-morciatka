@@ -40,9 +40,7 @@ CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.o: /home/jakub/programko/cpp
   /usr/include/bits/select.h \
   /usr/include/bits/setjmp.h \
   /usr/include/bits/stdint-intn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -286,9 +284,7 @@ CMakeFiles/morciatko.dir/src/audio/audio_manager.cpp.o: /home/jakub/programko/cp
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -710,9 +706,7 @@ CMakeFiles/morciatko.dir/src/audio/audio_source.cpp.o: /home/jakub/programko/cpp
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -1049,7 +1043,6 @@ CMakeFiles/morciatko.dir/src/audio/listener.cpp.o: /home/jakub/programko/cpp/sku
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -1363,9 +1356,7 @@ CMakeFiles/morciatko.dir/src/camera.cpp.o: /home/jakub/programko/cpp/skurvene-mo
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -1808,9 +1799,7 @@ CMakeFiles/morciatko.dir/src/controls.cpp.o: /home/jakub/programko/cpp/skurvene-
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -2327,9 +2316,7 @@ CMakeFiles/morciatko.dir/src/entity.cpp.o: /home/jakub/programko/cpp/skurvene-mo
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -2699,9 +2686,7 @@ CMakeFiles/morciatko.dir/src/gl.c.o: /home/jakub/programko/cpp/skurvene-morciatk
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -2825,9 +2810,7 @@ CMakeFiles/morciatko.dir/src/main.cpp.o: /home/jakub/programko/cpp/skurvene-morc
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -3349,9 +3332,7 @@ CMakeFiles/morciatko.dir/src/particle/particle.cpp.o: /home/jakub/programko/cpp/
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -3766,9 +3747,7 @@ CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.o: /home/jakub/progr
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -4182,7 +4161,6 @@ CMakeFiles/morciatko.dir/src/particle/particle_velocity.cpp.o: /home/jakub/progr
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -4480,9 +4458,7 @@ CMakeFiles/morciatko.dir/src/physics_formulas.cpp.o: /home/jakub/programko/cpp/s
   /usr/include/bits/select.h \
   /usr/include/bits/setjmp.h \
   /usr/include/bits/stdint-intn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -4714,9 +4690,7 @@ CMakeFiles/morciatko.dir/src/renderer/buffers/element_array_object.cpp.o: /home/
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -4956,9 +4930,7 @@ CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_buffer_object.cpp.o: /home/
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -5195,9 +5167,7 @@ CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/progr
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -5691,9 +5661,7 @@ CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o: /home/jakub/programko/cpp/
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -6208,9 +6176,7 @@ CMakeFiles/morciatko.dir/src/renderer/shader.cpp.o: /home/jakub/programko/cpp/sk
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -6676,9 +6642,7 @@ CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.o: /home/jakub/programko
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -7191,9 +7155,7 @@ CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o: /home/jakub/programk
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -7654,9 +7616,7 @@ CMakeFiles/morciatko.dir/src/time_manager.cpp.o: /home/jakub/programko/cpp/skurv
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -7891,9 +7851,7 @@ CMakeFiles/morciatko.dir/src/utils.cpp.o: /home/jakub/programko/cpp/skurvene-mor
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -8318,9 +8276,7 @@ CMakeFiles/morciatko.dir/src/world/herringbone_world_generation.cpp.o: /home/jak
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -8749,9 +8705,7 @@ CMakeFiles/morciatko.dir/src/world/world.cpp.o: /home/jakub/programko/cpp/skurve
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -9187,9 +9141,7 @@ CMakeFiles/morciatko.dir/src/world/world_ca_generation.cpp.o: /home/jakub/progra
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -9592,9 +9544,7 @@ CMakeFiles/morciatko.dir/src/world/world_cell.cpp.o: /home/jakub/programko/cpp/s
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -9998,9 +9948,7 @@ CMakeFiles/morciatko.dir/src/world/world_chunk.cpp.o: /home/jakub/programko/cpp/
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -10589,11 +10537,7 @@ CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.o:
 
 /usr/include/glm/ext/vector_int1_sized.hpp:
 
-CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o:
-
-/usr/include/glm/ext/vector_int1.hpp:
-
-/usr/include/glm/ext/vector_float1_precision.hpp:
+/usr/include/glm/ext/matrix_double3x3_precision.hpp:
 
 /usr/include/c++/15.2.1/bits/deque.tcc:
 
@@ -10628,6 +10572,10 @@ CMakeFiles/morciatko.dir/src/world/world_cell.cpp.o:
 /usr/include/glm/detail/type_mat4x3.inl:
 
 /usr/include/string.h:
+
+/usr/include/c++/15.2.1/bits/hashtable.h:
+
+/home/jakub/programko/cpp/skurvene-morciatka/include/engine/audio/listener.hpp:
 
 /usr/include/stdio.h:
 
@@ -10713,6 +10661,16 @@ CMakeFiles/morciatko.dir/src/renderer/buffers/element_array_object.cpp.o:
 
 /usr/include/c++/15.2.1/mutex:
 
+/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/libgcc.a:
+
+/usr/include/c++/15.2.1/string:
+
+/usr/include/c++/15.2.1/debug/assertions.h:
+
+/usr/lib/libz.so.1:
+
+/usr/include/c++/15.2.1/bits/shared_ptr_base.h:
+
 /usr/lib/libGLU.so:
 
 /usr/include/c++/15.2.1/bits/allocated_ptr.h:
@@ -10797,6 +10755,16 @@ CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_array_object.cpp.o:
 
 /usr/include/c++/15.2.1/bits/stl_iterator.h:
 
+/usr/include/bits/types/clockid_t.h:
+
+/usr/include/c++/15.2.1/random:
+
+/usr/include/c++/15.2.1/bits/enable_special_members.h:
+
+/usr/include/bits/atomic_wide_counter.h:
+
+/usr/include/c++/15.2.1/cfloat:
+
 /usr/include/c++/15.2.1/bits/ostream.tcc:
 
 /usr/include/c++/15.2.1/x86_64-pc-linux-gnu/bits/c++config.h:
@@ -10843,29 +10811,7 @@ CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_array_object.cpp.o:
 
 /usr/include/bits/sched.h:
 
-/usr/include/bits/stdlib-bsearch.h:
-
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/limits.h:
-
-/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/libgcc.a:
-
-/usr/include/c++/15.2.1/string:
-
-/usr/include/c++/15.2.1/debug/assertions.h:
-
-/usr/lib/libz.so.1:
-
-/usr/include/c++/15.2.1/bits/shared_ptr_base.h:
-
-/usr/include/bits/stdio.h:
-
-/home/jakub/programko/cpp/skurvene-morciatka/include/stb/stb_image_write.h:
-
-/usr/include/glm/ext/vector_float2_precision.hpp:
-
-/usr/include/bits/types/clockid_t.h:
-
-/usr/include/c++/15.2.1/random:
 
 /usr/include/bits/setjmp.h:
 
@@ -10876,16 +10822,6 @@ CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_array_object.cpp.o:
 /usr/include/bits/types/__fpos64_t.h:
 
 /usr/include/bits/select.h:
-
-/usr/include/glm/ext/vector_relational.inl:
-
-/usr/include/c++/15.2.1/bits/stl_algobase.h:
-
-/usr/include/glm/detail/type_mat2x2.inl:
-
-/usr/lib/libopenal.so:
-
-/home/jakub/programko/cpp/skurvene-morciatka/include/engine/particle/particle_mass.hpp:
 
 /usr/include/bits/types/cookie_io_functions_t.h:
 
@@ -10965,6 +10901,10 @@ CMakeFiles/morciatko.dir/src/renderer/scenes_renderer.cpp.o:
 
 /usr/include/c++/15.2.1/bit:
 
+/usr/include/bits/mathcalls-narrow.h:
+
+/usr/include/c++/15.2.1/bits/erase_if.h:
+
 /home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_buffer.cpp:
 
 /usr/include/bits/timesize.h:
@@ -11038,12 +10978,6 @@ CMakeFiles/morciatko.dir/src/renderer/scenes_renderer.cpp.o:
 /usr/include/c++/15.2.1/new:
 
 /usr/include/c++/15.2.1/map:
-
-/usr/include/c++/15.2.1/bits/enable_special_members.h:
-
-/usr/include/bits/atomic_wide_counter.h:
-
-/usr/include/c++/15.2.1/cfloat:
 
 /usr/include/bits/timex.h:
 
@@ -11279,15 +11213,15 @@ CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.o:
 
 /usr/include/gnu/stubs-64.h:
 
-/usr/include/bits/mathcalls-narrow.h:
+/usr/include/glm/ext/vector_relational.inl:
 
-/usr/include/c++/15.2.1/bits/erase_if.h:
+/usr/include/c++/15.2.1/bits/stl_algobase.h:
 
-/home/jakub/programko/cpp/skurvene-morciatka/include/engine/audio/listener.hpp:
+/usr/include/glm/detail/type_mat2x2.inl:
 
-/usr/include/c++/15.2.1/bits/hashtable.h:
+/usr/lib/libopenal.so:
 
-/usr/include/glm/ext/matrix_double3x3_precision.hpp:
+/home/jakub/programko/cpp/skurvene-morciatka/include/engine/particle/particle_mass.hpp:
 
 /usr/include/c++/15.2.1/bits/hashtable_policy.h:
 
@@ -11565,6 +11499,10 @@ CMakeFiles/morciatko.dir/src/camera.cpp.o:
 
 /usr/include/glm/ext/vector_float2.hpp:
 
+/home/jakub/programko/cpp/skurvene-morciatka/include/stb/stb_image_write.h:
+
+/usr/include/glm/ext/vector_float2_precision.hpp:
+
 /usr/include/glm/ext/vector_float3.hpp:
 
 /usr/include/glm/ext/vector_float3_precision.hpp:
@@ -11784,3 +11722,9 @@ CMakeFiles/morciatko.dir/src/world/world.cpp.o:
 /usr/include/glm/ext/vector_bool1.hpp:
 
 /usr/include/glm/ext/vector_double1.hpp:
+
+/usr/include/glm/ext/vector_float1_precision.hpp:
+
+CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o:
+
+/usr/include/glm/ext/vector_int1.hpp:
