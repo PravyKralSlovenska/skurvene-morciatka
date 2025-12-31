@@ -8,13 +8,22 @@
 #include "engine/world/world_chunk.hpp"
 #include "engine/world/world_cell.hpp"
 #include "engine/renderer/shader.hpp"
+#include "engine/renderer/compute_shader.hpp"
 #include "others/GLOBALS.hpp"
 #include "others/utils.hpp"
 
 World_Renderer::World_Renderer(World *world)
     : world(world) {}
 
-World_Renderer::~World_Renderer() = default;
+World_Renderer::~World_Renderer()
+{
+    for (auto &[coords, gpu_data] : gpu_chunks)
+    {
+        glDeleteBuffers(1, &gpu_data.ssbo_particles);
+        glDeleteBuffers(1, &gpu_data.ssbo_vertices);
+        glDeleteVertexArrays(1, &gpu_data.vao);
+    }
+}
 
 // World_Renderer::~World_Renderer() {}
 
@@ -38,21 +47,19 @@ void World_Renderer::init()
 
     shader = std::make_unique<Shader>("../shaders/vertex.glsl", "../shaders/fragment.glsl");
 
-    // chunk_VAO = std::make_unique<VERTEX_ARRAY_OBJECT>();
-    // chunk_VAO->bind();
+    compute_shader = std::make_unique<Compute_Shader>("../shaders/compute_shader.glsl");
+}
 
-    // chunk_VBO = std::make_unique<VERTEX_BUFFER_OBJECT>();
-    // chunk_VBO->bind();
+void World_Renderer::upload_chunk_to_gpu(const glm::ivec2 &chunk_coords, Chunk *chunk)
+{
+}
 
-    // chunk_EBO = std::make_unique<ELEMENT_ARRAY_BUFFER>();
-    // chunk_EBO->bind();
+void World_Renderer::cleanup_chunk_gpu_data(const glm::ivec2 &chunk_coords)
+{
+}
 
-    // // pre suradnice
-    // chunk_VAO->setup_vertex_attribute_pointer(0, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
-    // // pre farbu
-    // chunk_VAO->setup_vertex_attribute_pointer(1, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(2 * sizeof(float)));
-
-    // chunk_shader = std::make_unique<Shader>("../shaders/chunk_vertex.glsl", "../shaders/chunk_fragment.glsl");
+void World_Renderer::render_world_compute()
+{
 }
 
 void World_Renderer::set_world(World *world)
@@ -93,8 +100,8 @@ void World_Renderer::render_test_triangle()
 
 void World_Renderer::clear_buffers()
 {
-    vertices.clear();
-    indices.clear();
+    // vertices.clear();
+    // indices.clear();
 }
 
 void World_Renderer::fill_vertices()
@@ -107,91 +114,91 @@ void World_Renderer::render_chunk_borders()
 
 void World_Renderer::add_chunk_to_batch(Chunk *chunk)
 {
-    auto [chunk_width, chunk_height] = world->get_chunk_dimensions();
-    auto coords = chunk->coords;
+    // auto [chunk_width, chunk_height] = world->get_chunk_dimensions();
+    // auto coords = chunk->coords;
 
-    int world_x = coords.x * chunk_width * Globals::PARTICLE_SIZE;
-    int world_y = coords.y * chunk_height * Globals::PARTICLE_SIZE;
+    // int world_x = coords.x * chunk_width * Globals::PARTICLE_SIZE;
+    // int world_y = coords.y * chunk_height * Globals::PARTICLE_SIZE;
 
-    const auto *chunk_data = chunk->get_chunk_data();
+    // const auto *chunk_data = chunk->get_chunk_data();
 
-    unsigned int last = vertices.size();
+    // unsigned int last = vertices.size();
 
-    // std::cout << coords.x << ';' << coords.y << '\n';
+    // // std::cout << coords.x << ';' << coords.y << '\n';
 
-    // vymysliet
-    for (int i = 0; i < chunk_height; i++)    // vyska
-        for (int j = 0; j < chunk_width; j++) // sirka
-        {
-            // std::cout << i << ' ' << j << '\n';
+    // // vymysliet
+    // for (int i = 0; i < chunk_height; i++)    // vyska
+    //     for (int j = 0; j < chunk_width; j++) // sirka
+    //     {
+    //         // std::cout << i << ' ' << j << '\n';
 
-            // auto cell = chunk->get_worldcell(j, i);
+    //         // auto cell = chunk->get_worldcell(j, i);
 
-            int index = i * chunk_width + j;
-            const WorldCell &cell = (*chunk_data)[index];
+    //         int index = i * chunk_width + j;
+    //         const WorldCell &cell = (*chunk_data)[index];
 
-            const Particle &particle = cell.particle;
+    //         const Particle &particle = cell.particle;
 
-            if (particle.type == Particle_Type::EMPTY)
-            {
-                continue;
-            }
+    //         if (particle.type == Particle_Type::EMPTY)
+    //         {
+    //             continue;
+    //         }
 
-            const Color &color = particle.color;
+    //         const Color &color = particle.color;
 
-            unsigned int base = vertices.size();
+    //         unsigned int base = vertices.size();
 
-            int offset_x = j * Globals::PARTICLE_SIZE;
-            int offset_y = i * Globals::PARTICLE_SIZE;
+    //         int offset_x = j * Globals::PARTICLE_SIZE;
+    //         int offset_y = i * Globals::PARTICLE_SIZE;
 
-            vertices.insert(vertices.end(), {
-                                                Vertex(world_x + offset_x, world_y + offset_y, color),
-                                                Vertex(world_x + offset_x + Globals::PARTICLE_SIZE, world_y + offset_y, color),
-                                                Vertex(world_x + offset_x, world_y + offset_y + Globals::PARTICLE_SIZE, color),
-                                                Vertex(world_x + offset_x + Globals::PARTICLE_SIZE, world_y + offset_y + Globals::PARTICLE_SIZE, color),
-                                            });
+    //         vertices.insert(vertices.end(), {
+    //                                             Vertex(world_x + offset_x, world_y + offset_y, color),
+    //                                             Vertex(world_x + offset_x + Globals::PARTICLE_SIZE, world_y + offset_y, color),
+    //                                             Vertex(world_x + offset_x, world_y + offset_y + Globals::PARTICLE_SIZE, color),
+    //                                             Vertex(world_x + offset_x + Globals::PARTICLE_SIZE, world_y + offset_y + Globals::PARTICLE_SIZE, color),
+    //                                         });
 
-            for (const auto indice : QUAD_INDICES)
-            {
-                indices.push_back(indice + base);
-            }
-        }
+    //         for (const auto indice : QUAD_INDICES)
+    //         {
+    //             indices.push_back(indice + base);
+    //         }
+    //     }
 }
 
 void World_Renderer::render_world()
 {
-    clear_buffers();
+    // clear_buffers();
 
-    auto active_chunks = world->get_active_chunks();
+    // auto active_chunks = world->get_active_chunks();
 
-    if (active_chunks->empty())
-        return;
+    // if (active_chunks->empty())
+    //     return;
 
-    // Pre-allocate to avoid reallocations during rendering
-    size_t chunk_count = active_chunks->size();
-    vertices.reserve(chunk_count * 5000); // Assume ~50% filled chunks
-    indices.reserve(chunk_count * 7500);
+    // // Pre-allocate to avoid reallocations during rendering
+    // size_t chunk_count = active_chunks->size();
+    // vertices.reserve(chunk_count * 5000); // Assume ~50% filled chunks
+    // indices.reserve(chunk_count * 7500);
 
-    // Render active chunks
-    for (const auto &active_coords : *active_chunks)
-    {
-        auto it = world->get_chunks()->find(active_coords);
-        if (it == world->get_chunks()->end())
-            continue;
+    // // Render active chunks
+    // for (const auto &active_coords : *active_chunks)
+    // {
+    //     auto it = world->get_chunks()->find(active_coords);
+    //     if (it == world->get_chunks()->end())
+    //         continue;
 
-        auto chunk = it->second.get();
-        add_chunk_to_batch(chunk);
-    }
+    //     auto chunk = it->second.get();
+    //     add_chunk_to_batch(chunk);
+    // }
 
-    if (vertices.empty())
-        return;
+    // if (vertices.empty())
+    //     return;
 
-    shader->use();
-    shader->set_mat4("projection", projection);
+    // shader->use();
+    // shader->set_mat4("projection", projection);
 
-    VAO->bind();
-    VBO->fill_with_data_vector(vertices, GL_STREAM); // GL_STREAM for per-frame data
-    EBO->fill_with_data(indices, GL_STREAM);
+    // VAO->bind();
+    // VBO->fill_with_data_vector(vertices, GL_STREAM); // GL_STREAM for per-frame data
+    // EBO->fill_with_data(indices, GL_STREAM);
 
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    // glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }

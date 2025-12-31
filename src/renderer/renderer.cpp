@@ -45,7 +45,7 @@ bool IRenderer::render_everything()
     // text_renderer->set_projection(projection);
 
     // render renders
-    world_renderer->render_world();
+    world_renderer->render_world_compute();
 
     // entities_renderer->render_entities(world->entities);
     // text_renderer->render_text("MISKO POZOR ZITRA! :3", {400.0f, 400.0f}, 1.0f, Color(255, 255, 255, 1.0f));
@@ -74,7 +74,7 @@ void IRenderer::init_glfw()
 {
     glfwInit();
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // Make window resizable

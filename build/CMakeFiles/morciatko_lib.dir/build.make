@@ -324,10 +324,24 @@ CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_buffer_object.cpp.s: cm
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_buffer_object.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/vertex_buffer_object.cpp -o CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_buffer_object.cpp.s
 
+CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.o: CMakeFiles/morciatko_lib.dir/flags.make
+CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/compute_shader.cpp
+CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.o: CMakeFiles/morciatko_lib.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.o -MF CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.o.d -o CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/compute_shader.cpp
+
+CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/compute_shader.cpp > CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.i
+
+CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/compute_shader.cpp -o CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.s
+
 CMakeFiles/morciatko_lib.dir/src/renderer/debug_renderer.cpp.o: CMakeFiles/morciatko_lib.dir/flags.make
 CMakeFiles/morciatko_lib.dir/src/renderer/debug_renderer.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/debug_renderer.cpp
 CMakeFiles/morciatko_lib.dir/src/renderer/debug_renderer.cpp.o: CMakeFiles/morciatko_lib.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/morciatko_lib.dir/src/renderer/debug_renderer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/morciatko_lib.dir/src/renderer/debug_renderer.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/morciatko_lib.dir/src/renderer/debug_renderer.cpp.o -MF CMakeFiles/morciatko_lib.dir/src/renderer/debug_renderer.cpp.o.d -o CMakeFiles/morciatko_lib.dir/src/renderer/debug_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/debug_renderer.cpp
 
 CMakeFiles/morciatko_lib.dir/src/renderer/debug_renderer.cpp.i: cmake_force
@@ -341,7 +355,7 @@ CMakeFiles/morciatko_lib.dir/src/renderer/debug_renderer.cpp.s: cmake_force
 CMakeFiles/morciatko_lib.dir/src/renderer/entities_renderer.cpp.o: CMakeFiles/morciatko_lib.dir/flags.make
 CMakeFiles/morciatko_lib.dir/src/renderer/entities_renderer.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/entities_renderer.cpp
 CMakeFiles/morciatko_lib.dir/src/renderer/entities_renderer.cpp.o: CMakeFiles/morciatko_lib.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/morciatko_lib.dir/src/renderer/entities_renderer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/morciatko_lib.dir/src/renderer/entities_renderer.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/morciatko_lib.dir/src/renderer/entities_renderer.cpp.o -MF CMakeFiles/morciatko_lib.dir/src/renderer/entities_renderer.cpp.o.d -o CMakeFiles/morciatko_lib.dir/src/renderer/entities_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/entities_renderer.cpp
 
 CMakeFiles/morciatko_lib.dir/src/renderer/entities_renderer.cpp.i: cmake_force
@@ -355,7 +369,7 @@ CMakeFiles/morciatko_lib.dir/src/renderer/entities_renderer.cpp.s: cmake_force
 CMakeFiles/morciatko_lib.dir/src/renderer/renderer.cpp.o: CMakeFiles/morciatko_lib.dir/flags.make
 CMakeFiles/morciatko_lib.dir/src/renderer/renderer.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/renderer.cpp
 CMakeFiles/morciatko_lib.dir/src/renderer/renderer.cpp.o: CMakeFiles/morciatko_lib.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/morciatko_lib.dir/src/renderer/renderer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/morciatko_lib.dir/src/renderer/renderer.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/morciatko_lib.dir/src/renderer/renderer.cpp.o -MF CMakeFiles/morciatko_lib.dir/src/renderer/renderer.cpp.o.d -o CMakeFiles/morciatko_lib.dir/src/renderer/renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/renderer.cpp
 
 CMakeFiles/morciatko_lib.dir/src/renderer/renderer.cpp.i: cmake_force
@@ -369,7 +383,7 @@ CMakeFiles/morciatko_lib.dir/src/renderer/renderer.cpp.s: cmake_force
 CMakeFiles/morciatko_lib.dir/src/renderer/scenes_renderer.cpp.o: CMakeFiles/morciatko_lib.dir/flags.make
 CMakeFiles/morciatko_lib.dir/src/renderer/scenes_renderer.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/scenes_renderer.cpp
 CMakeFiles/morciatko_lib.dir/src/renderer/scenes_renderer.cpp.o: CMakeFiles/morciatko_lib.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/morciatko_lib.dir/src/renderer/scenes_renderer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/morciatko_lib.dir/src/renderer/scenes_renderer.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/morciatko_lib.dir/src/renderer/scenes_renderer.cpp.o -MF CMakeFiles/morciatko_lib.dir/src/renderer/scenes_renderer.cpp.o.d -o CMakeFiles/morciatko_lib.dir/src/renderer/scenes_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/scenes_renderer.cpp
 
 CMakeFiles/morciatko_lib.dir/src/renderer/scenes_renderer.cpp.i: cmake_force
@@ -383,7 +397,7 @@ CMakeFiles/morciatko_lib.dir/src/renderer/scenes_renderer.cpp.s: cmake_force
 CMakeFiles/morciatko_lib.dir/src/renderer/shader.cpp.o: CMakeFiles/morciatko_lib.dir/flags.make
 CMakeFiles/morciatko_lib.dir/src/renderer/shader.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/shader.cpp
 CMakeFiles/morciatko_lib.dir/src/renderer/shader.cpp.o: CMakeFiles/morciatko_lib.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/morciatko_lib.dir/src/renderer/shader.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/morciatko_lib.dir/src/renderer/shader.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/morciatko_lib.dir/src/renderer/shader.cpp.o -MF CMakeFiles/morciatko_lib.dir/src/renderer/shader.cpp.o.d -o CMakeFiles/morciatko_lib.dir/src/renderer/shader.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/shader.cpp
 
 CMakeFiles/morciatko_lib.dir/src/renderer/shader.cpp.i: cmake_force
@@ -397,7 +411,7 @@ CMakeFiles/morciatko_lib.dir/src/renderer/shader.cpp.s: cmake_force
 CMakeFiles/morciatko_lib.dir/src/renderer/text_renderer.cpp.o: CMakeFiles/morciatko_lib.dir/flags.make
 CMakeFiles/morciatko_lib.dir/src/renderer/text_renderer.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/text_renderer.cpp
 CMakeFiles/morciatko_lib.dir/src/renderer/text_renderer.cpp.o: CMakeFiles/morciatko_lib.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/morciatko_lib.dir/src/renderer/text_renderer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/morciatko_lib.dir/src/renderer/text_renderer.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/morciatko_lib.dir/src/renderer/text_renderer.cpp.o -MF CMakeFiles/morciatko_lib.dir/src/renderer/text_renderer.cpp.o.d -o CMakeFiles/morciatko_lib.dir/src/renderer/text_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/text_renderer.cpp
 
 CMakeFiles/morciatko_lib.dir/src/renderer/text_renderer.cpp.i: cmake_force
@@ -411,7 +425,7 @@ CMakeFiles/morciatko_lib.dir/src/renderer/text_renderer.cpp.s: cmake_force
 CMakeFiles/morciatko_lib.dir/src/renderer/ui_renderer.cpp.o: CMakeFiles/morciatko_lib.dir/flags.make
 CMakeFiles/morciatko_lib.dir/src/renderer/ui_renderer.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/ui_renderer.cpp
 CMakeFiles/morciatko_lib.dir/src/renderer/ui_renderer.cpp.o: CMakeFiles/morciatko_lib.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/morciatko_lib.dir/src/renderer/ui_renderer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/morciatko_lib.dir/src/renderer/ui_renderer.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/morciatko_lib.dir/src/renderer/ui_renderer.cpp.o -MF CMakeFiles/morciatko_lib.dir/src/renderer/ui_renderer.cpp.o.d -o CMakeFiles/morciatko_lib.dir/src/renderer/ui_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/ui_renderer.cpp
 
 CMakeFiles/morciatko_lib.dir/src/renderer/ui_renderer.cpp.i: cmake_force
@@ -425,7 +439,7 @@ CMakeFiles/morciatko_lib.dir/src/renderer/ui_renderer.cpp.s: cmake_force
 CMakeFiles/morciatko_lib.dir/src/renderer/world_renderer.cpp.o: CMakeFiles/morciatko_lib.dir/flags.make
 CMakeFiles/morciatko_lib.dir/src/renderer/world_renderer.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/world_renderer.cpp
 CMakeFiles/morciatko_lib.dir/src/renderer/world_renderer.cpp.o: CMakeFiles/morciatko_lib.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/morciatko_lib.dir/src/renderer/world_renderer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/morciatko_lib.dir/src/renderer/world_renderer.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/morciatko_lib.dir/src/renderer/world_renderer.cpp.o -MF CMakeFiles/morciatko_lib.dir/src/renderer/world_renderer.cpp.o.d -o CMakeFiles/morciatko_lib.dir/src/renderer/world_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/world_renderer.cpp
 
 CMakeFiles/morciatko_lib.dir/src/renderer/world_renderer.cpp.i: cmake_force
@@ -439,7 +453,7 @@ CMakeFiles/morciatko_lib.dir/src/renderer/world_renderer.cpp.s: cmake_force
 CMakeFiles/morciatko_lib.dir/src/time_manager.cpp.o: CMakeFiles/morciatko_lib.dir/flags.make
 CMakeFiles/morciatko_lib.dir/src/time_manager.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/time_manager.cpp
 CMakeFiles/morciatko_lib.dir/src/time_manager.cpp.o: CMakeFiles/morciatko_lib.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/morciatko_lib.dir/src/time_manager.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/morciatko_lib.dir/src/time_manager.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/morciatko_lib.dir/src/time_manager.cpp.o -MF CMakeFiles/morciatko_lib.dir/src/time_manager.cpp.o.d -o CMakeFiles/morciatko_lib.dir/src/time_manager.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/time_manager.cpp
 
 CMakeFiles/morciatko_lib.dir/src/time_manager.cpp.i: cmake_force
@@ -453,7 +467,7 @@ CMakeFiles/morciatko_lib.dir/src/time_manager.cpp.s: cmake_force
 CMakeFiles/morciatko_lib.dir/src/utils.cpp.o: CMakeFiles/morciatko_lib.dir/flags.make
 CMakeFiles/morciatko_lib.dir/src/utils.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/utils.cpp
 CMakeFiles/morciatko_lib.dir/src/utils.cpp.o: CMakeFiles/morciatko_lib.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/morciatko_lib.dir/src/utils.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/morciatko_lib.dir/src/utils.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/morciatko_lib.dir/src/utils.cpp.o -MF CMakeFiles/morciatko_lib.dir/src/utils.cpp.o.d -o CMakeFiles/morciatko_lib.dir/src/utils.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/utils.cpp
 
 CMakeFiles/morciatko_lib.dir/src/utils.cpp.i: cmake_force
@@ -467,7 +481,7 @@ CMakeFiles/morciatko_lib.dir/src/utils.cpp.s: cmake_force
 CMakeFiles/morciatko_lib.dir/src/world/herringbone_world_generation.cpp.o: CMakeFiles/morciatko_lib.dir/flags.make
 CMakeFiles/morciatko_lib.dir/src/world/herringbone_world_generation.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/world/herringbone_world_generation.cpp
 CMakeFiles/morciatko_lib.dir/src/world/herringbone_world_generation.cpp.o: CMakeFiles/morciatko_lib.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/morciatko_lib.dir/src/world/herringbone_world_generation.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/morciatko_lib.dir/src/world/herringbone_world_generation.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/morciatko_lib.dir/src/world/herringbone_world_generation.cpp.o -MF CMakeFiles/morciatko_lib.dir/src/world/herringbone_world_generation.cpp.o.d -o CMakeFiles/morciatko_lib.dir/src/world/herringbone_world_generation.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/herringbone_world_generation.cpp
 
 CMakeFiles/morciatko_lib.dir/src/world/herringbone_world_generation.cpp.i: cmake_force
@@ -481,7 +495,7 @@ CMakeFiles/morciatko_lib.dir/src/world/herringbone_world_generation.cpp.s: cmake
 CMakeFiles/morciatko_lib.dir/src/world/world.cpp.o: CMakeFiles/morciatko_lib.dir/flags.make
 CMakeFiles/morciatko_lib.dir/src/world/world.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/world/world.cpp
 CMakeFiles/morciatko_lib.dir/src/world/world.cpp.o: CMakeFiles/morciatko_lib.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/morciatko_lib.dir/src/world/world.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/morciatko_lib.dir/src/world/world.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/morciatko_lib.dir/src/world/world.cpp.o -MF CMakeFiles/morciatko_lib.dir/src/world/world.cpp.o.d -o CMakeFiles/morciatko_lib.dir/src/world/world.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world.cpp
 
 CMakeFiles/morciatko_lib.dir/src/world/world.cpp.i: cmake_force
@@ -495,7 +509,7 @@ CMakeFiles/morciatko_lib.dir/src/world/world.cpp.s: cmake_force
 CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.o: CMakeFiles/morciatko_lib.dir/flags.make
 CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_ca_generation.cpp
 CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.o: CMakeFiles/morciatko_lib.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.o -MF CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.o.d -o CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_ca_generation.cpp
 
 CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.i: cmake_force
@@ -509,7 +523,7 @@ CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.s: cmake_force
 CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.o: CMakeFiles/morciatko_lib.dir/flags.make
 CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_cell.cpp
 CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.o: CMakeFiles/morciatko_lib.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.o -MF CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.o.d -o CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_cell.cpp
 
 CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.i: cmake_force
@@ -523,7 +537,7 @@ CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.s: cmake_force
 CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.o: CMakeFiles/morciatko_lib.dir/flags.make
 CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_chunk.cpp
 CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.o: CMakeFiles/morciatko_lib.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.o -MF CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.o.d -o CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_chunk.cpp
 
 CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.i: cmake_force
@@ -554,6 +568,7 @@ morciatko_lib_OBJECTS = \
 "CMakeFiles/morciatko_lib.dir/src/renderer/buffers/element_array_object.cpp.o" \
 "CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_array_object.cpp.o" \
 "CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_buffer_object.cpp.o" \
+"CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.o" \
 "CMakeFiles/morciatko_lib.dir/src/renderer/debug_renderer.cpp.o" \
 "CMakeFiles/morciatko_lib.dir/src/renderer/entities_renderer.cpp.o" \
 "CMakeFiles/morciatko_lib.dir/src/renderer/renderer.cpp.o" \
@@ -591,6 +606,7 @@ libmorciatko_lib.a: CMakeFiles/morciatko_lib.dir/src/renderer/buffers/buffer.cpp
 libmorciatko_lib.a: CMakeFiles/morciatko_lib.dir/src/renderer/buffers/element_array_object.cpp.o
 libmorciatko_lib.a: CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_array_object.cpp.o
 libmorciatko_lib.a: CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_buffer_object.cpp.o
+libmorciatko_lib.a: CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.o
 libmorciatko_lib.a: CMakeFiles/morciatko_lib.dir/src/renderer/debug_renderer.cpp.o
 libmorciatko_lib.a: CMakeFiles/morciatko_lib.dir/src/renderer/entities_renderer.cpp.o
 libmorciatko_lib.a: CMakeFiles/morciatko_lib.dir/src/renderer/renderer.cpp.o
@@ -608,7 +624,7 @@ libmorciatko_lib.a: CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.o
 libmorciatko_lib.a: CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.o
 libmorciatko_lib.a: CMakeFiles/morciatko_lib.dir/build.make
 libmorciatko_lib.a: CMakeFiles/morciatko_lib.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Linking CXX static library libmorciatko_lib.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Linking CXX static library libmorciatko_lib.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/morciatko_lib.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/morciatko_lib.dir/link.txt --verbose=$(VERBOSE)
 

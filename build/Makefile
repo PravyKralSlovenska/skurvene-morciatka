@@ -688,6 +688,33 @@ src/renderer/buffers/vertex_buffer_object.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_buffer_object.cpp.s
 .PHONY : src/renderer/buffers/vertex_buffer_object.cpp.s
 
+src/renderer/compute_shader.o: src/renderer/compute_shader.cpp.o
+.PHONY : src/renderer/compute_shader.o
+
+# target to build an object file
+src/renderer/compute_shader.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/compute_shader.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.o
+.PHONY : src/renderer/compute_shader.cpp.o
+
+src/renderer/compute_shader.i: src/renderer/compute_shader.cpp.i
+.PHONY : src/renderer/compute_shader.i
+
+# target to preprocess a source file
+src/renderer/compute_shader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/compute_shader.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.i
+.PHONY : src/renderer/compute_shader.cpp.i
+
+src/renderer/compute_shader.s: src/renderer/compute_shader.cpp.s
+.PHONY : src/renderer/compute_shader.s
+
+# target to generate assembly for a file
+src/renderer/compute_shader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/compute_shader.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.s
+.PHONY : src/renderer/compute_shader.cpp.s
+
 src/renderer/debug_renderer.o: src/renderer/debug_renderer.cpp.o
 .PHONY : src/renderer/debug_renderer.o
 
@@ -1283,6 +1310,9 @@ help:
 	@echo "... src/renderer/buffers/vertex_buffer_object.o"
 	@echo "... src/renderer/buffers/vertex_buffer_object.i"
 	@echo "... src/renderer/buffers/vertex_buffer_object.s"
+	@echo "... src/renderer/compute_shader.o"
+	@echo "... src/renderer/compute_shader.i"
+	@echo "... src/renderer/compute_shader.s"
 	@echo "... src/renderer/debug_renderer.o"
 	@echo "... src/renderer/debug_renderer.i"
 	@echo "... src/renderer/debug_renderer.s"

@@ -109,6 +109,12 @@
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/compute_shader.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/compute_shader.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/compute_shader.cpp",
+  "output": "CMakeFiles/morciatko.dir/src/renderer/compute_shader.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
   "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/debug_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/debug_renderer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/debug_renderer.cpp",
   "output": "CMakeFiles/morciatko.dir/src/renderer/debug_renderer.cpp.o"
@@ -310,6 +316,12 @@
   "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_buffer_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/vertex_buffer_object.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/vertex_buffer_object.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_buffer_object.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/compute_shader.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/compute_shader.cpp",
+  "output": "CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",

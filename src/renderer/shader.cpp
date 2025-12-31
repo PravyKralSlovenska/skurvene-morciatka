@@ -1,5 +1,12 @@
 #include "engine/renderer/shader.hpp"
 
+#include <glad/gl.h>
+
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "others/utils.hpp"
+
 Shader::Shader() {}
 
 Shader::Shader(const std::string &vertex_path, const std::string &fragment_path)
@@ -30,7 +37,7 @@ void Shader::create_shader()
     std::string vertex_source = read_file(vertex_path);
     if (vertex_source.empty())
     {
-        std::cerr << "ERROR::SHADER: Failed to read vertex shader file: " << vertex_path << std::endl;
+        std::cerr << "ERROR::SHADER: Failed to read vertex shader file: " << vertex_path << '\n';
         return;
     }
 
@@ -44,7 +51,7 @@ void Shader::create_shader()
     std::string fragment_source = read_file(fragment_path);
     if (fragment_source.empty())
     {
-        std::cerr << "ERROR::SHADER: Failed to read fragment shader file: " << fragment_path << std::endl;
+        std::cerr << "ERROR::SHADER: Failed to read fragment shader file: " << fragment_path << '\n';
         glDeleteShader(vs);
         return;
     }
@@ -70,7 +77,7 @@ void Shader::create_shader()
     {
         glGetProgramInfoLog(ID, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
-                  << infoLog << std::endl;
+                  << infoLog << '\n';
     }
 
     glDeleteShader(vs);
@@ -98,7 +105,7 @@ unsigned int Shader::compile_shader(unsigned int type, const std::string &source
         std::cerr << "Failed to compile shader: "
                   << (type == GL_VERTEX_SHADER ? "Vertex" : "Fragment")
                   << "\n"
-                  << msg << std::endl;
+                  << msg << '\n';
         glDeleteShader(shader_id);
         return -1;
     }

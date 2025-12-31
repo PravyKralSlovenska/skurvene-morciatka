@@ -31,3 +31,4 @@ enum GL_DRAW
 // dalsie buffery
 // UBO
 // SSBO
+// SSAO
