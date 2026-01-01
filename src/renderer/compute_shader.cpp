@@ -86,6 +86,16 @@ void Compute_Shader::set_vec2(const std::string &name, float x, float y) const
     glUniform2f(glGetUniformLocation(ID, name.c_str()), x, y);
 }
 
+void Compute_Shader::set_ivec2(const std::string &name, const glm::ivec2 &value) const
+{
+    glUniform2iv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
+}
+
+void Compute_Shader::set_ivec2(const std::string &name, const int x, const int y) const
+{
+    glUniform2i(glGetUniformLocation(ID, name.c_str()), x, y);
+}
+
 void Compute_Shader::set_vec3(const std::string &name, const glm::vec3 &value) const
 {
     glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);

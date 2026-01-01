@@ -9,6 +9,9 @@ void IRenderer::init()
     create_window();
     init_glad();
 
+    const GLubyte *version = glGetString(GL_VERSION);
+    std::cout << "OpenGL Version: " << version << '\n'; // opengl verzia 4.6
+
     // init vsetky render
     world_renderer = std::make_unique<World_Renderer>(world);
     world_renderer->init();
@@ -22,7 +25,6 @@ void IRenderer::init()
 
 bool IRenderer::render_everything()
 {
-    // Check for window resize and update projection if needed
     int width, height;
     glfwGetWindowSize(window, &width, &height);
     if (width != (int)m_window_width || height != (int)m_window_height)
@@ -75,7 +77,7 @@ void IRenderer::init_glfw()
     glfwInit();
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // Make window resizable
 }

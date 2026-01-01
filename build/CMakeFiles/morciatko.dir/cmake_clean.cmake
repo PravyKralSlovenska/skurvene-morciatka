@@ -34,6 +34,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/morciatko.dir/src/renderer/buffers/buffer.cpp.o.d"
   "CMakeFiles/morciatko.dir/src/renderer/buffers/element_array_object.cpp.o"
   "CMakeFiles/morciatko.dir/src/renderer/buffers/element_array_object.cpp.o.d"
+  "CMakeFiles/morciatko.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.o"
+  "CMakeFiles/morciatko.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.o.d"
   "CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_array_object.cpp.o"
   "CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_array_object.cpp.o.d"
   "CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_buffer_object.cpp.o"

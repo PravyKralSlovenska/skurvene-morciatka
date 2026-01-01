@@ -340,9 +340,9 @@ std::vector<WorldCell *> World::find_solid_neighbors(WorldCell *cell, Chunk *chu
     return neighbors;
 }
 
-std::pair<int, int> World::get_chunk_dimensions()
+glm::vec2 World::get_chunk_dimensions()
 {
-    return std::pair<int, int>(chunk_width, chunk_height);
+    return glm::vec2(chunk_width, chunk_height);
 }
 
 std::unordered_map<glm::ivec2, std::unique_ptr<Chunk>, Chunk_Coords_to_Hash> *World::get_chunks()

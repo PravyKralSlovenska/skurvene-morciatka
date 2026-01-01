@@ -634,6 +634,33 @@ src/renderer/buffers/element_array_object.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/buffers/element_array_object.cpp.s
 .PHONY : src/renderer/buffers/element_array_object.cpp.s
 
+src/renderer/buffers/shader_storage_buffer_object.o: src/renderer/buffers/shader_storage_buffer_object.cpp.o
+.PHONY : src/renderer/buffers/shader_storage_buffer_object.o
+
+# target to build an object file
+src/renderer/buffers/shader_storage_buffer_object.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.o
+.PHONY : src/renderer/buffers/shader_storage_buffer_object.cpp.o
+
+src/renderer/buffers/shader_storage_buffer_object.i: src/renderer/buffers/shader_storage_buffer_object.cpp.i
+.PHONY : src/renderer/buffers/shader_storage_buffer_object.i
+
+# target to preprocess a source file
+src/renderer/buffers/shader_storage_buffer_object.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.i
+.PHONY : src/renderer/buffers/shader_storage_buffer_object.cpp.i
+
+src/renderer/buffers/shader_storage_buffer_object.s: src/renderer/buffers/shader_storage_buffer_object.cpp.s
+.PHONY : src/renderer/buffers/shader_storage_buffer_object.s
+
+# target to generate assembly for a file
+src/renderer/buffers/shader_storage_buffer_object.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.s
+.PHONY : src/renderer/buffers/shader_storage_buffer_object.cpp.s
+
 src/renderer/buffers/vertex_array_object.o: src/renderer/buffers/vertex_array_object.cpp.o
 .PHONY : src/renderer/buffers/vertex_array_object.o
 
@@ -1304,6 +1331,9 @@ help:
 	@echo "... src/renderer/buffers/element_array_object.o"
 	@echo "... src/renderer/buffers/element_array_object.i"
 	@echo "... src/renderer/buffers/element_array_object.s"
+	@echo "... src/renderer/buffers/shader_storage_buffer_object.o"
+	@echo "... src/renderer/buffers/shader_storage_buffer_object.i"
+	@echo "... src/renderer/buffers/shader_storage_buffer_object.s"
 	@echo "... src/renderer/buffers/vertex_array_object.o"
 	@echo "... src/renderer/buffers/vertex_array_object.i"
 	@echo "... src/renderer/buffers/vertex_array_object.s"

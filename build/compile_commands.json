@@ -97,6 +97,12 @@
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/shader_storage_buffer_object.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/shader_storage_buffer_object.cpp",
+  "output": "CMakeFiles/morciatko.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
   "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_array_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/vertex_array_object.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/vertex_array_object.cpp",
   "output": "CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_array_object.cpp.o"
@@ -304,6 +310,12 @@
   "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/buffers/element_array_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/element_array_object.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/element_array_object.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/renderer/buffers/element_array_object.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/shader_storage_buffer_object.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/shader_storage_buffer_object.cpp",
+  "output": "CMakeFiles/morciatko_lib.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",

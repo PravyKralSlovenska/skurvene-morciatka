@@ -34,12 +34,14 @@ public:
     // void get_dispatch() const;
 
     void set_memory_barrier(const unsigned int type);
-
     void set_work_group(const int size) const;
+
     void set_bool(const std::string &name, bool value) const;
     void set_int(const std::string &name, int value) const;
     void set_float(const std::string &name, float value) const;
     void set_vec2(const std::string &name, const glm::vec2 &value) const;
+    void set_ivec2(const std::string &name, const glm::ivec2 &value) const;
+    void set_ivec2(const std::string &name, const int x, const int y) const;
     void set_vec2(const std::string &name, float x, float y) const;
     void set_vec3(const std::string &name, const glm::vec3 &value) const;
     void set_vec3(const std::string &name, float x, float y, float z) const;
