@@ -22,6 +22,11 @@ ELEMENT_ARRAY_BUFFER::~ELEMENT_ARRAY_BUFFER()
 
 void ELEMENT_ARRAY_BUFFER::bind()
 {
+    if (is_binded(GL_ELEMENT_ARRAY_BUFFER_BINDING))
+    {
+        return;
+    }
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
 }
 

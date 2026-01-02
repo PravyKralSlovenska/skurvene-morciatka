@@ -16,6 +16,17 @@ public:
     virtual void unbind() = 0;
 
     bool is_valid() const;
+    
+    /*
+     * binding je:
+     * GL_ARRAY_BUFFER_BINDING
+     * GL_ELEMENT_ARRAY_BUFFER_BINDING
+     * GL_SHADER_STORAGE_BUFFER_BINDING
+     * GL_UNIFORM_BUFFER_BINDING
+     * GL_COPY_READ_BUFFER_BINDING
+     * GL_COPY_WRITE_BUFFER_BINDING
+     */
+    bool is_binded(const int binding) const;
 };
 
 // this for VERTEX_BUFFER_OBJECT on how should be the thing drawed

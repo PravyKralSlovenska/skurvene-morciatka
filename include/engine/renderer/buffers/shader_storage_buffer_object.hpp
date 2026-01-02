@@ -6,6 +6,8 @@
 
 /*
  * Shader_Storage_Buffer_Object (SSBO)
+ * 1. allocate
+ * 2. bind_base
  */
 class Shader_Storage_Buffer_Object : public Buffer
 {
@@ -16,6 +18,9 @@ public:
     void bind() override;
     void bind_base(const unsigned int binding_point);
     void unbind() override;
+
+    // index v compute shadery (bind_base)
+    bool is_binded_based(const int index);
 
     void allocate(size_t size_bytes, GL_DRAW draw);
 

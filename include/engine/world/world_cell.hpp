@@ -14,7 +14,7 @@ struct WorldCell
         return coords == other.coords && particle == other.particle;
     }
 
-    const glm::ivec2 coords;
+    glm::ivec2 coords;
     Particle particle;
 
     WorldCell(glm::ivec2 coords);

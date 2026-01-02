@@ -22,6 +22,11 @@ VERTEX_BUFFER_OBJECT::~VERTEX_BUFFER_OBJECT()
 
 void VERTEX_BUFFER_OBJECT::bind()
 {
+    // if (is_binded()) // neexistuje VERTEX_BUFFER_OBJECT binding enum
+    // {
+    //     return
+    // }
+
     glBindBuffer(GL_ARRAY_BUFFER, id);
 }
 

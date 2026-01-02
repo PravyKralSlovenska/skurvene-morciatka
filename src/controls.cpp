@@ -101,22 +101,21 @@ void Controls::handle_input()
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
     {
-        // Get camera position
+        // std::cout << "LAVE TLACIDLO KLIK\n";
+
         glm::vec2 cam_pos = camera->get_position();
-
-        // Convert screen coordinates to world coordinates
-        // Account for camera offset and zoom
+        
         float zoom_factor = camera->get_zoom();
-
-        // Get actual window dimensions
+        
         int window_width, window_height;
         glfwGetWindowSize(window, &window_width, &window_height);
-
+        
         glm::ivec2 world_pos;
         world_pos.x = (xpos - window_width / 2.0f) / zoom_factor + cam_pos.x;
         world_pos.y = (ypos - window_height / 2.0f) / zoom_factor + cam_pos.y;
 
         world->place_particle(world_pos, Particle_Type::WATER);
+
     }
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)

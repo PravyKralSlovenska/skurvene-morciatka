@@ -20,6 +20,8 @@ public:
     void create_shader();
     unsigned int compile_shader(unsigned int type, const std::string &source);
 
+    bool is_binded();
+
     // setters
     void set_int(const std::string &name, int value) const;
     void set_bool(const std::string &name, bool value) const;

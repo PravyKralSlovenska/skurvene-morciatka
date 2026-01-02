@@ -12,6 +12,11 @@ VERTEX_ARRAY_OBJECT::~VERTEX_ARRAY_OBJECT()
 
 void VERTEX_ARRAY_OBJECT::bind()
 {
+    if (is_binded(GL_VERTEX_ARRAY_BINDING))
+    {
+        return;
+    }
+
     glBindVertexArray(id);
 }
 

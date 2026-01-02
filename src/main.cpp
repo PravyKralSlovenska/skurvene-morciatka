@@ -43,7 +43,7 @@ int main()
     render.set_time_manager(&time_manager);
     render.set_camera(&camera);
 
-    int window_width = 0, window_height = 0;
+    int window_width = 0, window_height = 0; // static ???
     GLFWwindow *glfw_window = render.get_window();
     glfwGetWindowSize(glfw_window, &window_width, &window_height);
     camera.set_window_dimensions(static_cast<float>(window_width), static_cast<float>(window_height));

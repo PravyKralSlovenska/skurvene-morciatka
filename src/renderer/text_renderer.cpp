@@ -42,7 +42,7 @@ void Text_Renderer::init()
 
     std::cout << "Font loaded successfully!" << std::endl;
 
-    shader = std::make_unique<Shader>("../shaders/text_vertex.glsl", "../shaders/text_texture.glsl");
+    shader = std::make_unique<Shader>("../shaders/texture/text_vertex.glsl", "../shaders/texture/text_texture.glsl");
     // shader->create_shader();
 
     // shader2 = std::make_unique<Shader>("../shaders/vertex.glsl", "../shaders/fragment.glsl");

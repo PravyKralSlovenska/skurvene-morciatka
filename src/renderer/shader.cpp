@@ -22,7 +22,19 @@ Shader::~Shader()
 
 void Shader::use()
 {
+    if (is_binded())
+    {
+        return;
+    }
+
     glUseProgram(ID);
+}
+
+bool Shader::is_binded()
+{
+    int current_shader_id = 0;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader_id);
+    return current_shader_id == ID;
 }
 
 void Shader::create_shader()

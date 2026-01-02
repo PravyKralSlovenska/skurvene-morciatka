@@ -69,17 +69,6 @@ std::unique_ptr<Chunk> World::create_chunk(const glm::ivec2 &coords)
 
     world_gen->make_noise_data(chunk.get());
 
-    // iterate(chunk.get());
-    // iterate(chunk.get());
-    // iterate(chunk.get());
-    // iterate(chunk.get());
-    // iterate(chunk.get());
-    // iterate(chunk.get());
-    // iterate(chunk.get());
-    // iterate(chunk.get());
-    // iterate(chunk.get());
-    // iterate(chunk.get());
-
     return chunk;
 }
 
@@ -196,50 +185,50 @@ void World::iterate(Chunk *chunk)
                     solid_neighbors++;
                 }
             }
-            else
-            {
-                glm::ivec2 neighboring_chunk_coords_offset{0, 0};
-                glm::ivec2 neighboring_chunk_cell_coords = neighbor_coords;
+            // else
+            // {
+            //     glm::ivec2 neighboring_chunk_coords_offset{0, 0};
+            //     glm::ivec2 neighboring_chunk_cell_coords = neighbor_coords;
 
-                if (neighbor_coords.x >= chunk_width)
-                {
-                    neighboring_chunk_coords_offset.x = 1;
-                    neighboring_chunk_cell_coords.x = 0;
-                }
-                else if (neighbor_coords.x < 0)
-                {
-                    neighboring_chunk_coords_offset.x = -1;
-                    neighboring_chunk_cell_coords.x = chunk_width - 1;
-                }
+            //     if (neighbor_coords.x >= chunk_width)
+            //     {
+            //         neighboring_chunk_coords_offset.x = 1;
+            //         neighboring_chunk_cell_coords.x = 0;
+            //     }
+            //     else if (neighbor_coords.x < 0)
+            //     {
+            //         neighboring_chunk_coords_offset.x = -1;
+            //         neighboring_chunk_cell_coords.x = chunk_width - 1;
+            //     }
 
-                if (neighbor_coords.y >= chunk_height)
-                {
-                    neighboring_chunk_coords_offset.y = 1;
-                    neighboring_chunk_cell_coords.y = 0;
-                }
-                else if (neighbor_coords.y < 0)
-                {
-                    neighboring_chunk_coords_offset.y = -1;
-                    neighboring_chunk_cell_coords.y = chunk_height - 1;
-                }
+            //     if (neighbor_coords.y >= chunk_height)
+            //     {
+            //         neighboring_chunk_coords_offset.y = 1;
+            //         neighboring_chunk_cell_coords.y = 0;
+            //     }
+            //     else if (neighbor_coords.y < 0)
+            //     {
+            //         neighboring_chunk_coords_offset.y = -1;
+            //         neighboring_chunk_cell_coords.y = chunk_height - 1;
+            //     }
 
-                Chunk *neighboring_chunk = get_chunk(chunk->coords + neighboring_chunk_coords_offset);
-                if (neighboring_chunk)
-                {
-                    auto neighbor = neighboring_chunk->get_if_not_empty(
-                        neighboring_chunk_cell_coords.x,
-                        neighboring_chunk_cell_coords.y);
+            //     Chunk *neighboring_chunk = get_chunk(chunk->coords + neighboring_chunk_coords_offset);
+            //     if (neighboring_chunk)
+            //     {
+            //         auto neighbor = neighboring_chunk->get_if_not_empty(
+            //             neighboring_chunk_cell_coords.x,
+            //             neighboring_chunk_cell_coords.y);
 
-                    if (neighbor)
-                    {
-                        solid_neighbors++;
-                    }
-                }
-                else
-                {
-                    solid_neighbors++;
-                }
-            }
+            //         if (neighbor)
+            //         {
+            //             solid_neighbors++;
+            //         }
+            //     }
+            //     else
+            //     {
+            //         solid_neighbors++;
+            //     }
+            // }
         }
 
         bool is_currently_solid = (cell.particle.type != Particle_Type::EMPTY);
@@ -340,9 +329,9 @@ std::vector<WorldCell *> World::find_solid_neighbors(WorldCell *cell, Chunk *chu
     return neighbors;
 }
 
-glm::vec2 World::get_chunk_dimensions()
+glm::ivec2 World::get_chunk_dimensions()
 {
-    return glm::vec2(chunk_width, chunk_height);
+    return glm::ivec2(chunk_width, chunk_height);
 }
 
 std::unordered_map<glm::ivec2, std::unique_ptr<Chunk>, Chunk_Coords_to_Hash> *World::get_chunks()

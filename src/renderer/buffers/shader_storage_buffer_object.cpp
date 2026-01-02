@@ -34,3 +34,10 @@ void Shader_Storage_Buffer_Object::allocate(size_t size_bytes, GL_DRAW draw)
     bind();
     glBufferData(GL_SHADER_STORAGE_BUFFER, size_bytes, nullptr, draw);
 }
+
+bool Shader_Storage_Buffer_Object::is_binded_based(const int index)
+{
+    int current_buffer_id = 0;
+    glGetIntegeri_v(GL_SHADER_STORAGE_BUFFER_BINDING, index, &current_buffer_id);
+    return current_buffer_id == id;
+}

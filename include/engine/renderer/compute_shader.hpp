@@ -30,6 +30,8 @@ public:
 
     void use();
 
+    bool is_binded();
+
     void dispatch(const int x, const int y, const int z = 1);
     // void get_dispatch() const;
 

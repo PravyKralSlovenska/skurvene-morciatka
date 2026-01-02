@@ -6,7 +6,7 @@ namespace Globals
     // constexpr float WINDOW_HEIGHT = 1080.0;
     constexpr float WINDOW_WIDTH = 1000.0;
     constexpr float WINDOW_HEIGHT = 800.0;
-    static constexpr float PARTICLE_SIZE = 5.0; // particle size 1 == seka idk preco
+    static constexpr float PARTICLE_SIZE = 5.0;
     static constexpr float FILL_PERCENT = 0.51;
     constexpr float CHUNK_WIDTH = 1000.0;
     constexpr float CHUNK_HEIGHT = 800.0;

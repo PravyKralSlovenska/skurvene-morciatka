@@ -84,7 +84,7 @@ public:
     int get_chunks_size();
     std::unordered_set<glm::ivec2, Chunk_Coords_to_Hash> *get_active_chunks();
 
-    glm::vec2 get_chunk_dimensions();
+    glm::ivec2 get_chunk_dimensions();
     Chunk *get_chunk(const int x, const int y);
     Chunk *get_chunk(const glm::ivec2 &coords);
     Chunk *get_chunk(const Chunk_Coords_to_Hash something);

@@ -10,6 +10,11 @@ Compute_Shader::Compute_Shader(const std::string &compute_path)
     init();
 }
 
+Compute_Shader::~Compute_Shader()
+{
+    glDeleteProgram(ID);
+}
+
 void Compute_Shader::init()
 {
     std::string compute_source = read_file(compute_path);
@@ -36,13 +41,20 @@ void Compute_Shader::init()
     std::cout << "COMPUTE SHADER JE VYTVORENY S ID: " << ID << '\n';
 }
 
-Compute_Shader::~Compute_Shader()
+bool Compute_Shader::is_binded()
 {
-    glDeleteProgram(ID);
+    int current_shader_id = 0;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &current_shader_id);
+    return current_shader_id == ID; // vrati true ak sucasny program je pripojeny
 }
 
 void Compute_Shader::use()
 {
+    if (is_binded())
+    {
+        return;
+    }
+
     glUseProgram(ID);
 }
 
