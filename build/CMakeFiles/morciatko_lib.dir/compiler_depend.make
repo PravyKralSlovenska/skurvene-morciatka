@@ -6560,6 +6560,7 @@ CMakeFiles/morciatko_lib.dir/src/renderer/world_renderer.cpp.o: /home/jakub/prog
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/renderer/world_renderer.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell.hpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell_gpu.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_chunk.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/glad/gl.h \
   /home/jakub/programko/cpp/skurvene-morciatka/include/others/GLOBALS.hpp \
@@ -8081,6 +8082,7 @@ CMakeFiles/morciatko_lib.dir/src/world/world.cpp.o: /home/jakub/programko/cpp/sk
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_ca_generation.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell.hpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell_gpu.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_chunk.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/others/GLOBALS.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/others/utils.hpp \
@@ -8518,6 +8520,7 @@ CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.o: /home/jakub/pr
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/particle/particle_velocity.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_ca_generation.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell.hpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell_gpu.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_chunk.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/others/GLOBALS.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/others/utils.hpp \
@@ -9325,6 +9328,7 @@ CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.o: /home/jakub/programko/
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/particle/particle_mass.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/particle/particle_velocity.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell.hpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell_gpu.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_chunk.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/others/GLOBALS.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/others/utils.hpp \
@@ -10808,6 +10812,8 @@ CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.o: /home/jakub/programko/
 /usr/include/glm/ext/vector_uint3_sized.hpp:
 
 /usr/include/glm/ext/vector_uint4.hpp:
+
+/home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell_gpu.hpp:
 
 /usr/include/pthread.h:
 

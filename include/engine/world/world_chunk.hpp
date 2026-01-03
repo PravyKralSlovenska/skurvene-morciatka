@@ -3,6 +3,8 @@
 #include <vector>
 #include <glm/glm.hpp>
 
+#include "engine/world/world_cell_gpu.hpp"
+
 // forward declarations
 struct WorldCell;
 class Vertex;
@@ -27,6 +29,9 @@ private:
     std::vector<WorldCell> chunk_data;
     // std::vector<std::pair<int, int>> changes; // co sa zmenilo/pohlo z povodneho indexu na iny index
 
+    std::vector<GPUWorldCell> gpu_chunk_data;
+    bool gpu_dirty = true;
+
     Chunk_States state = Chunk_States::UNLOADED;
 
     // pre renderer
@@ -43,6 +48,7 @@ private:
 
     void make_cached_verticies();
     void make_cached_indicies();
+    void rebuild_gpu_chunk_data();
 
 public:
     const int width, height;
@@ -56,6 +62,7 @@ public:
 
     std::vector<WorldCell> *get_chunk_data();
     void set_chunk_data(std::vector<WorldCell> &chunk_data);
+    const std::vector<GPUWorldCell> &get_gpu_chunk_data();
 
     Chunk_States get_state();
     void set_state(Chunk_States state);

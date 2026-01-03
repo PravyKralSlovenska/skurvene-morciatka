@@ -1,6 +1,7 @@
 #include "engine/world/world_chunk.hpp"
 
 #include <iostream>
+#include <cstdint>
 
 #include "engine/world/world_cell.hpp"
 #include "engine/particle/particle.hpp"
@@ -36,6 +37,7 @@ inline int Chunk::get_index(int x, int y)
 void Chunk::move_worldcell(WorldCell &from, WorldCell &to)
 {
     std::swap(from.particle, to.particle);
+    gpu_dirty = true;
 }
 
 void Chunk::make_cached_verticies()
@@ -60,6 +62,7 @@ void Chunk::set_chunk_data(std::vector<WorldCell> &new_chunk_data)
     }
 
     chunk_data = std::move(new_chunk_data);
+    gpu_dirty = true;
 }
 
 Chunk_States Chunk::get_state()
@@ -140,6 +143,8 @@ void Chunk::set_worldcell(int index, Particle_Type particle)
     default:
         break;
     }
+
+    gpu_dirty = true;
 }
 
 WorldCell *Chunk::get_worldcell(int x, int y)
@@ -150,6 +155,45 @@ WorldCell *Chunk::get_worldcell(int x, int y)
 WorldCell *Chunk::get_worldcell(int index)
 {
     return &chunk_data[index];
+}
+
+void Chunk::rebuild_gpu_chunk_data()
+{
+    if (chunk_data.empty())
+    {
+        gpu_chunk_data.clear();
+        gpu_dirty = false;
+        return;
+    }
+
+    gpu_chunk_data.resize(chunk_data.size());
+
+    for (std::size_t i = 0; i < chunk_data.size(); ++i)
+    {
+        const WorldCell &cell = chunk_data[i];
+        const Particle &particle = cell.particle;
+
+        GPUWorldCell &gpu_cell = gpu_chunk_data[i];
+        gpu_cell.coords = cell.coords;
+        gpu_cell.base_color = glm::vec4(particle.base_color.r, particle.base_color.g, particle.base_color.b, particle.base_color.a);
+        gpu_cell.color = glm::vec4(particle.color.r, particle.color.g, particle.color.b, particle.color.a);
+        gpu_cell.meta = glm::uvec4(static_cast<std::uint32_t>(particle.type),
+                                   static_cast<std::uint32_t>(particle.state),
+                                   static_cast<std::uint32_t>(particle.move),
+                                   cell.visited ? 1u : 0u);
+    }
+
+    gpu_dirty = false;
+}
+
+const std::vector<GPUWorldCell> &Chunk::get_gpu_chunk_data()
+{
+    if (gpu_dirty)
+    {
+        rebuild_gpu_chunk_data();
+    }
+
+    return gpu_chunk_data;
 }
 
 std::vector<Vertex> *Chunk::get_cached_verticies()
