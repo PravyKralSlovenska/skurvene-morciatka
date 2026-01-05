@@ -11,7 +11,7 @@
 World::World()
     : seed(1)
 {
-    world_gen = std::make_unique<World_CA_Generation>();
+    world_gen = std::make_unique<World_CA_Generation>(chunk_width, chunk_height);
 }
 
 World::~World() = default;
@@ -19,7 +19,7 @@ World::~World() = default;
 void World::update()
 {
     calculate_active_chunks();
-    update_active_chunks();
+    // update_active_chunks();
 }
 
 void World::update_active_chunks()
@@ -67,7 +67,9 @@ std::unique_ptr<Chunk> World::create_chunk(const glm::ivec2 &coords)
 {
     std::unique_ptr<Chunk> chunk = std::make_unique<Chunk>(coords, chunk_width, chunk_height);
 
-    world_gen->make_noise_data(chunk.get());
+    world_gen->generate_chunk_with_biome(chunk.get());
+
+    // world_gen->carve_cave_noise(chunk.get());
 
     return chunk;
 }

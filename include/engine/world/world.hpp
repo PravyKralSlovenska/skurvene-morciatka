@@ -36,9 +36,9 @@ private:
 
     Player *player;
 
-    const int chunk_width = 200;
-    const int chunk_height = 100;
-    const int chunk_radius = 2; // kolko chunkov by sa malo aktualizovat/generovat okolo hraca
+    const int chunk_width = 10;
+    const int chunk_height = 10;
+    const int chunk_radius = 25; // kolko chunkov by sa malo aktualizovat/generovat okolo hraca
 
     std::unordered_map<glm::ivec2, std::unique_ptr<Chunk>, Chunk_Coords_to_Hash> world; // chunks
     std::unordered_set<glm::ivec2, Chunk_Coords_to_Hash> active_chunks;

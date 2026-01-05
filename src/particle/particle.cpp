@@ -68,3 +68,14 @@ Particle create_stone()
         // Particle_Density(3000)
     );
 }
+
+Particle create_uranium()
+{
+    return Particle(
+        Particle_Type::URANIUM,
+        Particle_State::SOLID,
+        Particle_Movement::NONE,
+        Color(60.0, 255.0, 73.0, 1.0)
+        // Particle_Density(3000)
+    );
+}

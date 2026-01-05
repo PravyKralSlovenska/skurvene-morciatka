@@ -57,11 +57,11 @@ void Chunk::set_chunk_data(std::vector<WorldCell> &new_chunk_data)
 {
     if (new_chunk_data.size() != width * height)
     {
-        std::cerr << "chunk data nemaju dobry rozmer\n";
+        std::cerr << "chunk data nemaju dobry rozmer. potrebujem rozmer: " << width * height << " ale prisiel rozmer: " << new_chunk_data.size() << '\n';
         return;
     }
 
-    chunk_data = std::move(new_chunk_data);
+    chunk_data = new_chunk_data;
     gpu_dirty = true;
 }
 

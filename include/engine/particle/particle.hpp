@@ -30,6 +30,7 @@ enum class Particle_Type
     SAND,
     WATER,
     SMOKE,
+    URANIUM,
     STONE
 };
 
@@ -97,6 +98,7 @@ Particle create_sand();
 Particle create_water();
 Particle create_smoke();
 Particle create_stone();
+Particle create_uranium();
 
 // teplota
 // zivotnost
