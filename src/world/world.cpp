@@ -9,9 +9,9 @@
 #include "engine/particle/particle.hpp"
 
 World::World()
-    : seed(1)
 {
     world_gen = std::make_unique<World_CA_Generation>(chunk_width, chunk_height);
+    world_gen->set_seed(1);
 }
 
 World::~World() = default;

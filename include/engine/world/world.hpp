@@ -32,8 +32,6 @@ struct Chunk_Coords_to_Hash
 class World
 {
 private:
-    const int seed; // seed na generovanie nahodneho sveta
-
     Player *player;
 
     const int chunk_width = 10;

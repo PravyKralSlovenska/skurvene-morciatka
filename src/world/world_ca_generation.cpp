@@ -10,14 +10,10 @@
 
 World_CA_Generation::World_CA_Generation(const int chunk_width, const int chunk_height)
 {
-    cave_noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
-    cave_noise.SetFractalType(FastNoiseLite::FractalType_FBm);
-    cave_noise.SetFractalOctaves(4);
-    cave_noise.SetFrequency(0.02f);
+    seed = Random_Machine::get_int_from_range(0, 9999);
 
-    biome_noise.SetNoiseType(FastNoiseLite::NoiseType_Cellular);
-    biome_noise.SetFrequency(0.002f);
-    biome_noise.SetSeed(9999); // cislo by malo byt nahodne to potom doladime
+    recalculate_noises();
+    setup_biome_noises();
 
     default_chunk_data.reserve(chunk_width * chunk_height);
     for (int y{0}; y < chunk_height; y++)
@@ -27,6 +23,76 @@ World_CA_Generation::World_CA_Generation(const int chunk_width, const int chunk_
             default_chunk_data.emplace_back(glm::ivec2(x, y), create_stone());
         }
     }
+}
+
+void World_CA_Generation::recalculate_noises()
+{
+    cave_noise.SetSeed(seed);
+    cave_noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
+    cave_noise.SetFractalType(FastNoiseLite::FractalType_FBm);
+    cave_noise.SetFractalOctaves(4);
+    cave_noise.SetFrequency(0.02f);
+
+    biome_noise.SetSeed(seed);
+    biome_noise.SetNoiseType(FastNoiseLite::NoiseType_Cellular);
+    biome_noise.SetFrequency(0.002f);
+}
+
+glm::ivec2 World_CA_Generation::calculate_world_coords()
+{
+}
+
+void World_CA_Generation::setup_biome_noises()
+{
+    std::vector<Biome_Type> biome_types = {
+        Biome_Type::SANDY,
+        Biome_Type::STONE,
+        Biome_Type::ICY,
+        Biome_Type::URANIUM};
+
+    for (const auto &biome_type : biome_types)
+    {
+        Biome biome;
+
+        switch (biome_type)
+        {
+        case Biome_Type::SANDY:
+            biome = get_desert_biome();
+            break;
+
+        case Biome_Type::STONE:
+            biome = get_stone_biome();
+            break;
+
+        case Biome_Type::ICY:
+            biome = get_icy_biome();
+            break;
+
+        case Biome_Type::URANIUM:
+            biome = get_uranium_biome();
+            break;
+
+        default:
+            break;
+        }
+
+        FastNoiseLite noise;
+        noise.SetSeed(seed);
+        noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
+        noise.SetFractalType(FastNoiseLite::FractalType_FBm);
+        noise.SetFractalOctaves(4);
+        noise.SetFrequency(biome.cave_size);
+
+        biome_cave_noises[biome_type] = noise;
+    }
+}
+
+void World_CA_Generation::set_seed(const int seed)
+{
+    this->seed = seed;
+
+    recalculate_noises();
+    setup_biome_noises();
 }
 
 void World_CA_Generation::fill_chunk(Chunk *chunk)
@@ -43,12 +109,12 @@ void World_CA_Generation::carve_cave_noise(Chunk *chunk)
         int world_x = chunk->coords.x * chunk->width + cell.coords.x;
         int world_y = chunk->coords.y * chunk->height + cell.coords.y;
 
-        float noise_value = cave_noise.GetNoise((float)world_x, (float)world_y);
+        // float noise_value = cave_noise.GetNoise((float)world_x, (float)world_y);
 
-        if (noise_value < -0.2f)
-        {
-            cell.set_particle(Particle());
-        }
+        // if (noise_value < -0.2f)
+        // {
+        //     cell.set_particle(Particle());
+        // }
     }
 }
 
@@ -109,16 +175,8 @@ Biome World_CA_Generation::get_biome(const int world_x, const int world_y)
 
 void World_CA_Generation::generate_chunk_with_biome(Chunk *chunk)
 {
-    // Get biome at chunk center
-    int center_x = chunk->coords.x * chunk->width + chunk->width / 2;
-    int center_y = chunk->coords.y * chunk->height + chunk->height / 2;
-    Biome biome = get_biome(center_x, center_y);
-
     std::vector<WorldCell> new_data;
     new_data.reserve(chunk->width * chunk->height);
-
-    // Update cave noise frequency based on biome
-    cave_noise.SetFrequency(biome.cave_size);
 
     for (int y = 0; y < chunk->height; y++)
     {
@@ -127,13 +185,12 @@ void World_CA_Generation::generate_chunk_with_biome(Chunk *chunk)
             int world_x = chunk->coords.x * chunk->width + x;
             int world_y = chunk->coords.y * chunk->height + y;
 
-            // Get cave noise
-            float cave_value = cave_noise.GetNoise((float)world_x, (float)world_y);
+            Biome biome = get_biome(world_x, world_y);
 
-            // Carve caves based on biome threshold
+            float cave_value = biome_cave_noises[biome.type].GetNoise((float)world_x, (float)world_y);
+
             if (cave_value < biome.cave_noise)
             {
-                // Cave = empty
                 new_data.emplace_back(glm::ivec2(x, y));
             }
             else

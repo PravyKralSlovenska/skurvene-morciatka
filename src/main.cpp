@@ -64,11 +64,11 @@ int main()
     // world.set_time_manager(&time_manager);
     world.set_player(&player);
 
-    // audio_manager.init();
-    // audio_manager.set_player(&player);
-    // audio_manager.set_time_manager(&time_manager);
-    // audio_manager.send_execute(Pending_Execute::Operations::LOAD, "background music", "../music/menu/Rick Ross - Maybach Music III.mp3");
-    // audio_manager.send_execute(Pending_Execute::Operations::PLAY, "background music");
+    audio_manager.init();
+    audio_manager.set_player(&player);
+    audio_manager.set_time_manager(&time_manager);
+    audio_manager.send_execute(Pending_Execute::Operations::LOAD, "background music", "../music/menu/Rick Ross - Maybach Music III.mp3");
+    audio_manager.send_execute(Pending_Execute::Operations::PLAY, "background music");
 
     // game loop
     while (!render.should_close())
@@ -96,8 +96,7 @@ int main()
         render.render_everything();
     }
 
-    // audio_manager.send_execute(Pending_Execute::Operations::STOP);
-    // audio_manager.cleanup();
+    audio_manager.send_execute(Pending_Execute::Operations::STOP);
     render.cleanup();
 
     std::cout << "END\n";
