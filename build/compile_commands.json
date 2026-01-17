@@ -37,12 +37,6 @@
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/entity.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/entity.cpp",
-  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/entity.cpp",
-  "output": "CMakeFiles/morciatko.dir/src/entity.cpp.o"
-},
-{
-  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
   "command": "/usr/bin/cc  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -o CMakeFiles/morciatko.dir/src/gl.c.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/gl.c",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/gl.c",
   "output": "CMakeFiles/morciatko.dir/src/gl.c.o"
@@ -82,6 +76,24 @@
   "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/physics_formulas.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/physics_formulas.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/physics_formulas.cpp",
   "output": "CMakeFiles/morciatko.dir/src/physics_formulas.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/player/entity.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/entity.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/player/entity.cpp",
+  "output": "CMakeFiles/morciatko.dir/src/player/entity.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/player/entity_manager.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/entity_manager.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/player/entity_manager.cpp",
+  "output": "CMakeFiles/morciatko.dir/src/player/entity_manager.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/player/item.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/item.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/player/item.cpp",
+  "output": "CMakeFiles/morciatko.dir/src/player/item.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
@@ -253,12 +265,6 @@
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/entity.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/entity.cpp",
-  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/entity.cpp",
-  "output": "CMakeFiles/morciatko_lib.dir/src/entity.cpp.o"
-},
-{
-  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
   "command": "/usr/bin/cc  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -o CMakeFiles/morciatko_lib.dir/src/gl.c.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/gl.c",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/gl.c",
   "output": "CMakeFiles/morciatko_lib.dir/src/gl.c.o"
@@ -298,6 +304,24 @@
   "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/physics_formulas.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/physics_formulas.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/physics_formulas.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/physics_formulas.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/player/entity.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/entity.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/player/entity.cpp",
+  "output": "CMakeFiles/morciatko_lib.dir/src/player/entity.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/player/entity_manager.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/entity_manager.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/player/entity_manager.cpp",
+  "output": "CMakeFiles/morciatko_lib.dir/src/player/entity_manager.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/player/item.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/item.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/player/item.cpp",
+  "output": "CMakeFiles/morciatko_lib.dir/src/player/item.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",

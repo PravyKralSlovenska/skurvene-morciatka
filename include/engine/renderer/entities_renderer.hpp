@@ -3,7 +3,7 @@
 #include <iostream>
 #include <memory>
 
-#include "engine/entity.hpp"
+#include "engine/player/entity.hpp"
 #include "engine/renderer/buffers/vertex_array_object.hpp"
 #include "engine/renderer/buffers/vertex_buffer_object.hpp"
 #include "engine/renderer/shader.hpp"

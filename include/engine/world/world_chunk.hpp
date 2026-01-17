@@ -64,6 +64,8 @@ public:
     void set_chunk_data(std::vector<WorldCell> &chunk_data);
     const std::vector<GPUWorldCell> &get_gpu_chunk_data();
 
+    glm::ivec2 get_chunk_dimensions();
+
     Chunk_States get_state();
     void set_state(Chunk_States state);
 

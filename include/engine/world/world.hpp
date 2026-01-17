@@ -11,6 +11,7 @@ class Player;
 class World_CA_Generation;
 class Chunk;
 class WorldCell;
+class Entity;
 enum class Particle_Type;
 
 /*
@@ -86,4 +87,7 @@ public:
     Chunk *get_chunk(const int x, const int y);
     Chunk *get_chunk(const glm::ivec2 &coords);
     Chunk *get_chunk(const Chunk_Coords_to_Hash something);
+
+    // pre hraca
+    bool is_cell_in_hitbox(const Entity entity);
 };

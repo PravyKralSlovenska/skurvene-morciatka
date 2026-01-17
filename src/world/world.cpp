@@ -1,6 +1,6 @@
 #include "engine/world/world.hpp"
 
-#include "engine/entity.hpp"
+#include "engine/player/entity.hpp"
 #include "engine/particle/particle_movement.hpp"
 #include "engine/world/world_chunk.hpp"
 #include "engine/world/world_cell.hpp"
@@ -366,8 +366,3 @@ Chunk *World::get_chunk(const glm::ivec2 &coords)
 
     return it->second.get();
 }
-
-// Chunk *World::get_chunk(const Chunk_Coords_to_Hash something)
-// {
-// return world[index];
-// }

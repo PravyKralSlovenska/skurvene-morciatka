@@ -5,7 +5,7 @@
 #include "engine/renderer/renderer.hpp"
 #include "engine/world/world.hpp"
 #include "engine/world/herringbone_world_generation.hpp"
-#include "engine/entity.hpp"
+#include "engine/player/entity.hpp"
 #include "engine/controls.hpp"
 #include "engine/camera.hpp"
 #include "engine/audio/audio_manager.hpp"
@@ -64,11 +64,11 @@ int main()
     // world.set_time_manager(&time_manager);
     world.set_player(&player);
 
-    audio_manager.init();
-    audio_manager.set_player(&player);
-    audio_manager.set_time_manager(&time_manager);
-    audio_manager.send_execute(Pending_Execute::Operations::LOAD, "background music", "../music/menu/Rick Ross - Maybach Music III.mp3");
-    audio_manager.send_execute(Pending_Execute::Operations::PLAY, "background music");
+    // audio_manager.init();
+    // audio_manager.set_player(&player);
+    // audio_manager.set_time_manager(&time_manager);
+    // audio_manager.send_execute(Pending_Execute::Operations::LOAD, "background music", "../music/menu/Rick Ross - Maybach Music III.mp3");
+    // audio_manager.send_execute(Pending_Execute::Operations::PLAY, "background music");
 
     // game loop
     while (!render.should_close())
@@ -96,7 +96,7 @@ int main()
         render.render_everything();
     }
 
-    audio_manager.send_execute(Pending_Execute::Operations::STOP);
+    // audio_manager.send_execute(Pending_Execute::Operations::STOP);
     render.cleanup();
 
     std::cout << "END\n";

@@ -340,33 +340,6 @@ src/controls.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/controls.cpp.s
 .PHONY : src/controls.cpp.s
 
-src/entity.o: src/entity.cpp.o
-.PHONY : src/entity.o
-
-# target to build an object file
-src/entity.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/entity.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/entity.cpp.o
-.PHONY : src/entity.cpp.o
-
-src/entity.i: src/entity.cpp.i
-.PHONY : src/entity.i
-
-# target to preprocess a source file
-src/entity.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/entity.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/entity.cpp.i
-.PHONY : src/entity.cpp.i
-
-src/entity.s: src/entity.cpp.s
-.PHONY : src/entity.s
-
-# target to generate assembly for a file
-src/entity.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/entity.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/entity.cpp.s
-.PHONY : src/entity.cpp.s
-
 src/gl.o: src/gl.c.o
 .PHONY : src/gl.o
 
@@ -579,6 +552,87 @@ src/physics_formulas.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/physics_formulas.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/physics_formulas.cpp.s
 .PHONY : src/physics_formulas.cpp.s
+
+src/player/entity.o: src/player/entity.cpp.o
+.PHONY : src/player/entity.o
+
+# target to build an object file
+src/player/entity.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/player/entity.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/player/entity.cpp.o
+.PHONY : src/player/entity.cpp.o
+
+src/player/entity.i: src/player/entity.cpp.i
+.PHONY : src/player/entity.i
+
+# target to preprocess a source file
+src/player/entity.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/player/entity.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/player/entity.cpp.i
+.PHONY : src/player/entity.cpp.i
+
+src/player/entity.s: src/player/entity.cpp.s
+.PHONY : src/player/entity.s
+
+# target to generate assembly for a file
+src/player/entity.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/player/entity.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/player/entity.cpp.s
+.PHONY : src/player/entity.cpp.s
+
+src/player/entity_manager.o: src/player/entity_manager.cpp.o
+.PHONY : src/player/entity_manager.o
+
+# target to build an object file
+src/player/entity_manager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/player/entity_manager.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/player/entity_manager.cpp.o
+.PHONY : src/player/entity_manager.cpp.o
+
+src/player/entity_manager.i: src/player/entity_manager.cpp.i
+.PHONY : src/player/entity_manager.i
+
+# target to preprocess a source file
+src/player/entity_manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/player/entity_manager.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/player/entity_manager.cpp.i
+.PHONY : src/player/entity_manager.cpp.i
+
+src/player/entity_manager.s: src/player/entity_manager.cpp.s
+.PHONY : src/player/entity_manager.s
+
+# target to generate assembly for a file
+src/player/entity_manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/player/entity_manager.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/player/entity_manager.cpp.s
+.PHONY : src/player/entity_manager.cpp.s
+
+src/player/item.o: src/player/item.cpp.o
+.PHONY : src/player/item.o
+
+# target to build an object file
+src/player/item.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/player/item.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/player/item.cpp.o
+.PHONY : src/player/item.cpp.o
+
+src/player/item.i: src/player/item.cpp.i
+.PHONY : src/player/item.i
+
+# target to preprocess a source file
+src/player/item.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/player/item.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/player/item.cpp.i
+.PHONY : src/player/item.cpp.i
+
+src/player/item.s: src/player/item.cpp.s
+.PHONY : src/player/item.s
+
+# target to generate assembly for a file
+src/player/item.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/player/item.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/player/item.cpp.s
+.PHONY : src/player/item.cpp.s
 
 src/renderer/buffers/buffer.o: src/renderer/buffers/buffer.cpp.o
 .PHONY : src/renderer/buffers/buffer.o
@@ -1298,9 +1352,6 @@ help:
 	@echo "... src/controls.o"
 	@echo "... src/controls.i"
 	@echo "... src/controls.s"
-	@echo "... src/entity.o"
-	@echo "... src/entity.i"
-	@echo "... src/entity.s"
 	@echo "... src/gl.o"
 	@echo "... src/gl.i"
 	@echo "... src/gl.s"
@@ -1325,6 +1376,15 @@ help:
 	@echo "... src/physics_formulas.o"
 	@echo "... src/physics_formulas.i"
 	@echo "... src/physics_formulas.s"
+	@echo "... src/player/entity.o"
+	@echo "... src/player/entity.i"
+	@echo "... src/player/entity.s"
+	@echo "... src/player/entity_manager.o"
+	@echo "... src/player/entity_manager.i"
+	@echo "... src/player/entity_manager.s"
+	@echo "... src/player/item.o"
+	@echo "... src/player/item.i"
+	@echo "... src/player/item.s"
 	@echo "... src/renderer/buffers/buffer.o"
 	@echo "... src/renderer/buffers/buffer.i"
 	@echo "... src/renderer/buffers/buffer.s"

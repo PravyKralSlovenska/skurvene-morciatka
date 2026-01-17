@@ -10,7 +10,7 @@
 #include "engine/world/world.hpp"
 #include "engine/renderer/renderer.hpp"
 #include "engine/time_manager.hpp"
-#include "engine/entity.hpp"
+#include "engine/player/entity.hpp"
 #include "engine/camera.hpp"
 #include "engine/audio/audio_manager.hpp"
 
