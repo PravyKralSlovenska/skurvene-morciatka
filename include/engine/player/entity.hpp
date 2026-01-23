@@ -1,9 +1,11 @@
 #pragma once
 
 #include <iostream>
+#include <array>
 #include <glm/glm.hpp>
 
 // forward declarations
+class Item;
 
 enum Entity_States
 {
@@ -63,6 +65,9 @@ public:
 
 class Player : public Entity
 {
+private:
+    std::array<Item, 50> inventory;
+
 public:
     std::string name;
     int selected_item;
@@ -70,4 +75,7 @@ public:
 public:
     Player(std::string name, glm::vec2 coords);
     ~Player() = default;
+
+    void change_selected_item(const int inventory_slot);
+    void change_selected_item(const Item item);
 };

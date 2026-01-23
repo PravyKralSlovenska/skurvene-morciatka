@@ -14,12 +14,17 @@ private:
     std::unordered_map<int, std::unique_ptr<Entity>> entities;
 
 private:
-    void create_entity();
-    void remove_entity();
+    void remove_all_dead();
 
 public:
     Entity_Manager();
     ~Entity_Manager();
 
     void update();
+    
+    void create_entity();
+    void remove_entity(const int id);
+    
+    Player *get_player();
+    Entity* get_entity(const int id);
 };

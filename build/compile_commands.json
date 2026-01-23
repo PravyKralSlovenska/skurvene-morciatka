@@ -1,481 +1,481 @@
 [
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_buffer.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_buffer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_buffer.cpp",
   "output": "CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/audio/audio_manager.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_manager.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/audio/audio_manager.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_manager.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_manager.cpp",
   "output": "CMakeFiles/morciatko.dir/src/audio/audio_manager.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/audio/audio_source.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_source.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/audio/audio_source.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_source.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_source.cpp",
   "output": "CMakeFiles/morciatko.dir/src/audio/audio_source.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/audio/listener.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/audio/listener.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/audio/listener.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/audio/listener.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/audio/listener.cpp",
   "output": "CMakeFiles/morciatko.dir/src/audio/listener.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/camera.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/camera.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/camera.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/camera.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/camera.cpp",
   "output": "CMakeFiles/morciatko.dir/src/camera.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/controls.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/controls.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/controls.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/controls.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/controls.cpp",
   "output": "CMakeFiles/morciatko.dir/src/controls.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/cc  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -o CMakeFiles/morciatko.dir/src/gl.c.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/gl.c",
+  "command": "/usr/bin/gcc  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL  -o CMakeFiles/morciatko.dir/src/gl.c.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/gl.c",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/gl.c",
   "output": "CMakeFiles/morciatko.dir/src/gl.c.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/particle/particle.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/particle/particle.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle.cpp",
   "output": "CMakeFiles/morciatko.dir/src/particle/particle.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/particle/particle_density.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_density.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/particle/particle_density.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_density.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_density.cpp",
   "output": "CMakeFiles/morciatko.dir/src/particle/particle_density.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/particle/particle_mass.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_mass.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/particle/particle_mass.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_mass.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_mass.cpp",
   "output": "CMakeFiles/morciatko.dir/src/particle/particle_mass.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_movement.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_movement.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_movement.cpp",
   "output": "CMakeFiles/morciatko.dir/src/particle/particle_movement.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/particle/particle_velocity.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_velocity.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/particle/particle_velocity.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_velocity.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_velocity.cpp",
   "output": "CMakeFiles/morciatko.dir/src/particle/particle_velocity.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/physics_formulas.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/physics_formulas.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/physics_formulas.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/physics_formulas.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/physics_formulas.cpp",
   "output": "CMakeFiles/morciatko.dir/src/physics_formulas.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/player/entity.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/entity.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/player/entity.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/entity.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/player/entity.cpp",
   "output": "CMakeFiles/morciatko.dir/src/player/entity.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/player/entity_manager.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/entity_manager.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/player/entity_manager.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/entity_manager.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/player/entity_manager.cpp",
   "output": "CMakeFiles/morciatko.dir/src/player/entity_manager.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/player/item.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/item.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/player/item.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/item.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/player/item.cpp",
   "output": "CMakeFiles/morciatko.dir/src/player/item.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/buffers/buffer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/buffer.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/buffers/buffer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/buffer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/buffer.cpp",
   "output": "CMakeFiles/morciatko.dir/src/renderer/buffers/buffer.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/buffers/element_array_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/element_array_object.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/buffers/element_array_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/element_array_object.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/element_array_object.cpp",
   "output": "CMakeFiles/morciatko.dir/src/renderer/buffers/element_array_object.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/shader_storage_buffer_object.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/shader_storage_buffer_object.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/shader_storage_buffer_object.cpp",
   "output": "CMakeFiles/morciatko.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_array_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/vertex_array_object.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_array_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/vertex_array_object.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/vertex_array_object.cpp",
   "output": "CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_array_object.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_buffer_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/vertex_buffer_object.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_buffer_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/vertex_buffer_object.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/vertex_buffer_object.cpp",
   "output": "CMakeFiles/morciatko.dir/src/renderer/buffers/vertex_buffer_object.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/compute_shader.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/compute_shader.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/compute_shader.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/compute_shader.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/compute_shader.cpp",
   "output": "CMakeFiles/morciatko.dir/src/renderer/compute_shader.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/debug_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/debug_renderer.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/debug_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/debug_renderer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/debug_renderer.cpp",
   "output": "CMakeFiles/morciatko.dir/src/renderer/debug_renderer.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/entities_renderer.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/entities_renderer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/entities_renderer.cpp",
   "output": "CMakeFiles/morciatko.dir/src/renderer/entities_renderer.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/renderer.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/renderer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/renderer.cpp",
   "output": "CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/scenes_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/scenes_renderer.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/scenes_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/scenes_renderer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/scenes_renderer.cpp",
   "output": "CMakeFiles/morciatko.dir/src/renderer/scenes_renderer.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/shader.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/shader.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/shader.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/shader.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/shader.cpp",
   "output": "CMakeFiles/morciatko.dir/src/renderer/shader.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/text_renderer.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/text_renderer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/text_renderer.cpp",
   "output": "CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/ui_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/ui_renderer.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/ui_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/ui_renderer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/ui_renderer.cpp",
   "output": "CMakeFiles/morciatko.dir/src/renderer/ui_renderer.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/world_renderer.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/world_renderer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/world_renderer.cpp",
   "output": "CMakeFiles/morciatko.dir/src/renderer/world_renderer.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/time_manager.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/time_manager.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/time_manager.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/time_manager.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/time_manager.cpp",
   "output": "CMakeFiles/morciatko.dir/src/time_manager.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/utils.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/utils.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/utils.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/utils.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/utils.cpp",
   "output": "CMakeFiles/morciatko.dir/src/utils.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/world/herringbone_world_generation.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/herringbone_world_generation.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/world/herringbone_world_generation.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/herringbone_world_generation.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/herringbone_world_generation.cpp",
   "output": "CMakeFiles/morciatko.dir/src/world/herringbone_world_generation.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/world/world.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/world/world.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world.cpp",
   "output": "CMakeFiles/morciatko.dir/src/world/world.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/world/world_ca_generation.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_ca_generation.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/world/world_ca_generation.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_ca_generation.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world_ca_generation.cpp",
   "output": "CMakeFiles/morciatko.dir/src/world/world_ca_generation.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/world/world_cell.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_cell.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/world/world_cell.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_cell.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world_cell.cpp",
   "output": "CMakeFiles/morciatko.dir/src/world/world_cell.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/world/world_chunk.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_chunk.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/world/world_chunk.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_chunk.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world_chunk.cpp",
   "output": "CMakeFiles/morciatko.dir/src/world/world_chunk.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko.dir/src/main.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/main.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/main.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/main.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/main.cpp",
   "output": "CMakeFiles/morciatko.dir/src/main.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/audio/audio_buffer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_buffer.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/audio/audio_buffer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_buffer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_buffer.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/audio/audio_buffer.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/audio/audio_manager.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_manager.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/audio/audio_manager.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_manager.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_manager.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/audio/audio_manager.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/audio/audio_source.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_source.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/audio/audio_source.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_source.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_source.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/audio/audio_source.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/audio/listener.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/audio/listener.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/audio/listener.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/audio/listener.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/audio/listener.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/audio/listener.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/camera.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/camera.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/camera.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/camera.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/camera.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/camera.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/controls.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/controls.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/controls.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/controls.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/controls.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/controls.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/cc  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -o CMakeFiles/morciatko_lib.dir/src/gl.c.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/gl.c",
+  "command": "/usr/bin/gcc  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL  -o CMakeFiles/morciatko_lib.dir/src/gl.c.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/gl.c",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/gl.c",
   "output": "CMakeFiles/morciatko_lib.dir/src/gl.c.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/particle/particle.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/particle/particle.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/particle/particle.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/particle/particle_density.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_density.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/particle/particle_density.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_density.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_density.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/particle/particle_density.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/particle/particle_mass.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_mass.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/particle/particle_mass.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_mass.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_mass.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/particle/particle_mass.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/particle/particle_movement.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_movement.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/particle/particle_movement.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_movement.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_movement.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/particle/particle_movement.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/particle/particle_velocity.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_velocity.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/particle/particle_velocity.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_velocity.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle_velocity.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/particle/particle_velocity.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/physics_formulas.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/physics_formulas.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/physics_formulas.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/physics_formulas.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/physics_formulas.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/physics_formulas.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/player/entity.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/entity.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/player/entity.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/entity.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/player/entity.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/player/entity.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/player/entity_manager.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/entity_manager.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/player/entity_manager.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/entity_manager.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/player/entity_manager.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/player/entity_manager.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/player/item.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/item.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/player/item.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/item.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/player/item.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/player/item.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/buffers/buffer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/buffer.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/buffers/buffer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/buffer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/buffer.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/renderer/buffers/buffer.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/buffers/element_array_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/element_array_object.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/buffers/element_array_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/element_array_object.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/element_array_object.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/renderer/buffers/element_array_object.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/shader_storage_buffer_object.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/shader_storage_buffer_object.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/shader_storage_buffer_object.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_array_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/vertex_array_object.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_array_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/vertex_array_object.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/vertex_array_object.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_array_object.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_buffer_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/vertex_buffer_object.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_buffer_object.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/vertex_buffer_object.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/vertex_buffer_object.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/renderer/buffers/vertex_buffer_object.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/compute_shader.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/compute_shader.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/compute_shader.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/renderer/compute_shader.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/debug_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/debug_renderer.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/debug_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/debug_renderer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/debug_renderer.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/renderer/debug_renderer.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/entities_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/entities_renderer.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/entities_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/entities_renderer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/entities_renderer.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/renderer/entities_renderer.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/renderer.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/renderer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/renderer.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/renderer/renderer.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/scenes_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/scenes_renderer.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/scenes_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/scenes_renderer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/scenes_renderer.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/renderer/scenes_renderer.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/shader.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/shader.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/shader.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/shader.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/shader.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/renderer/shader.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/text_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/text_renderer.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/text_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/text_renderer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/text_renderer.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/renderer/text_renderer.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/ui_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/ui_renderer.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/ui_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/ui_renderer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/ui_renderer.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/renderer/ui_renderer.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/world_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/world_renderer.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/renderer/world_renderer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/world_renderer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/world_renderer.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/renderer/world_renderer.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/time_manager.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/time_manager.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/time_manager.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/time_manager.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/time_manager.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/time_manager.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/utils.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/utils.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/utils.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/utils.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/utils.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/utils.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/world/herringbone_world_generation.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/herringbone_world_generation.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/world/herringbone_world_generation.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/herringbone_world_generation.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/herringbone_world_generation.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/world/herringbone_world_generation.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/world/world.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/world/world.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/world/world.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_ca_generation.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_ca_generation.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world_ca_generation.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/world/world_ca_generation.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_cell.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_cell.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world_cell.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/world/world_cell.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_chunk.cpp",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_chunk.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world_chunk.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/world/world_chunk.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++ -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_tests.dir/tests/benchmarks/performance.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/tests/benchmarks/performance.cpp",
+  "command": "/usr/bin/g++ -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_tests.dir/tests/benchmarks/performance.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/tests/benchmarks/performance.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/tests/benchmarks/performance.cpp",
   "output": "CMakeFiles/morciatko_tests.dir/tests/benchmarks/performance.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++ -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_tests.dir/tests/unit/particle_test.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/tests/unit/particle_test.cpp",
+  "command": "/usr/bin/g++ -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_tests.dir/tests/unit/particle_test.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/tests/unit/particle_test.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/tests/unit/particle_test.cpp",
   "output": "CMakeFiles/morciatko_tests.dir/tests/unit/particle_test.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++ -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_tests.dir/tests/unit/random_test.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/tests/unit/random_test.cpp",
+  "command": "/usr/bin/g++ -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_tests.dir/tests/unit/random_test.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/tests/unit/random_test.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/tests/unit/random_test.cpp",
   "output": "CMakeFiles/morciatko_tests.dir/tests/unit/random_test.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++ -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_tests.dir/tests/unit/utils_test.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/tests/unit/utils_test.cpp",
+  "command": "/usr/bin/g++ -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_tests.dir/tests/unit/utils_test.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/tests/unit/utils_test.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/tests/unit/utils_test.cpp",
   "output": "CMakeFiles/morciatko_tests.dir/tests/unit/utils_test.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
-  "command": "/usr/bin/c++ -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -g -std=gnu++17 -o CMakeFiles/morciatko_tests.dir/tests/unit/world_test.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/tests/unit/world_test.cpp",
+  "command": "/usr/bin/g++ -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_tests.dir/tests/unit/world_test.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/tests/unit/world_test.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/tests/unit/world_test.cpp",
   "output": "CMakeFiles/morciatko_tests.dir/tests/unit/world_test.cpp.o"
 }
