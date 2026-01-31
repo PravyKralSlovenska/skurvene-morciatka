@@ -97,6 +97,12 @@
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/player/sprite_animation.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/sprite_animation.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/player/sprite_animation.cpp",
+  "output": "CMakeFiles/morciatko.dir/src/player/sprite_animation.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
   "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/renderer/buffers/buffer.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/buffer.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/renderer/buffers/buffer.cpp",
   "output": "CMakeFiles/morciatko.dir/src/renderer/buffers/buffer.cpp.o"
@@ -322,6 +328,12 @@
   "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/player/item.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/item.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/player/item.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/player/item.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/player/sprite_animation.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/player/sprite_animation.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/player/sprite_animation.cpp",
+  "output": "CMakeFiles/morciatko_lib.dir/src/player/sprite_animation.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",

@@ -1,5 +1,7 @@
 #include "engine/renderer/renderer.hpp"
 
+#include "engine/player/entity_manager.hpp"
+
 IRenderer::IRenderer(float window_width, float window_height)
     : m_window_width(window_width), m_window_height(window_height) {}
 
@@ -16,8 +18,8 @@ void IRenderer::init()
     world_renderer = std::make_unique<World_Renderer>(world);
     world_renderer->init();
 
-    // entities_renderer = std::make_unique<Entities_Renderer>(); // treba dat cesty do shaderov
-    // entities_renderer->init();
+    entities_renderer = std::make_unique<Entities_Renderer>();
+    entities_renderer->init();
 
     text_renderer = std::make_unique<Text_Renderer>();
     text_renderer->init();
@@ -42,6 +44,7 @@ bool IRenderer::render_everything()
     // set projections
     glm::mat4 view_projection = camera->get_view_projection_matrix();
     world_renderer->set_projection(view_projection);
+    entities_renderer->set_projection(view_projection);
 
     // Na User Interface by nemal platit zoom
     // text_renderer->set_projection(projection);
@@ -49,7 +52,20 @@ bool IRenderer::render_everything()
     // render renders
     world_renderer->render_world_compute();
 
-    // entities_renderer->render_entities(world->entities);
+    // Render entities that are in active chunks
+    if (entity_manager && world)
+    {
+        auto *active_chunks = world->get_active_chunks();
+        if (active_chunks)
+        {
+            entities_renderer->render_entities_in_chunks(*active_chunks);
+        }
+        else
+        {
+            entities_renderer->render_entities();
+        }
+    }
+
     // text_renderer->render_text("MISKO POZOR ZITRA! :3", {400.0f, 400.0f}, 1.0f, Color(255, 255, 255, 1.0f));
     // text_renderer->render_text(std::to_string(frame_count_display) + "FPS", {10.0f, 48.0f}, 1.0f, Color(255, 255, 255, 1));
 
@@ -58,8 +74,14 @@ bool IRenderer::render_everything()
     text_renderer->render_text(std::to_string(camera->get_zoom()) + " ZOOM", {10.0, 150.0f}, 0.5f, Color(0, 0, 255, 1.0f));
     text_renderer->render_text(std::to_string(world->get_chunks_size()) + " CHUNKS", {10.0, 200.0f}, 0.5f, Color(125, 125, 125, 1.0f));
 
+    // Show entity count
+    if (entity_manager)
+    {
+        text_renderer->render_text(std::to_string(entity_manager->get_entity_count()) + " ENTITIES", {10.0, 250.0f}, 0.5f, Color(255, 100, 100, 1.0f));
+    }
+
     auto coords = camera->get_position();
-    text_renderer->render_text(std::to_string(coords.x) + ' ' + std::to_string(coords.y), {10.0, 250.0f}, 0.5f, Color(255, 0, 255, 1.0f));
+    text_renderer->render_text(std::to_string(coords.x) + ' ' + std::to_string(coords.y), {10.0, 300.0f}, 0.5f, Color(255, 0, 255, 1.0f));
 
     if (time_manager->paused())
     {
@@ -221,11 +243,18 @@ void IRenderer::set_world(World *world)
 {
     this->world = world;
     world_renderer->set_world(world);
+    entities_renderer->set_world(world);
 }
 
 void IRenderer::set_camera(Camera *camera)
 {
     this->camera = camera;
+}
+
+void IRenderer::set_entity_manager(Entity_Manager *entity_manager)
+{
+    this->entity_manager = entity_manager;
+    entities_renderer->set_entity_manager(entity_manager);
 }
 
 void IRenderer::toggle_fullscreen()

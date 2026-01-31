@@ -14,7 +14,7 @@ private:
     const double FIXED_DELTA_TIME = 0.2;
     const double FIXED_TIME = 0.2;
 
-    double delta_time; // cas, za ktory 
+    double delta_time; // cas, za ktory
     double average_delta_time;
 
     float time_scale;
@@ -56,6 +56,7 @@ public:
     // getters
     int get_frames_per_second();
     int get_updates_per_second();
+    double get_delta_time();
 
     void debug();
 };

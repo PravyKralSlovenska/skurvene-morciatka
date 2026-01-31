@@ -104,18 +104,17 @@ void Controls::handle_input()
         // std::cout << "LAVE TLACIDLO KLIK\n";
 
         glm::vec2 cam_pos = camera->get_position();
-        
+
         float zoom_factor = camera->get_zoom();
-        
+
         int window_width, window_height;
         glfwGetWindowSize(window, &window_width, &window_height);
-        
+
         glm::ivec2 world_pos;
         world_pos.x = (xpos - window_width / 2.0f) / zoom_factor + cam_pos.x;
         world_pos.y = (ypos - window_height / 2.0f) / zoom_factor + cam_pos.y;
 
         world->place_particle(world_pos, Particle_Type::WATER);
-
     }
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
@@ -145,6 +144,7 @@ void Controls::keyboard_input()
 {
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
+        // std::cout << "W\n";
         player->move_up();
     }
 
@@ -223,6 +223,22 @@ void Controls::keyboard_input()
         {
             renderer->maximize_window();
         }
+    }
+
+    // TAB - Toggle noclip mode (allows player to move through solid terrain)
+    static bool tab_pressed = false;
+    if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS)
+    {
+        if (!tab_pressed)
+        {
+            player->toggle_noclip();
+            tab_pressed = true;
+            std::cout << "Noclip: " << (player->get_noclip() ? "ON" : "OFF") << std::endl;
+        }
+    }
+    else
+    {
+        tab_pressed = false;
     }
 }
 

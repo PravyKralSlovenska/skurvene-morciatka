@@ -2,11 +2,11 @@
 
 #include "engine/player/entity_manager.hpp"
 #include "engine/player/entity.hpp"
-#include "sprite_animation.hpp"
+#include "engine/player/sprite_animation.hpp"
 
-#define STB_IMAGE_IMPLEMENTATION
+// stb_image included elsewhere (entities_renderer.cpp or herringbone_world_generation.cpp)
+// DO NOT define STB_IMAGE_IMPLEMENTATION here - it causes multiple definition errors
 #include "stb/stb_image.h"
-
 
 void Sprite_Animation::update()
 {

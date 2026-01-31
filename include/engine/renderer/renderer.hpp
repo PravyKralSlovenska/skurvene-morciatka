@@ -19,6 +19,9 @@
 #include "engine/time_manager.hpp"
 #include "engine/world/world.hpp"
 
+// forward declaration
+class Entity_Manager;
+
 class IRenderer
 {
 private:
@@ -41,6 +44,7 @@ private:
     Camera *camera;
     Time_Manager *time_manager;
     World *world;
+    Entity_Manager *entity_manager = nullptr;
 
     // cisto len na infosky
     std::vector<std::string> render_info;
@@ -62,6 +66,7 @@ public:
     void set_time_manager(Time_Manager *time_manager);
     void set_world(World *world);
     void set_camera(Camera *camera);
+    void set_entity_manager(Entity_Manager *entity_manager);
 
     void update_camera_uniforms();
 

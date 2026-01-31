@@ -34,6 +34,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/morciatko.dir/src/player/entity_manager.cpp.o.d"
   "CMakeFiles/morciatko.dir/src/player/item.cpp.o"
   "CMakeFiles/morciatko.dir/src/player/item.cpp.o.d"
+  "CMakeFiles/morciatko.dir/src/player/sprite_animation.cpp.o"
+  "CMakeFiles/morciatko.dir/src/player/sprite_animation.cpp.o.d"
   "CMakeFiles/morciatko.dir/src/renderer/buffers/buffer.cpp.o"
   "CMakeFiles/morciatko.dir/src/renderer/buffers/buffer.cpp.o.d"
   "CMakeFiles/morciatko.dir/src/renderer/buffers/element_array_object.cpp.o"

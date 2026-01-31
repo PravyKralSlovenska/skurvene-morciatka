@@ -634,6 +634,33 @@ src/player/item.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/player/item.cpp.s
 .PHONY : src/player/item.cpp.s
 
+src/player/sprite_animation.o: src/player/sprite_animation.cpp.o
+.PHONY : src/player/sprite_animation.o
+
+# target to build an object file
+src/player/sprite_animation.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/player/sprite_animation.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/player/sprite_animation.cpp.o
+.PHONY : src/player/sprite_animation.cpp.o
+
+src/player/sprite_animation.i: src/player/sprite_animation.cpp.i
+.PHONY : src/player/sprite_animation.i
+
+# target to preprocess a source file
+src/player/sprite_animation.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/player/sprite_animation.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/player/sprite_animation.cpp.i
+.PHONY : src/player/sprite_animation.cpp.i
+
+src/player/sprite_animation.s: src/player/sprite_animation.cpp.s
+.PHONY : src/player/sprite_animation.s
+
+# target to generate assembly for a file
+src/player/sprite_animation.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/player/sprite_animation.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/player/sprite_animation.cpp.s
+.PHONY : src/player/sprite_animation.cpp.s
+
 src/renderer/buffers/buffer.o: src/renderer/buffers/buffer.cpp.o
 .PHONY : src/renderer/buffers/buffer.o
 
@@ -1385,6 +1412,9 @@ help:
 	@echo "... src/player/item.o"
 	@echo "... src/player/item.i"
 	@echo "... src/player/item.s"
+	@echo "... src/player/sprite_animation.o"
+	@echo "... src/player/sprite_animation.i"
+	@echo "... src/player/sprite_animation.s"
 	@echo "... src/renderer/buffers/buffer.o"
 	@echo "... src/renderer/buffers/buffer.i"
 	@echo "... src/renderer/buffers/buffer.s"

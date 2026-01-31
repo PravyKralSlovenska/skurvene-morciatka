@@ -70,8 +70,8 @@ void Time_Manager::enable_fps_limiting()
 void Time_Manager::sleep_until_next_frame()
 {
     const auto frame_end_time = current_frame_time +
-                          std::chrono::duration_cast<std::chrono::steady_clock::duration>(
-                              std::chrono::duration<double>(frame_time));
+                                std::chrono::duration_cast<std::chrono::steady_clock::duration>(
+                                    std::chrono::duration<double>(frame_time));
 
     const auto now = std::chrono::steady_clock::now();
 
@@ -115,6 +115,11 @@ int Time_Manager::get_updates_per_second()
     // }
 
     return updates_per_second;
+}
+
+double Time_Manager::get_delta_time()
+{
+    return delta_time;
 }
 
 void Time_Manager::debug()
