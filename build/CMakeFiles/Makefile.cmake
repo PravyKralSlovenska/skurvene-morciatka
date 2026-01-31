@@ -8,9 +8,9 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
   "/home/jakub/programko/cpp/skurvene-morciatka/CMakeLists.txt"
-  "CMakeFiles/4.2.2-dirty/CMakeCCompiler.cmake"
-  "CMakeFiles/4.2.2-dirty/CMakeCXXCompiler.cmake"
-  "CMakeFiles/4.2.2-dirty/CMakeSystem.cmake"
+  "CMakeFiles/4.2.2/CMakeCCompiler.cmake"
+  "CMakeFiles/4.2.2/CMakeCXXCompiler.cmake"
+  "CMakeFiles/4.2.2/CMakeSystem.cmake"
   "/usr/lib/cmake/GTest/GTestConfig.cmake"
   "/usr/lib/cmake/GTest/GTestConfigVersion.cmake"
   "/usr/lib/cmake/GTest/GTestTargets-none.cmake"

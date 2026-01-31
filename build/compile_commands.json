@@ -43,6 +43,12 @@
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/particle/falling_sand_simulation.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/falling_sand_simulation.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/particle/falling_sand_simulation.cpp",
+  "output": "CMakeFiles/morciatko.dir/src/particle/falling_sand_simulation.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
   "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko.dir/src/particle/particle.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle.cpp",
   "output": "CMakeFiles/morciatko.dir/src/particle/particle.cpp.o"
@@ -277,6 +283,12 @@
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/particle/falling_sand_simulation.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/falling_sand_simulation.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/particle/falling_sand_simulation.cpp",
+  "output": "CMakeFiles/morciatko_lib.dir/src/particle/falling_sand_simulation.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
   "command": "/usr/bin/g++  -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_lib.dir/src/particle/particle.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/src/particle/particle.cpp",
   "output": "CMakeFiles/morciatko_lib.dir/src/particle/particle.cpp.o"
@@ -466,6 +478,12 @@
   "command": "/usr/bin/g++ -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_tests.dir/tests/benchmarks/performance.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/tests/benchmarks/performance.cpp",
   "file": "/home/jakub/programko/cpp/skurvene-morciatka/tests/benchmarks/performance.cpp",
   "output": "CMakeFiles/morciatko_tests.dir/tests/benchmarks/performance.cpp.o"
+},
+{
+  "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",
+  "command": "/usr/bin/g++ -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL -std=gnu++17 -o CMakeFiles/morciatko_tests.dir/tests/unit/falling_sand_test.cpp.o -c /home/jakub/programko/cpp/skurvene-morciatka/tests/unit/falling_sand_test.cpp",
+  "file": "/home/jakub/programko/cpp/skurvene-morciatka/tests/unit/falling_sand_test.cpp",
+  "output": "CMakeFiles/morciatko_tests.dir/tests/unit/falling_sand_test.cpp.o"
 },
 {
   "directory": "/home/jakub/programko/cpp/skurvene-morciatka/build",

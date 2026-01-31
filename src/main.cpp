@@ -95,7 +95,7 @@ int main()
         // update sveta
         if (!time_manager.paused())
         {
-            world.update();
+            world.update(delta_time);
         }
 
         // camera update

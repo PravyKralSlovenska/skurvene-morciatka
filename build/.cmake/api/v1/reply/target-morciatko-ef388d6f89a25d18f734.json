@@ -124,7 +124,8 @@
 				35,
 				36,
 				37,
-				38
+				38,
+				39
 			]
 		},
 		{
@@ -279,7 +280,8 @@
 				35,
 				36,
 				37,
-				38
+				38,
+				39
 			]
 		}
 	],
@@ -325,6 +327,12 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 1,
 			"path" : "src/gl.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/particle/falling_sand_simulation.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

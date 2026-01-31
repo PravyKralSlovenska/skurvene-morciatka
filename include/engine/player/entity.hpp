@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 
 #include "engine/player/inventory.hpp"
+#include "engine/player/wand.hpp"
 
 // forward declarations
 class Item;
@@ -147,6 +148,11 @@ class Player : public Entity
 {
 private:
     Inventory inventory;
+    Hotbar hotbar;
+
+    // Wand aiming
+    glm::vec2 aim_direction = {1.0f, 0.0f};    // Direction player is aiming
+    glm::vec2 cursor_world_pos = {0.0f, 0.0f}; // Cursor position in world coords
 
 public:
     std::string name;
@@ -160,6 +166,21 @@ public:
 
     void change_selected_item(const int inventory_slot);
     void change_selected_item(const Item item);
+
+    // Hotbar/Wand methods
+    Hotbar &get_hotbar() { return hotbar; }
+    const Hotbar &get_hotbar() const { return hotbar; }
+    void select_hotbar_slot(int slot) { hotbar.select_slot(slot); }
+    Wand &get_current_wand() { return hotbar.get_selected_wand(); }
+
+    // Aiming
+    void set_aim_direction(const glm::vec2 &dir) { aim_direction = glm::normalize(dir); }
+    glm::vec2 get_aim_direction() const { return aim_direction; }
+    void set_cursor_world_pos(const glm::vec2 &pos) { cursor_world_pos = pos; }
+    glm::vec2 get_cursor_world_pos() const { return cursor_world_pos; }
+
+    // Get center position (for wand origin)
+    glm::vec2 get_center() const { return glm::vec2(coords); }
 };
 
 class Enemy : public Entity

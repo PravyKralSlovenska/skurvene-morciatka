@@ -13,6 +13,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/morciatko_lib.dir/src/controls.cpp.o.d"
   "CMakeFiles/morciatko_lib.dir/src/gl.c.o"
   "CMakeFiles/morciatko_lib.dir/src/gl.c.o.d"
+  "CMakeFiles/morciatko_lib.dir/src/particle/falling_sand_simulation.cpp.o"
+  "CMakeFiles/morciatko_lib.dir/src/particle/falling_sand_simulation.cpp.o.d"
   "CMakeFiles/morciatko_lib.dir/src/particle/particle.cpp.o"
   "CMakeFiles/morciatko_lib.dir/src/particle/particle.cpp.o.d"
   "CMakeFiles/morciatko_lib.dir/src/particle/particle_density.cpp.o"

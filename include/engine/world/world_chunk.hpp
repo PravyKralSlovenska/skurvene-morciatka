@@ -81,8 +81,17 @@ public:
     void set_worldcell(const glm::ivec2 &coords, Particle_Type particle);
     void set_worldcell(int x, int y, Particle_Type particle);
     void set_worldcell(int index, Particle_Type particle);
+
+    // Set worldcell with explicit static flag (for player-placed vs world-generated)
+    void set_worldcell(const glm::ivec2 &coords, Particle_Type particle, bool is_static);
+    void set_worldcell(int x, int y, Particle_Type particle, bool is_static);
+    void set_worldcell(int index, Particle_Type particle, bool is_static);
+
     WorldCell *get_worldcell(int x, int y);
     WorldCell *get_worldcell(int index);
+
+    // Mark chunk as needing GPU data rebuild (call after modifying particles directly)
+    void mark_dirty() { gpu_dirty = true; }
 
     // get render data
     std::vector<Vertex> *get_cached_verticies();

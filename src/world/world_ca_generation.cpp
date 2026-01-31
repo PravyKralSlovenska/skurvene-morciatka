@@ -20,7 +20,8 @@ World_CA_Generation::World_CA_Generation(const int chunk_width, const int chunk_
     {
         for (int x{0}; x < chunk_width; x++)
         {
-            default_chunk_data.emplace_back(glm::ivec2(x, y), create_stone());
+            // World-generated particles are static (terrain)
+            default_chunk_data.emplace_back(glm::ivec2(x, y), create_stone(true));
         }
     }
 }
@@ -105,18 +106,19 @@ void World_CA_Generation::setup_biome_noises()
 
 Particle World_CA_Generation::create_particle_by_type(const Particle_Type type)
 {
+    // World-generated particles are always static (terrain)
     switch (type)
     {
     case Particle_Type::SAND:
-        return create_sand();
+        return create_sand(true); // static = true
     case Particle_Type::STONE:
-        return create_stone();
+        return create_stone(true);
     case Particle_Type::URANIUM:
-        return create_uranium();
+        return create_uranium(true);
     case Particle_Type::WATER:
-        return create_water();
+        return create_water(true);
     default:
-        return create_stone();
+        return create_stone(true);
     }
 }
 
@@ -296,7 +298,7 @@ void World_CA_Generation::generate_chunk_with_biome(Chunk *chunk)
     }
 
     chunk->set_chunk_data(new_data);
-    chunk->set_state(Chunk_States::FINALL_FORM); 
+    chunk->set_state(Chunk_States::FINALL_FORM);
 }
 
 void World_CA_Generation::make_noise_data(Chunk *chunk)

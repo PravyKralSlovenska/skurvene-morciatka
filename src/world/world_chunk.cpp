@@ -82,7 +82,7 @@ void Chunk::set_state(Chunk_States state)
 
 bool Chunk::is_dirty()
 {
-    // return is_dirty;
+    return gpu_dirty;
 }
 
 bool Chunk::is_empty(int x, int y)
@@ -114,35 +114,56 @@ WorldCell *Chunk::get_if_not_empty(const int index)
 
 void Chunk::set_worldcell(const glm::ivec2 &coords, Particle_Type particle)
 {
-    set_worldcell(get_index(coords.x, coords.y), particle);
+    // Default: player-placed particles are NOT static (they can fall/flow)
+    set_worldcell(get_index(coords.x, coords.y), particle, false);
 }
 
 void Chunk::set_worldcell(int x, int y, Particle_Type particle)
 {
-    set_worldcell(get_index(x, y), particle);
+    set_worldcell(get_index(x, y), particle, false);
 }
 
 void Chunk::set_worldcell(int index, Particle_Type particle)
 {
+    set_worldcell(index, particle, false);
+}
+
+void Chunk::set_worldcell(const glm::ivec2 &coords, Particle_Type particle, bool is_static)
+{
+    set_worldcell(get_index(coords.x, coords.y), particle, is_static);
+}
+
+void Chunk::set_worldcell(int x, int y, Particle_Type particle, bool is_static)
+{
+    set_worldcell(get_index(x, y), particle, is_static);
+}
+
+void Chunk::set_worldcell(int index, Particle_Type particle, bool is_static)
+{
     switch (particle)
     {
     case Particle_Type::EMPTY:
+        chunk_data[index].set_particle(create_empty());
         break;
 
     case Particle_Type::SAND:
-        chunk_data[index].set_particle(create_sand());
+        chunk_data[index].set_particle(create_sand(is_static));
         break;
 
     case Particle_Type::WATER:
-        chunk_data[index].set_particle(create_water());
+        chunk_data[index].set_particle(create_water(is_static));
         break;
 
     case Particle_Type::SMOKE:
-        chunk_data[index].set_particle(create_smoke());
+        chunk_data[index].set_particle(create_smoke(is_static));
         break;
 
     case Particle_Type::STONE:
-        chunk_data[index].set_particle(create_stone());
+        chunk_data[index].set_particle(create_stone(is_static));
+        break;
+
+    case Particle_Type::URANIUM:
+        chunk_data[index].set_particle(create_uranium(is_static));
         break;
 
     default:
@@ -154,11 +175,17 @@ void Chunk::set_worldcell(int index, Particle_Type particle)
 
 WorldCell *Chunk::get_worldcell(int x, int y)
 {
+    // Bounds checking
+    if (x < 0 || x >= width || y < 0 || y >= height)
+        return nullptr;
     return get_worldcell(get_index(x, y));
 }
 
 WorldCell *Chunk::get_worldcell(int index)
 {
+    // Bounds checking
+    if (index < 0 || index >= static_cast<int>(chunk_data.size()))
+        return nullptr;
     return &chunk_data[index];
 }
 

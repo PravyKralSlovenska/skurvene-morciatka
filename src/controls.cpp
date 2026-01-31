@@ -11,6 +11,7 @@
 #include "engine/renderer/renderer.hpp"
 #include "engine/time_manager.hpp"
 #include "engine/player/entity.hpp"
+#include "engine/player/wand.hpp"
 #include "engine/camera.hpp"
 #include "engine/audio/audio_manager.hpp"
 
@@ -85,46 +86,62 @@ void Controls::handle_input()
     glfwGetCursorPos(window, &xpos, &ypos);
     cursor_position = {xpos, ypos};
 
-    // if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
-    // {
-    //     // int x = (int)xpos / world->scale;
-    //     // int y = (int)ypos / world->scale;
+    // Convert screen cursor to world coordinates
+    glm::vec2 cam_pos = camera->get_position();
+    float zoom_factor = camera->get_zoom();
+    int window_width, window_height;
+    glfwGetWindowSize(window, &window_width, &window_height);
 
-    //     // world->add_particle({x, y}, Particle_Type::STONE, 3);
+    glm::vec2 cursor_world;
+    cursor_world.x = (xpos - window_width / 2.0f) / zoom_factor + cam_pos.x;
+    cursor_world.y = (ypos - window_height / 2.0f) / zoom_factor + cam_pos.y;
 
-    //     glm::ivec2 world_pos = camera->screen_to_world(xpos, ypos);
-    //     // std::cout << world_pos.x << ';' << world_pos.y << '\n';
-    //     world->place_particle(glm::ivec2(xpos, ypos), Particle_Type::STONE);
+    // Update player's cursor position for wand aiming
+    player->set_cursor_world_pos(cursor_world);
 
-    //     // std::cout << "CLICK LAVE TLACIDLO\n";
-    // }
+    // Calculate aim direction
+    glm::vec2 player_center = player->get_center();
+    glm::vec2 aim_dir = cursor_world - player_center;
+    if (glm::length(aim_dir) > 0.001f)
+    {
+        player->set_aim_direction(aim_dir);
+    }
 
+    // Handle wand usage with left mouse button
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
     {
-        // std::cout << "LAVE TLACIDLO KLIK\n";
+        Wand &wand = player->get_current_wand();
 
-        glm::vec2 cam_pos = camera->get_position();
+        if (!wand.is_empty())
+        {
+            glm::ivec2 target_pos = glm::ivec2(cursor_world);
+            int brush = wand.brush_size;
 
-        float zoom_factor = camera->get_zoom();
+            // Place particles in a square brush area
+            for (int dx = -brush / 2; dx <= brush / 2; dx++)
+            {
+                for (int dy = -brush / 2; dy <= brush / 2; dy++)
+                {
+                    glm::ivec2 pos = target_pos + glm::ivec2(dx, dy);
 
-        int window_width, window_height;
-        glfwGetWindowSize(window, &window_width, &window_height);
-
-        glm::ivec2 world_pos;
-        world_pos.x = (xpos - window_width / 2.0f) / zoom_factor + cam_pos.x;
-        world_pos.y = (ypos - window_height / 2.0f) / zoom_factor + cam_pos.y;
-
-        world->place_particle(world_pos, Particle_Type::WATER);
+                    if (wand.type == Wand_Type::DELETE_WAND)
+                    {
+                        // Delete wand removes any particle
+                        world->place_particle(pos, Particle_Type::EMPTY);
+                    }
+                    else
+                    {
+                        // Other wands place their particle type
+                        world->place_particle(pos, wand.particle_type);
+                    }
+                }
+            }
+        }
     }
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
     {
-        // int x = (int)xpos / world->scale;
-        // int y = (int)ypos / world->scale;
-
-        // world->add_particle({x, y}, selected_particle, 3);
-
-        // std::cout << "CLICK PRAVE TLACIDLO\n";
+        // Right click could be secondary action (e.g., larger brush, different mode)
     }
 
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_4) == GLFW_PRESS)
@@ -168,19 +185,26 @@ void Controls::keyboard_input()
         // world->clear_world_curr();
     }
 
-    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
-    {
-        selected_particle = Particle_Type::SAND;
-    }
+    // Hotbar selection (1-9 keys)
+    static bool number_key_pressed[9] = {false};
 
-    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+    for (int i = 0; i < 9; i++)
     {
-        selected_particle = Particle_Type::WATER;
-    }
-
-    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
-    {
-        selected_particle = Particle_Type::SMOKE;
+        int key = GLFW_KEY_1 + i; // GLFW_KEY_1, GLFW_KEY_2, ... GLFW_KEY_9
+        if (glfwGetKey(window, key) == GLFW_PRESS)
+        {
+            if (!number_key_pressed[i])
+            {
+                player->select_hotbar_slot(i);
+                Wand &wand = player->get_current_wand();
+                std::cout << "Selected slot " << (i + 1) << ": " << wand.name << std::endl;
+                number_key_pressed[i] = true;
+            }
+        }
+        else
+        {
+            number_key_pressed[i] = false;
+        }
     }
 
     // if pressed the world update loop will stop

@@ -8,9 +8,12 @@
 #include <string>
 #include <glm/glm.hpp>
 
+#include "engine/player/wand.hpp"
+
 // forward declarations
 class Entity_Manager;
 class Entity;
+class Player;
 class World;
 class Shader;
 class VERTEX_ARRAY_OBJECT;
@@ -85,8 +88,15 @@ public:
     void render_entities_in_chunks(const std::unordered_set<glm::ivec2, Chunk_Coords_to_Hash> &active_chunks);
     void render_entity(Entity *entity);
 
+    // Wand rendering
+    void render_wand(Player *player);
+
     // batch rendering
     void begin_batch();
     void end_batch();
     void flush();
+
+private:
+    // Line rendering for wand
+    void draw_line(const glm::vec2 &start, const glm::vec2 &end, const glm::vec4 &color, float thickness = 2.0f);
 };

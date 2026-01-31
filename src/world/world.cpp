@@ -7,19 +7,50 @@
 #include "engine/world/world_ca_generation.hpp"
 #include "engine/world/herringbone_world_generation.hpp"
 #include "engine/particle/particle.hpp"
+#include "engine/particle/falling_sand_simulation.hpp"
 
 World::World()
 {
     world_gen = std::make_unique<World_CA_Generation>(chunk_width, chunk_height);
     world_gen->set_seed(1);
+
+    // Initialize falling sand simulation
+    sand_simulation = std::make_unique<Falling_Sand_Simulation>();
+    sand_simulation->set_world(this);
 }
 
 World::~World() = default;
 
 void World::update()
 {
+    update(0.016f); // Default to ~60fps delta time
+}
+
+void World::update(float delta_time)
+{
     calculate_active_chunks();
     // update_active_chunks();
+
+    // Run falling sand simulation
+    if (simulation_enabled && sand_simulation)
+    {
+        sand_simulation->update(delta_time);
+    }
+}
+
+void World::enable_simulation(bool enabled)
+{
+    simulation_enabled = enabled;
+}
+
+bool World::is_simulation_enabled() const
+{
+    return simulation_enabled;
+}
+
+Falling_Sand_Simulation *World::get_simulation()
+{
+    return sand_simulation.get();
 }
 
 void World::update_active_chunks()
@@ -115,49 +146,56 @@ void World::calculate_active_chunks()
     // std::cout << world.size() << '\n';
 }
 
-void World::place_particle(const glm::ivec2 position, const Particle_Type particle_type)
+// Helper function to place a particle at a world position
+static void place_particle_internal(World *world, const glm::ivec2 position,
+                                    const Particle_Type particle_type, bool is_static,
+                                    int chunk_width, int chunk_height)
 {
-    // potrebujem nejaky offset kvoli pixelom na obrazovke
     int chunk_pixel_width = chunk_width * Globals::PARTICLE_SIZE;
     int chunk_pixel_height = chunk_height * Globals::PARTICLE_SIZE;
 
-    // std::vector<glm::ivec2> offsets = calculate_offsets(2);
+    glm::ivec2 chunk_pos{
+        (int)floor((float)(position.x) / chunk_pixel_width),
+        (int)floor((float)(position.y) / chunk_pixel_height)};
 
-    // for (const auto &offset : offsets)
+    Chunk *chunk = world->get_chunk(chunk_pos);
+    if (!chunk)
     {
-        glm::ivec2 chunk_pos{
-            (int)floor((float)(position.x) / chunk_pixel_width),
-            (int)floor((float)(position.y) / chunk_pixel_height)};
-
-        Chunk *chunk = get_chunk(chunk_pos);
-        if (!chunk)
-        {
-            std::cerr << "nullptr chunk: " << chunk_pos.x << ';' << chunk_pos.y << '\n';
-            return;
-        }
-
-        int pixel_offset_x = position.x - (chunk_pos.x * chunk_pixel_width);
-        int pixel_offset_y = position.y - (chunk_pos.y * chunk_pixel_height);
-
-        glm::ivec2 worldcell_pos{
-            pixel_offset_x / Globals::PARTICLE_SIZE,
-            pixel_offset_y / Globals::PARTICLE_SIZE};
-
-        if (worldcell_pos.x < 0)
-            worldcell_pos.x += chunk_width;
-        if (worldcell_pos.y < 0)
-            worldcell_pos.y += chunk_height;
-
-        if (!in_world_range(worldcell_pos.x, worldcell_pos.y, chunk_height, chunk_width))
-        {
-            std::cerr << "suradnice su mimo: " << worldcell_pos.x << ';' << worldcell_pos.y << '\n';
-            return;
-        }
-
-        // if (chunk->get_worldcell()) {}
-
-        chunk->set_worldcell(worldcell_pos, particle_type);
+        std::cerr << "nullptr chunk: " << chunk_pos.x << ';' << chunk_pos.y << '\n';
+        return;
     }
+
+    int pixel_offset_x = position.x - (chunk_pos.x * chunk_pixel_width);
+    int pixel_offset_y = position.y - (chunk_pos.y * chunk_pixel_height);
+
+    glm::ivec2 worldcell_pos{
+        pixel_offset_x / Globals::PARTICLE_SIZE,
+        pixel_offset_y / Globals::PARTICLE_SIZE};
+
+    if (worldcell_pos.x < 0)
+        worldcell_pos.x += chunk_width;
+    if (worldcell_pos.y < 0)
+        worldcell_pos.y += chunk_height;
+
+    if (!in_world_range(worldcell_pos.x, worldcell_pos.y, chunk_height, chunk_width))
+    {
+        std::cerr << "suradnice su mimo: " << worldcell_pos.x << ';' << worldcell_pos.y << '\n';
+        return;
+    }
+
+    chunk->set_worldcell(worldcell_pos, particle_type, is_static);
+}
+
+void World::place_particle(const glm::ivec2 position, const Particle_Type particle_type)
+{
+    // Player-placed particles are NOT static (they can fall/flow)
+    place_particle_internal(this, position, particle_type, false, chunk_width, chunk_height);
+}
+
+void World::place_static_particle(const glm::ivec2 position, const Particle_Type particle_type)
+{
+    // Static particles don't move (for terrain building)
+    place_particle_internal(this, position, particle_type, true, chunk_width, chunk_height);
 }
 
 void World::iterate(Chunk *chunk)

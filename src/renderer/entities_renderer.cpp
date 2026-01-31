@@ -2,6 +2,7 @@
 
 #include <glad/gl.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <cmath>
 
 #include "engine/player/entity_manager.hpp"
 #include "engine/player/entity.hpp"
@@ -332,5 +333,81 @@ void Entities_Renderer::render_entities_in_chunks(
         add_entity_to_batch(entity);
     }
 
+    end_batch();
+
+    // Render wand after entities
+    if (player)
+    {
+        render_wand(player);
+    }
+}
+
+void Entities_Renderer::draw_line(const glm::vec2 &start, const glm::vec2 &end, const glm::vec4 &color, float thickness)
+{
+    // Calculate perpendicular direction for line thickness
+    glm::vec2 dir = end - start;
+    float length = glm::length(dir);
+    if (length < 0.001f)
+        return;
+
+    dir = dir / length; // normalize
+    glm::vec2 perp = glm::vec2(-dir.y, dir.x) * (thickness * 0.5f);
+
+    // Create quad vertices for the line
+    unsigned int base_index = static_cast<unsigned int>(vertices.size());
+
+    // Four corners of the line quad
+    vertices.push_back({{start.x + perp.x, start.y + perp.y}, {0.0f, 0.0f}, color});
+    vertices.push_back({{start.x - perp.x, start.y - perp.y}, {0.0f, 1.0f}, color});
+    vertices.push_back({{end.x - perp.x, end.y - perp.y}, {1.0f, 1.0f}, color});
+    vertices.push_back({{end.x + perp.x, end.y + perp.y}, {1.0f, 0.0f}, color});
+
+    // Two triangles
+    indices.push_back(base_index + 0);
+    indices.push_back(base_index + 1);
+    indices.push_back(base_index + 2);
+
+    indices.push_back(base_index + 0);
+    indices.push_back(base_index + 2);
+    indices.push_back(base_index + 3);
+}
+
+void Entities_Renderer::render_wand(Player *player)
+{
+    if (!player)
+        return;
+
+    const Wand &wand = player->get_current_wand();
+    if (wand.is_empty())
+        return;
+
+    // Get player center position
+    glm::vec2 player_center = player->get_center();
+
+    // Get cursor position (target)
+    glm::vec2 cursor_pos = player->get_cursor_world_pos();
+
+    // Calculate direction from player to cursor
+    glm::vec2 direction = cursor_pos - player_center;
+    float distance = glm::length(direction);
+
+    // Limit wand visual length
+    const float WAND_LENGTH = 40.0f; // Visual length of the wand line
+
+    glm::vec2 wand_end;
+    if (distance > 0.001f)
+    {
+        glm::vec2 normalized_dir = direction / distance;
+        wand_end = player_center + normalized_dir * WAND_LENGTH;
+    }
+    else
+    {
+        // Default direction (right) if cursor is on player
+        wand_end = player_center + glm::vec2(WAND_LENGTH, 0.0f);
+    }
+
+    // Draw the wand line
+    begin_batch();
+    draw_line(player_center, wand_end, wand.color, 3.0f);
     end_batch();
 }

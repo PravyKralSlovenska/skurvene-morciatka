@@ -391,6 +391,33 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/particle/falling_sand_simulation.o: src/particle/falling_sand_simulation.cpp.o
+.PHONY : src/particle/falling_sand_simulation.o
+
+# target to build an object file
+src/particle/falling_sand_simulation.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/falling_sand_simulation.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/particle/falling_sand_simulation.cpp.o
+.PHONY : src/particle/falling_sand_simulation.cpp.o
+
+src/particle/falling_sand_simulation.i: src/particle/falling_sand_simulation.cpp.i
+.PHONY : src/particle/falling_sand_simulation.i
+
+# target to preprocess a source file
+src/particle/falling_sand_simulation.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/falling_sand_simulation.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/particle/falling_sand_simulation.cpp.i
+.PHONY : src/particle/falling_sand_simulation.cpp.i
+
+src/particle/falling_sand_simulation.s: src/particle/falling_sand_simulation.cpp.s
+.PHONY : src/particle/falling_sand_simulation.s
+
+# target to generate assembly for a file
+src/particle/falling_sand_simulation.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko.dir/build.make CMakeFiles/morciatko.dir/src/particle/falling_sand_simulation.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/src/particle/falling_sand_simulation.cpp.s
+.PHONY : src/particle/falling_sand_simulation.cpp.s
+
 src/particle/particle.o: src/particle/particle.cpp.o
 .PHONY : src/particle/particle.o
 
@@ -1252,6 +1279,30 @@ tests/benchmarks/performance.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/benchmarks/performance.cpp.s
 .PHONY : tests/benchmarks/performance.cpp.s
 
+tests/unit/falling_sand_test.o: tests/unit/falling_sand_test.cpp.o
+.PHONY : tests/unit/falling_sand_test.o
+
+# target to build an object file
+tests/unit/falling_sand_test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/falling_sand_test.cpp.o
+.PHONY : tests/unit/falling_sand_test.cpp.o
+
+tests/unit/falling_sand_test.i: tests/unit/falling_sand_test.cpp.i
+.PHONY : tests/unit/falling_sand_test.i
+
+# target to preprocess a source file
+tests/unit/falling_sand_test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/falling_sand_test.cpp.i
+.PHONY : tests/unit/falling_sand_test.cpp.i
+
+tests/unit/falling_sand_test.s: tests/unit/falling_sand_test.cpp.s
+.PHONY : tests/unit/falling_sand_test.s
+
+# target to generate assembly for a file
+tests/unit/falling_sand_test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/falling_sand_test.cpp.s
+.PHONY : tests/unit/falling_sand_test.cpp.s
+
 tests/unit/particle_test.o: tests/unit/particle_test.cpp.o
 .PHONY : tests/unit/particle_test.o
 
@@ -1385,6 +1436,9 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/particle/falling_sand_simulation.o"
+	@echo "... src/particle/falling_sand_simulation.i"
+	@echo "... src/particle/falling_sand_simulation.s"
 	@echo "... src/particle/particle.o"
 	@echo "... src/particle/particle.i"
 	@echo "... src/particle/particle.s"
@@ -1481,6 +1535,9 @@ help:
 	@echo "... tests/benchmarks/performance.o"
 	@echo "... tests/benchmarks/performance.i"
 	@echo "... tests/benchmarks/performance.s"
+	@echo "... tests/unit/falling_sand_test.o"
+	@echo "... tests/unit/falling_sand_test.i"
+	@echo "... tests/unit/falling_sand_test.s"
 	@echo "... tests/unit/particle_test.o"
 	@echo "... tests/unit/particle_test.i"
 	@echo "... tests/unit/particle_test.s"

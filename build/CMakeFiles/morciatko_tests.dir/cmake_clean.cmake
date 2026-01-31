@@ -2,6 +2,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/morciatko_tests.dir/link.d"
   "CMakeFiles/morciatko_tests.dir/tests/benchmarks/performance.cpp.o"
   "CMakeFiles/morciatko_tests.dir/tests/benchmarks/performance.cpp.o.d"
+  "CMakeFiles/morciatko_tests.dir/tests/unit/falling_sand_test.cpp.o"
+  "CMakeFiles/morciatko_tests.dir/tests/unit/falling_sand_test.cpp.o.d"
   "CMakeFiles/morciatko_tests.dir/tests/unit/particle_test.cpp.o"
   "CMakeFiles/morciatko_tests.dir/tests/unit/particle_test.cpp.o.d"
   "CMakeFiles/morciatko_tests.dir/tests/unit/random_test.cpp.o"
