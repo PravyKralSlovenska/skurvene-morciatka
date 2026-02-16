@@ -26,13 +26,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 37,
+				"line" : 46,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 42,
+				"line" : 52,
 				"parent" : 0
 			},
 			{
@@ -62,6 +62,14 @@
 				{
 					"backtrace" : 3,
 					"path" : "/home/jakub/programko/cpp/skurvene-morciatka/include"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "/home/jakub/programko/cpp/skurvene-morciatka/include/imgui"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "/home/jakub/programko/cpp/skurvene-morciatka/include/imgui/backends"
 				},
 				{
 					"backtrace" : 3,
@@ -125,7 +133,15 @@
 				36,
 				37,
 				38,
-				39
+				39,
+				40,
+				41,
+				42,
+				43,
+				44,
+				45,
+				46,
+				47
 			]
 		},
 		{
@@ -134,6 +150,14 @@
 				{
 					"backtrace" : 3,
 					"path" : "/home/jakub/programko/cpp/skurvene-morciatka/include"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "/home/jakub/programko/cpp/skurvene-morciatka/include/imgui"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "/home/jakub/programko/cpp/skurvene-morciatka/include/imgui/backends"
 				},
 				{
 					"backtrace" : 3,
@@ -281,7 +305,15 @@
 				36,
 				37,
 				38,
-				39
+				39,
+				40,
+				41,
+				42,
+				43,
+				44,
+				45,
+				46,
+				47
 			]
 		}
 	],
@@ -500,6 +532,12 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
+			"path" : "src/world/structure.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
 			"path" : "src/world/world.cpp",
 			"sourceGroupIndex" : 0
 		},
@@ -519,6 +557,48 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/world/world_chunk.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "include/imgui/backends/imgui_impl_glfw.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "include/imgui/backends/imgui_impl_opengl3.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "include/imgui/imgui.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "include/imgui/imgui_demo.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "include/imgui/imgui_draw.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "include/imgui/imgui_tables.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "include/imgui/imgui_widgets.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

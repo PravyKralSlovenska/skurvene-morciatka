@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/g++
 CXX_DEFINES = -DGTEST_LINKED_AS_SHARED_LIBRARY=1
 
-CXX_INCLUDES = -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL
+CXX_INCLUDES = -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/home/jakub/programko/cpp/skurvene-morciatka/include/imgui -I/home/jakub/programko/cpp/skurvene-morciatka/include/imgui/backends -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL
 
 CXX_FLAGS = -std=gnu++17
 

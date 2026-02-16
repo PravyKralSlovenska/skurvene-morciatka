@@ -17,6 +17,11 @@ World::World()
     // Initialize falling sand simulation
     sand_simulation = std::make_unique<Falling_Sand_Simulation>();
     sand_simulation->set_world(this);
+
+    // Initialize structure spawner (commented out)
+    // structure_spawner.set_world(this);
+    // structure_spawner.set_seed(1);
+    // structure_spawner.setup_default_rules();
 }
 
 World::~World() = default;
@@ -115,6 +120,9 @@ void World::add_chunk(glm::ivec2 coords)
     if (world.find(coords) == world.end())
     {
         world.emplace(coords, create_chunk(coords));
+
+        // Try to spawn structures in the newly created chunk (commented out)
+        // structure_spawner.try_spawn_in_chunk(coords, chunk_width, chunk_height);
     }
 }
 
@@ -196,6 +204,43 @@ void World::place_static_particle(const glm::ivec2 position, const Particle_Type
 {
     // Static particles don't move (for terrain building)
     place_particle_internal(this, position, particle_type, true, chunk_width, chunk_height);
+}
+
+void World::place_custom_particle(const glm::ivec2 position, const Particle &particle)
+{
+    int chunk_pixel_width = chunk_width * Globals::PARTICLE_SIZE;
+    int chunk_pixel_height = chunk_height * Globals::PARTICLE_SIZE;
+
+    glm::ivec2 chunk_pos{
+        (int)floor((float)(position.x) / chunk_pixel_width),
+        (int)floor((float)(position.y) / chunk_pixel_height)};
+
+    Chunk *chunk = get_chunk(chunk_pos);
+    if (!chunk)
+    {
+        std::cerr << "nullptr chunk (custom particle): " << chunk_pos.x << ';' << chunk_pos.y << '\n';
+        return;
+    }
+
+    int pixel_offset_x = position.x - (chunk_pos.x * chunk_pixel_width);
+    int pixel_offset_y = position.y - (chunk_pos.y * chunk_pixel_height);
+
+    glm::ivec2 worldcell_pos{
+        pixel_offset_x / Globals::PARTICLE_SIZE,
+        pixel_offset_y / Globals::PARTICLE_SIZE};
+
+    if (worldcell_pos.x < 0)
+        worldcell_pos.x += chunk_width;
+    if (worldcell_pos.y < 0)
+        worldcell_pos.y += chunk_height;
+
+    if (!in_world_range(worldcell_pos.x, worldcell_pos.y, chunk_height, chunk_width))
+    {
+        std::cerr << "suradnice su mimo (custom particle): " << worldcell_pos.x << ';' << worldcell_pos.y << '\n';
+        return;
+    }
+
+    chunk->set_worldcell(worldcell_pos, particle);
 }
 
 void World::iterate(Chunk *chunk)
@@ -404,3 +449,42 @@ Chunk *World::get_chunk(const glm::ivec2 &coords)
 
     return it->second.get();
 }
+
+// ==================== Structure Spawning (commented out) ====================
+
+/*
+StructureSpawner &World::get_structure_spawner()
+{
+    return structure_spawner;
+}
+
+void World::place_structure(const Structure &structure, const glm::ivec2 &world_pos)
+{
+    structure_spawner.place_structure(structure, world_pos);
+}
+
+void World::place_structure_centered(const Structure &structure, const glm::ivec2 &center_pos)
+{
+    structure_spawner.place_structure_centered(structure, center_pos);
+}
+
+// ==================== Image Structure Loading ====================
+
+void World::load_image_structures(const std::string &folder_path)
+{
+    image_structures = ImageStructureLoader::load_all_from_folder(folder_path);
+}
+
+const std::map<std::string, Structure> &World::get_image_structures() const
+{
+    return image_structures;
+}
+
+Structure *World::get_image_structure(const std::string &name)
+{
+    auto it = image_structures.find(name);
+    if (it != image_structures.end())
+        return &it->second;
+    return nullptr;
+}
+*/

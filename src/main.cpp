@@ -61,6 +61,7 @@ int main()
     // entity_manager.set_spawn_enabled(false);
     Player *player = entity_manager.get_player();
     entity_manager.set_world(&world);
+    entity_manager.ensure_player_valid_position();
 
     controls.set_player(player);
     controls.set_window(render.get_window());
@@ -74,8 +75,11 @@ int main()
     // world.set_time_manager(&time_manager);
     world.set_player(player);
 
+    // Load image-based structures from structure_images/ folder (commented out)
+    // world.load_image_structures("../structure_images");
+
     // audio_manager.init();
-    // audio_manager.set_player(&player);
+    // audio_manager.set_player(player);
     // audio_manager.set_time_manager(&time_manager);
     // audio_manager.send_execute(Pending_Execute::Operations::LOAD, "background music", "../music/menu/Rick Ross - Maybach Music III.mp3");
     // audio_manager.send_execute(Pending_Execute::Operations::PLAY, "background music");

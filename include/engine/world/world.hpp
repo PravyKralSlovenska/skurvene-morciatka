@@ -6,6 +6,9 @@
 #include <memory>
 #include <glm/glm.hpp>
 
+// #include "engine/world/structure.hpp"
+#include "engine/particle/particle.hpp"
+
 // forward declarations
 class Player;
 class World_CA_Generation;
@@ -48,6 +51,12 @@ private:
     // Falling sand simulation
     std::unique_ptr<Falling_Sand_Simulation> sand_simulation;
     bool simulation_enabled = true;
+
+    // Structure spawning (commented out)
+    // StructureSpawner structure_spawner;
+
+    // Image-loaded structures (commented out)
+    // std::map<std::string, Structure> image_structures;
 
 private:
     inline int get_index(int x, int y);
@@ -94,6 +103,9 @@ public:
     // Place a static particle (for terrain/world building)
     void place_static_particle(const glm::ivec2 position, const Particle_Type particle_type);
 
+    // Place a fully constructed particle directly (for custom-colored particles from image structures)
+    void place_custom_particle(const glm::ivec2 position, const Particle &particle);
+
     std::unordered_map<glm::ivec2, std::unique_ptr<Chunk>, Chunk_Coords_to_Hash> *get_chunks();
     int get_chunks_size();
     std::unordered_set<glm::ivec2, Chunk_Coords_to_Hash> *get_active_chunks();
@@ -105,4 +117,14 @@ public:
 
     // pre hraca
     bool is_cell_in_hitbox(const Entity entity);
+
+    // Structure spawning (commented out)
+    // StructureSpawner &get_structure_spawner();
+    // void place_structure(const Structure &structure, const glm::ivec2 &world_pos);
+    // void place_structure_centered(const Structure &structure, const glm::ivec2 &center_pos);
+
+    // Image-loaded structures (commented out)
+    // void load_image_structures(const std::string &folder_path);
+    // const std::map<std::string, Structure> &get_image_structures() const;
+    // Structure *get_image_structure(const std::string &name);
 };

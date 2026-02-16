@@ -23,7 +23,7 @@
 			{
 				"command" : 2,
 				"file" : 1,
-				"line" : 56,
+				"line" : 66,
 				"parent" : 0
 			},
 			{
@@ -39,13 +39,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 331,
+				"line" : 335,
 				"parent" : 3
 			},
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 332,
+				"line" : 336,
 				"parent" : 3
 			}
 		]
@@ -55,24 +55,24 @@
 		"major" : 2,
 		"minor" : 9
 	},
-	"id" : "GTest::GTest::@6890427a1f51a3e7e1df",
+	"id" : "GTest::Main::@6890427a1f51a3e7e1df",
 	"imported" : true,
 	"interfaceCompileDependencies" : 
 	[
 		{
 			"backtrace" : 5,
-			"id" : "GTest::gtest::@6890427a1f51a3e7e1df"
+			"id" : "GTest::gtest_main::@6890427a1f51a3e7e1df"
 		}
 	],
 	"interfaceLinkLibraries" : 
 	[
 		{
 			"backtrace" : 5,
-			"id" : "GTest::gtest::@6890427a1f51a3e7e1df"
+			"id" : "GTest::gtest_main::@6890427a1f51a3e7e1df"
 		}
 	],
 	"local" : true,
-	"name" : "GTest::GTest",
+	"name" : "GTest::Main",
 	"paths" : 
 	{
 		"build" : ".",

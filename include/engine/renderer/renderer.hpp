@@ -9,10 +9,15 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "imgui/imgui.h"
+#include "imgui/backends/imgui_impl_glfw.h"
+#include "imgui/backends/imgui_impl_opengl3.h"
+
 #include "engine/renderer/renderer.hpp"
 #include "engine/renderer/world_renderer.hpp"
 #include "engine/renderer/text_renderer.hpp"
 #include "engine/renderer/entities_renderer.hpp"
+#include "engine/renderer/ui_renderer.hpp"
 
 #include "engine/camera.hpp"
 #include "engine/controls.hpp"
@@ -39,6 +44,7 @@ private:
     std::unique_ptr<World_Renderer> world_renderer;
     std::unique_ptr<Entities_Renderer> entities_renderer;
     std::unique_ptr<Text_Renderer> text_renderer;
+    std::unique_ptr<UI_Renderer> ui_renderer;
 
     // srandy co potrebuhjem
     Camera *camera;
@@ -82,6 +88,16 @@ public:
     bool get_fullscreen_state();
 
     void cleanup();
+
+    // ImGui
+    void init_imgui();
+    void cleanup_imgui();
+    void imgui_new_frame();
+    void imgui_render();
+
+    // UI
+    void toggle_fullscreen_map();
+    bool is_fullscreen_map_open() const;
 
     // debug
     void print_render_info();

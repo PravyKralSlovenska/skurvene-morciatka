@@ -4,11 +4,11 @@
 #include <glm/glm.hpp>
 
 #include "engine/world/world_cell_gpu.hpp"
+#include "engine/particle/particle.hpp"
 
 // forward declarations
 struct WorldCell;
 class Vertex;
-enum class Particle_Type;
 
 enum class Chunk_States
 {
@@ -86,6 +86,9 @@ public:
     void set_worldcell(const glm::ivec2 &coords, Particle_Type particle, bool is_static);
     void set_worldcell(int x, int y, Particle_Type particle, bool is_static);
     void set_worldcell(int index, Particle_Type particle, bool is_static);
+
+    // Set worldcell with a fully constructed particle (for custom-colored particles)
+    void set_worldcell(const glm::ivec2 &coords, const Particle &particle);
 
     WorldCell *get_worldcell(int x, int y);
     WorldCell *get_worldcell(int index);

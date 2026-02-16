@@ -173,6 +173,15 @@ void Chunk::set_worldcell(int index, Particle_Type particle, bool is_static)
     gpu_dirty = true;
 }
 
+void Chunk::set_worldcell(const glm::ivec2 &coords, const Particle &particle)
+{
+    int index = get_index(coords.x, coords.y);
+    if (index < 0 || index >= static_cast<int>(chunk_data.size()))
+        return;
+    chunk_data[index].set_particle(particle);
+    gpu_dirty = true;
+}
+
 WorldCell *Chunk::get_worldcell(int x, int y)
 {
     // Bounds checking

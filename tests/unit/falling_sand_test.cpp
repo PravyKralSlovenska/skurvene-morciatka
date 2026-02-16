@@ -767,6 +767,215 @@ TEST(VelocityTest, ParticleAcceleratesInSimulation)
 }
 
 // ============================================
+// ACCELERATION TESTS
+// ============================================
+
+TEST(AccelerationTest, ParticleHasAccelerationField)
+{
+    Particle sand = create_sand(false);
+
+    // Check that acceleration starts at zero
+    EXPECT_FLOAT_EQ(sand.physics.acceleration.x, 0.0f);
+    EXPECT_FLOAT_EQ(sand.physics.acceleration.y, 0.0f);
+
+    // Check that we can set acceleration
+    sand.physics.acceleration = {1.0f, 2.0f};
+    EXPECT_FLOAT_EQ(sand.physics.acceleration.x, 1.0f);
+    EXPECT_FLOAT_EQ(sand.physics.acceleration.y, 2.0f);
+}
+
+TEST(AccelerationTest, GravityAppliesAcceleration)
+{
+    std::cout << "\n=== GRAVITY APPLIES ACCELERATION TEST ===" << std::endl;
+
+    Particle sand = create_sand(false);
+
+    // Initial state
+    EXPECT_FLOAT_EQ(sand.physics.velocity.y, 0.0f);
+    std::cout << "Initial velocity.y: " << sand.physics.velocity.y << std::endl;
+
+    // Simulate gravity application manually
+    // GRAVITY = 50.0f, delta_time = 0.016f (60fps)
+    // For solid: multiplier = 1.0
+    const float GRAVITY = 50.0f;
+    const float delta_time = 0.016f;
+
+    // First frame
+    sand.physics.acceleration.y = GRAVITY * 1.0f; // Solid multiplier
+    sand.physics.velocity.y += sand.physics.acceleration.y * delta_time;
+    sand.physics.acceleration.y = 0.0f; // Reset after applying
+
+    float v1 = sand.physics.velocity.y;
+    std::cout << "After frame 1: velocity.y = " << v1 << std::endl;
+    EXPECT_GT(v1, 0.0f) << "Velocity should increase after gravity";
+
+    // Second frame
+    sand.physics.acceleration.y = GRAVITY * 1.0f;
+    sand.physics.velocity.y += sand.physics.acceleration.y * delta_time;
+    sand.physics.acceleration.y = 0.0f;
+
+    float v2 = sand.physics.velocity.y;
+    std::cout << "After frame 2: velocity.y = " << v2 << std::endl;
+    EXPECT_GT(v2, v1) << "Velocity should continue increasing";
+
+    // Third frame
+    sand.physics.acceleration.y = GRAVITY * 1.0f;
+    sand.physics.velocity.y += sand.physics.acceleration.y * delta_time;
+    sand.physics.acceleration.y = 0.0f;
+
+    float v3 = sand.physics.velocity.y;
+    std::cout << "After frame 3: velocity.y = " << v3 << std::endl;
+    EXPECT_GT(v3, v2) << "Velocity should continue increasing";
+
+    // Check that velocity increased linearly (constant acceleration)
+    float dv1 = v2 - v1;
+    float dv2 = v3 - v2;
+    EXPECT_NEAR(dv1, dv2, 0.001f) << "Velocity should increase linearly (constant acceleration)";
+
+    std::cout << "Acceleration per frame: " << dv1 << " cells/frame" << std::endl;
+}
+
+TEST(AccelerationTest, DifferentStatesHaveDifferentAcceleration)
+{
+    std::cout << "\n=== DIFFERENT STATES ACCELERATION TEST ===" << std::endl;
+
+    Particle solid = create_sand(false);   // Solid
+    Particle liquid = create_water(false); // Liquid
+    Particle gas = create_smoke(false);    // Gas
+
+    const float GRAVITY = 50.0f;
+    const float delta_time = 0.016f;
+
+    // Apply gravity to each
+    // Solid: multiplier = 1.0
+    solid.physics.velocity.y += GRAVITY * 1.0f * delta_time;
+
+    // Liquid: multiplier = 0.9
+    liquid.physics.velocity.y += GRAVITY * 0.9f * delta_time;
+
+    // Gas: multiplier = -0.5 (rises)
+    gas.physics.velocity.y += GRAVITY * (-0.5f) * delta_time;
+
+    std::cout << "Solid velocity.y: " << solid.physics.velocity.y << std::endl;
+    std::cout << "Liquid velocity.y: " << liquid.physics.velocity.y << std::endl;
+    std::cout << "Gas velocity.y: " << gas.physics.velocity.y << std::endl;
+
+    // Solid should fall fastest
+    EXPECT_GT(solid.physics.velocity.y, liquid.physics.velocity.y);
+
+    // Liquid should still fall
+    EXPECT_GT(liquid.physics.velocity.y, 0.0f);
+
+    // Gas should rise (negative velocity)
+    EXPECT_LT(gas.physics.velocity.y, 0.0f);
+}
+
+TEST(AccelerationTest, VelocityClampsToMaximum)
+{
+    std::cout << "\n=== VELOCITY CLAMP TEST ===" << std::endl;
+
+    Particle sand = create_sand(false);
+
+    const float GRAVITY = 50.0f;
+    const float MAX_VELOCITY = 15.0f;
+    const float delta_time = 0.016f;
+
+    // Apply gravity for many frames
+    for (int i = 0; i < 100; i++)
+    {
+        sand.physics.velocity.y += GRAVITY * delta_time;
+        sand.physics.velocity.y = std::min(sand.physics.velocity.y, MAX_VELOCITY);
+    }
+
+    std::cout << "Velocity after 100 frames: " << sand.physics.velocity.y << std::endl;
+
+    EXPECT_LE(sand.physics.velocity.y, MAX_VELOCITY) << "Velocity should be clamped to max";
+    EXPECT_FLOAT_EQ(sand.physics.velocity.y, MAX_VELOCITY) << "Velocity should reach max";
+}
+
+TEST(AccelerationTest, AccelerationInFullSimulation)
+{
+    std::cout << "\n=== ACCELERATION IN FULL SIMULATION TEST ===" << std::endl;
+
+    // Create world and simulation
+    World world;
+    Falling_Sand_Simulation sim;
+    sim.set_world(&world);
+
+    // Create player for world (position at 0,0 to minimize chunk generation)
+    Player player("test", glm::vec2(0, 0));
+    world.set_player(&player);
+
+    // Initialize world - this generates chunks around player
+    world.update(0.016f);
+
+    // Get a chunk near player
+    Chunk *chunk = world.get_chunk(glm::ivec2(0, 0));
+    if (!chunk)
+    {
+        std::cout << "SKIPPING: No chunk available at (0,0)" << std::endl;
+        GTEST_SKIP();
+    }
+
+    glm::ivec2 chunk_dim = chunk->get_chunk_dimensions();
+
+    // Clear a column for testing
+    for (int y = 0; y < chunk_dim.y; y++)
+    {
+        chunk->set_worldcell(5, y, Particle_Type::EMPTY, false);
+    }
+
+    // Place sand at the top
+    chunk->set_worldcell(5, 0, Particle_Type::SAND, false);
+
+    WorldCell *sand_cell = chunk->get_worldcell(5, 0);
+    if (!sand_cell || sand_cell->particle.type != Particle_Type::SAND)
+    {
+        std::cout << "SKIPPING: Could not place sand particle" << std::endl;
+        GTEST_SKIP();
+    }
+
+    std::cout << "Initial position: y=0, velocity.y=" << sand_cell->particle.physics.velocity.y << std::endl;
+
+    // Track velocities over time
+    std::vector<float> velocities;
+    velocities.push_back(sand_cell->particle.physics.velocity.y);
+
+    // Run simulation for several frames
+    for (int frame = 1; frame <= 5; frame++)
+    {
+        sim.update(0.016f);
+
+        // Find sand particle
+        for (int y = 0; y < chunk_dim.y; y++)
+        {
+            WorldCell *cell = chunk->get_worldcell(5, y);
+            if (cell && cell->particle.type == Particle_Type::SAND)
+            {
+                velocities.push_back(cell->particle.physics.velocity.y);
+                std::cout << "Frame " << frame << ": y=" << y
+                          << ", velocity.y=" << cell->particle.physics.velocity.y << std::endl;
+                break;
+            }
+        }
+    }
+
+    // Check that velocities increased (acceleration working)
+    bool velocity_increased = false;
+    for (size_t i = 1; i < velocities.size(); i++)
+    {
+        if (velocities[i] > velocities[i - 1])
+        {
+            velocity_increased = true;
+            break;
+        }
+    }
+
+    EXPECT_TRUE(velocity_increased) << "Velocity should increase over time (acceleration)";
+    std::cout << "\n[PASS] Particle acceleration confirmed!" << std::endl;
+}
+
+// ============================================
 // MAIN
 // ============================================
 

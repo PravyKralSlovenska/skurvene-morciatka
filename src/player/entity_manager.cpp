@@ -38,6 +38,15 @@ void Entity_Manager::set_world(World *world)
     }
 }
 
+void Entity_Manager::ensure_player_valid_position()
+{
+    if (!player || !world)
+        return;
+
+    glm::ivec2 valid_pos = player->find_valid_spawn_position(player->coords);
+    player->set_position(valid_pos);
+}
+
 Entity *Entity_Manager::create_entity()
 {
     auto entity = std::make_unique<Entity>();
@@ -49,13 +58,16 @@ Entity *Entity_Manager::create_entity()
 Enemy *Entity_Manager::create_enemy(const glm::ivec2 &position)
 {
     auto enemy = std::make_unique<Enemy>();
-    enemy->set_position(position);
 
-    // Set world reference for collision detection
+    // Set world reference first so collision checks work
     if (world)
     {
         enemy->set_world(world);
     }
+
+    // Find valid spawn position that fits the enemy's hitbox
+    glm::ivec2 valid_pos = enemy->find_valid_spawn_position(position);
+    enemy->set_position(valid_pos);
 
     int id = enemy->get_id();
     Enemy *enemy_ptr = enemy.get();
@@ -67,6 +79,60 @@ Enemy *Entity_Manager::create_enemy(const glm::ivec2 &position)
 Enemy *Entity_Manager::create_enemy(int x, int y)
 {
     return create_enemy(glm::ivec2(x, y));
+}
+
+Devushki *Entity_Manager::create_devushki(const glm::ivec2 &position)
+{
+    auto devushki = std::make_unique<Devushki>();
+
+    // Set world reference first so collision checks work
+    if (world)
+    {
+        devushki->set_world(world);
+    }
+
+    // Find valid spawn position that fits the devushki's hitbox
+    glm::ivec2 valid_pos = devushki->find_valid_spawn_position(position);
+    devushki->set_position(valid_pos);
+    devushki->set_home_position(valid_pos);
+
+    int id = devushki->get_id();
+    Devushki *devushki_ptr = devushki.get();
+    entities[id] = std::move(devushki);
+
+    return devushki_ptr;
+}
+
+Devushki *Entity_Manager::create_devushki(int x, int y)
+{
+    return create_devushki(glm::ivec2(x, y));
+}
+
+Boss *Entity_Manager::create_boss(const glm::ivec2 &position)
+{
+    auto boss = std::make_unique<Boss>();
+
+    // Set world reference first so collision checks work
+    if (world)
+    {
+        boss->set_world(world);
+    }
+
+    // Find valid spawn position that fits the boss's hitbox
+    glm::ivec2 valid_pos = boss->find_valid_spawn_position(position);
+    boss->set_position(valid_pos);
+    boss->set_home_position(valid_pos);
+
+    int id = boss->get_id();
+    Boss *boss_ptr = boss.get();
+    entities[id] = std::move(boss);
+
+    return boss_ptr;
+}
+
+Boss *Entity_Manager::create_boss(int x, int y)
+{
+    return create_boss(glm::ivec2(x, y));
 }
 
 bool Entity_Manager::remove_entity(const int id)
@@ -106,6 +172,20 @@ void Entity_Manager::update_entity(Entity *entity, float delta_time)
     {
         Enemy *enemy = static_cast<Enemy *>(entity);
         enemy->set_target(player->coords);
+    }
+
+    // If it's a devushki, update its target to player position
+    if (entity->type == Entity_Type::DEVUSHKI && player)
+    {
+        Devushki *devushki = static_cast<Devushki *>(entity);
+        devushki->set_target(player->coords);
+    }
+
+    // If it's a boss, update its target to player position
+    if (entity->type == Entity_Type::BOSS && player)
+    {
+        Boss *boss = static_cast<Boss *>(entity);
+        boss->set_target(player->coords);
     }
 }
 
@@ -227,11 +307,20 @@ void Entity_Manager::randomize_enemy_stats(Enemy *enemy)
 Enemy *Entity_Manager::spawn_random_enemy()
 {
     glm::ivec2 spawn_pos = get_random_spawn_position();
-    Enemy *enemy = create_enemy(spawn_pos);
+
+    // Create a temporary enemy to check hitbox size for valid position
+    auto temp = std::make_unique<Enemy>();
+    if (world)
+    {
+        temp->set_world(world);
+    }
+    glm::ivec2 valid_pos = temp->find_valid_spawn_position(spawn_pos);
+
+    Enemy *enemy = create_enemy(valid_pos);
 
     if (enemy)
     {
-        enemy->set_home_position(spawn_pos);
+        enemy->set_home_position(valid_pos);
         randomize_enemy_stats(enemy);
     }
 
@@ -338,6 +427,32 @@ int Entity_Manager::get_enemy_count() const
     for (const auto &[id, entity] : entities)
     {
         if (entity->type == Entity_Type::ENEMY && entity->is_active)
+        {
+            count++;
+        }
+    }
+    return count;
+}
+
+int Entity_Manager::get_devushki_count() const
+{
+    int count = 0;
+    for (const auto &[id, entity] : entities)
+    {
+        if (entity->type == Entity_Type::DEVUSHKI && entity->is_active)
+        {
+            count++;
+        }
+    }
+    return count;
+}
+
+int Entity_Manager::get_boss_count() const
+{
+    int count = 0;
+    for (const auto &[id, entity] : entities)
+    {
+        if (entity->type == Entity_Type::BOSS && entity->is_active)
         {
             count++;
         }

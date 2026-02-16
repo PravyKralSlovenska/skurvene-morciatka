@@ -15,11 +15,20 @@ pkg_check_modules(OPENAL REQUIRED openal)
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/include/imgui
+    ${CMAKE_SOURCE_DIR}/include/imgui/backends
     ${OPENGL_INCLUDE_DIR}
     ${GLFW_INCLUDE_DIRS}
     ${GLM_INCLUDE_DIR}
     ${FREETYPE2_INCLUDE_DIRS}
     ${OPENAL_INCLUDE_DIRS}
+)
+
+# ImGui sources
+file(GLOB IMGUI_SOURCES
+    include/imgui/*.cpp
+    include/imgui/backends/imgui_impl_glfw.cpp
+    include/imgui/backends/imgui_impl_opengl3.cpp
 )
 
 # MAIN EXECUTABLE
@@ -36,6 +45,7 @@ list(FILTER MAIN_SOURCES EXCLUDE REGEX ".*main\\.cpp$") # odstrani main z MAIN_S
 
 add_executable(morciatko 
     ${MAIN_SOURCES}
+    ${IMGUI_SOURCES}
     src/main.cpp
 )
 
@@ -56,7 +66,7 @@ if(BUILD_TESTS)
     find_package(GTest REQUIRED)
     include_directories(${GTEST_INCLUDE_DIRS})
     
-    add_library(morciatko_lib STATIC ${MAIN_SOURCES})
+    add_library(morciatko_lib STATIC ${MAIN_SOURCES} ${IMGUI_SOURCES})
     target_link_libraries(morciatko_lib
         ${OPENGL_LIBRARIES}
         ${GLFW_LIBRARIES}

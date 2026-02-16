@@ -409,6 +409,78 @@ bool Entity::can_move_to(const glm::ivec2 &new_pos) const
     return true;
 }
 
+bool Entity::is_valid_spawn_position(const glm::ivec2 &position) const
+{
+    if (!world_ref)
+        return true; // No world = no collision to check
+
+    // Check if the entire hitbox area is free of solid particles
+    int left = position.x - hitbox_dimensions_half.x;
+    int right = position.x + hitbox_dimensions_half.x;
+    int top = position.y - hitbox_dimensions_half.y;
+    int bottom = position.y + hitbox_dimensions_half.y;
+
+    int particle_size = static_cast<int>(Globals::PARTICLE_SIZE);
+
+    // Check the full hitbox interior, not just edges
+    for (int y = top; y <= bottom; y += particle_size)
+    {
+        for (int x = left; x <= right; x += particle_size)
+        {
+            if (is_solid_at(x, y))
+                return false;
+        }
+        // Check right edge explicitly
+        if (is_solid_at(right, y))
+            return false;
+    }
+    // Check bottom edge explicitly
+    for (int x = left; x <= right; x += particle_size)
+    {
+        if (is_solid_at(x, bottom))
+            return false;
+    }
+    if (is_solid_at(right, bottom))
+        return false;
+
+    return true;
+}
+
+glm::ivec2 Entity::find_valid_spawn_position(const glm::ivec2 &desired_pos, int max_search_radius) const
+{
+    if (!world_ref)
+        return desired_pos;
+
+    // First check the desired position
+    if (is_valid_spawn_position(desired_pos))
+        return desired_pos;
+
+    int particle_size = static_cast<int>(Globals::PARTICLE_SIZE);
+    int step = particle_size * 2;
+
+    // Spiral search outward from desired position
+    for (int radius = step; radius <= max_search_radius; radius += step)
+    {
+        // Check positions in a square ring at this radius
+        for (int dx = -radius; dx <= radius; dx += step)
+        {
+            for (int dy = -radius; dy <= radius; dy += step)
+            {
+                // Only check the outer ring
+                if (std::abs(dx) != radius && std::abs(dy) != radius)
+                    continue;
+
+                glm::ivec2 test_pos = {desired_pos.x + dx, desired_pos.y + dy};
+                if (is_valid_spawn_position(test_pos))
+                    return test_pos;
+            }
+        }
+    }
+
+    // Fallback: return desired position (will clip through terrain)
+    return desired_pos;
+}
+
 void Entity::resolve_collision(glm::ivec2 &new_pos)
 {
     if (!world_ref || noclip)
@@ -863,7 +935,14 @@ void Enemy::move_towards(const glm::ivec2 &target, float delta_time)
     if (dist > 1.0f)
     {
         direction /= dist;
-        velocity = direction * speed;
+        // Only set horizontal velocity - gravity handles vertical
+        velocity.x = direction.x * speed;
+
+        // Jump if target is above and we're on the ground
+        if (target.y < coords.y - 10 && on_ground)
+        {
+            jump();
+        }
     }
 }
 
@@ -875,7 +954,14 @@ void Enemy::move_away_from(const glm::ivec2 &target, float delta_time)
     if (dist > 0.1f)
     {
         direction /= dist;
-        velocity = direction * speed * 1.2f; // Run faster when fleeing
+        // Only set horizontal velocity - gravity handles vertical
+        velocity.x = direction.x * speed * 1.2f; // Run faster when fleeing
+
+        // Jump if we need to go up while fleeing and we're on the ground
+        if (direction.y < -0.3f && on_ground)
+        {
+            jump();
+        }
     }
 }
 
@@ -976,4 +1062,545 @@ bool Enemy::is_in_detection_range(const glm::ivec2 &target) const
 void Enemy::move_towards_target(float delta_time)
 {
     move_towards(target_position, delta_time);
+}
+
+// ==================== Devushki (NPC) ====================
+
+Devushki::Devushki()
+{
+    type = Entity_Type::DEVUSHKI;
+    max_healthpoints = 80.0f;
+    healthpoints = 80.0f;
+    speed = 45.0f;
+    set_hitbox_dimensions(28, 40);
+    npc_ai_state = NPC_AI_State::IDLE;
+}
+
+Devushki::Devushki(std::string name, glm::vec2 coords)
+    : Devushki()
+{
+    this->name = name;
+    this->coords = coords;
+    this->home_position = coords;
+}
+
+void Devushki::update(float delta_time)
+{
+    if (!is_alive)
+        return;
+
+    state_timer += delta_time;
+
+    switch (npc_ai_state)
+    {
+    case NPC_AI_State::IDLE:
+        state_idle(delta_time);
+        break;
+    case NPC_AI_State::FOLLOW:
+        state_follow(delta_time);
+        break;
+    case NPC_AI_State::WANDER:
+        state_wander(delta_time);
+        break;
+    case NPC_AI_State::INTERACT:
+        state_interact(delta_time);
+        break;
+    }
+
+    update_physics(delta_time);
+    calculate_hitbox();
+}
+
+// ==================== Devushki State Handlers ====================
+
+void Devushki::state_idle(float delta_time)
+{
+    velocity *= 0.9f;
+    state = Entity_States::STILL;
+
+    // Check if player is nearby - start following
+    if (is_in_follow_range(target_position))
+    {
+        transition_to(NPC_AI_State::FOLLOW);
+        return;
+    }
+
+    // After idle duration, start wandering
+    if (state_timer >= idle_duration)
+    {
+        wander_target = get_random_wander_point();
+        transition_to(NPC_AI_State::WANDER);
+    }
+}
+
+void Devushki::state_follow(float delta_time)
+{
+    state = Entity_States::WALKING;
+
+    float dist = distance_to(target_position);
+
+    // Player went too far - lose interest
+    if (dist > lose_interest_range)
+    {
+        transition_to(NPC_AI_State::IDLE);
+        return;
+    }
+
+    // Close enough to player - stop and interact
+    if (dist <= stop_follow_range)
+    {
+        velocity *= 0.5f;
+        transition_to(NPC_AI_State::INTERACT);
+        return;
+    }
+
+    // Follow the player
+    move_towards(target_position, delta_time);
+}
+
+void Devushki::state_wander(float delta_time)
+{
+    state = Entity_States::WALKING;
+
+    // Check if player is nearby - interrupt wander
+    if (is_in_follow_range(target_position))
+    {
+        transition_to(NPC_AI_State::FOLLOW);
+        return;
+    }
+
+    float dist = distance_to(wander_target);
+
+    if (dist < 10.0f)
+    {
+        transition_to(NPC_AI_State::IDLE);
+        return;
+    }
+
+    move_towards(wander_target, delta_time);
+
+    if (state_timer >= wander_duration)
+    {
+        transition_to(NPC_AI_State::IDLE);
+    }
+}
+
+void Devushki::state_interact(float delta_time)
+{
+    velocity *= 0.8f;
+    state = Entity_States::STILL;
+
+    float dist = distance_to(target_position);
+
+    // Player moved away
+    if (dist > stop_follow_range * 2.0f)
+    {
+        transition_to(NPC_AI_State::FOLLOW);
+        return;
+    }
+
+    if (state_timer >= interact_duration)
+    {
+        transition_to(NPC_AI_State::IDLE);
+    }
+}
+
+void Devushki::transition_to(NPC_AI_State new_state)
+{
+    if (npc_ai_state == new_state)
+        return;
+
+    npc_ai_state = new_state;
+    state_timer = 0.0f;
+
+    switch (new_state)
+    {
+    case NPC_AI_State::IDLE:
+        velocity = {0.0f, 0.0f};
+        break;
+    case NPC_AI_State::FOLLOW:
+        break;
+    case NPC_AI_State::WANDER:
+        wander_target = get_random_wander_point();
+        break;
+    case NPC_AI_State::INTERACT:
+        velocity = {0.0f, 0.0f};
+        break;
+    }
+}
+
+void Devushki::move_towards(const glm::ivec2 &target, float delta_time)
+{
+    glm::vec2 direction = glm::vec2(target - coords);
+    float dist = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+
+    if (dist > 1.0f)
+    {
+        direction /= dist;
+        // Only set horizontal velocity - gravity handles vertical
+        velocity.x = direction.x * speed * follow_speed_multiplier;
+
+        // Jump if target is above and we're on the ground
+        if (target.y < coords.y - 10 && on_ground)
+        {
+            jump();
+        }
+    }
+}
+
+float Devushki::distance_to(const glm::ivec2 &target) const
+{
+    glm::vec2 diff = glm::vec2(target - coords);
+    return std::sqrt(diff.x * diff.x + diff.y * diff.y);
+}
+
+glm::ivec2 Devushki::get_random_wander_point() const
+{
+    float angle = static_cast<float>(rand()) / RAND_MAX * 6.28318f;
+    float distance = 40.0f + static_cast<float>(rand()) / RAND_MAX * 80.0f;
+
+    return glm::ivec2{
+        home_position.x + static_cast<int>(std::cos(angle) * distance),
+        home_position.y + static_cast<int>(std::sin(angle) * distance)};
+}
+
+void Devushki::set_target(const glm::ivec2 &target)
+{
+    target_position = target;
+}
+
+void Devushki::set_home_position(const glm::ivec2 &home)
+{
+    home_position = home;
+}
+
+void Devushki::set_follow_range(float range)
+{
+    follow_range = range;
+}
+
+NPC_AI_State Devushki::get_npc_ai_state() const
+{
+    return npc_ai_state;
+}
+
+const char *Devushki::get_npc_ai_state_name() const
+{
+    switch (npc_ai_state)
+    {
+    case NPC_AI_State::IDLE:
+        return "IDLE";
+    case NPC_AI_State::FOLLOW:
+        return "FOLLOW";
+    case NPC_AI_State::WANDER:
+        return "WANDER";
+    case NPC_AI_State::INTERACT:
+        return "INTERACT";
+    default:
+        return "UNKNOWN";
+    }
+}
+
+bool Devushki::is_in_follow_range(const glm::ivec2 &target) const
+{
+    return distance_to(target) <= follow_range;
+}
+
+// ==================== Boss ====================
+
+Boss::Boss()
+{
+    type = Entity_Type::BOSS;
+    max_healthpoints = 500.0f;
+    healthpoints = 500.0f;
+    speed = 40.0f;
+    set_hitbox_dimensions(48, 56);
+    boss_ai_state = Boss_AI_State::IDLE;
+}
+
+Boss::Boss(std::string name, glm::vec2 coords)
+    : Boss()
+{
+    this->name = name;
+    this->coords = coords;
+    this->home_position = coords;
+}
+
+void Boss::update(float delta_time)
+{
+    if (!is_alive)
+    {
+        boss_ai_state = Boss_AI_State::DEAD;
+        return;
+    }
+
+    time_since_attack += delta_time;
+    time_since_slam += delta_time;
+    state_timer += delta_time;
+
+    // Check enrage condition
+    if (should_enrage() && !is_enraged)
+    {
+        is_enraged = true;
+        transition_to(Boss_AI_State::ENRAGE);
+    }
+
+    switch (boss_ai_state)
+    {
+    case Boss_AI_State::IDLE:
+        state_idle(delta_time);
+        break;
+    case Boss_AI_State::CHASE:
+        state_chase(delta_time);
+        break;
+    case Boss_AI_State::ATTACK:
+        state_attack(delta_time);
+        break;
+    case Boss_AI_State::SLAM:
+        state_slam(delta_time);
+        break;
+    case Boss_AI_State::ENRAGE:
+        state_enrage(delta_time);
+        break;
+    case Boss_AI_State::DEAD:
+        velocity = {0.0f, 0.0f};
+        break;
+    }
+
+    update_physics(delta_time);
+    calculate_hitbox();
+}
+
+// ==================== Boss State Handlers ====================
+
+void Boss::state_idle(float delta_time)
+{
+    velocity *= 0.9f;
+    state = Entity_States::STILL;
+
+    if (is_in_detection_range(target_position))
+    {
+        transition_to(Boss_AI_State::CHASE);
+    }
+}
+
+void Boss::state_chase(float delta_time)
+{
+    state = Entity_States::WALKING;
+
+    float dist = distance_to(target_position);
+
+    // Lost interest
+    if (dist > lose_interest_range)
+    {
+        transition_to(Boss_AI_State::IDLE);
+        return;
+    }
+
+    // In slam range and slam is ready - slam attack
+    if (dist <= slam_range && can_slam() && is_enraged)
+    {
+        transition_to(Boss_AI_State::SLAM);
+        return;
+    }
+
+    // In attack range - attack
+    if (dist <= attack_range)
+    {
+        transition_to(Boss_AI_State::ATTACK);
+        return;
+    }
+
+    // Chase the target using unified movement
+    move_towards(target_position, delta_time);
+}
+
+void Boss::state_attack(float delta_time)
+{
+    state = Entity_States::STILL;
+    velocity *= 0.3f;
+
+    float dist = distance_to(target_position);
+
+    if (dist > attack_range * 1.3f)
+    {
+        transition_to(Boss_AI_State::CHASE);
+        return;
+    }
+
+    if (can_attack())
+    {
+        time_since_attack = 0.0f;
+        state = Entity_States::HIT;
+        // TODO: Deal damage through entity_manager
+    }
+}
+
+void Boss::state_slam(float delta_time)
+{
+    state = Entity_States::HIT;
+    velocity = {0.0f, 0.0f};
+
+    // Slam is a brief action
+    if (state_timer >= 0.5f)
+    {
+        time_since_slam = 0.0f;
+        // TODO: Deal AoE damage through entity_manager
+        transition_to(Boss_AI_State::CHASE);
+    }
+}
+
+void Boss::state_enrage(float delta_time)
+{
+    // Brief enrage animation, then go back to chasing
+    velocity = {0.0f, 0.0f};
+    state = Entity_States::HIT;
+
+    if (state_timer >= 1.0f)
+    {
+        transition_to(Boss_AI_State::CHASE);
+    }
+}
+
+void Boss::transition_to(Boss_AI_State new_state)
+{
+    if (boss_ai_state == new_state)
+        return;
+
+    previous_boss_ai_state = boss_ai_state;
+    boss_ai_state = new_state;
+    state_timer = 0.0f;
+
+    switch (new_state)
+    {
+    case Boss_AI_State::IDLE:
+        velocity = {0.0f, 0.0f};
+        break;
+    case Boss_AI_State::CHASE:
+        break;
+    case Boss_AI_State::ATTACK:
+        velocity = {0.0f, 0.0f};
+        break;
+    case Boss_AI_State::SLAM:
+        velocity = {0.0f, 0.0f};
+        break;
+    case Boss_AI_State::ENRAGE:
+        velocity = {0.0f, 0.0f};
+        break;
+    case Boss_AI_State::DEAD:
+        velocity = {0.0f, 0.0f};
+        break;
+    }
+}
+
+bool Boss::should_enrage() const
+{
+    return (healthpoints / max_healthpoints) <= enrage_health_threshold;
+}
+
+bool Boss::can_attack() const
+{
+    return time_since_attack >= (is_enraged ? attack_cooldown * 0.7f : attack_cooldown);
+}
+
+bool Boss::can_slam() const
+{
+    return time_since_slam >= slam_cooldown;
+}
+
+void Boss::move_towards(const glm::ivec2 &target, float delta_time)
+{
+    glm::vec2 direction = glm::vec2(target - coords);
+    float dist = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+
+    if (dist > 1.0f)
+    {
+        direction /= dist;
+        float current_speed = is_enraged ? speed * enrage_speed_multiplier : speed;
+        // Only set horizontal velocity - gravity handles vertical
+        velocity.x = direction.x * current_speed;
+
+        // Jump if target is above and we're on the ground
+        if (target.y < coords.y - 10 && on_ground)
+        {
+            jump();
+        }
+    }
+}
+
+float Boss::distance_to(const glm::ivec2 &target) const
+{
+    glm::vec2 diff = glm::vec2(target - coords);
+    return std::sqrt(diff.x * diff.x + diff.y * diff.y);
+}
+
+void Boss::set_target(const glm::ivec2 &target)
+{
+    target_position = target;
+}
+
+void Boss::set_home_position(const glm::ivec2 &home)
+{
+    home_position = home;
+}
+
+void Boss::set_detection_range(float range)
+{
+    detection_range = range;
+}
+
+void Boss::set_attack_range(float range)
+{
+    attack_range = range;
+}
+
+void Boss::set_attack_damage(float damage)
+{
+    attack_damage = damage;
+}
+
+void Boss::set_slam_damage(float damage)
+{
+    slam_damage = damage;
+}
+
+Boss_AI_State Boss::get_boss_ai_state() const
+{
+    return boss_ai_state;
+}
+
+const char *Boss::get_boss_ai_state_name() const
+{
+    switch (boss_ai_state)
+    {
+    case Boss_AI_State::IDLE:
+        return "IDLE";
+    case Boss_AI_State::CHASE:
+        return "CHASE";
+    case Boss_AI_State::ATTACK:
+        return "ATTACK";
+    case Boss_AI_State::SLAM:
+        return "SLAM";
+    case Boss_AI_State::ENRAGE:
+        return "ENRAGE";
+    case Boss_AI_State::DEAD:
+        return "DEAD";
+    default:
+        return "UNKNOWN";
+    }
+}
+
+bool Boss::is_in_attack_range(const glm::ivec2 &target) const
+{
+    return distance_to(target) <= attack_range;
+}
+
+bool Boss::is_in_detection_range(const glm::ivec2 &target) const
+{
+    return distance_to(target) <= detection_range;
+}
+
+bool Boss::get_is_enraged() const
+{
+    return is_enraged;
 }

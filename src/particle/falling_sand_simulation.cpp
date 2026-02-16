@@ -161,11 +161,18 @@ void Falling_Sand_Simulation::apply_gravity(Particle &particle, float delta_time
         break;
     }
 
-    // Apply gravity to vertical velocity
-    particle.physics.velocity.y += GRAVITY * gravity_multiplier * delta_time;
+    // Set gravitational acceleration
+    particle.physics.acceleration.y = GRAVITY * gravity_multiplier;
+
+    // Apply acceleration to velocity (v = v + a * dt)
+    particle.physics.velocity.x += particle.physics.acceleration.x * delta_time;
+    particle.physics.velocity.y += particle.physics.acceleration.y * delta_time;
 
     // Apply friction to horizontal velocity
     particle.physics.velocity.x *= FRICTION;
+
+    // Reset acceleration after applying (forces are applied each frame)
+    particle.physics.acceleration = {0.0f, 0.0f};
 
     // Clamp to max velocity
     particle.physics.velocity.y = std::clamp(particle.physics.velocity.y, -MAX_VELOCITY, MAX_VELOCITY);

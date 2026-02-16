@@ -10,6 +10,8 @@
 // forward declarations
 class Entity;
 class Enemy;
+class Devushki;
+class Boss;
 class Player;
 class World;
 struct Chunk_Coords_to_Hash;
@@ -46,6 +48,7 @@ private:
     void update_entity(Entity *entity, float delta_time);
     void update_spawner(float delta_time);
     glm::ivec2 get_random_spawn_position();
+    glm::ivec2 find_valid_position_for_hitbox(const glm::ivec2 &desired_pos, const glm::ivec2 &hitbox_dims, int max_attempts = 20);
     void randomize_enemy_stats(Enemy *enemy);
 
 public:
@@ -53,6 +56,7 @@ public:
     ~Entity_Manager();
 
     void set_world(World *world);
+    void ensure_player_valid_position();
     void update();
     void update(float delta_time);
 
@@ -61,6 +65,14 @@ public:
     Enemy *create_enemy(const glm::ivec2 &position);
     Enemy *create_enemy(int x, int y);
     Enemy *spawn_random_enemy(); // New: spawns with random position & stats
+
+    // devushki creation
+    Devushki *create_devushki(const glm::ivec2 &position);
+    Devushki *create_devushki(int x, int y);
+
+    // boss creation
+    Boss *create_boss(const glm::ivec2 &position);
+    Boss *create_boss(int x, int y);
 
     // entity removal
     bool remove_entity(const int id);
@@ -86,5 +98,7 @@ public:
     // utility
     int get_entity_count() const;
     int get_enemy_count() const;
+    int get_devushki_count() const;
+    int get_boss_count() const;
     bool has_entity(int id) const;
 };

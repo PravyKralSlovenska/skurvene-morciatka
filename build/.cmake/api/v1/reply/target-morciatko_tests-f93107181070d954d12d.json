@@ -32,25 +32,25 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 73,
+				"line" : 83,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 75,
+				"line" : 85,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 60,
+				"line" : 70,
 				"parent" : 0
 			},
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 56,
+				"line" : 66,
 				"parent" : 0
 			},
 			{
@@ -78,7 +78,7 @@
 			{
 				"command" : 5,
 				"file" : 0,
-				"line" : 83,
+				"line" : 93,
 				"parent" : 0
 			},
 			{
@@ -139,6 +139,14 @@
 				},
 				{
 					"backtrace" : 11,
+					"path" : "/home/jakub/programko/cpp/skurvene-morciatka/include/imgui"
+				},
+				{
+					"backtrace" : 11,
+					"path" : "/home/jakub/programko/cpp/skurvene-morciatka/include/imgui/backends"
+				},
+				{
+					"backtrace" : 11,
 					"path" : "/usr/include/freetype2"
 				},
 				{
@@ -166,7 +174,8 @@
 				2,
 				3,
 				4,
-				5
+				5,
+				6
 			]
 		}
 	],
@@ -284,7 +293,8 @@
 				2,
 				3,
 				4,
-				5
+				5,
+				6
 			]
 		}
 	],
@@ -312,6 +322,12 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "tests/unit/random_test.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "tests/unit/structure_test.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

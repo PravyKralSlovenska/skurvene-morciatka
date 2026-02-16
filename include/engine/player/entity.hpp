@@ -28,7 +28,9 @@ enum class Entity_Type
     PLAYER,
     ENEMY,
     NPC,
-    PROJECTILE
+    PROJECTILE,
+    DEVUSHKI,
+    BOSS
 };
 
 // FSM AI States for enemies
@@ -118,6 +120,10 @@ public:
     int get_ground_height_at(int world_x, int start_y, int max_check) const;
     bool can_move_to(const glm::ivec2 &new_pos) const;
     void resolve_collision(glm::ivec2 &new_pos);
+
+    // spawn validation - finds empty space for entity's hitbox
+    bool is_valid_spawn_position(const glm::ivec2 &position) const;
+    glm::ivec2 find_valid_spawn_position(const glm::ivec2 &desired_pos, int max_search_radius = 500) const;
 
     // health/damage
     void take_damage(float damage);
@@ -262,4 +268,157 @@ public:
 
     // Legacy compatibility
     void move_towards_target(float delta_time);
+};
+
+// NPC AI States for Devushki
+enum class NPC_AI_State
+{
+    IDLE,    // Standing still
+    FOLLOW,  // Following the player
+    WANDER,  // Wandering around home position
+    INTERACT // Interacting with the player
+};
+
+class Devushki : public Entity
+{
+private:
+    // AI State Machine
+    NPC_AI_State npc_ai_state = NPC_AI_State::IDLE;
+
+    // Target tracking
+    glm::ivec2 target_position = {0, 0};
+    glm::ivec2 home_position = {0, 0};
+    glm::ivec2 wander_target = {0, 0};
+
+    // Range settings
+    float follow_range = 200.0f;        // Start following player within this range
+    float stop_follow_range = 60.0f;    // Stop when this close to player
+    float lose_interest_range = 400.0f; // Stop following if player is too far
+    float follow_speed_multiplier = 1.2f;
+
+    // AI timing
+    float state_timer = 0.0f;
+    float idle_duration = 3.0f;
+    float wander_duration = 4.0f;
+    float interact_duration = 2.0f;
+
+    // State handlers
+    void state_idle(float delta_time);
+    void state_follow(float delta_time);
+    void state_wander(float delta_time);
+    void state_interact(float delta_time);
+
+    // State transitions
+    void transition_to(NPC_AI_State new_state);
+
+    // Movement helpers
+    void move_towards(const glm::ivec2 &target, float delta_time);
+    float distance_to(const glm::ivec2 &target) const;
+    glm::ivec2 get_random_wander_point() const;
+
+public:
+    std::string name = "Devushki";
+
+    Devushki();
+    Devushki(std::string name, glm::vec2 coords);
+    ~Devushki() = default;
+
+    void update(float delta_time) override;
+
+    // Setters
+    void set_target(const glm::ivec2 &target);
+    void set_home_position(const glm::ivec2 &home);
+    void set_follow_range(float range);
+
+    // Getters
+    NPC_AI_State get_npc_ai_state() const;
+    const char *get_npc_ai_state_name() const;
+    bool is_in_follow_range(const glm::ivec2 &target) const;
+};
+
+// Boss AI States
+enum class Boss_AI_State
+{
+    IDLE,   // Waiting for player
+    CHASE,  // Pursuing the player
+    ATTACK, // Melee attack
+    SLAM,   // Ground slam AoE attack
+    ENRAGE, // Enraged mode - faster and stronger
+    DEAD    // Dead
+};
+
+class Boss : public Entity
+{
+private:
+    // AI State Machine
+    Boss_AI_State boss_ai_state = Boss_AI_State::IDLE;
+    Boss_AI_State previous_boss_ai_state = Boss_AI_State::IDLE;
+
+    // Target tracking
+    glm::ivec2 target_position = {0, 0};
+    glm::ivec2 home_position = {0, 0};
+
+    // Range settings
+    float attack_range = 60.0f;
+    float detection_range = 350.0f;
+    float slam_range = 120.0f; // AoE slam range
+    float lose_interest_range = 500.0f;
+
+    // Combat settings
+    float attack_damage = 25.0f;
+    float slam_damage = 40.0f;
+    float attack_cooldown = 1.5f;
+    float slam_cooldown = 5.0f;
+    float time_since_attack = 0.0f;
+    float time_since_slam = 0.0f;
+
+    // AI timing
+    float state_timer = 0.0f;
+
+    // Enrage settings
+    float enrage_health_threshold = 0.3f; // Enrage below 30% health
+    bool is_enraged = false;
+    float enrage_speed_multiplier = 1.5f;
+    float enrage_damage_multiplier = 1.5f;
+
+    // State handlers
+    void state_idle(float delta_time);
+    void state_chase(float delta_time);
+    void state_attack(float delta_time);
+    void state_slam(float delta_time);
+    void state_enrage(float delta_time);
+
+    // State transitions
+    void transition_to(Boss_AI_State new_state);
+    bool should_enrage() const;
+    bool can_attack() const;
+    bool can_slam() const;
+
+    // Movement helpers
+    void move_towards(const glm::ivec2 &target, float delta_time);
+    float distance_to(const glm::ivec2 &target) const;
+
+public:
+    std::string name = "Boss";
+
+    Boss();
+    Boss(std::string name, glm::vec2 coords);
+    ~Boss() = default;
+
+    void update(float delta_time) override;
+
+    // Setters
+    void set_target(const glm::ivec2 &target);
+    void set_home_position(const glm::ivec2 &home);
+    void set_detection_range(float range);
+    void set_attack_range(float range);
+    void set_attack_damage(float damage);
+    void set_slam_damage(float damage);
+
+    // Getters
+    Boss_AI_State get_boss_ai_state() const;
+    const char *get_boss_ai_state_name() const;
+    bool is_in_attack_range(const glm::ivec2 &target) const;
+    bool is_in_detection_range(const glm::ivec2 &target) const;
+    bool get_is_enraged() const;
 };

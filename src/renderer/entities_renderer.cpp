@@ -206,6 +206,12 @@ void Entities_Renderer::add_entity_to_batch(Entity *entity)
     case Entity_Type::PROJECTILE:
         color = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f); // Yellow for projectile
         break;
+    case Entity_Type::DEVUSHKI:
+        color = glm::vec4(1.0f, 0.5f, 0.8f, 1.0f); // Pink for devushki
+        break;
+    case Entity_Type::BOSS:
+        color = glm::vec4(0.6f, 0.0f, 0.6f, 1.0f); // Purple for boss
+        break;
     default:
         color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f); // White default
         break;

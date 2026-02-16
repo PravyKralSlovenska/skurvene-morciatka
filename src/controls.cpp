@@ -264,6 +264,22 @@ void Controls::keyboard_input()
     {
         tab_pressed = false;
     }
+
+    // M - Toggle fullscreen map
+    static bool m_pressed = false;
+    if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
+    {
+        if (!m_pressed)
+        {
+            if (renderer)
+                renderer->toggle_fullscreen_map();
+            m_pressed = true;
+        }
+    }
+    else
+    {
+        m_pressed = false;
+    }
 }
 
 void Controls::left_mouse_click(double xpos, double ypos)

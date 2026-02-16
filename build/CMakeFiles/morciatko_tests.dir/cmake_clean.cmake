@@ -8,6 +8,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/morciatko_tests.dir/tests/unit/particle_test.cpp.o.d"
   "CMakeFiles/morciatko_tests.dir/tests/unit/random_test.cpp.o"
   "CMakeFiles/morciatko_tests.dir/tests/unit/random_test.cpp.o.d"
+  "CMakeFiles/morciatko_tests.dir/tests/unit/structure_test.cpp.o"
+  "CMakeFiles/morciatko_tests.dir/tests/unit/structure_test.cpp.o.d"
   "CMakeFiles/morciatko_tests.dir/tests/unit/utils_test.cpp.o"
   "CMakeFiles/morciatko_tests.dir/tests/unit/utils_test.cpp.o.d"
   "CMakeFiles/morciatko_tests.dir/tests/unit/world_test.cpp.o"

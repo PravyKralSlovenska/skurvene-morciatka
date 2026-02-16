@@ -1,5 +1,5 @@
 {
-  "tests": 27,
+  "tests": 54,
   "name": "AllTests",
   "testsuites": [
     {
@@ -60,12 +60,12 @@
         {
           "name": "SetWorldCellNonStatic",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
-          "line": 122
+          "line": 124
         },
         {
           "name": "SetWorldCellStatic",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
-          "line": 143
+          "line": 147
         }
       ]
     },
@@ -76,7 +76,7 @@
         {
           "name": "GetChunkDimensions",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
-          "line": 192
+          "line": 202
         }
       ]
     },
@@ -87,12 +87,12 @@
         {
           "name": "SwapParticles",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
-          "line": 205
+          "line": 215
         },
         {
           "name": "WorldCellSwap",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
-          "line": 221
+          "line": 231
         }
       ]
     },
@@ -103,22 +103,22 @@
         {
           "name": "LocalToWorldSimple",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
-          "line": 239
+          "line": 249
         },
         {
           "name": "WorldToChunk",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
-          "line": 259
+          "line": 270
         },
         {
           "name": "WorldToLocal",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
-          "line": 277
+          "line": 289
         },
         {
           "name": "CrossChunkMovement",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
-          "line": 294
+          "line": 307
         }
       ]
     },
@@ -129,17 +129,17 @@
         {
           "name": "ParticleFallsWithinChunk",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
-          "line": 339
+          "line": 355
         },
         {
           "name": "StaticParticleDoesNotMove",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
-          "line": 376
+          "line": 394
         },
         {
           "name": "DebugTrySwapLogic",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
-          "line": 396
+          "line": 416
         }
       ]
     },
@@ -150,7 +150,7 @@
         {
           "name": "WaterFallsInCave",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
-          "line": 446
+          "line": 467
         }
       ]
     },
@@ -161,12 +161,183 @@
         {
           "name": "GravityAcceleratesParticle",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
-          "line": 597
+          "line": 638
         },
         {
           "name": "ParticleAcceleratesInSimulation",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
-          "line": 625
+          "line": 667
+        }
+      ]
+    },
+    {
+      "name": "AccelerationTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "ParticleHasAccelerationField",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
+          "line": 773
+        },
+        {
+          "name": "GravityAppliesAcceleration",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
+          "line": 787
+        },
+        {
+          "name": "DifferentStatesHaveDifferentAcceleration",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
+          "line": 838
+        },
+        {
+          "name": "VelocityClampsToMaximum",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
+          "line": 873
+        },
+        {
+          "name": "AccelerationInFullSimulation",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
+          "line": 896
+        }
+      ]
+    },
+    {
+      "name": "StructureTest",
+      "tests": 9,
+      "testsuite": [
+        {
+          "name": "StructureDefaults",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 13
+        },
+        {
+          "name": "StructureCreateNamedWithDimensions",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 20
+        },
+        {
+          "name": "SetCellWithParticle",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 32
+        },
+        {
+          "name": "SetCellWithType",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 44
+        },
+        {
+          "name": "BoundsCheck",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 53
+        },
+        {
+          "name": "FillRect",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 63
+        },
+        {
+          "name": "CountSolidCells",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 78
+        },
+        {
+          "name": "OutOfBoundsSetCellIsNoOp",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 87
+        },
+        {
+          "name": "OutOfBoundsGetCellReturnsEmpty",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 96
+        }
+      ]
+    },
+    {
+      "name": "StructureFactoryTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "CreatePlatformDefaults",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 109
+        },
+        {
+          "name": "CreatePlatformCustom",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 121
+        },
+        {
+          "name": "PlatformHasNoEmptyCells",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 132
+        }
+      ]
+    },
+    {
+      "name": "StructureSpawnerTest",
+      "tests": 6,
+      "testsuite": [
+        {
+          "name": "DefaultConstruction",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 149
+        },
+        {
+          "name": "AddBlueprint",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 156
+        },
+        {
+          "name": "AddBlueprintByMove",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 170
+        },
+        {
+          "name": "GetNonexistentBlueprintReturnsNull",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 183
+        },
+        {
+          "name": "SetupDefaultRules",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 189
+        },
+        {
+          "name": "CheckMinDistance",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 201
+        }
+      ]
+    },
+    {
+      "name": "SpawnRuleTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "DefaultValues",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 216
+        },
+        {
+          "name": "CustomValues",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 226
+        }
+      ]
+    },
+    {
+      "name": "StructureRegressionTest",
+      "tests": 2,
+      "testsuite": [
+        {
+          "name": "EmptyCellsAreSkippedNotCarved",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 245
+        },
+        {
+          "name": "SpawnAnalysis",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
+          "line": 273
         }
       ]
     },

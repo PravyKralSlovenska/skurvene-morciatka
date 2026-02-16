@@ -32,10 +32,16 @@ void Camera::rotate_camera(const float degrees)
 
 void Camera::set_zoom(const float zoom)
 {
-    if (this->old_zoom != zoom)
+    float clamped = zoom;
+    if (clamped < 0.10f)
+        clamped = 0.10f;
+    if (clamped > 2.00f)
+        clamped = 2.00f;
+
+    if (this->old_zoom != clamped)
     {
         this->old_zoom = this->zoom;
-        this->zoom = zoom;
+        this->zoom = clamped;
         needs_update = true;
     }
 }
@@ -51,6 +57,10 @@ void Camera::zoom_out(const float zoom)
 void Camera::zoom_by(const float zoom)
 {
     this->zoom += zoom;
+    if (this->zoom < 0.10f)
+        this->zoom = 0.10f;
+    if (this->zoom > 2.00f)
+        this->zoom = 2.00f;
     needs_update = true;
 }
 

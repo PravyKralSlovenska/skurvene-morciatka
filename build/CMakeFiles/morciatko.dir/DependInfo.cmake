@@ -9,6 +9,13 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/jakub/programko/cpp/skurvene-morciatka/src/gl.c" "CMakeFiles/morciatko.dir/src/gl.c.o" "gcc" "CMakeFiles/morciatko.dir/src/gl.c.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/include/imgui/backends/imgui_impl_glfw.cpp" "CMakeFiles/morciatko.dir/include/imgui/backends/imgui_impl_glfw.cpp.o" "gcc" "CMakeFiles/morciatko.dir/include/imgui/backends/imgui_impl_glfw.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/include/imgui/backends/imgui_impl_opengl3.cpp" "CMakeFiles/morciatko.dir/include/imgui/backends/imgui_impl_opengl3.cpp.o" "gcc" "CMakeFiles/morciatko.dir/include/imgui/backends/imgui_impl_opengl3.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/include/imgui/imgui.cpp" "CMakeFiles/morciatko.dir/include/imgui/imgui.cpp.o" "gcc" "CMakeFiles/morciatko.dir/include/imgui/imgui.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/include/imgui/imgui_demo.cpp" "CMakeFiles/morciatko.dir/include/imgui/imgui_demo.cpp.o" "gcc" "CMakeFiles/morciatko.dir/include/imgui/imgui_demo.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/include/imgui/imgui_draw.cpp" "CMakeFiles/morciatko.dir/include/imgui/imgui_draw.cpp.o" "gcc" "CMakeFiles/morciatko.dir/include/imgui/imgui_draw.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/include/imgui/imgui_tables.cpp" "CMakeFiles/morciatko.dir/include/imgui/imgui_tables.cpp.o" "gcc" "CMakeFiles/morciatko.dir/include/imgui/imgui_tables.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/include/imgui/imgui_widgets.cpp" "CMakeFiles/morciatko.dir/include/imgui/imgui_widgets.cpp.o" "gcc" "CMakeFiles/morciatko.dir/include/imgui/imgui_widgets.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_buffer.cpp" "CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_manager.cpp" "CMakeFiles/morciatko.dir/src/audio/audio_manager.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/audio/audio_manager.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/audio/audio_source.cpp" "CMakeFiles/morciatko.dir/src/audio/audio_source.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/audio/audio_source.cpp.o.d"
@@ -44,6 +51,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/jakub/programko/cpp/skurvene-morciatka/src/time_manager.cpp" "CMakeFiles/morciatko.dir/src/time_manager.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/time_manager.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/utils.cpp" "CMakeFiles/morciatko.dir/src/utils.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/utils.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/world/herringbone_world_generation.cpp" "CMakeFiles/morciatko.dir/src/world/herringbone_world_generation.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/world/herringbone_world_generation.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/src/world/structure.cpp" "CMakeFiles/morciatko.dir/src/world/structure.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/world/structure.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world.cpp" "CMakeFiles/morciatko.dir/src/world/world.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/world/world.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world_ca_generation.cpp" "CMakeFiles/morciatko.dir/src/world/world_ca_generation.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/world/world_ca_generation.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/src/world/world_cell.cpp" "CMakeFiles/morciatko.dir/src/world/world_cell.cpp.o" "gcc" "CMakeFiles/morciatko.dir/src/world/world_cell.cpp.o.d"

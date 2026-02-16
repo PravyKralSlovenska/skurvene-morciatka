@@ -23,6 +23,11 @@ void IRenderer::init()
 
     text_renderer = std::make_unique<Text_Renderer>();
     text_renderer->init();
+
+    ui_renderer = std::make_unique<UI_Renderer>();
+
+    // ImGui
+    init_imgui();
 }
 
 bool IRenderer::render_everything()
@@ -69,24 +74,10 @@ bool IRenderer::render_everything()
     // text_renderer->render_text("MISKO POZOR ZITRA! :3", {400.0f, 400.0f}, 1.0f, Color(255, 255, 255, 1.0f));
     // text_renderer->render_text(std::to_string(frame_count_display) + "FPS", {10.0f, 48.0f}, 1.0f, Color(255, 255, 255, 1));
 
-    text_renderer->render_text(std::to_string(time_manager->get_frames_per_second()) + "FPS", {10.0, 50.0f}, 1.0f, Color(255, 255, 255, 1.0f));
-    text_renderer->render_text(std::to_string(time_manager->get_updates_per_second()) + "UPS", {10.0, 100.0f}, 0.5f, Color(0, 255, 0, 1.0f));
-    text_renderer->render_text(std::to_string(camera->get_zoom()) + " ZOOM", {10.0, 150.0f}, 0.5f, Color(0, 0, 255, 1.0f));
-    text_renderer->render_text(std::to_string(world->get_chunks_size()) + " CHUNKS", {10.0, 200.0f}, 0.5f, Color(125, 125, 125, 1.0f));
-
-    // Show entity count
-    if (entity_manager)
-    {
-        text_renderer->render_text(std::to_string(entity_manager->get_entity_count()) + " ENTITIES", {10.0, 250.0f}, 0.5f, Color(255, 100, 100, 1.0f));
-    }
-
-    auto coords = camera->get_position();
-    text_renderer->render_text(std::to_string(coords.x) + ' ' + std::to_string(coords.y), {10.0, 300.0f}, 0.5f, Color(255, 0, 255, 1.0f));
-
-    if (time_manager->paused())
-    {
-        text_renderer->render_text("PAUSED", {400.0, 400.0f}, 1.0f, Color(255, 255, 255, 1.0f));
-    }
+    // ImGui UI rendering
+    imgui_new_frame();
+    ui_renderer->render_ui();
+    imgui_render();
 
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -209,10 +200,56 @@ void IRenderer::update_projection_on_resize()
 
 void IRenderer::cleanup()
 {
-    // text_renderer.~Text_Renderer();
+    cleanup_imgui();
 
     glfwDestroyWindow(window);
     glfwTerminate();
+}
+
+void IRenderer::init_imgui()
+{
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+    ImGui::StyleColorsDark();
+
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 460");
+}
+
+void IRenderer::cleanup_imgui()
+{
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+}
+
+void IRenderer::imgui_new_frame()
+{
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+}
+
+void IRenderer::imgui_render()
+{
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void IRenderer::toggle_fullscreen_map()
+{
+    if (ui_renderer)
+        ui_renderer->toggle_fullscreen_map();
+}
+
+bool IRenderer::is_fullscreen_map_open() const
+{
+    if (ui_renderer)
+        return ui_renderer->is_fullscreen_map_open();
+    return false;
 }
 
 void IRenderer::print_render_info()
@@ -237,6 +274,8 @@ void IRenderer::checkGLError(const char *operation)
 void IRenderer::set_time_manager(Time_Manager *time_manager)
 {
     this->time_manager = time_manager;
+    if (ui_renderer)
+        ui_renderer->set_time_manager(time_manager);
 }
 
 void IRenderer::set_world(World *world)
@@ -244,17 +283,28 @@ void IRenderer::set_world(World *world)
     this->world = world;
     world_renderer->set_world(world);
     entities_renderer->set_world(world);
+    if (ui_renderer)
+        ui_renderer->set_world(world);
 }
 
 void IRenderer::set_camera(Camera *camera)
 {
     this->camera = camera;
+    if (ui_renderer)
+        ui_renderer->set_camera(camera);
 }
 
 void IRenderer::set_entity_manager(Entity_Manager *entity_manager)
 {
     this->entity_manager = entity_manager;
     entities_renderer->set_entity_manager(entity_manager);
+
+    // Set up UI renderer with all the pointers it needs
+    if (ui_renderer)
+    {
+        ui_renderer->set_entity_manager(entity_manager);
+        ui_renderer->set_player(entity_manager->get_player());
+    }
 }
 
 void IRenderer::toggle_fullscreen()
