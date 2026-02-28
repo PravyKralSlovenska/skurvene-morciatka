@@ -197,7 +197,7 @@ void Controls::keyboard_input()
             {
                 player->select_hotbar_slot(i);
                 Wand &wand = player->get_current_wand();
-                std::cout << "Selected slot " << (i + 1) << ": " << wand.name << std::endl;
+                // std::cout << "Selected slot " << (i + 1) << ": " << wand.name << std::endl;
                 number_key_pressed[i] = true;
             }
         }
@@ -257,7 +257,7 @@ void Controls::keyboard_input()
         {
             player->toggle_noclip();
             tab_pressed = true;
-            std::cout << "Noclip: " << (player->get_noclip() ? "ON" : "OFF") << std::endl;
+            std::cout << "Noclip: " << (player->get_noclip() ? "ON" : "OFF") << '\n';
         }
     }
     else

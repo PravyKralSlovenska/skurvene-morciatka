@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <array>
 #include <random>
 #include <glm/glm.hpp>
 
@@ -38,9 +39,19 @@ private:
     // Processing order alternation (prevents bias)
     bool process_left_first = true;
 
+    // Chunk pointer cache to avoid repeated hash lookups
+    struct ChunkCache
+    {
+        glm::ivec2 coords{-999999, -999999};
+        Chunk *chunk = nullptr;
+    };
+    std::array<ChunkCache, 16> chunk_cache;
+    int cache_index = 0;
+
 private:
     // Helper: Get cell at position (handles chunk boundaries)
     WorldCell *get_cell_at(const glm::ivec2 &chunk_coords, int x, int y);
+    WorldCell *get_cell_at_fast(const glm::ivec2 &chunk_coords, int x, int y, Chunk *current_chunk);
     WorldCell *get_cell_at_world_pos(const glm::ivec2 &world_cell_pos);
 
     // Helper: Convert local to world coordinates and vice versa
@@ -56,10 +67,13 @@ private:
                   const glm::ivec2 &to_chunk, int to_x, int to_y);
     bool try_swap(WorldCell *from, WorldCell *to);
 
+    // Cached chunk lookup
+    Chunk *get_chunk_cached(const glm::ivec2 &coords);
+
     // Particle-specific movement
-    void update_solid(const glm::ivec2 &chunk_coords, int x, int y, WorldCell *cell);
-    void update_liquid(const glm::ivec2 &chunk_coords, int x, int y, WorldCell *cell);
-    void update_gas(const glm::ivec2 &chunk_coords, int x, int y, WorldCell *cell);
+    void update_solid(const glm::ivec2 &chunk_coords, int x, int y, WorldCell *cell, Chunk *current_chunk);
+    void update_liquid(const glm::ivec2 &chunk_coords, int x, int y, WorldCell *cell, Chunk *current_chunk);
+    void update_gas(const glm::ivec2 &chunk_coords, int x, int y, WorldCell *cell, Chunk *current_chunk);
 
     // Physics updates
     void apply_gravity(Particle &particle, float delta_time);

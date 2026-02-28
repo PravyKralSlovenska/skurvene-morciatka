@@ -211,6 +211,9 @@ void Entity_Manager::update(float delta_time)
         update_entity(entity.get(), delta_time);
     }
 
+    // Check devushki collection
+    check_devushki_collection();
+
     // Remove dead entities
     remove_all_dead();
 }
@@ -463,4 +466,95 @@ int Entity_Manager::get_boss_count() const
 bool Entity_Manager::has_entity(int id) const
 {
     return entities.find(id) != entities.end();
+}
+
+// ==================== Devushki Objective System ====================
+
+void Entity_Manager::spawn_devushki_objective(int count, float spread_radius)
+{
+    if (!player || !world)
+        return;
+
+    devushki_objective.total_to_collect = count;
+    devushki_objective.collected = 0;
+    devushki_objective.objective_active = true;
+    devushki_objective.objective_complete = false;
+
+    glm::ivec2 player_pos = player->coords;
+
+    // Spawn devushki at random positions spread around the player
+    std::uniform_real_distribution<float> angle_dist(0.0f, 2.0f * 3.14159265f);
+    std::uniform_real_distribution<float> dist_dist(300.0f, spread_radius);
+
+    for (int i = 0; i < count; i++)
+    {
+        float angle = angle_dist(rng);
+        float distance = dist_dist(rng);
+
+        glm::ivec2 spawn_pos;
+        spawn_pos.x = player_pos.x + static_cast<int>(std::cos(angle) * distance);
+        spawn_pos.y = player_pos.y + static_cast<int>(std::sin(angle) * distance);
+
+        Devushki *d = create_devushki(spawn_pos);
+        if (d)
+        {
+            d->name = "Devushki #" + std::to_string(i + 1);
+        }
+    }
+}
+
+void Entity_Manager::check_devushki_collection()
+{
+    if (!devushki_objective.objective_active || devushki_objective.objective_complete)
+        return;
+    if (!player)
+        return;
+
+    float collect_range_sq = devushki_objective.collect_range * devushki_objective.collect_range;
+
+    for (auto it = entities.begin(); it != entities.end();)
+    {
+        Entity *entity = it->second.get();
+        if (entity->type == Entity_Type::DEVUSHKI && entity->is_active)
+        {
+            float dx = static_cast<float>(player->coords.x - entity->coords.x);
+            float dy = static_cast<float>(player->coords.y - entity->coords.y);
+            float dist_sq = dx * dx + dy * dy;
+
+            if (dist_sq <= collect_range_sq)
+            {
+                // Collected!
+                devushki_objective.collected++;
+                it = entities.erase(it);
+
+                // Check if objective complete
+                if (devushki_objective.collected >= devushki_objective.total_to_collect)
+                {
+                    devushki_objective.objective_complete = true;
+                }
+                continue;
+            }
+        }
+        ++it;
+    }
+}
+
+void Entity_Manager::set_devushki_objective_count(int count)
+{
+    devushki_objective.total_to_collect = count;
+}
+
+void Entity_Manager::set_devushki_collect_range(float range)
+{
+    devushki_objective.collect_range = range;
+}
+
+DevushkiObjective &Entity_Manager::get_devushki_objective()
+{
+    return devushki_objective;
+}
+
+bool Entity_Manager::is_objective_complete() const
+{
+    return devushki_objective.objective_complete;
 }

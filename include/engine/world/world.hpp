@@ -4,9 +4,10 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <memory>
+#include <random>
 #include <glm/glm.hpp>
 
-// #include "engine/world/structure.hpp"
+#include "engine/world/structure.hpp"
 #include "engine/particle/particle.hpp"
 
 // forward declarations
@@ -26,7 +27,10 @@ struct Chunk_Coords_to_Hash
 {
     std::size_t operator()(const glm::ivec2 &coords) const
     {
-        return std::hash<int>()(coords.x) ^ (std::hash<int>()(coords.y) << 1);
+        size_t hash = 2166136261u;
+        hash = (hash ^ static_cast<size_t>(coords.x)) * 16777619u;
+        hash = (hash ^ static_cast<size_t>(coords.y)) * 16777619u;
+        return hash;
     }
 };
 
@@ -41,7 +45,7 @@ private:
 
     const int chunk_width = 10;
     const int chunk_height = 10;
-    const int chunk_radius = 25; // kolko chunkov by sa malo aktualizovat/generovat okolo hraca
+    const int chunk_radius = 15; // kolko chunkov by sa malo aktualizovat/generovat okolo hraca
 
     std::unordered_map<glm::ivec2, std::unique_ptr<Chunk>, Chunk_Coords_to_Hash> world; // chunks
     std::unordered_set<glm::ivec2, Chunk_Coords_to_Hash> active_chunks;
@@ -52,11 +56,21 @@ private:
     std::unique_ptr<Falling_Sand_Simulation> sand_simulation;
     bool simulation_enabled = true;
 
-    // Structure spawning (commented out)
-    // StructureSpawner structure_spawner;
+    // Structure spawning
+    StructureSpawner structure_spawner;
 
-    // Image-loaded structures (commented out)
-    // std::map<std::string, Structure> image_structures;
+    // Image-loaded structures
+    std::map<std::string, Structure> image_structures;
+
+    // Predetermined structure spawn positions
+    std::vector<glm::ivec2> predetermined_spawn_positions;   // permanent record (never erased)
+    std::vector<glm::ivec2> pending_predetermined_positions; // working list (erased on place)
+    int structure_spawn_count = 5;
+
+    void generate_predetermined_positions();
+    void try_place_predetermined_structures(const glm::ivec2 &chunk_coords);
+    bool check_placement_valid(const Structure &structure, const glm::ivec2 &pos);
+    glm::ivec2 find_valid_nearby_position(const Structure &structure, const glm::ivec2 &original_pos, int index);
 
 private:
     inline int get_index(int x, int y);
@@ -118,13 +132,17 @@ public:
     // pre hraca
     bool is_cell_in_hitbox(const Entity entity);
 
-    // Structure spawning (commented out)
-    // StructureSpawner &get_structure_spawner();
-    // void place_structure(const Structure &structure, const glm::ivec2 &world_pos);
-    // void place_structure_centered(const Structure &structure, const glm::ivec2 &center_pos);
+    // Structure spawning
+    StructureSpawner &get_structure_spawner();
+    void place_structure(const Structure &structure, const glm::ivec2 &world_pos);
+    void place_structure_centered(const Structure &structure, const glm::ivec2 &center_pos);
 
-    // Image-loaded structures (commented out)
-    // void load_image_structures(const std::string &folder_path);
-    // const std::map<std::string, Structure> &get_image_structures() const;
-    // Structure *get_image_structure(const std::string &name);
+    // Image-loaded structures
+    void load_image_structures(const std::string &folder_path);
+    const std::map<std::string, Structure> &get_image_structures() const;
+    Structure *get_image_structure(const std::string &name);
+
+    // Predetermined structure spawn positions
+    const std::vector<glm::ivec2> &get_predetermined_positions() const;
+    const std::vector<glm::ivec2> &get_pending_predetermined_positions() const;
 };

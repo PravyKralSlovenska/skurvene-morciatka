@@ -21,6 +21,21 @@ void Falling_Sand_Simulation::set_world(World *world)
     this->world = world;
 }
 
+Chunk *Falling_Sand_Simulation::get_chunk_cached(const glm::ivec2 &coords)
+{
+    for (auto &entry : chunk_cache)
+    {
+        if (entry.coords == coords && entry.chunk != nullptr)
+        {
+            return entry.chunk;
+        }
+    }
+    Chunk *chunk = world->get_chunk(coords);
+    chunk_cache[cache_index] = {coords, chunk};
+    cache_index = (cache_index + 1) % chunk_cache.size();
+    return chunk;
+}
+
 glm::ivec2 Falling_Sand_Simulation::local_to_world(const glm::ivec2 &chunk_coords, int x, int y)
 {
     glm::ivec2 chunk_dim = world->get_chunk_dimensions();
@@ -50,11 +65,21 @@ WorldCell *Falling_Sand_Simulation::get_cell_at(const glm::ivec2 &chunk_coords, 
     glm::ivec2 actual_chunk = world_to_chunk(world_pos);
     glm::ivec2 local_pos = world_to_local(world_pos);
 
-    Chunk *chunk = world->get_chunk(actual_chunk);
+    Chunk *chunk = get_chunk_cached(actual_chunk);
     if (!chunk)
         return nullptr;
 
     return chunk->get_worldcell(local_pos.x, local_pos.y);
+}
+
+WorldCell *Falling_Sand_Simulation::get_cell_at_fast(const glm::ivec2 &chunk_coords, int x, int y, Chunk *current_chunk)
+{
+    glm::ivec2 chunk_dim = world->get_chunk_dimensions();
+    if (x >= 0 && x < chunk_dim.x && y >= 0 && y < chunk_dim.y)
+    {
+        return current_chunk->get_worldcell(x, y);
+    }
+    return get_cell_at(chunk_coords, x, y);
 }
 
 WorldCell *Falling_Sand_Simulation::get_cell_at_world_pos(const glm::ivec2 &world_cell_pos)
@@ -62,7 +87,7 @@ WorldCell *Falling_Sand_Simulation::get_cell_at_world_pos(const glm::ivec2 &worl
     glm::ivec2 chunk_coords = world_to_chunk(world_cell_pos);
     glm::ivec2 local_pos = world_to_local(world_cell_pos);
 
-    Chunk *chunk = world->get_chunk(chunk_coords);
+    Chunk *chunk = get_chunk_cached(chunk_coords);
     if (!chunk)
         return nullptr;
 
@@ -126,8 +151,8 @@ bool Falling_Sand_Simulation::try_move(const glm::ivec2 &from_chunk, int from_x,
         glm::ivec2 actual_from_chunk = world_to_chunk(from_world);
         glm::ivec2 actual_to_chunk = world_to_chunk(to_world);
 
-        Chunk *chunk_from = world->get_chunk(actual_from_chunk);
-        Chunk *chunk_to = world->get_chunk(actual_to_chunk);
+        Chunk *chunk_from = get_chunk_cached(actual_from_chunk);
+        Chunk *chunk_to = get_chunk_cached(actual_to_chunk);
 
         if (chunk_from)
             chunk_from->mark_dirty();
@@ -183,7 +208,7 @@ void Falling_Sand_Simulation::apply_gravity(Particle &particle, float delta_time
         particle.physics.velocity.x = 0.0f;
 }
 
-void Falling_Sand_Simulation::update_solid(const glm::ivec2 &chunk_coords, int x, int y, WorldCell *cell)
+void Falling_Sand_Simulation::update_solid(const glm::ivec2 &chunk_coords, int x, int y, WorldCell *cell, Chunk *current_chunk)
 {
     if (!cell || cell->particle.flags.is_updated)
         return;
@@ -233,7 +258,7 @@ void Falling_Sand_Simulation::update_solid(const glm::ivec2 &chunk_coords, int x
             x += dir1;
             y += 1;
             // Transfer some vertical momentum to horizontal when sliding
-            WorldCell *new_cell = get_cell_at(chunk_coords, x, y);
+            WorldCell *new_cell = get_cell_at_fast(chunk_coords, x, y, current_chunk);
             if (new_cell)
             {
                 new_cell->particle.physics.velocity.x += dir1 * std::abs(particle.physics.velocity.y) * 0.3f;
@@ -247,7 +272,7 @@ void Falling_Sand_Simulation::update_solid(const glm::ivec2 &chunk_coords, int x
         {
             x += dir2;
             y += 1;
-            WorldCell *new_cell = get_cell_at(chunk_coords, x, y);
+            WorldCell *new_cell = get_cell_at_fast(chunk_coords, x, y, current_chunk);
             if (new_cell)
             {
                 new_cell->particle.physics.velocity.x += dir2 * std::abs(particle.physics.velocity.y) * 0.3f;
@@ -270,7 +295,7 @@ void Falling_Sand_Simulation::update_solid(const glm::ivec2 &chunk_coords, int x
     }
 }
 
-void Falling_Sand_Simulation::update_liquid(const glm::ivec2 &chunk_coords, int x, int y, WorldCell *cell)
+void Falling_Sand_Simulation::update_liquid(const glm::ivec2 &chunk_coords, int x, int y, WorldCell *cell, Chunk *current_chunk)
 {
     if (!cell || cell->particle.flags.is_updated)
         return;
@@ -317,7 +342,7 @@ void Falling_Sand_Simulation::update_liquid(const glm::ivec2 &chunk_coords, int 
             x += dir1;
             y += 1;
             // Transfer vertical momentum to horizontal
-            WorldCell *new_cell = get_cell_at(chunk_coords, x, y);
+            WorldCell *new_cell = get_cell_at_fast(chunk_coords, x, y, current_chunk);
             if (new_cell)
             {
                 new_cell->particle.physics.velocity.x += dir1 * std::abs(particle.physics.velocity.y) * 0.5f;
@@ -330,7 +355,7 @@ void Falling_Sand_Simulation::update_liquid(const glm::ivec2 &chunk_coords, int 
         {
             x += dir2;
             y += 1;
-            WorldCell *new_cell = get_cell_at(chunk_coords, x, y);
+            WorldCell *new_cell = get_cell_at_fast(chunk_coords, x, y, current_chunk);
             if (new_cell)
             {
                 new_cell->particle.physics.velocity.x += dir2 * std::abs(particle.physics.velocity.y) * 0.5f;
@@ -340,7 +365,7 @@ void Falling_Sand_Simulation::update_liquid(const glm::ivec2 &chunk_coords, int 
         }
 
         // Can't move down anymore - convert remaining vertical velocity to horizontal spread
-        WorldCell *current = get_cell_at(chunk_coords, x, y);
+        WorldCell *current = get_cell_at_fast(chunk_coords, x, y, current_chunk);
         if (current)
         {
             float remaining_vy = current->particle.physics.velocity.y;
@@ -369,7 +394,7 @@ void Falling_Sand_Simulation::update_liquid(const glm::ivec2 &chunk_coords, int 
         {
             x -= preferred_dir * d;
             // Reverse velocity if we went opposite way
-            WorldCell *new_cell = get_cell_at(chunk_coords, x, y);
+            WorldCell *new_cell = get_cell_at_fast(chunk_coords, x, y, current_chunk);
             if (new_cell)
             {
                 new_cell->particle.physics.velocity.x *= -0.5f;
@@ -387,7 +412,7 @@ void Falling_Sand_Simulation::update_liquid(const glm::ivec2 &chunk_coords, int 
     }
 }
 
-void Falling_Sand_Simulation::update_gas(const glm::ivec2 &chunk_coords, int x, int y, WorldCell *cell)
+void Falling_Sand_Simulation::update_gas(const glm::ivec2 &chunk_coords, int x, int y, WorldCell *cell, Chunk *current_chunk)
 {
     if (!cell || cell->particle.flags.is_updated)
         return;
@@ -552,13 +577,13 @@ void Falling_Sand_Simulation::process_chunk(Chunk *chunk, const glm::ivec2 &chun
                 switch (cell->particle.state)
                 {
                 case Particle_State::SOLID:
-                    update_solid(chunk_coords, x, y, cell);
+                    update_solid(chunk_coords, x, y, cell, chunk);
                     break;
                 case Particle_State::LIQUID:
-                    update_liquid(chunk_coords, x, y, cell);
+                    update_liquid(chunk_coords, x, y, cell, chunk);
                     break;
                 case Particle_State::GAS:
-                    update_gas(chunk_coords, x, y, cell);
+                    update_gas(chunk_coords, x, y, cell, chunk);
                     break;
                 default:
                     break;
@@ -576,13 +601,13 @@ void Falling_Sand_Simulation::process_chunk(Chunk *chunk, const glm::ivec2 &chun
                 switch (cell->particle.state)
                 {
                 case Particle_State::SOLID:
-                    update_solid(chunk_coords, x, y, cell);
+                    update_solid(chunk_coords, x, y, cell, chunk);
                     break;
                 case Particle_State::LIQUID:
-                    update_liquid(chunk_coords, x, y, cell);
+                    update_liquid(chunk_coords, x, y, cell, chunk);
                     break;
                 case Particle_State::GAS:
-                    update_gas(chunk_coords, x, y, cell);
+                    update_gas(chunk_coords, x, y, cell, chunk);
                     break;
                 default:
                     break;
@@ -601,7 +626,7 @@ void Falling_Sand_Simulation::reset_update_flags()
 
     for (const auto &chunk_coords : *active_chunks)
     {
-        Chunk *chunk = world->get_chunk(chunk_coords);
+        Chunk *chunk = get_chunk_cached(chunk_coords);
         if (!chunk)
             continue;
 
@@ -617,6 +642,14 @@ void Falling_Sand_Simulation::update(float delta_time)
 {
     if (!world)
         return;
+
+    // Clear chunk cache for this frame
+    for (auto &entry : chunk_cache)
+    {
+        entry.coords = {-999999, -999999};
+        entry.chunk = nullptr;
+    }
+    cache_index = 0;
 
     tick_count++;
 
@@ -643,7 +676,7 @@ void Falling_Sand_Simulation::update(float delta_time)
     // First pass: Apply gravity to all particles
     for (const auto &chunk_coords : sorted_chunks)
     {
-        Chunk *chunk = world->get_chunk(chunk_coords);
+        Chunk *chunk = get_chunk_cached(chunk_coords);
         if (!chunk)
             continue;
 
@@ -660,7 +693,7 @@ void Falling_Sand_Simulation::update(float delta_time)
     // Second pass: Process movement
     for (const auto &chunk_coords : sorted_chunks)
     {
-        Chunk *chunk = world->get_chunk(chunk_coords);
+        Chunk *chunk = get_chunk_cached(chunk_coords);
         process_chunk(chunk, chunk_coords);
     }
 }

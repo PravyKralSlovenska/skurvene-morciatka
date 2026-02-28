@@ -27,6 +27,16 @@ struct SpawnConfig
     bool spawn_enabled = true;
 };
 
+// Devushki objective configuration
+struct DevushkiObjective
+{
+    int total_to_collect = 5;    // How many devushki the player needs to collect
+    int collected = 0;           // How many have been collected so far
+    float collect_range = 50.0f; // Distance at which player "collects" a devushki
+    bool objective_active = false;
+    bool objective_complete = false;
+};
+
 class Entity_Manager
 {
 private:
@@ -42,6 +52,9 @@ private:
     SpawnConfig spawn_config;
     float spawn_timer = 0.0f;
     std::mt19937 rng;
+
+    // Devushki objective
+    DevushkiObjective devushki_objective;
 
 private:
     void remove_all_dead();
@@ -69,6 +82,14 @@ public:
     // devushki creation
     Devushki *create_devushki(const glm::ivec2 &position);
     Devushki *create_devushki(int x, int y);
+
+    // devushki objective system
+    void spawn_devushki_objective(int count, float spread_radius = 2000.0f);
+    void check_devushki_collection();
+    void set_devushki_objective_count(int count);
+    void set_devushki_collect_range(float range);
+    DevushkiObjective &get_devushki_objective();
+    bool is_objective_complete() const;
 
     // boss creation
     Boss *create_boss(const glm::ivec2 &position);

@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <iostream>
 #include <cmath>
+#include <random>
 
 #include "engine/world/structure.hpp"
 #include "engine/particle/particle.hpp"
@@ -297,4 +298,164 @@ TEST(StructureRegressionTest, SpawnAnalysis)
 
     // Should be much lower than the old ~390 structures
     EXPECT_LT(max_theoretical, 100) << "New system should spawn far fewer structures";
+}
+
+// ============================================
+// DIAGNOSTIC: Image loading and coordinate math
+// ============================================
+
+TEST(StructureDiagnostic, ImageLoading)
+{
+    // Try to load the actual image
+    Structure s = ImageStructureLoader::load_from_image("../structure_images/devushki_column.png");
+
+    std::cout << "\n=== IMAGE LOADING DIAGNOSTIC ===" << std::endl;
+    std::cout << "Structure name: " << s.get_name() << std::endl;
+    std::cout << "Structure size: " << s.get_width() << " x " << s.get_height() << std::endl;
+    std::cout << "Solid cells: " << s.count_solid_cells() << std::endl;
+    std::cout << "Total cells: " << s.get_width() * s.get_height() << std::endl;
+
+    EXPECT_GT(s.get_width(), 0) << "Structure should have non-zero width";
+    EXPECT_GT(s.get_height(), 0) << "Structure should have non-zero height";
+    EXPECT_GT(s.count_solid_cells(), 0) << "Structure should have at least one solid cell";
+
+    // Print a sample of what particle types we got
+    if (s.get_width() > 0 && s.get_height() > 0)
+    {
+        std::cout << "Sample cells:" << std::endl;
+        for (int y = 0; y < std::min(5, s.get_height()); y++)
+        {
+            for (int x = 0; x < std::min(10, s.get_width()); x++)
+            {
+                const Particle &p = s.get_cell(x, y);
+                char c = '.';
+                if (p.type == Particle_Type::STONE)
+                    c = '#';
+                else if (p.type == Particle_Type::SAND)
+                    c = 'S';
+                else if (p.type == Particle_Type::WATER)
+                    c = 'W';
+                else if (p.type == Particle_Type::SMOKE)
+                    c = '~';
+                else if (p.type == Particle_Type::URANIUM)
+                    c = 'U';
+                std::cout << c;
+            }
+            std::cout << std::endl;
+        }
+    }
+}
+
+TEST(StructureDiagnostic, CoordinateMath)
+{
+    // Simulate the coordinate math used in placement
+    const int chunk_width = 10;
+    const int chunk_height = 10;
+    const float PARTICLE_SIZE = Globals::PARTICLE_SIZE; // 5.0
+
+    int cpw = static_cast<int>(chunk_width * PARTICLE_SIZE);  // 50
+    int cph = static_cast<int>(chunk_height * PARTICLE_SIZE); // 50
+
+    std::cout << "\n=== COORDINATE MATH DIAGNOSTIC ===" << std::endl;
+    std::cout << "Chunk: " << chunk_width << "x" << chunk_height << " cells" << std::endl;
+    std::cout << "Particle size: " << PARTICLE_SIZE << " px" << std::endl;
+    std::cout << "Chunk pixel size: " << cpw << "x" << cph << " px" << std::endl;
+
+    // Generate predetermined positions the same way World does (seed=1)
+    std::mt19937 rng(1);
+    int chunk_radius = 15;
+    int min_px = -chunk_radius * cpw;
+    int max_px = chunk_radius * cpw;
+    int min_py = -chunk_radius * cph;
+    int max_py = chunk_radius * cph;
+
+    std::cout << "World pixel range X: [" << min_px << ", " << max_px << ")" << std::endl;
+    std::cout << "World pixel range Y: [" << min_py << ", " << max_py << ")" << std::endl;
+
+    std::uniform_int_distribution<int> dist_x(min_px, max_px - 1);
+    std::uniform_int_distribution<int> dist_y(min_py, max_py - 1);
+
+    // Generate a few candidates
+    std::cout << "\nFirst 5 candidates from seed=1:" << std::endl;
+    for (int i = 0; i < 5; i++)
+    {
+        int px = dist_x(rng);
+        int py = dist_y(rng);
+
+        // Which chunk does this pixel fall in?
+        int chunk_x = static_cast<int>(std::floor(static_cast<float>(px) / cpw));
+        int chunk_y = static_cast<int>(std::floor(static_cast<float>(py) / cph));
+
+        // What cell within the chunk?
+        int offset_x = px - chunk_x * cpw;
+        int offset_y = py - chunk_y * cph;
+        int cell_x = static_cast<int>(offset_x / PARTICLE_SIZE);
+        int cell_y = static_cast<int>(offset_y / PARTICLE_SIZE);
+
+        std::cout << "  pos=(" << px << "," << py << ")"
+                  << " -> chunk=(" << chunk_x << "," << chunk_y << ")"
+                  << " cell=(" << cell_x << "," << cell_y << ")"
+                  << std::endl;
+
+        // Verify cell is within chunk bounds
+        EXPECT_GE(cell_x, 0);
+        EXPECT_LT(cell_x, chunk_width);
+        EXPECT_GE(cell_y, 0);
+        EXPECT_LT(cell_y, chunk_height);
+    }
+}
+
+TEST(StructureDiagnostic, StructurePlacementSpan)
+{
+    // A 150x100 image structure placed at a world position
+    // How many chunks does it span?
+    const float PARTICLE_SIZE = Globals::PARTICLE_SIZE; // 5.0
+    const int chunk_width = 10;
+    const int chunk_height = 10;
+    int cpw = static_cast<int>(chunk_width * PARTICLE_SIZE);  // 50
+    int cph = static_cast<int>(chunk_height * PARTICLE_SIZE); // 50
+
+    // Assume structure is loaded and auto-cropped
+    Structure s = ImageStructureLoader::load_from_image("../structure_images/devushki_column.png");
+    int sw = s.get_width();
+    int sh = s.get_height();
+
+    // Structure pixel footprint = sw * PARTICLE_SIZE x sh * PARTICLE_SIZE
+    int struct_pixel_w = static_cast<int>(sw * PARTICLE_SIZE);
+    int struct_pixel_h = static_cast<int>(sh * PARTICLE_SIZE);
+
+    std::cout << "\n=== STRUCTURE PLACEMENT SPAN ===" << std::endl;
+    std::cout << "Structure cells: " << sw << "x" << sh << std::endl;
+    std::cout << "Structure pixel footprint: " << struct_pixel_w << "x" << struct_pixel_h << " px" << std::endl;
+    std::cout << "Chunk pixel size: " << cpw << "x" << cph << " px" << std::endl;
+    std::cout << "Chunks spanned X: ~" << (struct_pixel_w + cpw - 1) / cpw << std::endl;
+    std::cout << "Chunks spanned Y: ~" << (struct_pixel_h + cph - 1) / cph << std::endl;
+
+    // The key issue: if the structure spans N chunks,
+    // only 1 chunk will exist when try_place_predetermined_structures is called.
+    // place_custom_particle for cells outside that chunk will fail silently.
+    if (struct_pixel_w > cpw || struct_pixel_h > cph)
+    {
+        std::cout << "WARNING: Structure spans more than 1 chunk!" << std::endl;
+        std::cout << "  Particles in non-loaded chunks will be DROPPED silently." << std::endl;
+    }
+
+    // Also test: can the predetermined position itself be non-grid-aligned?
+    // The position is a random pixel, which may not be aligned to PARTICLE_SIZE.
+    // place_custom_particle divides by PARTICLE_SIZE using integer division.
+    glm::ivec2 test_pos(17, 33); // non-aligned
+    int chunk_x = static_cast<int>(std::floor(static_cast<float>(test_pos.x) / cpw));
+    int chunk_y = static_cast<int>(std::floor(static_cast<float>(test_pos.y) / cph));
+    int offset_x = test_pos.x - chunk_x * cpw;
+    int offset_y = test_pos.y - chunk_y * cph;
+    int cell_x = static_cast<int>(offset_x / PARTICLE_SIZE);
+    int cell_y = static_cast<int>(offset_y / PARTICLE_SIZE);
+
+    std::cout << "\nNon-aligned position test: pos=(" << test_pos.x << "," << test_pos.y << ")" << std::endl;
+    std::cout << "  chunk=(" << chunk_x << "," << chunk_y << ")"
+              << " offset=(" << offset_x << "," << offset_y << ")"
+              << " cell=(" << cell_x << "," << cell_y << ")" << std::endl;
+    std::cout << "  Pixel sub-cell offset: (" << (offset_x - cell_x * PARTICLE_SIZE) << ","
+              << (offset_y - cell_y * PARTICLE_SIZE) << ")" << std::endl;
+    std::cout << "  (Non-zero sub-cell offset means multiple structure cells can map to same world cell)" << std::endl;
 }

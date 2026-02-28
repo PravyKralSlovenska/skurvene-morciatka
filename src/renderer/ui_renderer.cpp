@@ -23,6 +23,64 @@ void UI_Renderer::render_ui()
         render_health_bar();
     if (show_hotbar && player)
         render_hotbar();
+    if (entity_manager)
+        render_devushki_objective();
+
+    // Column locations panel
+    if (world && show_debug_info)
+    {
+        ImGuiWindowFlags col_flags =
+            ImGuiWindowFlags_NoMove |
+            ImGuiWindowFlags_NoSavedSettings |
+            ImGuiWindowFlags_AlwaysAutoResize |
+            ImGuiWindowFlags_NoFocusOnAppearing |
+            ImGuiWindowFlags_NoNav;
+
+        float padding = 10.0f;
+        ImGui::SetNextWindowPos(ImVec2(padding, Globals::WINDOW_HEIGHT - 220.0f), ImGuiCond_Always);
+        ImGui::SetNextWindowBgAlpha(0.75f);
+
+        if (ImGui::Begin("Column Locations", nullptr, col_flags))
+        {
+            ImGui::TextColored(ImVec4(1.0f, 0.85f, 0.4f, 1.0f), "Devushki Columns");
+            ImGui::Separator();
+
+            if (world->get_predetermined_positions().empty())
+            {
+                ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "No columns generated");
+            }
+            else
+            {
+                const auto &all_pos = world->get_predetermined_positions();
+                const auto &pending = world->get_pending_predetermined_positions();
+
+                for (int i = 0; i < static_cast<int>(all_pos.size()); i++)
+                {
+                    const auto &pos = all_pos[i];
+
+                    // Check if this position has already been placed (no longer in pending)
+                    bool placed = true;
+                    for (const auto &p : pending)
+                    {
+                        if (p == pos)
+                        {
+                            placed = false;
+                            break;
+                        }
+                    }
+
+                    ImVec4 color = placed
+                                       ? ImVec4(0.0f, 1.0f, 0.4f, 1.0f)  // green = spawned
+                                       : ImVec4(0.8f, 0.8f, 0.8f, 1.0f); // gray = pending
+
+                    ImGui::TextColored(color, "#%d: (%d, %d) %s",
+                                       i + 1, pos.x, pos.y,
+                                       placed ? "[placed]" : "[pending]");
+                }
+            }
+        }
+        ImGui::End();
+    }
     if (show_fullscreen_map && world && camera)
         render_fullscreen_map();
     else if (show_minimap && world && camera)
@@ -658,4 +716,54 @@ void UI_Renderer::draw_map_content(ImDrawList *draw_list, ImVec2 pos, float map_
             IM_COL32(160, 160, 160, 200),
             "MINIMAP");
     }
+}
+
+// ============================================================================
+// DEVUSHKI OBJECTIVE - top-right corner
+// ============================================================================
+void UI_Renderer::render_devushki_objective()
+{
+    if (!entity_manager)
+        return;
+
+    DevushkiObjective &obj = entity_manager->get_devushki_objective();
+    if (!obj.objective_active)
+        return;
+
+    ImGuiIO &io = ImGui::GetIO();
+    float screen_w = io.DisplaySize.x;
+
+    ImGuiWindowFlags flags =
+        ImGuiWindowFlags_NoDecoration |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoSavedSettings |
+        ImGuiWindowFlags_AlwaysAutoResize |
+        ImGuiWindowFlags_NoFocusOnAppearing |
+        ImGuiWindowFlags_NoNav;
+
+    float padding = 10.0f;
+    ImGui::SetNextWindowPos(ImVec2(screen_w - 260.0f - padding, padding), ImGuiCond_Always);
+    ImGui::SetNextWindowBgAlpha(0.75f);
+
+    if (ImGui::Begin("##DevushkiObjective", nullptr, flags))
+    {
+        if (obj.objective_complete)
+        {
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.4f, 1.0f), "OBJECTIVE COMPLETE!");
+            ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "All devushki saved! (%d/%d)", obj.collected, obj.total_to_collect);
+        }
+        else
+        {
+            ImGui::TextColored(ImVec4(1.0f, 0.7f, 0.8f, 1.0f), "SAVE THE DEVUSHKI");
+            ImGui::Separator();
+
+            // Progress bar
+            float progress = static_cast<float>(obj.collected) / static_cast<float>(obj.total_to_collect);
+            ImGui::ProgressBar(progress, ImVec2(240.0f, 20.0f));
+
+            ImGui::Text("Collected: %d / %d", obj.collected, obj.total_to_collect);
+            ImGui::Text("Remaining: %d", obj.total_to_collect - obj.collected);
+        }
+    }
+    ImGui::End();
 }

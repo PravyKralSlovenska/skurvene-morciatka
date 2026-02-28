@@ -51,6 +51,7 @@ public:
     void render_hotbar();
     void render_minimap();
     void render_fullscreen_map();
+    void render_devushki_objective();
 
     // shared minimap drawing logic
     void draw_map_content(ImDrawList *draw_list, ImVec2 pos, float map_w, float map_h,

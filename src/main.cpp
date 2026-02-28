@@ -63,6 +63,11 @@ int main()
     entity_manager.set_world(&world);
     entity_manager.ensure_player_valid_position();
 
+    // Devushki objective - spawn N devushki at random positions for the player to collect
+    int devushki_count = 5; // how many devushki to save (change this to set the objective)
+    entity_manager.set_devushki_objective_count(devushki_count);
+    entity_manager.spawn_devushki_objective(devushki_count, 2000.0f);
+
     controls.set_player(player);
     controls.set_window(render.get_window());
     controls.set_world(&world);
@@ -75,7 +80,7 @@ int main()
     // world.set_time_manager(&time_manager);
     world.set_player(player);
 
-    // Load image-based structures from structure_images/ folder (commented out)
+    // Image structures are now loaded inside World::World() before predetermined positions are generated
     // world.load_image_structures("../structure_images");
 
     // audio_manager.init();
