@@ -1,5 +1,5 @@
 {
-  "tests": 57,
+  "tests": 59,
   "name": "AllTests",
   "testsuites": [
     {
@@ -198,6 +198,28 @@
           "name": "AccelerationInFullSimulation",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
           "line": 896
+        }
+      ]
+    },
+    {
+      "name": "ParticleFactoryTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "WoodAndFireTypes",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/particle_test.cpp",
+          "line": 11
+        }
+      ]
+    },
+    {
+      "name": "WorldParticleTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "WoodCatchesFire",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/particle_test.cpp",
+          "line": 27
         }
       ]
     },

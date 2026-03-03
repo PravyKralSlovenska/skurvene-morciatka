@@ -9,6 +9,7 @@
 #include "engine/time_manager.hpp"
 #include "others/GLOBALS.hpp"
 
+
 void UI_Renderer::set_player(Player *player) { this->player = player; }
 void UI_Renderer::set_camera(Camera *camera) { this->camera = camera; }
 void UI_Renderer::set_world(World *world) { this->world = world; }
@@ -62,16 +63,12 @@ void UI_Renderer::render_ui()
                     bool placed = true;
                     for (const auto &p : pending)
                     {
-                        if (p == pos)
-                        {
-                            placed = false;
-                            break;
-                        }
+                        if (p == pos) { placed = false; break; }
                     }
 
                     ImVec4 color = placed
-                                       ? ImVec4(0.0f, 1.0f, 0.4f, 1.0f)  // green = spawned
-                                       : ImVec4(0.8f, 0.8f, 0.8f, 1.0f); // gray = pending
+                        ? ImVec4(0.0f, 1.0f, 0.4f, 1.0f)   // green = spawned
+                        : ImVec4(0.8f, 0.8f, 0.8f, 1.0f);  // gray = pending
 
                     ImGui::TextColored(color, "#%d: (%d, %d) %s",
                                        i + 1, pos.x, pos.y,

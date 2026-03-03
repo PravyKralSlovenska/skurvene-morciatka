@@ -222,6 +222,25 @@ void Falling_Sand_Simulation::update_solid(const glm::ivec2 &chunk_coords, int x
     if (particle.type == Particle_Type::EMPTY)
         return;
 
+    // --- flammability / ignition ---
+    // wood or other flammable solids catch fire if adjacent to a fire particle
+    if (particle.flags.is_flammable && !particle.flags.is_on_fire)
+    {
+        const int dirs[8][2] = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
+        for (auto &d : dirs)
+        {
+            WorldCell *neighbor = get_cell_at_fast(chunk_coords, x + d[0], y + d[1], current_chunk);
+            if (neighbor && neighbor->particle.type == Particle_Type::FIRE)
+            {
+                // ignite this particle by turning it into fire
+                particle = create_fire(false);
+                // mark as updated to avoid moving this tick
+                particle.mark_updated();
+                return;
+            }
+        }
+    }
+
     // Calculate how many cells to move based on velocity
     int vy_steps = std::max(1, static_cast<int>(std::abs(particle.physics.velocity.y)));
     int vx_steps = static_cast<int>(std::abs(particle.physics.velocity.x));
@@ -424,6 +443,44 @@ void Falling_Sand_Simulation::update_gas(const glm::ivec2 &chunk_coords, int x, 
 
     if (particle.type == Particle_Type::EMPTY)
         return;
+
+    // Handle fire-specific behaviour first
+    if (particle.type == Particle_Type::FIRE)
+    {
+        // Burn out over time, turning into smoke
+        if (particle.lifetime > 0)
+        {
+            particle.lifetime--;
+            if (particle.lifetime == 0)
+            {
+                particle = create_smoke();
+                return;
+            }
+        }
+
+        // Ignite surrounding flammable solids
+        const int dirs[8][2] = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
+        for (auto &d : dirs)
+        {
+            WorldCell *neighbor = get_cell_at_fast(chunk_coords, x + d[0], y + d[1], current_chunk);
+            if (neighbor && neighbor->particle.flags.is_flammable && !neighbor->particle.flags.is_on_fire)
+            {
+                neighbor->particle = create_fire(false);
+                neighbor->particle.flags.is_on_fire = 1;
+            }
+        }
+
+        // Extinguish if touching water
+        for (auto &d : dirs)
+        {
+            WorldCell *neighbor = get_cell_at_fast(chunk_coords, x + d[0], y + d[1], current_chunk);
+            if (neighbor && neighbor->particle.type == Particle_Type::WATER)
+            {
+                particle = create_smoke();
+                return;
+            }
+        }
+    }
 
     // Decrease lifetime
     if (particle.lifetime > 0)

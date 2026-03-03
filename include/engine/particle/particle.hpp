@@ -28,7 +28,9 @@ enum class Particle_Type
     WATER,
     SMOKE,
     URANIUM,
-    STONE
+    STONE,
+    WOOD,
+    FIRE
 };
 
 enum class Particle_Movement : uint8_t
@@ -203,6 +205,8 @@ Particle create_water(bool is_static = false);
 Particle create_smoke(bool is_static = false);
 Particle create_stone(bool is_static = false);
 Particle create_uranium(bool is_static = false);
+Particle create_wood(bool is_static = false);
+Particle create_fire(bool is_static = false);
 
 // Create empty particle
 Particle create_empty();

@@ -150,3 +150,52 @@ Particle create_uranium(bool is_static)
     p.flags.is_reactive = 1; // Radioactive!
     return p;
 }
+
+Particle create_wood(bool is_static)
+{
+    Particle_Physics physics;
+    physics.density = 600.0f; // wood is lighter than water
+    physics.temperature = 293.0f;
+    physics.melting_point = 673.0f; // ~400°C char/ignite
+    physics.boiling_point = 0.0f;
+    physics.thermal_conductivity = 0.1f;
+    physics.specific_heat = 1700.0f;
+    physics.viscosity = 0.0f;
+    physics.dispersion_rate = 0;
+
+    Particle p(
+        Particle_Type::WOOD,
+        Particle_State::SOLID,
+        Particle_Movement::MOVE_SOLID,
+        Color(139, 69, 19, 1.0),
+        physics);
+
+    p.set_static(is_static);
+    p.flags.is_flammable = 1;
+    return p;
+}
+
+Particle create_fire(bool is_static)
+{
+    Particle_Physics physics;
+    physics.density = 0.2f;        // very light gas
+    physics.temperature = 1500.0f; // extremely hot
+    physics.melting_point = 0.0f;
+    physics.boiling_point = 0.0f;
+    physics.thermal_conductivity = 0.5f;
+    physics.specific_heat = 1.0f;
+    physics.viscosity = 0.0f;
+    physics.dispersion_rate = 4; // spreads quickly
+
+    Particle p(
+        Particle_Type::FIRE,
+        Particle_State::GAS,
+        Particle_Movement::MOVE_GAS,
+        Color(255, 69, 0, 1.0),
+        physics);
+
+    p.lifetime = 100; // burns out quickly
+    p.flags.is_flammable = 0;
+    p.flags.is_on_fire = 1;
+    return p;
+}

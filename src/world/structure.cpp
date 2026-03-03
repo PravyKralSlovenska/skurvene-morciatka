@@ -48,6 +48,12 @@ void Structure::set_cell(int x, int y, Particle_Type type, bool is_static)
     case Particle_Type::STONE:
         p = create_stone(is_static);
         break;
+    case Particle_Type::WOOD:
+        p = create_wood(is_static);
+        break;
+    case Particle_Type::FIRE:
+        p = create_fire(is_static);
+        break;
     default:
         p = Particle();
         break;

@@ -329,16 +329,11 @@ TEST(StructureDiagnostic, ImageLoading)
             {
                 const Particle &p = s.get_cell(x, y);
                 char c = '.';
-                if (p.type == Particle_Type::STONE)
-                    c = '#';
-                else if (p.type == Particle_Type::SAND)
-                    c = 'S';
-                else if (p.type == Particle_Type::WATER)
-                    c = 'W';
-                else if (p.type == Particle_Type::SMOKE)
-                    c = '~';
-                else if (p.type == Particle_Type::URANIUM)
-                    c = 'U';
+                if (p.type == Particle_Type::STONE) c = '#';
+                else if (p.type == Particle_Type::SAND) c = 'S';
+                else if (p.type == Particle_Type::WATER) c = 'W';
+                else if (p.type == Particle_Type::SMOKE) c = '~';
+                else if (p.type == Particle_Type::URANIUM) c = 'U';
                 std::cout << c;
             }
             std::cout << std::endl;
@@ -353,8 +348,8 @@ TEST(StructureDiagnostic, CoordinateMath)
     const int chunk_height = 10;
     const float PARTICLE_SIZE = Globals::PARTICLE_SIZE; // 5.0
 
-    int cpw = static_cast<int>(chunk_width * PARTICLE_SIZE);  // 50
-    int cph = static_cast<int>(chunk_height * PARTICLE_SIZE); // 50
+    int cpw = static_cast<int>(chunk_width * PARTICLE_SIZE);   // 50
+    int cph = static_cast<int>(chunk_height * PARTICLE_SIZE);  // 50
 
     std::cout << "\n=== COORDINATE MATH DIAGNOSTIC ===" << std::endl;
     std::cout << "Chunk: " << chunk_width << "x" << chunk_height << " cells" << std::endl;
@@ -412,8 +407,8 @@ TEST(StructureDiagnostic, StructurePlacementSpan)
     const float PARTICLE_SIZE = Globals::PARTICLE_SIZE; // 5.0
     const int chunk_width = 10;
     const int chunk_height = 10;
-    int cpw = static_cast<int>(chunk_width * PARTICLE_SIZE);  // 50
-    int cph = static_cast<int>(chunk_height * PARTICLE_SIZE); // 50
+    int cpw = static_cast<int>(chunk_width * PARTICLE_SIZE);   // 50
+    int cph = static_cast<int>(chunk_height * PARTICLE_SIZE);  // 50
 
     // Assume structure is loaded and auto-cropped
     Structure s = ImageStructureLoader::load_from_image("../structure_images/devushki_column.png");
