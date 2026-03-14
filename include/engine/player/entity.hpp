@@ -8,6 +8,7 @@
 
 #include "engine/player/inventory.hpp"
 #include "engine/player/wand.hpp"
+#include "engine/player/sprite_animation.hpp"
 
 // forward declarations
 class Item;
@@ -79,6 +80,10 @@ public:
 
     std::string entity_sprite; // kazdy entity sprite bude rovnako velky
 
+    // Sprite animation system
+    Sprite_Animation sprite_animation;
+    bool use_sprite_animation = false; // whether to use sprite sheet or simple colored quad
+
     // World reference for collision
     World *world_ref = nullptr;
 
@@ -98,6 +103,11 @@ public:
     void set_position(const glm::ivec2 &position);
 
     void set_sprite_file(const std::string &path);
+    void setup_sprite_sheet(const std::string &path, int sheet_width, int sheet_height,
+                            int frame_width, int frame_height, int num_frames);
+    void update_sprite_state(); // updates sprite based on entity state
+    Sprite_Animation &get_sprite_animation();
+    bool has_sprite_animation() const;
     void set_velocity(float vx, float vy);
     void set_velocity(const glm::vec2 &vel);
     void set_world(World *world);
@@ -250,6 +260,10 @@ public:
     ~Enemy() = default;
 
     void update(float delta_time) override;
+
+    // Sprite setup - for a standard 4-frame enemy sprite (128x32, 4 frames of 32x32)
+    // Frames: 0=facing left, 1=facing right, 2=jumping, 3=hurt/dying
+    void setup_enemy_sprite(const std::string &sprite_path);
 
     // Setters
     void set_target(const glm::ivec2 &target);

@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <random>
+#include <string>
 #include <glm/glm.hpp>
 
 // forward declarations
@@ -37,6 +38,18 @@ struct DevushkiObjective
     bool objective_complete = false;
 };
 
+// Sprite sheet configuration for entity types
+struct SpriteConfig
+{
+    std::string path;      // Path to sprite sheet image
+    int sheet_width = 128; // Total width of sprite sheet
+    int sheet_height = 32; // Total height of sprite sheet
+    int frame_width = 32;  // Width of each frame
+    int frame_height = 32; // Height of each frame
+    int frame_count = 4;   // Number of frames in the sheet
+    bool is_valid = false; // Whether this config has been set
+};
+
 class Entity_Manager
 {
 private:
@@ -55,11 +68,19 @@ private:
 
     // Devushki objective
     DevushkiObjective devushki_objective;
+    
+    // Deferred devushki spawning on structures
+    std::string devushki_sprite_name;  // sprite to use for devushki
+    std::unordered_set<int> spawned_devushki_positions; // hash of positions already spawned
+
+    // Sprite registry - stores sprite configs by entity type name
+    std::unordered_map<std::string, SpriteConfig> sprite_registry;
 
 private:
     void remove_all_dead();
     void update_entity(Entity *entity, float delta_time);
     void update_spawner(float delta_time);
+    void check_and_spawn_devushki_on_structures(); // check for new structures and spawn devushki
     glm::ivec2 get_random_spawn_position();
     glm::ivec2 find_valid_position_for_hitbox(const glm::ivec2 &desired_pos, const glm::ivec2 &hitbox_dims, int max_attempts = 20);
     void randomize_enemy_stats(Enemy *enemy);
@@ -73,18 +94,18 @@ public:
     void update();
     void update(float delta_time);
 
-    // entity creation
+    // entity creation - optionally specify a registered sprite name
     Entity *create_entity();
-    Enemy *create_enemy(const glm::ivec2 &position);
-    Enemy *create_enemy(int x, int y);
-    Enemy *spawn_random_enemy(); // New: spawns with random position & stats
+    Enemy *create_enemy(const glm::ivec2 &position, const std::string &sprite_name = "");
+    Enemy *create_enemy(int x, int y, const std::string &sprite_name = "");
+    Enemy *spawn_random_enemy(const std::string &sprite_name = ""); // spawns with random position & stats
 
     // devushki creation
-    Devushki *create_devushki(const glm::ivec2 &position);
-    Devushki *create_devushki(int x, int y);
+    Devushki *create_devushki(const glm::ivec2 &position, const std::string &sprite_name = "");
+    Devushki *create_devushki(int x, int y, const std::string &sprite_name = "");
 
     // devushki objective system
-    void spawn_devushki_objective(int count, float spread_radius = 2000.0f);
+    void spawn_devushki_objective(int count, float spread_radius = 2000.0f, const std::string &sprite_name = "");
     void check_devushki_collection();
     void set_devushki_objective_count(int count);
     void set_devushki_collect_range(float range);
@@ -92,8 +113,8 @@ public:
     bool is_objective_complete() const;
 
     // boss creation
-    Boss *create_boss(const glm::ivec2 &position);
-    Boss *create_boss(int x, int y);
+    Boss *create_boss(const glm::ivec2 &position, const std::string &sprite_name = "");
+    Boss *create_boss(int x, int y, const std::string &sprite_name = "");
 
     // entity removal
     bool remove_entity(const int id);
@@ -106,6 +127,19 @@ public:
     void set_spawn_distance(float min_dist, float max_dist);
     void set_difficulty(float multiplier);
     SpawnConfig &get_spawn_config();
+
+    // sprite management - register sprites by name for easy reuse
+    // Simple registration (uses default 128x32, 4 frames of 32x32)
+    void register_sprite(const std::string &name, const std::string &sprite_path);
+    // Detailed registration with custom dimensions
+    void register_sprite(const std::string &name, const std::string &sprite_path,
+                         int sheet_width, int sheet_height, int frame_width, int frame_height, int frame_count);
+    // Apply a registered sprite to any entity
+    void apply_sprite(Entity *entity, const std::string &name);
+    // Query sprites
+    bool has_sprite(const std::string &name) const;
+    const SpriteConfig *get_sprite_config(const std::string &name) const;
+    std::vector<std::string> get_all_sprite_names() const;
 
     // getters
     Player *get_player();

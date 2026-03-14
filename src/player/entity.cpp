@@ -43,6 +43,19 @@ void Entity::update(float delta_time)
 
 void Entity::update_physics(float delta_time)
 {
+    // In noclip mode, movement should come only from current input.
+    // No gravity, collision response, friction, or momentum carryover.
+    if (noclip)
+    {
+        coords.x += static_cast<int>(velocity.x * delta_time);
+        coords.y += static_cast<int>(velocity.y * delta_time);
+        velocity = {0.0f, 0.0f};
+        acceleration = {0.0f, 0.0f};
+        on_ground = false;
+        calculate_hitbox();
+        return;
+    }
+
     // Without world reference, just apply velocity directly (no collision)
     if (!world_ref)
     {
@@ -107,6 +120,55 @@ void Entity::set_position(const glm::ivec2 &position)
 void Entity::set_sprite_file(const std::string &path)
 {
     entity_sprite = path;
+}
+
+void Entity::setup_sprite_sheet(const std::string &path, int sheet_width, int sheet_height,
+                                int frame_width, int frame_height, int num_frames)
+{
+    entity_sprite = path;
+    sprite_animation.setup_sheet(path, sheet_width, sheet_height, frame_width, frame_height, num_frames);
+    use_sprite_animation = true;
+}
+
+void Entity::update_sprite_state()
+{
+    if (!use_sprite_animation)
+        return;
+
+    // Determine sprite state based on entity state and velocity
+    Sprite_State new_sprite_state;
+
+    // If hurt/dead, use hurt sprite
+    if (state == Entity_States::HIT || state == Entity_States::DEAD || !is_alive)
+    {
+        new_sprite_state = Sprite_State::HURT;
+    }
+    // If jumping or falling, use jump sprite
+    else if (state == Entity_States::JUMPING || state == Entity_States::FALLING || !on_ground)
+    {
+        new_sprite_state = Sprite_State::JUMPING;
+    }
+    // Otherwise, use left/right based on velocity
+    else if (velocity.x < 0)
+    {
+        new_sprite_state = Sprite_State::FACING_LEFT;
+    }
+    else
+    {
+        new_sprite_state = Sprite_State::FACING_RIGHT;
+    }
+
+    sprite_animation.set_state(new_sprite_state);
+}
+
+Sprite_Animation &Entity::get_sprite_animation()
+{
+    return sprite_animation;
+}
+
+bool Entity::has_sprite_animation() const
+{
+    return use_sprite_animation;
 }
 
 void Entity::set_velocity(float vx, float vy)
@@ -286,11 +348,19 @@ void Entity::set_world(World *world)
 void Entity::set_noclip(bool enabled)
 {
     noclip = enabled;
+
+    if (noclip)
+    {
+        // Entering fly mode should immediately discard existing forces.
+        velocity = {0.0f, 0.0f};
+        acceleration = {0.0f, 0.0f};
+        on_ground = false;
+    }
 }
 
 void Entity::toggle_noclip()
 {
-    noclip = !noclip;
+    set_noclip(!noclip);
 }
 
 // ==================== Collision Detection ====================
@@ -618,7 +688,7 @@ Enemy::Enemy()
     max_healthpoints = 50.0f;
     healthpoints = 50.0f;
     speed = 50.0f;
-    set_hitbox_dimensions(24, 24);
+    set_hitbox_dimensions(40, 40);
     ai_state = AI_State::IDLE;
 }
 
@@ -627,6 +697,17 @@ Enemy::Enemy(std::string name, glm::vec2 coords)
 {
     this->coords = coords;
     this->home_position = coords;
+}
+
+void Enemy::setup_enemy_sprite(const std::string &sprite_path)
+{
+    // Standard enemy sprite sheet: 128x32 pixels, 4 frames of 32x32
+    // Frame 0: facing left
+    // Frame 1: facing right
+    // Frame 2: jumping/falling
+    // Frame 3: hurt/dying
+    setup_sprite_sheet(sprite_path, 128, 32, 32, 32, 4);
+    set_hitbox_dimensions(32, 32);
 }
 
 void Enemy::update(float delta_time)
@@ -676,6 +757,9 @@ void Enemy::update(float delta_time)
     // Apply physics (gravity and collision)
     update_physics(delta_time);
     calculate_hitbox();
+
+    // Update sprite animation state based on current movement/state
+    update_sprite_state();
 }
 
 // ==================== State Handlers ====================

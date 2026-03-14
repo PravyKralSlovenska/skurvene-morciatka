@@ -39,8 +39,8 @@ Entities_Renderer::~Entities_Renderer()
 
 void Entities_Renderer::init()
 {
-    // Create shader - using same basic shaders as world
-    shader = std::make_unique<Shader>("../shaders/vertex.glsl", "../shaders/fragment.glsl");
+    // Create shader - using entity-specific shaders with texture support
+    shader = std::make_unique<Shader>("../shaders/entity/entity_vertex.glsl", "../shaders/entity/entity_fragment.glsl");
     shader->create_shader();
 
     // Setup buffers
@@ -224,27 +224,49 @@ void Entities_Renderer::add_entity_to_batch(Entity *entity)
         color.a = 0.5f;
     }
 
+    // Get UV coordinates - either from sprite animation or default full texture
+    glm::vec2 uv_min = {0.0f, 0.0f};
+    glm::vec2 uv_max = {1.0f, 1.0f};
+
+    if (entity->has_sprite_animation())
+    {
+        // Get UV coordinates from sprite animation
+        Sprite_Animation &anim = entity->get_sprite_animation();
+        uv_min = anim.get_uv_min();
+        uv_max = anim.get_uv_max();
+
+        // When using a texture, use white color to show true texture colors
+        color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+        // If entity is dead, tint it darker
+        if (!entity->is_alive)
+        {
+            color = glm::vec4(0.3f, 0.3f, 0.3f, 0.5f);
+        }
+    }
+
     // Calculate quad vertices
     unsigned int base_index = static_cast<unsigned int>(vertices.size());
 
+    // Note: UV Y is flipped because OpenGL textures are usually loaded with Y pointing up
     // Top-left
     vertices.push_back({{pos.x - half_size.x, pos.y - half_size.y},
-                        {0.0f, 1.0f},
+                        {uv_min.x, uv_max.y},
                         color});
 
     // Top-right
     vertices.push_back({{pos.x + half_size.x, pos.y - half_size.y},
-                        {1.0f, 1.0f},
+                        {uv_max.x, uv_max.y},
                         color});
 
     // Bottom-right
     vertices.push_back({{pos.x + half_size.x, pos.y + half_size.y},
-                        {1.0f, 0.0f},
+                        {uv_max.x, uv_min.y},
                         color});
 
     // Bottom-left
     vertices.push_back({{pos.x - half_size.x, pos.y + half_size.y},
-                        {0.0f, 0.0f},
+                        {uv_min.x, uv_min.y},
                         color});
 
     // Add indices for two triangles
@@ -259,11 +281,23 @@ void Entities_Renderer::add_entity_to_batch(Entity *entity)
 
 void Entities_Renderer::flush()
 {
+    // Default flush with no texture
+    flush_with_texture(false, default_texture_id);
+}
+
+void Entities_Renderer::flush_with_texture(bool use_texture, unsigned int texture_id)
+{
     if (vertices.empty())
         return;
 
     shader->use();
     shader->set_mat4("projection", projection);
+    shader->set_bool("useTexture", use_texture);
+    shader->set_int("entityTexture", 0);
+
+    // Bind texture
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
 
     VAO->bind();
 
@@ -279,6 +313,7 @@ void Entities_Renderer::flush()
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 
     VAO->unbind();
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Entities_Renderer::end_batch()
@@ -323,23 +358,77 @@ void Entities_Renderer::render_entities_in_chunks(
     if (!entity_manager || !world)
         return;
 
-    begin_batch();
+    // Separate entities into textured and non-textured groups
+    std::vector<Entity *> non_textured_entities;
+    std::vector<Entity *> textured_entities;
 
     // Always render player
     Player *player = entity_manager->get_player();
     if (player)
     {
-        add_entity_to_batch(player);
+        if (player->has_sprite_animation())
+            textured_entities.push_back(player);
+        else
+            non_textured_entities.push_back(player);
     }
 
-    // Get entities that are in active chunks
+    // Get entities that are in active chunks and sort them
     auto entities = entity_manager->get_entities_in_chunks(active_chunks);
     for (Entity *entity : entities)
     {
-        add_entity_to_batch(entity);
+        if (entity->has_sprite_animation())
+            textured_entities.push_back(entity);
+        else
+            non_textured_entities.push_back(entity);
     }
 
-    end_batch();
+    // First, render all non-textured entities in one batch
+    if (!non_textured_entities.empty())
+    {
+        begin_batch();
+        for (Entity *entity : non_textured_entities)
+        {
+            add_entity_to_batch(entity);
+        }
+        flush_with_texture(false, 0);
+        vertices.clear();
+        indices.clear();
+    }
+
+    // Then, render textured entities - group by texture path
+    std::unordered_map<std::string, std::vector<Entity *>> entities_by_texture;
+    for (Entity *entity : textured_entities)
+    {
+        const std::string &path = entity->get_sprite_animation().get_sprite_path();
+        entities_by_texture[path].push_back(entity);
+    }
+
+    for (auto &[texture_path, ents] : entities_by_texture)
+    {
+        // Load texture if not already loaded
+        if (textures.find(texture_path) == textures.end())
+        {
+            load_texture(texture_path, texture_path);
+        }
+
+        begin_batch();
+        for (Entity *entity : ents)
+        {
+            add_entity_to_batch(entity);
+        }
+
+        // Get texture ID
+        unsigned int tex_id = default_texture_id;
+        auto it = textures.find(texture_path);
+        if (it != textures.end())
+        {
+            tex_id = it->second.id;
+        }
+
+        flush_with_texture(true, tex_id);
+        vertices.clear();
+        indices.clear();
+    }
 
     // Render wand after entities
     if (player)

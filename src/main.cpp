@@ -62,11 +62,13 @@ int main()
     Player *player = entity_manager.get_player();
     entity_manager.set_world(&world);
     entity_manager.ensure_player_valid_position();
+    entity_manager.register_sprite("slime", "../sprites/devushka_slime_enemy1.png");
+    // entity_manager.register_sprite("big_boss", "../sprites/boss.png", 256, 64, 64, 64, 4);
 
-    // Devushki objective - spawn N devushki at random positions for the player to collect
-    int devushki_count = 5; // how many devushki to save (change this to set the objective)
+    const int devushki_count = 5; // how many devushki to save (change this to set the objective)
     entity_manager.set_devushki_objective_count(devushki_count);
     entity_manager.spawn_devushki_objective(devushki_count, 2000.0f);
+    world.set_devushki_column_spawn_count(devushki_count);
 
     controls.set_player(player);
     controls.set_window(render.get_window());

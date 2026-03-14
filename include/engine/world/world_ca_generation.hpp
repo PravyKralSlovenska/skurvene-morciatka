@@ -6,12 +6,12 @@
 #include "glm/glm.hpp"
 
 #include "engine/world/FastNoiseLite.h"
+#include "engine/world/world_cell.hpp"
 #include "others/GLOBALS.hpp"
 
 // forward declarations
 class Chunk;
 class Particle;
-struct WorldCell;
 struct Biome;
 struct Biome_Blend;
 enum class Biome_Type;
@@ -68,6 +68,10 @@ public:
     void carve_cave_iteration(Chunk *chunk);
 
     Biome get_biome(const glm::vec2 &world_coords);
+
+    // Query whether a cell at the given world cell coordinates would be solid,
+    // using only noise (no Chunk needed).
+    bool is_cell_solid(int world_cell_x, int world_cell_y);
 
     // cellural automata world generartion
     void make_noise_data(Chunk *chunk);

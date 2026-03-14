@@ -2,7 +2,9 @@
 #include "engine/world/world.hpp"
 #include "engine/world/world_chunk.hpp"
 #include "engine/world/world_cell.hpp"
+#include "engine/world/world_ca_generation.hpp"
 #include "others/GLOBALS.hpp"
+#include "others/utils.hpp"
 
 #include "stb/stb_image.h"
 
@@ -10,6 +12,14 @@
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include <climits>
+#include <memory>
+#include <cstdint>
+
+static int pixel_to_cell(int px)
+{
+    return static_cast<int>(std::floor(static_cast<float>(px) / Globals::PARTICLE_SIZE));
+}
 
 // ============================================
 // Structure
@@ -122,6 +132,11 @@ void StructureSpawner::set_seed(int seed)
     rng.seed(seed);
 }
 
+void StructureSpawner::set_structure_spawn_count(const std::string &name, int count)
+{
+    structure_spawn_counts[name] = std::max(1, count);
+}
+
 void StructureSpawner::add_blueprint(const std::string &name, const Structure &structure)
 {
     blueprints[name] = structure;
@@ -146,30 +161,6 @@ const std::map<std::string, Structure> &StructureSpawner::get_blueprints() const
     return blueprints;
 }
 
-void StructureSpawner::add_spawn_rule(const StructureSpawnRule &rule)
-{
-    spawn_rules.push_back(rule);
-}
-
-void StructureSpawner::clear_spawn_rules()
-{
-    spawn_rules.clear();
-}
-
-void StructureSpawner::setup_default_rules()
-{
-    // Add the default platform blueprint
-    add_blueprint("platform", StructureFactory::create_platform());
-
-    // Add spawn rule for platforms
-    StructureSpawnRule rule;
-    rule.structure_name = "platform";
-    rule.spawn_chance = 0.03f;
-    rule.min_distance_any = 300.0f;
-    rule.placement = SpawnPlacement::ON_SURFACE;
-    add_spawn_rule(rule);
-}
-
 bool StructureSpawner::place_structure(const Structure &structure, const glm::ivec2 &world_pos)
 {
     if (!world)
@@ -189,6 +180,8 @@ bool StructureSpawner::place_structure(const Structure &structure, const glm::iv
             world->place_custom_particle(pixel_pos, cell);
         }
     }
+
+    fill_structure_base(structure, world_pos);
     return true;
 }
 
@@ -200,231 +193,434 @@ bool StructureSpawner::place_structure_centered(const Structure &structure, cons
     return place_structure(structure, center_pos - offset);
 }
 
-bool StructureSpawner::check_min_distance(const glm::ivec2 &pos, const std::string &name,
-                                          float min_dist_same, float min_dist_any) const
+namespace
 {
-    for (const auto &placed : placed_structures)
+    static constexpr int RANDOM_TARGET_MIN = -15000;
+    static constexpr int RANDOM_TARGET_MAX = 15000;
+    static constexpr float DEVUSHKI_SPAWN_RADIUS = 1000.0f;
+    static constexpr int MAX_VERTICAL_LIFT_CELLS = 120;
+    static constexpr int MAX_RAW_RETRY_ATTEMPTS = 6;
+    static constexpr int RAW_RETRY_DISTANCE_CELLS = 250;
+    static constexpr int GROUND_FILL_MAX_DEPTH_CELLS = 512;
+    static constexpr int BASE_FEATHER_SIDE_SPREAD_CELLS = 2;
+    static constexpr int BASE_FEATHER_MAX_DEPTH_CELLS = 24;
+
+    float deterministic_noise_01(int x, int y, int salt)
     {
-        float dist = glm::distance(glm::vec2(pos), glm::vec2(placed.position));
-        if (placed.name == name && dist < min_dist_same)
-            return false;
-        if (dist < min_dist_any)
-            return false;
+        std::uint32_t h = 2166136261u;
+        h = (h ^ static_cast<std::uint32_t>(x * 73856093)) * 16777619u;
+        h = (h ^ static_cast<std::uint32_t>(y * 19349663)) * 16777619u;
+        h = (h ^ static_cast<std::uint32_t>(salt * 83492791)) * 16777619u;
+        return static_cast<float>(h & 0xFFFFu) / 65535.0f;
     }
-    return true;
-}
 
-float StructureSpawner::check_empty_ratio(const Structure &structure, const glm::ivec2 &world_pos) const
-{
-    if (!world)
-        return 0.0f;
-
-    int total = 0;
-    int empty = 0;
-
-    int chunk_pixel_width = static_cast<int>(world->get_chunk_dimensions().x * Globals::PARTICLE_SIZE);
-    int chunk_pixel_height = static_cast<int>(world->get_chunk_dimensions().y * Globals::PARTICLE_SIZE);
-
-    for (int y = 0; y < structure.get_height(); y++)
+    glm::ivec2 get_chunk_pos_from_world_px(int world_x, int world_y, int chunk_pixel_w, int chunk_pixel_h)
     {
-        for (int x = 0; x < structure.get_width(); x++)
+        return glm::ivec2(
+            static_cast<int>(std::floor(static_cast<float>(world_x) / static_cast<float>(chunk_pixel_w))),
+            static_cast<int>(std::floor(static_cast<float>(world_y) / static_cast<float>(chunk_pixel_h))));
+    }
+
+    bool get_chunk_and_local_cell(World *world, int world_x, int world_y,
+                                  Chunk *&out_chunk, glm::ivec2 &out_local_cell)
+    {
+        if (!world)
+            return false;
+
+        const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+        const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+        const int chunk_pixel_w = chunk_dims.x * ps;
+        const int chunk_pixel_h = chunk_dims.y * ps;
+
+        glm::ivec2 chunk_pos = get_chunk_pos_from_world_px(world_x, world_y, chunk_pixel_w, chunk_pixel_h);
+        Chunk *chunk = world->get_chunk(chunk_pos);
+        if (!chunk)
+            return false;
+
+        int offset_x = world_x - chunk_pos.x * chunk_pixel_w;
+        int offset_y = world_y - chunk_pos.y * chunk_pixel_h;
+        int cell_x = offset_x / ps;
+        int cell_y = offset_y / ps;
+
+        if (cell_x < 0)
+            cell_x += chunk_dims.x;
+        if (cell_y < 0)
+            cell_y += chunk_dims.y;
+
+        if (cell_x < 0 || cell_x >= chunk_dims.x || cell_y < 0 || cell_y >= chunk_dims.y)
+            return false;
+
+        out_chunk = chunk;
+        out_local_cell = glm::ivec2(cell_x, cell_y);
+        return true;
+    }
+
+    bool ensure_chunk_generated(World *world, const glm::ivec2 &chunk_coords)
+    {
+        if (!world)
+            return false;
+
+        if (world->get_chunk(chunk_coords))
+            return true;
+
+        auto *chunks = world->get_chunks();
+        World_CA_Generation *world_gen = world->get_world_gen();
+        if (!chunks || !world_gen)
+            return false;
+
+        const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+        auto chunk = std::make_unique<Chunk>(chunk_coords, chunk_dims.x, chunk_dims.y);
+        world_gen->generate_chunk_with_biome(chunk.get());
+        chunks->emplace(chunk_coords, std::move(chunk));
+        return true;
+    }
+
+    bool ensure_footprint_chunks_generated(World *world, const Structure &structure, const glm::ivec2 &world_pos)
+    {
+        if (!world)
+            return false;
+
+        const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+        const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+        const int chunk_pixel_w = chunk_dims.x * ps;
+        const int chunk_pixel_h = chunk_dims.y * ps;
+
+        const int struct_pw = structure.get_width() * ps;
+        const int struct_ph = structure.get_height() * ps;
+
+        glm::ivec2 first_chunk = get_chunk_pos_from_world_px(world_pos.x, world_pos.y, chunk_pixel_w, chunk_pixel_h);
+        glm::ivec2 last_chunk = get_chunk_pos_from_world_px(world_pos.x + struct_pw - 1,
+                                                            world_pos.y + struct_ph - 1,
+                                                            chunk_pixel_w, chunk_pixel_h);
+
+        for (int cy = first_chunk.y; cy <= last_chunk.y; ++cy)
         {
-            total++;
-
-            glm::ivec2 pixel_pos = world_pos + glm::ivec2(
-                                                   static_cast<int>(x * Globals::PARTICLE_SIZE),
-                                                   static_cast<int>(y * Globals::PARTICLE_SIZE));
-
-            glm::ivec2 chunk_pos{
-                static_cast<int>(std::floor(static_cast<float>(pixel_pos.x) / chunk_pixel_width)),
-                static_cast<int>(std::floor(static_cast<float>(pixel_pos.y) / chunk_pixel_height))};
-
-            Chunk *chunk = world->get_chunk(chunk_pos);
-            if (!chunk)
+            for (int cx = first_chunk.x; cx <= last_chunk.x; ++cx)
             {
-                // Non-existent chunk counts as non-empty
-                continue;
+                if (!ensure_chunk_generated(world, glm::ivec2(cx, cy)))
+                    return false;
             }
-
-            int pixel_offset_x = pixel_pos.x - (chunk_pos.x * chunk_pixel_width);
-            int pixel_offset_y = pixel_pos.y - (chunk_pos.y * chunk_pixel_height);
-
-            int cell_x = static_cast<int>(pixel_offset_x / Globals::PARTICLE_SIZE);
-            int cell_y = static_cast<int>(pixel_offset_y / Globals::PARTICLE_SIZE);
-
-            if (cell_x < 0)
-                cell_x += world->get_chunk_dimensions().x;
-            if (cell_y < 0)
-                cell_y += world->get_chunk_dimensions().y;
-
-            if (chunk->is_empty(cell_x, cell_y))
-                empty++;
         }
+
+        return true;
     }
 
-    if (total == 0)
-        return 0.0f;
-    return static_cast<float>(empty) / static_cast<float>(total);
-}
-
-bool StructureSpawner::check_chunks_exist(const Structure &structure, const glm::ivec2 &world_pos) const
-{
-    if (!world)
-        return false;
-
-    int chunk_pixel_width = static_cast<int>(world->get_chunk_dimensions().x * Globals::PARTICLE_SIZE);
-    int chunk_pixel_height = static_cast<int>(world->get_chunk_dimensions().y * Globals::PARTICLE_SIZE);
-
-    for (int y = 0; y < structure.get_height(); y++)
+    bool is_valid_placement(World *world, const Structure &structure, const glm::ivec2 &world_pos)
     {
-        for (int x = 0; x < structure.get_width(); x++)
+        if (!world)
+            return false;
+
+        if (!ensure_footprint_chunks_generated(world, structure, world_pos))
+            return false;
+
+        const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+        const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+
+        // Rule 1.1: every non-empty structure cell must map to empty world cell.
+        for (int sy = 0; sy < structure.get_height(); ++sy)
         {
-            glm::ivec2 pixel_pos = world_pos + glm::ivec2(
-                                                   static_cast<int>(x * Globals::PARTICLE_SIZE),
-                                                   static_cast<int>(y * Globals::PARTICLE_SIZE));
+            for (int sx = 0; sx < structure.get_width(); ++sx)
+            {
+                const Particle &cell = structure.get_cell(sx, sy);
+                if (cell.type == Particle_Type::EMPTY)
+                    continue;
 
-            glm::ivec2 chunk_pos{
-                static_cast<int>(std::floor(static_cast<float>(pixel_pos.x) / chunk_pixel_width)),
-                static_cast<int>(std::floor(static_cast<float>(pixel_pos.y) / chunk_pixel_height))};
+                const int world_x = world_pos.x + sx * ps;
+                const int world_y = world_pos.y + sy * ps;
 
-            if (!world->get_chunk(chunk_pos))
-                return false;
+                Chunk *chunk = nullptr;
+                glm::ivec2 local_cell;
+                if (!get_chunk_and_local_cell(world, world_x, world_y, chunk, local_cell))
+                    return false;
+
+                if (!chunk->is_empty(local_cell.x, local_cell.y))
+                    return false;
+            }
         }
+
+        // Rule 1.2: at least one support column must touch solid ground.
+        // Remaining unsupported columns can be stabilized by filling after placement.
+        const int ground_y = world_pos.y + structure.get_height() * ps;
+        int supported_columns = 0;
+        for (int sx = 0; sx < structure.get_width(); ++sx)
+        {
+            const int world_x = world_pos.x + sx * ps;
+
+            const glm::ivec2 chunk_pos = get_chunk_pos_from_world_px(world_x, ground_y, chunk_dims.x * ps, chunk_dims.y * ps);
+            if (!ensure_chunk_generated(world, chunk_pos))
+                return false;
+
+            Chunk *chunk = nullptr;
+            glm::ivec2 local_cell;
+            if (!get_chunk_and_local_cell(world, world_x, ground_y, chunk, local_cell))
+                return false;
+
+            if (!chunk->is_empty(local_cell.x, local_cell.y))
+                supported_columns++;
+        }
+
+        if (supported_columns == 0)
+            return false;
+
+        return true;
     }
-    return true;
+
+    bool try_place_with_vertical_lift(StructureSpawner *spawner, World *world,
+                                      const Structure &blueprint, const glm::ivec2 &base_pos,
+                                      const std::string &structure_name, int ps)
+    {
+        if (!spawner || !world)
+            return false;
+
+        for (int lift = 0; lift <= MAX_VERTICAL_LIFT_CELLS; ++lift)
+        {
+            glm::ivec2 candidate_pos(base_pos.x, base_pos.y - lift * ps);
+            if (!is_valid_placement(world, blueprint, candidate_pos))
+                continue;
+
+            if (spawner->place_structure(blueprint, candidate_pos))
+            {
+                spawner->record_placed_structure(candidate_pos, structure_name);
+            }
+            return true;
+        }
+
+        return false;
+    }
 }
 
-int StructureSpawner::find_surface_y(int world_x, const glm::ivec2 &chunk_world_origin,
-                                     int chunk_pixel_height) const
+int StructureSpawner::find_surface_y(int world_x, int start_y, int scan_range) const
 {
     if (!world)
         return -1;
 
-    int chunk_pixel_width = static_cast<int>(world->get_chunk_dimensions().x * Globals::PARTICLE_SIZE);
-    int cw = world->get_chunk_dimensions().x;
-    int ch = world->get_chunk_dimensions().y;
+    const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+    const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+    const int chunk_pixel_w = chunk_dims.x * ps;
+    const int chunk_pixel_h = chunk_dims.y * ps;
 
-    // Scan downward from the top of the chunk column
-    for (int py = chunk_world_origin.y; py < chunk_world_origin.y + chunk_pixel_height; py += static_cast<int>(Globals::PARTICLE_SIZE))
+    for (int py = start_y; py < start_y + scan_range; py += ps)
     {
-        glm::ivec2 pixel_pos{world_x, py};
-
-        glm::ivec2 chunk_pos{
-            static_cast<int>(std::floor(static_cast<float>(pixel_pos.x) / chunk_pixel_width)),
-            static_cast<int>(std::floor(static_cast<float>(pixel_pos.y) / static_cast<float>(ch * Globals::PARTICLE_SIZE)))};
-
+        glm::ivec2 chunk_pos = get_chunk_pos_from_world_px(world_x, py, chunk_pixel_w, chunk_pixel_h);
         Chunk *chunk = world->get_chunk(chunk_pos);
         if (!chunk)
             continue;
 
-        int pixel_offset_x = pixel_pos.x - static_cast<int>(chunk_pos.x * chunk_pixel_width);
-        int pixel_offset_y = pixel_pos.y - static_cast<int>(chunk_pos.y * ch * Globals::PARTICLE_SIZE);
-
-        int cell_x = static_cast<int>(pixel_offset_x / Globals::PARTICLE_SIZE);
-        int cell_y = static_cast<int>(pixel_offset_y / Globals::PARTICLE_SIZE);
-
+        int offset_x = world_x - chunk_pos.x * chunk_pixel_w;
+        int offset_y = py - chunk_pos.y * chunk_pixel_h;
+        int cell_x = offset_x / ps;
+        int cell_y = offset_y / ps;
         if (cell_x < 0)
-            cell_x += cw;
+            cell_x += chunk_dims.x;
         if (cell_y < 0)
-            cell_y += ch;
+            cell_y += chunk_dims.y;
 
-        if (cell_x >= 0 && cell_x < cw && cell_y >= 0 && cell_y < ch)
-        {
-            if (!chunk->is_empty(cell_x, cell_y))
-                return py;
-        }
+        if (cell_x < 0 || cell_x >= chunk_dims.x || cell_y < 0 || cell_y >= chunk_dims.y)
+            continue;
+
+        if (!chunk->is_empty(cell_x, cell_y))
+            return py;
     }
-    return -1; // No surface found
+
+    return -1;
 }
 
-void StructureSpawner::try_spawn_in_chunk(const glm::ivec2 &chunk_coords, int chunk_width, int chunk_height)
+void StructureSpawner::fill_structure_base(const Structure &structure, const glm::ivec2 &world_pos)
 {
     if (!world)
         return;
 
-    int chunk_pixel_width = static_cast<int>(chunk_width * Globals::PARTICLE_SIZE);
-    int chunk_pixel_height = static_cast<int>(chunk_height * Globals::PARTICLE_SIZE);
+    const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+    const int ground_y = world_pos.y + structure.get_height() * ps;
+    std::vector<int> filled_depth_by_column(structure.get_width(), 0);
 
-    glm::ivec2 chunk_world_origin{
-        chunk_coords.x * chunk_pixel_width,
-        chunk_coords.y * chunk_pixel_height};
-
-    // Use deterministic RNG based on chunk coordinates and seed
-    std::mt19937 chunk_rng(hash_coords(chunk_coords.x, chunk_coords.y, seed));
-    std::uniform_real_distribution<float> chance_dist(0.0f, 1.0f);
-
-    for (const auto &rule : spawn_rules)
+    for (int sx = 0; sx < structure.get_width(); ++sx)
     {
-        // Roll spawn chance
-        if (chance_dist(chunk_rng) > rule.spawn_chance)
+        const int world_x = world_pos.x + sx * ps;
+
+        for (int depth = 0; depth < GROUND_FILL_MAX_DEPTH_CELLS; ++depth)
+        {
+            const int fill_y = ground_y + depth * ps;
+            Chunk *chunk = nullptr;
+            glm::ivec2 local_cell;
+
+            const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+            const glm::ivec2 chunk_pos = get_chunk_pos_from_world_px(world_x, fill_y, chunk_dims.x * ps, chunk_dims.y * ps);
+            if (!ensure_chunk_generated(world, chunk_pos))
+                break;
+
+            if (!get_chunk_and_local_cell(world, world_x, fill_y, chunk, local_cell))
+                break;
+
+            if (!chunk->is_empty(local_cell.x, local_cell.y))
+                break;
+
+            world->place_static_particle(glm::ivec2(world_x, fill_y), Particle_Type::STONE);
+            filled_depth_by_column[sx] = depth + 1;
+        }
+    }
+
+    // Feather support edges so the base transitions into terrain more naturally,
+    // while keeping the full vertical support directly under the structure.
+    const int half_width = structure.get_width() / 2;
+    for (int sx = 0; sx < structure.get_width(); ++sx)
+    {
+        const int core_x = world_pos.x + sx * ps;
+        int core_depth = filled_depth_by_column[sx];
+        if (core_depth <= 0)
             continue;
 
-        Structure *blueprint = get_blueprint(rule.structure_name);
+        core_depth = std::min(core_depth, BASE_FEATHER_MAX_DEPTH_CELLS);
+
+        for (int side = 1; side <= BASE_FEATHER_SIDE_SPREAD_CELLS; ++side)
+        {
+            const int left_x = core_x - side * ps;
+            const int right_x = core_x + side * ps;
+            const int tapered_depth = std::max(0, core_depth - side + 1);
+
+            for (int depth = 0; depth < tapered_depth; ++depth)
+            {
+                const int fill_y = ground_y + depth * ps;
+
+                const float depth_factor = static_cast<float>(depth) / static_cast<float>(BASE_FEATHER_MAX_DEPTH_CELLS);
+                const float side_factor = static_cast<float>(side - 1) / static_cast<float>(BASE_FEATHER_SIDE_SPREAD_CELLS);
+                const float keep_probability = std::clamp(0.75f - 0.30f * side_factor - 0.40f * depth_factor, 0.15f, 0.80f);
+
+                const int salt = sx - half_width;
+
+                auto try_fill = [&](int world_x)
+                {
+                    if (deterministic_noise_01(world_x, fill_y, salt) > keep_probability)
+                        return;
+
+                    const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+                    const glm::ivec2 chunk_pos = get_chunk_pos_from_world_px(world_x, fill_y, chunk_dims.x * ps, chunk_dims.y * ps);
+                    if (!ensure_chunk_generated(world, chunk_pos))
+                        return;
+
+                    Chunk *chunk = nullptr;
+                    glm::ivec2 local_cell;
+                    if (!get_chunk_and_local_cell(world, world_x, fill_y, chunk, local_cell))
+                        return;
+
+                    if (!chunk->is_empty(local_cell.x, local_cell.y))
+                        return;
+
+                    world->place_static_particle(glm::ivec2(world_x, fill_y), Particle_Type::STONE);
+                };
+
+                try_fill(left_x);
+                try_fill(right_x);
+            }
+        }
+    }
+}
+
+void StructureSpawner::generate_predetermined_positions(int world_seed)
+{
+    predetermined_entries.clear();
+    placed_structures.clear();
+
+    std::mt19937 local_rng(world_seed);
+    std::uniform_real_distribution<float> angle_dist(0.0f, 2.0f * static_cast<float>(M_PI));
+    std::uniform_int_distribution<int> random_pos(RANDOM_TARGET_MIN, RANDOM_TARGET_MAX);
+
+    const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+    for (const auto &pair : blueprints)
+    {
+        int spawn_count = 1;
+        auto count_it = structure_spawn_counts.find(pair.first);
+        if (count_it != structure_spawn_counts.end())
+        {
+            spawn_count = std::max(1, count_it->second);
+        }
+
+        for (int i = 0; i < spawn_count; ++i)
+        {
+            PredeterminedEntry entry;
+            entry.structure_name = pair.first;
+
+            if (pair.first == "devushki_column")
+            {
+                const float angle = angle_dist(local_rng);
+
+                int target_x = static_cast<int>(std::cos(angle) * DEVUSHKI_SPAWN_RADIUS);
+                int target_y = static_cast<int>(std::sin(angle) * DEVUSHKI_SPAWN_RADIUS);
+
+                target_x = (target_x / ps) * ps;
+                target_y = (target_y / ps) * ps;
+
+                entry.target_pos = glm::ivec2(target_x, target_y);
+            }
+            else
+            {
+                int target_x = random_pos(local_rng);
+                int target_y = random_pos(local_rng);
+                target_x = (target_x / ps) * ps;
+                target_y = (target_y / ps) * ps;
+
+                entry.target_pos = glm::ivec2(target_x, target_y);
+            }
+
+            predetermined_entries.push_back(entry);
+        }
+    }
+}
+
+void StructureSpawner::try_place_pending_structures(const glm::ivec2 &chunk_coords)
+{
+    if (!world)
+        return;
+
+    const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+    (void)chunk_coords;
+
+    for (auto &entry : predetermined_entries)
+    {
+        if (entry.placed)
+            continue;
+
+        Structure *blueprint = get_blueprint(entry.structure_name);
         if (!blueprint)
-            continue;
-
-        // Pick a random X within the chunk
-        std::uniform_int_distribution<int> x_dist(0, chunk_pixel_width - 1);
-        int spawn_x = chunk_world_origin.x + x_dist(chunk_rng);
-
-        glm::ivec2 spawn_pos;
-
-        if (rule.placement == SpawnPlacement::ON_SURFACE)
         {
-            int surface_y = find_surface_y(spawn_x, chunk_world_origin, chunk_pixel_height);
-            if (surface_y < 0)
-                continue;
-
-            // Place structure so its bottom sits on the surface
-            spawn_pos = glm::ivec2(spawn_x, surface_y - static_cast<int>(blueprint->get_height() * Globals::PARTICLE_SIZE));
-        }
-        else // IN_OPEN_SPACE
-        {
-            std::uniform_int_distribution<int> y_dist(0, chunk_pixel_height - 1);
-            spawn_pos = glm::ivec2(spawn_x, chunk_world_origin.y + y_dist(chunk_rng));
-        }
-
-        // Check minimum distance
-        if (!check_min_distance(spawn_pos, rule.structure_name, rule.min_distance_same, rule.min_distance_any))
-            continue;
-
-        // Check that all required chunks exist
-        if (!check_chunks_exist(*blueprint, spawn_pos))
-        {
-            // Queue as pending
-            pending_structures.push_back({*blueprint, spawn_pos, rule.structure_name});
+            entry.placed = true;
             continue;
         }
 
-        // Check empty ratio
-        if (check_empty_ratio(*blueprint, spawn_pos) < rule.min_empty_ratio)
-            continue;
+        bool placed = false;
+        glm::ivec2 raw_pos = entry.target_pos;
 
-        // Place the structure
-        place_structure(*blueprint, spawn_pos);
-        placed_structures.push_back({spawn_pos, rule.structure_name});
+        std::uniform_int_distribution<int> retry_offset(-RAW_RETRY_DISTANCE_CELLS * ps,
+                                                        RAW_RETRY_DISTANCE_CELLS * ps);
+
+        for (int attempt = 0; attempt < MAX_RAW_RETRY_ATTEMPTS && !placed; ++attempt)
+        {
+            placed = try_place_with_vertical_lift(this, world, *blueprint, raw_pos, entry.structure_name, ps);
+            if (placed)
+                break;
+
+            raw_pos.x += retry_offset(rng);
+            raw_pos.y += retry_offset(rng);
+            raw_pos.x = (raw_pos.x / ps) * ps;
+            raw_pos.y = (raw_pos.y / ps) * ps;
+        }
+
+        if (placed)
+        {
+            entry.placed = true;
+            entry.target_pos = raw_pos;
+        }
     }
 }
 
-void StructureSpawner::retry_pending_structures()
+const std::vector<StructureSpawner::PredeterminedEntry> &StructureSpawner::get_predetermined_entries() const
 {
-    if (!world)
-        return;
+    return predetermined_entries;
+}
 
-    auto it = pending_structures.begin();
-    while (it != pending_structures.end())
-    {
-        if (check_chunks_exist(it->structure, it->position))
-        {
-            place_structure(it->structure, it->position);
-            placed_structures.push_back({it->position, it->name});
-            it = pending_structures.erase(it);
-        }
-        else
-        {
-            ++it;
-        }
-    }
+void StructureSpawner::record_placed_structure(const glm::ivec2 &position, const std::string &name)
+{
+    placed_structures.push_back({position, name});
 }
 
 const std::vector<StructureSpawner::PlacedStructure> &StructureSpawner::get_placed_structures() const

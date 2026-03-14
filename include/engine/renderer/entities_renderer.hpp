@@ -95,6 +95,7 @@ public:
     void begin_batch();
     void end_batch();
     void flush();
+    void flush_with_texture(bool use_texture, unsigned int texture_id);
 
 private:
     // Line rendering for wand

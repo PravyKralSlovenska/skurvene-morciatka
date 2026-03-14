@@ -271,6 +271,14 @@ Biome World_CA_Generation::get_biome(const glm::vec2 &world_coords)
     }
 }
 
+bool World_CA_Generation::is_cell_solid(int world_cell_x, int world_cell_y)
+{
+    glm::ivec2 world_coords(world_cell_x, world_cell_y);
+    Biome biome = get_biome(world_coords);
+    float cave_value = get_noise_value(biome_cave_noises[biome.type], world_coords);
+    return cave_value >= biome.cave_noise;
+}
+
 void World_CA_Generation::generate_chunk_with_biome(Chunk *chunk)
 {
     chunk->set_chunk_data(default_chunk_data);

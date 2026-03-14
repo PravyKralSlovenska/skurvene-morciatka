@@ -62,16 +62,6 @@ private:
     // Image-loaded structures
     std::map<std::string, Structure> image_structures;
 
-    // Predetermined structure spawn positions
-    std::vector<glm::ivec2> predetermined_spawn_positions;   // permanent record (never erased)
-    std::vector<glm::ivec2> pending_predetermined_positions; // working list (erased on place)
-    int structure_spawn_count = 5;
-
-    void generate_predetermined_positions();
-    void try_place_predetermined_structures(const glm::ivec2 &chunk_coords);
-    bool check_placement_valid(const Structure &structure, const glm::ivec2 &pos);
-    glm::ivec2 find_valid_nearby_position(const Structure &structure, const glm::ivec2 &original_pos, int index);
-
 private:
     inline int get_index(int x, int y);
 
@@ -110,6 +100,7 @@ public:
     void enable_simulation(bool enabled);
     bool is_simulation_enabled() const;
     Falling_Sand_Simulation *get_simulation();
+    World_CA_Generation *get_world_gen();
 
     // Place a non-static particle (for player interaction)
     void place_particle(const glm::ivec2 position, const Particle_Type particle_type);
@@ -134,6 +125,7 @@ public:
 
     // Structure spawning
     StructureSpawner &get_structure_spawner();
+    void set_devushki_column_spawn_count(int count);
     void place_structure(const Structure &structure, const glm::ivec2 &world_pos);
     void place_structure_centered(const Structure &structure, const glm::ivec2 &center_pos);
 
@@ -142,7 +134,6 @@ public:
     const std::map<std::string, Structure> &get_image_structures() const;
     Structure *get_image_structure(const std::string &name);
 
-    // Predetermined structure spawn positions
-    const std::vector<glm::ivec2> &get_predetermined_positions() const;
-    const std::vector<glm::ivec2> &get_pending_predetermined_positions() const;
+    // Get devushki column center positions (for entity spawning)
+    std::vector<glm::ivec2> get_devushki_column_spawn_positions() const;
 };

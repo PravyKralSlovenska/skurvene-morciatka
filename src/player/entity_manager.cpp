@@ -55,7 +55,7 @@ Entity *Entity_Manager::create_entity()
     return entities[id].get();
 }
 
-Enemy *Entity_Manager::create_enemy(const glm::ivec2 &position)
+Enemy *Entity_Manager::create_enemy(const glm::ivec2 &position, const std::string &sprite_name)
 {
     auto enemy = std::make_unique<Enemy>();
 
@@ -73,15 +73,21 @@ Enemy *Entity_Manager::create_enemy(const glm::ivec2 &position)
     Enemy *enemy_ptr = enemy.get();
     entities[id] = std::move(enemy);
 
+    // Apply registered sprite if name provided
+    if (!sprite_name.empty())
+    {
+        apply_sprite(enemy_ptr, sprite_name);
+    }
+
     return enemy_ptr;
 }
 
-Enemy *Entity_Manager::create_enemy(int x, int y)
+Enemy *Entity_Manager::create_enemy(int x, int y, const std::string &sprite_name)
 {
-    return create_enemy(glm::ivec2(x, y));
+    return create_enemy(glm::ivec2(x, y), sprite_name);
 }
 
-Devushki *Entity_Manager::create_devushki(const glm::ivec2 &position)
+Devushki *Entity_Manager::create_devushki(const glm::ivec2 &position, const std::string &sprite_name)
 {
     auto devushki = std::make_unique<Devushki>();
 
@@ -100,15 +106,21 @@ Devushki *Entity_Manager::create_devushki(const glm::ivec2 &position)
     Devushki *devushki_ptr = devushki.get();
     entities[id] = std::move(devushki);
 
+    // Apply registered sprite if name provided
+    if (!sprite_name.empty())
+    {
+        apply_sprite(devushki_ptr, sprite_name);
+    }
+
     return devushki_ptr;
 }
 
-Devushki *Entity_Manager::create_devushki(int x, int y)
+Devushki *Entity_Manager::create_devushki(int x, int y, const std::string &sprite_name)
 {
-    return create_devushki(glm::ivec2(x, y));
+    return create_devushki(glm::ivec2(x, y), sprite_name);
 }
 
-Boss *Entity_Manager::create_boss(const glm::ivec2 &position)
+Boss *Entity_Manager::create_boss(const glm::ivec2 &position, const std::string &sprite_name)
 {
     auto boss = std::make_unique<Boss>();
 
@@ -127,12 +139,18 @@ Boss *Entity_Manager::create_boss(const glm::ivec2 &position)
     Boss *boss_ptr = boss.get();
     entities[id] = std::move(boss);
 
+    // Apply registered sprite if name provided
+    if (!sprite_name.empty())
+    {
+        apply_sprite(boss_ptr, sprite_name);
+    }
+
     return boss_ptr;
 }
 
-Boss *Entity_Manager::create_boss(int x, int y)
+Boss *Entity_Manager::create_boss(int x, int y, const std::string &sprite_name)
 {
-    return create_boss(glm::ivec2(x, y));
+    return create_boss(glm::ivec2(x, y), sprite_name);
 }
 
 bool Entity_Manager::remove_entity(const int id)
@@ -198,6 +216,9 @@ void Entity_Manager::update(float delta_time)
 {
     // Update spawner
     update_spawner(delta_time);
+    
+    // Check for newly placed structures and spawn devushki on them
+    check_and_spawn_devushki_on_structures();
 
     // Update player physics (gravity, collision) - input is handled separately
     if (player)
@@ -234,7 +255,7 @@ void Entity_Manager::update_spawner(float delta_time)
         // Check if we can spawn more enemies
         if (get_enemy_count() < spawn_config.max_enemies)
         {
-            spawn_random_enemy();
+            spawn_random_enemy("slime");
         }
     }
 }
@@ -307,7 +328,7 @@ void Entity_Manager::randomize_enemy_stats(Enemy *enemy)
     }
 }
 
-Enemy *Entity_Manager::spawn_random_enemy()
+Enemy *Entity_Manager::spawn_random_enemy(const std::string &sprite_name)
 {
     glm::ivec2 spawn_pos = get_random_spawn_position();
 
@@ -319,7 +340,7 @@ Enemy *Entity_Manager::spawn_random_enemy()
     }
     glm::ivec2 valid_pos = temp->find_valid_spawn_position(spawn_pos);
 
-    Enemy *enemy = create_enemy(valid_pos);
+    Enemy *enemy = create_enemy(valid_pos, sprite_name);
 
     if (enemy)
     {
@@ -470,35 +491,65 @@ bool Entity_Manager::has_entity(int id) const
 
 // ==================== Devushki Objective System ====================
 
-void Entity_Manager::spawn_devushki_objective(int count, float spread_radius)
+void Entity_Manager::spawn_devushki_objective(int count, float spread_radius, const std::string &sprite_name)
 {
-    if (!player || !world)
-        return;
-
+    // Set up the objective - devushki will be spawned as structures are placed
     devushki_objective.total_to_collect = count;
     devushki_objective.collected = 0;
     devushki_objective.objective_active = true;
     devushki_objective.objective_complete = false;
+    
+    // Store sprite name for deferred spawning
+    devushki_sprite_name = sprite_name;
+    
+    // Clear spawned positions to start fresh
+    spawned_devushki_positions.clear();
+}
 
-    glm::ivec2 player_pos = player->coords;
-
-    // Spawn devushki at random positions spread around the player
-    std::uniform_real_distribution<float> angle_dist(0.0f, 2.0f * 3.14159265f);
-    std::uniform_real_distribution<float> dist_dist(300.0f, spread_radius);
-
-    for (int i = 0; i < count; i++)
+void Entity_Manager::check_and_spawn_devushki_on_structures()
+{
+    if (!world || !devushki_objective.objective_active)
+        return;
+    
+    // Get all placed devushki_column structures from the world
+    const auto& placed_structures = world->get_structure_spawner().get_placed_structures();
+    
+    // Get devushki_column structure for its dimensions
+    Structure* devushki_col = world->get_image_structure("devushki_column");
+    if (!devushki_col)
+        return;
+    
+    int struct_width_px = static_cast<int>(devushki_col->get_width() * Globals::PARTICLE_SIZE);
+    
+    int current_devushki_count = get_devushki_count();
+    
+    for (const auto& ps : placed_structures)
     {
-        float angle = angle_dist(rng);
-        float distance = dist_dist(rng);
-
+        if (ps.name != "devushki_column")
+            continue;
+        
+        // Check if we've already spawned on this position
+        // Create a simple hash from position
+        int pos_hash = ps.position.x * 73856093 ^ ps.position.y * 19349663;
+        
+        if (spawned_devushki_positions.count(pos_hash) > 0)
+            continue; // Already spawned here
+        
+        // Check if we've reached the objective count
+        if (current_devushki_count >= devushki_objective.total_to_collect)
+            break;
+        
+        // Calculate center-top position of the column
         glm::ivec2 spawn_pos;
-        spawn_pos.x = player_pos.x + static_cast<int>(std::cos(angle) * distance);
-        spawn_pos.y = player_pos.y + static_cast<int>(std::sin(angle) * distance);
-
-        Devushki *d = create_devushki(spawn_pos);
+        spawn_pos.x = ps.position.x + struct_width_px / 2;
+        spawn_pos.y = ps.position.y; // top of structure
+        
+        Devushki *d = create_devushki(spawn_pos, devushki_sprite_name);
         if (d)
         {
-            d->name = "Devushki #" + std::to_string(i + 1);
+            d->name = "Devushki #" + std::to_string(current_devushki_count + 1);
+            spawned_devushki_positions.insert(pos_hash);
+            current_devushki_count++;
         }
     }
 }
@@ -557,4 +608,72 @@ DevushkiObjective &Entity_Manager::get_devushki_objective()
 bool Entity_Manager::is_objective_complete() const
 {
     return devushki_objective.objective_complete;
+}
+
+// ==================== Sprite Management ====================
+
+void Entity_Manager::register_sprite(const std::string &name, const std::string &sprite_path)
+{
+    // Default format: 128x32 sprite sheet, 4 frames of 32x32
+    // Frame 0: facing left, Frame 1: facing right, Frame 2: jumping, Frame 3: hurt
+    register_sprite(name, sprite_path, 128, 32, 32, 32, 4);
+}
+
+void Entity_Manager::register_sprite(const std::string &name, const std::string &sprite_path,
+                                     int sheet_width, int sheet_height, int frame_width, int frame_height, int frame_count)
+{
+    SpriteConfig config;
+    config.path = sprite_path;
+    config.sheet_width = sheet_width;
+    config.sheet_height = sheet_height;
+    config.frame_width = frame_width;
+    config.frame_height = frame_height;
+    config.frame_count = frame_count;
+    config.is_valid = true;
+
+    sprite_registry[name] = config;
+}
+
+void Entity_Manager::apply_sprite(Entity *entity, const std::string &name)
+{
+    if (!entity || name.empty())
+        return;
+
+    auto it = sprite_registry.find(name);
+    if (it == sprite_registry.end() || !it->second.is_valid)
+        return;
+
+    const SpriteConfig &config = it->second;
+    entity->setup_sprite_sheet(config.path, config.sheet_width, config.sheet_height,
+                               config.frame_width, config.frame_height, config.frame_count);
+}
+
+bool Entity_Manager::has_sprite(const std::string &name) const
+{
+    auto it = sprite_registry.find(name);
+    return it != sprite_registry.end() && it->second.is_valid;
+}
+
+const SpriteConfig *Entity_Manager::get_sprite_config(const std::string &name) const
+{
+    auto it = sprite_registry.find(name);
+    if (it != sprite_registry.end())
+    {
+        return &it->second;
+    }
+    return nullptr;
+}
+
+std::vector<std::string> Entity_Manager::get_all_sprite_names() const
+{
+    std::vector<std::string> names;
+    names.reserve(sprite_registry.size());
+    for (const auto &[name, config] : sprite_registry)
+    {
+        if (config.is_valid)
+        {
+            names.push_back(name);
+        }
+    }
+    return names;
 }

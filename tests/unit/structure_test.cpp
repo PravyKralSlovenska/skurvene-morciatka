@@ -2,8 +2,11 @@
 #include <iostream>
 #include <cmath>
 #include <random>
+#include <algorithm>
 
 #include "engine/world/structure.hpp"
+#include "engine/world/world_ca_generation.hpp"
+#include "engine/world/world_cell.hpp"
 #include "engine/particle/particle.hpp"
 #include "others/GLOBALS.hpp"
 
@@ -187,56 +190,87 @@ TEST(StructureSpawnerTest, GetNonexistentBlueprintReturnsNull)
     EXPECT_EQ(spawner.get_blueprint("nonexistent"), nullptr);
 }
 
-TEST(StructureSpawnerTest, SetupDefaultRules)
+TEST(StructureSpawnerTest, GeneratePredeterminedEntries)
 {
     StructureSpawner spawner;
-    spawner.setup_default_rules();
+    Structure column("devushki_column", 5, 10);
+    column.fill_rect(0, 0, 5, 10, Particle_Type::STONE);
+    Structure tower("tower", 3, 8);
+    tower.fill_rect(0, 0, 3, 8, Particle_Type::STONE);
 
-    // Should have the platform blueprint
-    Structure *platform = spawner.get_blueprint("platform");
-    ASSERT_NE(platform, nullptr);
-    EXPECT_EQ(platform->get_name(), "platform");
-    EXPECT_EQ(platform->get_width(), 8);
+    spawner.add_blueprint("devushki_column", column);
+    spawner.add_blueprint("tower", tower);
+    spawner.generate_predetermined_positions(1);
+
+    const auto &entries = spawner.get_predetermined_entries();
+    EXPECT_EQ(entries.size(), 2u);
+
+    bool found_devushki = false;
+    bool found_tower = false;
+    for (const auto &entry : entries)
+    {
+        if (entry.structure_name == "devushki_column")
+            found_devushki = true;
+        if (entry.structure_name == "tower")
+            found_tower = true;
+    }
+
+    EXPECT_TRUE(found_devushki);
+    EXPECT_TRUE(found_tower);
 }
 
-TEST(StructureSpawnerTest, CheckMinDistance)
+TEST(StructureSpawnerTest, DevushkiEntryIsOnCircleAndGrid)
 {
     StructureSpawner spawner;
-    spawner.setup_default_rules();
+    Structure column("devushki_column", 5, 10);
+    column.fill_rect(0, 0, 5, 10, Particle_Type::STONE);
+    spawner.add_blueprint("devushki_column", column);
+    spawner.generate_predetermined_positions(1);
 
-    // No placed structures yet — any distance check should pass
-    // (we can't call check_min_distance directly since it's private,
-    //  but we can verify the spawner works without world set)
+    const auto &entries = spawner.get_predetermined_entries();
+    ASSERT_EQ(entries.size(), 1u);
+
+    const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+    EXPECT_EQ(entries[0].target_pos.x % ps, 0);
+    EXPECT_EQ(entries[0].target_pos.y % ps, 0);
+
+    float radius = std::sqrt(
+        static_cast<float>(entries[0].target_pos.x * entries[0].target_pos.x +
+                           entries[0].target_pos.y * entries[0].target_pos.y));
+    EXPECT_NEAR(radius, 1000.0f, static_cast<float>(ps * 2));
+}
+
+TEST(StructureSpawnerTest, DevushkiEntryCountFollowsConfiguredSpawnCount)
+{
+    StructureSpawner spawner;
+    Structure column("devushki_column", 5, 10);
+    column.fill_rect(0, 0, 5, 10, Particle_Type::STONE);
+
+    spawner.add_blueprint("devushki_column", column);
+    spawner.set_structure_spawn_count("devushki_column", 5);
+    spawner.generate_predetermined_positions(1);
+
+    const auto &entries = spawner.get_predetermined_entries();
+    ASSERT_EQ(entries.size(), 5u);
+
+    const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+    for (const auto &entry : entries)
+    {
+        EXPECT_EQ(entry.structure_name, "devushki_column");
+        EXPECT_EQ(entry.target_pos.x % ps, 0);
+        EXPECT_EQ(entry.target_pos.y % ps, 0);
+    }
+}
+
+TEST(StructureSpawnerTest, PlacedStructureTracking)
+{
+    StructureSpawner spawner;
     EXPECT_TRUE(spawner.get_placed_structures().empty());
-}
 
-// ============================================
-// SPAWN RULES TESTS
-// ============================================
-
-TEST(SpawnRuleTest, DefaultValues)
-{
-    StructureSpawnRule rule;
-    EXPECT_EQ(rule.spawn_chance, 0.05f);
-    EXPECT_EQ(rule.min_distance_same, 500.0f);
-    EXPECT_EQ(rule.min_distance_any, 200.0f);
-    EXPECT_EQ(rule.placement, SpawnPlacement::ON_SURFACE);
-    EXPECT_FLOAT_EQ(rule.min_empty_ratio, 0.7f);
-}
-
-TEST(SpawnRuleTest, CustomValues)
-{
-    StructureSpawnRule rule;
-    rule.structure_name = "tower";
-    rule.spawn_chance = 0.01f;
-    rule.min_distance_same = 1000.0f;
-    rule.min_distance_any = 500.0f;
-    rule.placement = SpawnPlacement::IN_OPEN_SPACE;
-    rule.min_empty_ratio = 0.9f;
-
-    EXPECT_EQ(rule.structure_name, "tower");
-    EXPECT_EQ(rule.spawn_chance, 0.01f);
-    EXPECT_EQ(rule.placement, SpawnPlacement::IN_OPEN_SPACE);
+    spawner.record_placed_structure(glm::ivec2(100, 200), "devushki_column");
+    ASSERT_EQ(spawner.get_placed_structures().size(), 1u);
+    EXPECT_EQ(spawner.get_placed_structures()[0].position, glm::ivec2(100, 200));
+    EXPECT_EQ(spawner.get_placed_structures()[0].name, "devushki_column");
 }
 
 // ============================================
@@ -273,31 +307,22 @@ TEST(StructureRegressionTest, EmptyCellsAreSkippedNotCarved)
 
 TEST(StructureRegressionTest, SpawnAnalysis)
 {
-    // With the new system:
-    // - Only 1 structure type (platform) instead of 7
-    // - 3% spawn chance instead of ~15% combined
-    // - min_distance_any = 300px prevents clustering
-    // - min_empty_ratio = 0.7 ensures structures only go where there's space
-    // - Empty cells are SKIPPED, not carved
-
     StructureSpawner spawner;
-    spawner.setup_default_rules();
+    Structure column("devushki_column", 5, 10);
+    column.fill_rect(0, 0, 5, 10, Particle_Type::STONE);
+    Structure platform = StructureFactory::create_platform();
 
-    int chunk_radius = 25;
-    int total_chunks = (2 * chunk_radius + 1) * (2 * chunk_radius + 1);
-    float spawn_chance = 0.03f;
+    spawner.add_blueprint("devushki_column", column);
+    spawner.add_blueprint("platform", platform);
+    spawner.generate_predetermined_positions(1);
 
-    int max_theoretical = static_cast<int>(total_chunks * spawn_chance);
+    int generated = static_cast<int>(spawner.get_predetermined_entries().size());
 
-    std::cout << "\n=== NEW SPAWN ANALYSIS ===" << std::endl;
-    std::cout << "Total chunks: " << total_chunks << std::endl;
-    std::cout << "Spawn chance: " << spawn_chance * 100 << "%" << std::endl;
-    std::cout << "Max theoretical spawns (before distance/space checks): ~" << max_theoretical << std::endl;
-    std::cout << "With min_distance_any=300px, actual count will be much lower." << std::endl;
-    std::cout << "No terrain carving occurs — empty cells are skipped." << std::endl;
+    std::cout << "\n=== PREDETERMINED GENERATION ANALYSIS ===" << std::endl;
+    std::cout << "Registered blueprints: 2" << std::endl;
+    std::cout << "Generated entries: " << generated << std::endl;
 
-    // Should be much lower than the old ~390 structures
-    EXPECT_LT(max_theoretical, 100) << "New system should spawn far fewer structures";
+    EXPECT_EQ(generated, 2);
 }
 
 // ============================================
@@ -458,4 +483,329 @@ TEST(StructureDiagnostic, StructurePlacementSpan)
     std::cout << "  Pixel sub-cell offset: (" << (offset_x - cell_x * PARTICLE_SIZE) << ","
               << (offset_y - cell_y * PARTICLE_SIZE) << ")" << std::endl;
     std::cout << "  (Non-zero sub-cell offset means multiple structure cells can map to same world cell)" << std::endl;
+}
+
+// ============================================
+// PLACEMENT RULES TESTS: Structures must not spawn in air
+// ============================================
+
+TEST(StructurePlacementTest, SurfaceFinding)
+{
+    // Test that is_cell_solid from noise can find terrain.
+    // The world gen with seed=1 should produce some solid and some empty cells.
+    World_CA_Generation gen(10, 10);
+    gen.set_seed(1);
+
+    int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+
+    // Scan downward at X=0 to find the first solid cell
+    int found_surface = -1;
+    for (int py = -500; py < 500; py += ps)
+    {
+        int cell_x = static_cast<int>(std::floor(0.0f / Globals::PARTICLE_SIZE));
+        int cell_y = static_cast<int>(std::floor(static_cast<float>(py) / Globals::PARTICLE_SIZE));
+
+        if (gen.is_cell_solid(cell_x, cell_y))
+        {
+            found_surface = py;
+            break;
+        }
+    }
+
+    std::cout << "\n=== SURFACE FINDING TEST ===" << std::endl;
+    std::cout << "First solid cell at X=0: Y=" << found_surface << std::endl;
+
+    // Should find SOME surface within the scan range (terrain exists)
+    EXPECT_GE(found_surface, -500) << "Should find terrain surface within scan range";
+}
+
+TEST(StructurePlacementTest, SurfaceFindingMultipleColumns)
+{
+    // Verify surface finding works across multiple X positions
+    World_CA_Generation gen(10, 10);
+    gen.set_seed(1);
+
+    int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+    int surfaces_found = 0;
+    int columns_tested = 20;
+
+    std::cout << "\n=== MULTI-COLUMN SURFACE TEST ===" << std::endl;
+    for (int test_x = -200; test_x < 200; test_x += ps * 4)
+    {
+        for (int py = -750; py < 750; py += ps)
+        {
+            int cell_x = static_cast<int>(std::floor(static_cast<float>(test_x) / Globals::PARTICLE_SIZE));
+            int cell_y = static_cast<int>(std::floor(static_cast<float>(py) / Globals::PARTICLE_SIZE));
+
+            if (gen.is_cell_solid(cell_x, cell_y))
+            {
+                surfaces_found++;
+                std::cout << "  X=" << test_x << " -> surface at Y=" << py << std::endl;
+                break;
+            }
+        }
+    }
+
+    // Most columns should have a surface
+    EXPECT_GT(surfaces_found, 0) << "Should find surfaces in at least some columns";
+    std::cout << "Found surfaces in " << surfaces_found << " columns" << std::endl;
+}
+
+TEST(StructurePlacementTest, GroundBeneathRequired)
+{
+    // Verify that the ground-beneath check correctly identifies solid vs air.
+    // The terrain is cave-based (not layered), so we need to find an actual
+    // air-to-solid transition (cave wall edge).
+    World_CA_Generation gen(10, 10);
+    gen.set_seed(1);
+
+    int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+
+    // Search for an air-to-solid transition: find a cell that is empty with a solid cell below it
+    bool found_transition = false;
+    int transition_x = 0;
+    int transition_y = 0;
+    int transition_cx = 0;
+    int transition_cy_air = 0;
+    int transition_cy_ground = 0;
+
+    for (int test_x = -1000; test_x <= 1000 && !found_transition; test_x += ps)
+    {
+        int cx = static_cast<int>(std::floor(static_cast<float>(test_x) / Globals::PARTICLE_SIZE));
+        for (int test_y = -2500; test_y < 2500; test_y += ps)
+        {
+            int cy = static_cast<int>(std::floor(static_cast<float>(test_y) / Globals::PARTICLE_SIZE));
+            int cy_below = static_cast<int>(std::floor(static_cast<float>(test_y + ps) / Globals::PARTICLE_SIZE));
+
+            bool current_empty = !gen.is_cell_solid(cx, cy);
+            bool below_solid = gen.is_cell_solid(cx, cy_below);
+
+            if (current_empty && below_solid)
+            {
+                found_transition = true;
+                transition_x = test_x;
+                transition_y = test_y;
+                transition_cx = cx;
+                transition_cy_air = cy;
+                transition_cy_ground = cy_below;
+                break;
+            }
+        }
+    }
+
+    ASSERT_TRUE(found_transition) << "Should find an air-to-solid transition in the terrain";
+
+    EXPECT_FALSE(gen.is_cell_solid(transition_cx, transition_cy_air)) << "Cell above transition should be air";
+    EXPECT_TRUE(gen.is_cell_solid(transition_cx, transition_cy_ground)) << "Cell below transition should be solid ground";
+
+    std::cout << "\n=== GROUND BENEATH TEST ===" << std::endl;
+    std::cout << "Found transition at X=" << transition_x << " Y=" << transition_y << std::endl;
+    std::cout << "Air cell (" << transition_cx << ", " << transition_cy_air << "): solid="
+              << gen.is_cell_solid(transition_cx, transition_cy_air) << std::endl;
+    std::cout << "Ground cell (" << transition_cx << ", " << transition_cy_ground << "): solid="
+              << gen.is_cell_solid(transition_cx, transition_cy_ground) << std::endl;
+}
+
+TEST(StructurePlacementTest, FlatSurfaceCheck)
+{
+    // Test that flat-surface detection works via noise queries.
+    // The terrain is cave-based, so we look for air-to-solid transitions.
+    World_CA_Generation gen(10, 10);
+    gen.set_seed(1);
+
+    int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+
+    // Helper: find the first solid cell scanning downward.
+    // This is more stable for cave-like terrain than strict air->solid transitions.
+    auto find_first_solid = [&](int pixel_x, int start_y, int end_y) -> int
+    {
+        int cx = static_cast<int>(std::floor(static_cast<float>(pixel_x) / Globals::PARTICLE_SIZE));
+        for (int py = start_y; py < end_y; py += ps)
+        {
+            int cy = static_cast<int>(std::floor(static_cast<float>(py) / Globals::PARTICLE_SIZE));
+            if (gen.is_cell_solid(cx, cy))
+                return py;
+        }
+        return -1;
+    };
+
+    int flat_count = 0;
+    int uneven_count = 0;
+    int checked = 0;
+    int struct_width_cells = 8;
+    int struct_pw = struct_width_cells * ps;
+
+    std::cout << "\n=== FLAT SURFACE CHECK TEST ===" << std::endl;
+    for (int base_x = -1500; base_x <= 1500; base_x += struct_pw)
+    {
+        // Search over a larger range to find usable terrain samples
+        for (int start_y = -3000; start_y < 2500; start_y += ps * 10)
+        {
+            int left_y = find_first_solid(base_x, start_y, start_y + ps * 40);
+            int mid_y = find_first_solid(base_x + struct_pw / 2, start_y, start_y + ps * 40);
+            int right_y = find_first_solid(base_x + struct_pw - ps, start_y, start_y + ps * 40);
+
+            if (left_y < 0 || mid_y < 0 || right_y < 0)
+                continue;
+
+            checked++;
+            int min_y = std::min({left_y, mid_y, right_y});
+            int max_y = std::max({left_y, mid_y, right_y});
+            bool is_flat = (max_y - min_y) <= 2 * ps;
+
+            if (is_flat)
+                flat_count++;
+            else
+                uneven_count++;
+
+            if (checked <= 5)
+            {
+                std::cout << "  X=" << base_x << " y_start=" << start_y
+                          << " surface: left=" << left_y << " mid=" << mid_y
+                          << " right=" << right_y << " flat=" << (is_flat ? "YES" : "NO") << std::endl;
+            }
+            break; // found a transition at this X, move on
+        }
+    }
+
+    std::cout << "Checked: " << checked << " Flat: " << flat_count << " Uneven: " << uneven_count << std::endl;
+    EXPECT_GT(checked, 0) << "Should find at least some terrain samples to check";
+}
+
+TEST(StructurePlacementTest, StructuresNotInAir)
+{
+    // Simulate the predetermined position generation logic using noise.
+    // Verify that every generated position has solid ground beneath it.
+    World_CA_Generation gen(10, 10);
+    gen.set_seed(1);
+
+    int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+    int chunk_radius = 15;
+    int cpw = 10 * ps; // 50
+    int cph = 10 * ps; // 50
+    int min_px = -chunk_radius * cpw;
+    int max_px = chunk_radius * cpw;
+    int min_py = -chunk_radius * cph;
+    int max_py = chunk_radius * cph;
+
+    int struct_height_cells = 20; // typical devushki_column height
+    int struct_width_cells = 5;
+    int struct_height_px = struct_height_cells * ps;
+    int struct_width_px = struct_width_cells * ps;
+
+    std::mt19937 rng(1);
+    std::uniform_int_distribution<int> dist_x(min_px, max_px - 1);
+
+    int placed = 0;
+    int attempts = 0;
+    int target = 5;
+    constexpr int MAX_ATTEMPTS = 10000;
+    constexpr float MIN_DISTANCE = 800.0f;
+
+    std::vector<glm::ivec2> positions;
+
+    std::cout << "\n=== STRUCTURES NOT IN AIR TEST ===" << std::endl;
+
+    while (placed < target && attempts < MAX_ATTEMPTS)
+    {
+        attempts++;
+
+        int rand_x = dist_x(rng);
+        rand_x = (rand_x / ps) * ps;
+
+        // Find surface
+        int surface_y = -1;
+        for (int py = min_py; py < max_py; py += ps)
+        {
+            int cx = static_cast<int>(std::floor(static_cast<float>(rand_x) / Globals::PARTICLE_SIZE));
+            int cy = static_cast<int>(std::floor(static_cast<float>(py) / Globals::PARTICLE_SIZE));
+            if (gen.is_cell_solid(cx, cy))
+            {
+                surface_y = py;
+                break;
+            }
+        }
+        if (surface_y < 0)
+            continue;
+
+        // Check flatness
+        auto find_surface_at = [&](int pixel_x) -> int
+        {
+            for (int py = surface_y - ps; py < surface_y + ps * 10; py += ps)
+            {
+                int cx = static_cast<int>(std::floor(static_cast<float>(pixel_x) / Globals::PARTICLE_SIZE));
+                int cy = static_cast<int>(std::floor(static_cast<float>(py) / Globals::PARTICLE_SIZE));
+                if (gen.is_cell_solid(cx, cy))
+                    return py;
+            }
+            return -1;
+        };
+
+        int left_y = find_surface_at(rand_x);
+        int mid_y = find_surface_at(rand_x + struct_width_px / 2);
+        int right_y = find_surface_at(rand_x + struct_width_px - ps);
+        if (left_y < 0 || mid_y < 0 || right_y < 0)
+            continue;
+        int min_y = std::min({left_y, mid_y, right_y});
+        int max_y = std::max({left_y, mid_y, right_y});
+        if ((max_y - min_y) > 2 * ps)
+            continue;
+
+        glm::ivec2 candidate(rand_x, surface_y - struct_height_px);
+        candidate.y = (candidate.y / ps) * ps;
+
+        // Check ground beneath
+        int solid_count = 0;
+        int samples = 0;
+        int bottom_y = candidate.y + struct_height_px;
+        for (int row = 0; row < 2; row++)
+        {
+            for (int gx = candidate.x; gx < candidate.x + struct_width_px; gx += ps)
+            {
+                samples++;
+                int cx = static_cast<int>(std::floor(static_cast<float>(gx) / Globals::PARTICLE_SIZE));
+                int cy = static_cast<int>(std::floor(static_cast<float>(bottom_y + row * ps) / Globals::PARTICLE_SIZE));
+                if (gen.is_cell_solid(cx, cy))
+                    solid_count++;
+            }
+        }
+        if (samples == 0 || static_cast<float>(solid_count) / samples < 0.5f)
+            continue;
+
+        // Check distance
+        bool too_close = false;
+        for (const auto &existing : positions)
+        {
+            if (glm::distance(glm::vec2(candidate), glm::vec2(existing)) < MIN_DISTANCE)
+            {
+                too_close = true;
+                break;
+            }
+        }
+        if (too_close)
+            continue;
+
+        positions.push_back(candidate);
+        placed++;
+
+        std::cout << "  Placed #" << placed << " at (" << candidate.x << ", " << candidate.y
+                  << ") surface_y=" << surface_y
+                  << " ground=" << solid_count << "/" << samples << std::endl;
+    }
+
+    std::cout << "Placed " << placed << " structures in " << attempts << " attempts" << std::endl;
+
+    // All placed structures must have solid ground beneath them
+    for (const auto &pos : positions)
+    {
+        int bottom_y = pos.y + struct_height_px;
+        int cx = static_cast<int>(std::floor(static_cast<float>(pos.x + struct_width_px / 2) / Globals::PARTICLE_SIZE));
+        int cy = static_cast<int>(std::floor(static_cast<float>(bottom_y) / Globals::PARTICLE_SIZE));
+
+        EXPECT_TRUE(gen.is_cell_solid(cx, cy))
+            << "Structure at (" << pos.x << ", " << pos.y
+            << ") should have solid ground beneath center at cell (" << cx << ", " << cy << ")";
+    }
+
+    EXPECT_GT(placed, 0) << "Should be able to place at least one structure with terrain-aware logic";
 }

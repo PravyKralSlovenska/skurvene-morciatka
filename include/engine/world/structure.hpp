@@ -48,31 +48,24 @@ namespace StructureFactory
     Structure create_platform(int length = 8, Particle_Type material = Particle_Type::STONE);
 };
 
-// How a structure should be placed relative to terrain
-enum class SpawnPlacement
-{
-    ON_SURFACE,   // Place so bottom sits on a solid surface with empty space above
-    IN_OPEN_SPACE // Only place where the entire area is empty (air)
-};
-
-// Configuration for structure spawning during world generation
-struct StructureSpawnRule
-{
-    std::string structure_name;       // Name of the structure blueprint to spawn
-    float spawn_chance = 0.05f;       // Probability per chunk (0.0 - 1.0)
-    float min_distance_same = 500.0f; // Min pixel distance from structures with same name
-    float min_distance_any = 200.0f;  // Min pixel distance from ANY other structure
-    SpawnPlacement placement = SpawnPlacement::ON_SURFACE;
-    float min_empty_ratio = 0.7f; // At least this fraction of the area must be empty before placing
-};
-
 // Manages structure placement in the world
 class StructureSpawner
 {
+public:
+    struct PredeterminedEntry
+    {
+        std::string structure_name;
+        glm::ivec2 target_pos;
+        bool placed = false;
+    };
+
 private:
     World *world = nullptr;
     std::mt19937 rng;
     int seed = 0;
+
+    // Optional per-structure override for deterministic predetermined entry count.
+    std::map<std::string, int> structure_spawn_counts;
 
     // All available structure blueprints (by name)
     std::map<std::string, Structure> blueprints;
@@ -85,30 +78,18 @@ private:
     };
     std::vector<PlacedStructure> placed_structures;
 
-    // Spawn rules
-    std::vector<StructureSpawnRule> spawn_rules;
-
-    // Pending structures
-    struct PendingStructure
-    {
-        Structure structure;
-        glm::ivec2 position;
-        std::string name;
-    };
-    std::vector<PendingStructure> pending_structures;
+    // One deterministic target per registered structure.
+    std::vector<PredeterminedEntry> predetermined_entries;
 
 private:
-    bool check_min_distance(const glm::ivec2 &pos, const std::string &name,
-                            float min_dist_same, float min_dist_any) const;
-    float check_empty_ratio(const Structure &structure, const glm::ivec2 &world_pos) const;
-    bool check_chunks_exist(const Structure &structure, const glm::ivec2 &world_pos) const;
-    int find_surface_y(int world_x, const glm::ivec2 &chunk_world_origin, int chunk_pixel_height) const;
+    int find_surface_y(int world_x, int start_y, int scan_range) const;
 
 public:
     StructureSpawner();
 
     void set_world(World *world);
     void set_seed(int seed);
+    void set_structure_spawn_count(const std::string &name, int count);
 
     // Manage blueprints
     void add_blueprint(const std::string &name, const Structure &structure);
@@ -116,19 +97,19 @@ public:
     Structure *get_blueprint(const std::string &name);
     const std::map<std::string, Structure> &get_blueprints() const;
 
-    // Spawn rules
-    void add_spawn_rule(const StructureSpawnRule &rule);
-    void clear_spawn_rules();
-    void setup_default_rules();
-
     // Place a structure at a world position (top-left corner, in pixels).
     // Only places non-empty particles. Empty cells are skipped (terrain untouched).
     bool place_structure(const Structure &structure, const glm::ivec2 &world_pos);
     bool place_structure_centered(const Structure &structure, const glm::ivec2 &center_pos);
+    void fill_structure_base(const Structure &structure, const glm::ivec2 &world_pos);
 
-    // Try to spawn structures in a chunk based on spawn rules
-    void try_spawn_in_chunk(const glm::ivec2 &chunk_coords, int chunk_width, int chunk_height);
-    void retry_pending_structures();
+    // New deterministic, chunk-event-driven spawn workflow.
+    void generate_predetermined_positions(int world_seed);
+    void try_place_pending_structures(const glm::ivec2 &chunk_coords);
+    const std::vector<PredeterminedEntry> &get_predetermined_entries() const;
+
+    // Record a placed structure (for external placement tracking)
+    void record_placed_structure(const glm::ivec2 &position, const std::string &name);
 
     const std::vector<PlacedStructure> &get_placed_structures() const;
 };

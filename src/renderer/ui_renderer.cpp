@@ -45,37 +45,36 @@ void UI_Renderer::render_ui()
             ImGui::TextColored(ImVec4(1.0f, 0.85f, 0.4f, 1.0f), "Devushki Columns");
             ImGui::Separator();
 
-            if (world->get_predetermined_positions().empty())
+            const auto &entries = world->get_structure_spawner().get_predetermined_entries();
+            if (entries.empty())
             {
                 ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "No columns generated");
             }
             else
             {
-                const auto &all_pos = world->get_predetermined_positions();
-                const auto &pending = world->get_pending_predetermined_positions();
-
-                for (int i = 0; i < static_cast<int>(all_pos.size()); i++)
+                int shown = 0;
+                for (int i = 0; i < static_cast<int>(entries.size()); i++)
                 {
-                    const auto &pos = all_pos[i];
+                    const auto &entry = entries[i];
+                    if (entry.structure_name != "devushki_column")
+                        continue;
 
-                    // Check if this position has already been placed (no longer in pending)
-                    bool placed = true;
-                    for (const auto &p : pending)
-                    {
-                        if (p == pos)
-                        {
-                            placed = false;
-                            break;
-                        }
-                    }
+                    shown++;
+                    const auto &pos = entry.target_pos;
+                    bool placed = entry.placed;
 
                     ImVec4 color = placed
                                        ? ImVec4(0.0f, 1.0f, 0.4f, 1.0f)  // green = spawned
                                        : ImVec4(0.8f, 0.8f, 0.8f, 1.0f); // gray = pending
 
                     ImGui::TextColored(color, "#%d: (%d, %d) %s",
-                                       i + 1, pos.x, pos.y,
+                                       shown, pos.x, pos.y,
                                        placed ? "[placed]" : "[pending]");
+                }
+
+                if (shown == 0)
+                {
+                    ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "No devushki columns registered");
                 }
             }
         }

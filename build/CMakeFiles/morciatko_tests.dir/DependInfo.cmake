@@ -9,6 +9,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/jakub/programko/cpp/skurvene-morciatka/tests/benchmarks/performance.cpp" "CMakeFiles/morciatko_tests.dir/tests/benchmarks/performance.cpp.o" "gcc" "CMakeFiles/morciatko_tests.dir/tests/benchmarks/performance.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/tests/integration/devushki_spawn_test.cpp" "CMakeFiles/morciatko_tests.dir/tests/integration/devushki_spawn_test.cpp.o" "gcc" "CMakeFiles/morciatko_tests.dir/tests/integration/devushki_spawn_test.cpp.o.d"
+  "/home/jakub/programko/cpp/skurvene-morciatka/tests/integration/structure_spawn_rules_test.cpp" "CMakeFiles/morciatko_tests.dir/tests/integration/structure_spawn_rules_test.cpp.o" "gcc" "CMakeFiles/morciatko_tests.dir/tests/integration/structure_spawn_rules_test.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/tests/unit/falling_sand_test.cpp" "CMakeFiles/morciatko_tests.dir/tests/unit/falling_sand_test.cpp.o" "gcc" "CMakeFiles/morciatko_tests.dir/tests/unit/falling_sand_test.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/tests/unit/particle_test.cpp" "CMakeFiles/morciatko_tests.dir/tests/unit/particle_test.cpp.o" "gcc" "CMakeFiles/morciatko_tests.dir/tests/unit/particle_test.cpp.o.d"
   "/home/jakub/programko/cpp/skurvene-morciatka/tests/unit/random_test.cpp" "CMakeFiles/morciatko_tests.dir/tests/unit/random_test.cpp.o" "gcc" "CMakeFiles/morciatko_tests.dir/tests/unit/random_test.cpp.o.d"

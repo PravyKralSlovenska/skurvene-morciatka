@@ -1495,6 +1495,54 @@ tests/benchmarks/performance.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/benchmarks/performance.cpp.s
 .PHONY : tests/benchmarks/performance.cpp.s
 
+tests/integration/devushki_spawn_test.o: tests/integration/devushki_spawn_test.cpp.o
+.PHONY : tests/integration/devushki_spawn_test.o
+
+# target to build an object file
+tests/integration/devushki_spawn_test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/integration/devushki_spawn_test.cpp.o
+.PHONY : tests/integration/devushki_spawn_test.cpp.o
+
+tests/integration/devushki_spawn_test.i: tests/integration/devushki_spawn_test.cpp.i
+.PHONY : tests/integration/devushki_spawn_test.i
+
+# target to preprocess a source file
+tests/integration/devushki_spawn_test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/integration/devushki_spawn_test.cpp.i
+.PHONY : tests/integration/devushki_spawn_test.cpp.i
+
+tests/integration/devushki_spawn_test.s: tests/integration/devushki_spawn_test.cpp.s
+.PHONY : tests/integration/devushki_spawn_test.s
+
+# target to generate assembly for a file
+tests/integration/devushki_spawn_test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/integration/devushki_spawn_test.cpp.s
+.PHONY : tests/integration/devushki_spawn_test.cpp.s
+
+tests/integration/structure_spawn_rules_test.o: tests/integration/structure_spawn_rules_test.cpp.o
+.PHONY : tests/integration/structure_spawn_rules_test.o
+
+# target to build an object file
+tests/integration/structure_spawn_rules_test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/integration/structure_spawn_rules_test.cpp.o
+.PHONY : tests/integration/structure_spawn_rules_test.cpp.o
+
+tests/integration/structure_spawn_rules_test.i: tests/integration/structure_spawn_rules_test.cpp.i
+.PHONY : tests/integration/structure_spawn_rules_test.i
+
+# target to preprocess a source file
+tests/integration/structure_spawn_rules_test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/integration/structure_spawn_rules_test.cpp.i
+.PHONY : tests/integration/structure_spawn_rules_test.cpp.i
+
+tests/integration/structure_spawn_rules_test.s: tests/integration/structure_spawn_rules_test.cpp.s
+.PHONY : tests/integration/structure_spawn_rules_test.s
+
+# target to generate assembly for a file
+tests/integration/structure_spawn_rules_test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/integration/structure_spawn_rules_test.cpp.s
+.PHONY : tests/integration/structure_spawn_rules_test.cpp.s
+
 tests/unit/falling_sand_test.o: tests/unit/falling_sand_test.cpp.o
 .PHONY : tests/unit/falling_sand_test.o
 
@@ -1799,6 +1847,12 @@ help:
 	@echo "... tests/benchmarks/performance.o"
 	@echo "... tests/benchmarks/performance.i"
 	@echo "... tests/benchmarks/performance.s"
+	@echo "... tests/integration/devushki_spawn_test.o"
+	@echo "... tests/integration/devushki_spawn_test.i"
+	@echo "... tests/integration/devushki_spawn_test.s"
+	@echo "... tests/integration/structure_spawn_rules_test.o"
+	@echo "... tests/integration/structure_spawn_rules_test.i"
+	@echo "... tests/integration/structure_spawn_rules_test.s"
 	@echo "... tests/unit/falling_sand_test.o"
 	@echo "... tests/unit/falling_sand_test.i"
 	@echo "... tests/unit/falling_sand_test.s"
