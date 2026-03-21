@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <array>
 
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
@@ -11,6 +12,7 @@
 #include "engine/renderer/renderer.hpp"
 #include "engine/time_manager.hpp"
 #include "engine/player/entity.hpp"
+#include "engine/player/entity_manager.hpp"
 #include "engine/player/wand.hpp"
 #include "engine/camera.hpp"
 #include "engine/audio/audio_manager.hpp"
@@ -73,6 +75,11 @@ void Controls::set_renderer(class IRenderer *renderer)
     this->renderer = renderer;
 }
 
+void Controls::set_entity_manager(Entity_Manager *entity_manager)
+{
+    this->entity_manager = entity_manager;
+}
+
 void Controls::handle_input()
 {
     if (!window || !player || !camera)
@@ -114,25 +121,51 @@ void Controls::handle_input()
 
         if (!wand.is_empty())
         {
-            glm::ivec2 target_pos = glm::ivec2(cursor_world);
-            int brush = wand.brush_size;
-
-            // Place particles in a square brush area
-            for (int dx = -brush / 2; dx <= brush / 2; dx++)
+            if (wand.type == Wand_Type::GUN_WAND)
             {
-                for (int dy = -brush / 2; dy <= brush / 2; dy++)
+                const double now = glfwGetTime();
+                if (entity_manager && now - wand.last_use_time >= wand.cooldown)
                 {
-                    glm::ivec2 pos = target_pos + glm::ivec2(dx, dy);
-
-                    if (wand.type == Wand_Type::DELETE_WAND)
+                    if (entity_manager->try_consume_ammo_for_shot())
                     {
-                        // Delete wand removes any particle
-                        world->place_particle(pos, Particle_Type::EMPTY);
+                        glm::vec2 dir = player->get_aim_direction();
+                        float len = glm::length(dir);
+                        if (len > 0.001f)
+                        {
+                            dir /= len;
+                            const float projectile_speed = 900.0f;
+                            const float projectile_damage = 25.0f;
+                            glm::vec2 spawn_pos = player->get_center() + dir * 20.0f;
+                            entity_manager->create_projectile(spawn_pos, dir * projectile_speed,
+                                                              wand.particle_type, projectile_damage,
+                                                              Entity_Type::PLAYER);
+                            wand.last_use_time = static_cast<float>(now);
+                        }
                     }
-                    else
+                }
+            }
+            else
+            {
+                glm::ivec2 target_pos = glm::ivec2(cursor_world);
+                int brush = wand.brush_size;
+
+                // Place particles in a square brush area
+                for (int dx = -brush / 2; dx <= brush / 2; dx++)
+                {
+                    for (int dy = -brush / 2; dy <= brush / 2; dy++)
                     {
-                        // Other wands place their particle type
-                        world->place_particle(pos, wand.particle_type);
+                        glm::ivec2 pos = target_pos + glm::ivec2(dx, dy);
+
+                        if (wand.type == Wand_Type::DELETE_WAND)
+                        {
+                            // Delete wand removes any particle
+                            world->place_particle(pos, Particle_Type::EMPTY);
+                        }
+                        else
+                        {
+                            // Other wands place their particle type
+                            world->place_particle(pos, wand.particle_type);
+                        }
                     }
                 }
             }
@@ -159,6 +192,21 @@ void Controls::handle_input()
 
 void Controls::keyboard_input()
 {
+    auto key_just_pressed = [this](int key) -> bool
+    {
+        static std::array<bool, GLFW_KEY_LAST + 1> key_was_down = {};
+
+        if (key < 0 || key > GLFW_KEY_LAST)
+        {
+            return false;
+        }
+
+        const bool is_down = glfwGetKey(window, key) == GLFW_PRESS;
+        const bool just_pressed = is_down && !key_was_down[key];
+        key_was_down[key] = is_down;
+        return just_pressed;
+    };
+
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
         // std::cout << "W\n";
@@ -208,32 +256,27 @@ void Controls::keyboard_input()
     }
 
     // if pressed the world update loop will stop
-    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+    if (key_just_pressed(GLFW_KEY_P))
     {
         time_manager->pause();
     }
 
-    if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+    if (key_just_pressed(GLFW_KEY_O))
     {
         time_manager->resume();
     }
 
-    if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+    if (key_just_pressed(GLFW_KEY_I))
     {
         audio_manager->send_execute(Pending_Execute::PLAY, "background music");
     }
 
-    if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
+    if (key_just_pressed(GLFW_KEY_U))
     {
         // audio_manager->send_execute(Pending_Execute::STOP, "background music");
     }
 
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-    {
-        glfwSetWindowShouldClose(window, true);
-    }
-
-    if (glfwGetKey(window, GLFW_KEY_F11) == GLFW_PRESS)
+    if (key_just_pressed(GLFW_KEY_F11))
     {
         if (renderer)
         {
@@ -241,7 +284,7 @@ void Controls::keyboard_input()
         }
     }
 
-    if (glfwGetKey(window, GLFW_KEY_F10) == GLFW_PRESS)
+    if (key_just_pressed(GLFW_KEY_F10))
     {
         if (renderer)
         {
@@ -250,35 +293,34 @@ void Controls::keyboard_input()
     }
 
     // TAB - Toggle noclip mode (allows player to move through solid terrain)
-    static bool tab_pressed = false;
-    if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS)
+    if (key_just_pressed(GLFW_KEY_TAB))
     {
-        if (!tab_pressed)
-        {
-            player->toggle_noclip();
-            tab_pressed = true;
-            std::cout << "Noclip: " << (player->get_noclip() ? "ON" : "OFF") << '\n';
-        }
-    }
-    else
-    {
-        tab_pressed = false;
+        player->toggle_noclip();
+        std::cout << "Noclip: " << (player->get_noclip() ? "ON" : "OFF") << '\n';
     }
 
     // M - Toggle fullscreen map
-    static bool m_pressed = false;
-    if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
+    if (key_just_pressed(GLFW_KEY_M))
     {
-        if (!m_pressed)
-        {
-            if (renderer)
-                renderer->toggle_fullscreen_map();
-            m_pressed = true;
-        }
+        if (renderer)
+            renderer->toggle_fullscreen_map();
     }
-    else
+
+    // E - Interact with nearby store (buy healing for coins)
+    if (key_just_pressed(GLFW_KEY_E) && entity_manager)
     {
-        m_pressed = false;
+        if (!entity_manager->is_player_near_store())
+        {
+            std::cout << "No store nearby.\n";
+        }
+        else if (entity_manager->try_buy_store_item())
+        {
+            std::cout << "Purchased store item.\n";
+        }
+        else
+        {
+            std::cout << "Cannot buy store item: not enough coins or no free wand slot.\n";
+        }
     }
 }
 

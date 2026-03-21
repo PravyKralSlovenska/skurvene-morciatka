@@ -99,6 +99,51 @@ bool Falling_Sand_Simulation::is_valid_position(const glm::ivec2 &chunk_coords, 
     return get_cell_at(chunk_coords, x, y) != nullptr;
 }
 
+bool Falling_Sand_Simulation::spread_fire_to_adjacent_wood(const glm::ivec2 &chunk_coords, int x, int y)
+{
+    WorldCell *fire_cell = get_cell_at(chunk_coords, x, y);
+    if (!fire_cell || fire_cell->particle.type != Particle_Type::FIRE)
+        return false;
+
+    const glm::ivec2 offsets[] = {
+        {-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {1, -1}, {-1, 1}, {1, 1}};
+
+    std::vector<glm::ivec2> wood_neighbors;
+    wood_neighbors.reserve(8);
+
+    for (const auto &offset : offsets)
+    {
+        glm::ivec2 neighbor_world_pos = local_to_world(chunk_coords, x + offset.x, y + offset.y);
+        WorldCell *neighbor = get_cell_at_world_pos(neighbor_world_pos);
+
+        if (neighbor && neighbor->particle.type == Particle_Type::WOOD)
+        {
+            wood_neighbors.push_back(neighbor_world_pos);
+        }
+    }
+
+    if (wood_neighbors.empty())
+        return false;
+
+    std::uniform_int_distribution<int> pick(0, static_cast<int>(wood_neighbors.size()) - 1);
+    glm::ivec2 target_world_pos = wood_neighbors[pick(rng)];
+    WorldCell *target = get_cell_at_world_pos(target_world_pos);
+    if (!target)
+        return false;
+
+    target->particle = create_fire(false);
+    target->particle.mark_updated();
+
+    Chunk *fire_chunk = get_chunk_cached(world_to_chunk(local_to_world(chunk_coords, x, y)));
+    Chunk *target_chunk = get_chunk_cached(world_to_chunk(target_world_pos));
+    if (fire_chunk)
+        fire_chunk->mark_dirty();
+    if (target_chunk)
+        target_chunk->mark_dirty();
+
+    return true;
+}
+
 bool Falling_Sand_Simulation::try_swap(WorldCell *from, WorldCell *to)
 {
     if (!from || !to)
@@ -431,8 +476,15 @@ void Falling_Sand_Simulation::update_gas(const glm::ivec2 &chunk_coords, int x, 
         particle.lifetime--;
         if (particle.lifetime == 0)
         {
-            // Particle dissipates
-            particle = Particle(); // Reset to empty
+            // Fire cools into smoke, other gases dissipate.
+            if (particle.type == Particle_Type::FIRE)
+            {
+                particle = create_smoke(false);
+            }
+            else
+            {
+                particle = Particle(); // Reset to empty
+            }
             return;
         }
     }
@@ -574,6 +626,11 @@ void Falling_Sand_Simulation::process_chunk(Chunk *chunk, const glm::ivec2 &chun
                 if (!cell || cell->particle.type == Particle_Type::EMPTY)
                     continue;
 
+                if (cell->particle.type == Particle_Type::FIRE)
+                {
+                    spread_fire_to_adjacent_wood(chunk_coords, x, y);
+                }
+
                 switch (cell->particle.state)
                 {
                 case Particle_State::SOLID:
@@ -597,6 +654,11 @@ void Falling_Sand_Simulation::process_chunk(Chunk *chunk, const glm::ivec2 &chun
                 WorldCell *cell = chunk->get_worldcell(x, y);
                 if (!cell || cell->particle.type == Particle_Type::EMPTY)
                     continue;
+
+                if (cell->particle.type == Particle_Type::FIRE)
+                {
+                    spread_fire_to_adjacent_wood(chunk_coords, x, y);
+                }
 
                 switch (cell->particle.state)
                 {

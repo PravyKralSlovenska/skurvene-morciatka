@@ -30,6 +30,9 @@ class Shader_Storage_Buffer_Object;
 class World_Renderer
 {
 private:
+    static constexpr float FOG_START_CHUNK_FACTOR = 12.0f;
+    static constexpr float FOG_END_CHUNK_FACTOR = 14.5f;
+
     std::unique_ptr<VERTEX_ARRAY_OBJECT> dummy_VAO;
 
     std::unique_ptr<Shader> render_shader;
@@ -41,6 +44,8 @@ private:
     std::unique_ptr<Shader_Storage_Buffer_Object> vertex_counter_ssbo;
 
     World *world = nullptr;
+    glm::vec2 fog_center_world = glm::vec2(0.0f, 0.0f);
+    bool fog_enabled = true;
 
 public:
     glm::mat4 projection;
@@ -52,6 +57,8 @@ public:
     void init();
     void set_world(World *world);
     void set_projection(glm::mat4 projection);
+    void set_fog_center_world(const glm::vec2 &world_pos);
+    void set_fog_enabled(bool enabled);
 
     void render_test_triangle();
 

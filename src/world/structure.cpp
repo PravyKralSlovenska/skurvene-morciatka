@@ -52,6 +52,12 @@ void Structure::set_cell(int x, int y, Particle_Type type, bool is_static)
     case Particle_Type::SMOKE:
         p = create_smoke(is_static);
         break;
+    case Particle_Type::WOOD:
+        p = create_wood(is_static);
+        break;
+    case Particle_Type::FIRE:
+        p = create_fire(is_static);
+        break;
     case Particle_Type::URANIUM:
         p = create_uranium(is_static);
         break;
@@ -198,12 +204,17 @@ namespace
     static constexpr int RANDOM_TARGET_MIN = -15000;
     static constexpr int RANDOM_TARGET_MAX = 15000;
     static constexpr float DEVUSHKI_SPAWN_RADIUS = 1000.0f;
+    static constexpr float STORE_SPAWN_RADIUS_MIN = 250.0f;
+    static constexpr float STORE_SPAWN_RADIUS_MAX = 800.0f;
     static constexpr int MAX_VERTICAL_LIFT_CELLS = 120;
     static constexpr int MAX_RAW_RETRY_ATTEMPTS = 6;
     static constexpr int RAW_RETRY_DISTANCE_CELLS = 250;
     static constexpr int GROUND_FILL_MAX_DEPTH_CELLS = 512;
     static constexpr int BASE_FEATHER_SIDE_SPREAD_CELLS = 2;
     static constexpr int BASE_FEATHER_MAX_DEPTH_CELLS = 24;
+    static constexpr int STRUCTURE_CLEARANCE_CELLS = 1;
+    static constexpr int STORE_CHUNKS_PER_SPAWN = 100;
+    static constexpr int ENTRY_PLACE_RADIUS_CHUNKS = 10;
 
     float deterministic_noise_01(int x, int y, int salt)
     {
@@ -305,9 +316,10 @@ namespace
         return true;
     }
 
-    bool is_valid_placement(World *world, const Structure &structure, const glm::ivec2 &world_pos)
+    bool is_valid_placement(StructureSpawner *spawner, World *world,
+                            const Structure &structure, const glm::ivec2 &world_pos)
     {
-        if (!world)
+        if (!spawner || !world)
             return false;
 
         if (!ensure_footprint_chunks_generated(world, structure, world_pos))
@@ -315,6 +327,34 @@ namespace
 
         const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
         const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+
+        // Rule 0: structure footprint cannot overlap/touch another already placed structure.
+        const int clearance_px = STRUCTURE_CLEARANCE_CELLS * ps;
+        const int cand_left = world_pos.x - clearance_px;
+        const int cand_top = world_pos.y - clearance_px;
+        const int cand_right = world_pos.x + structure.get_width() * ps + clearance_px;
+        const int cand_bottom = world_pos.y + structure.get_height() * ps + clearance_px;
+
+        for (const auto &placed : spawner->get_placed_structures())
+        {
+            Structure *placed_blueprint = spawner->get_blueprint(placed.name);
+            if (!placed_blueprint)
+                continue;
+
+            const int placed_left = placed.position.x;
+            const int placed_top = placed.position.y;
+            const int placed_right = placed.position.x + placed_blueprint->get_width() * ps;
+            const int placed_bottom = placed.position.y + placed_blueprint->get_height() * ps;
+
+            const bool separated =
+                cand_right <= placed_left ||
+                cand_left >= placed_right ||
+                cand_bottom <= placed_top ||
+                cand_top >= placed_bottom;
+
+            if (!separated)
+                return false;
+        }
 
         // Rule 1.1: every non-empty structure cell must map to empty world cell.
         for (int sy = 0; sy < structure.get_height(); ++sy)
@@ -375,7 +415,7 @@ namespace
         for (int lift = 0; lift <= MAX_VERTICAL_LIFT_CELLS; ++lift)
         {
             glm::ivec2 candidate_pos(base_pos.x, base_pos.y - lift * ps);
-            if (!is_valid_placement(world, blueprint, candidate_pos))
+            if (!is_valid_placement(spawner, world, blueprint, candidate_pos))
                 continue;
 
             if (spawner->place_structure(blueprint, candidate_pos))
@@ -523,6 +563,7 @@ void StructureSpawner::generate_predetermined_positions(int world_seed)
 
     std::mt19937 local_rng(world_seed);
     std::uniform_real_distribution<float> angle_dist(0.0f, 2.0f * static_cast<float>(M_PI));
+    std::uniform_real_distribution<float> store_radius_dist(STORE_SPAWN_RADIUS_MIN, STORE_SPAWN_RADIUS_MAX);
     std::uniform_int_distribution<int> random_pos(RANDOM_TARGET_MIN, RANDOM_TARGET_MAX);
 
     const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
@@ -552,6 +593,19 @@ void StructureSpawner::generate_predetermined_positions(int world_seed)
 
                 entry.target_pos = glm::ivec2(target_x, target_y);
             }
+            else if (pair.first == "store" || pair.first == "devushki_store")
+            {
+                const float angle = angle_dist(local_rng);
+                const float radius = store_radius_dist(local_rng);
+
+                int target_x = static_cast<int>(std::cos(angle) * radius);
+                int target_y = static_cast<int>(std::sin(angle) * radius);
+
+                target_x = (target_x / ps) * ps;
+                target_y = (target_y / ps) * ps;
+
+                entry.target_pos = glm::ivec2(target_x, target_y);
+            }
             else
             {
                 int target_x = random_pos(local_rng);
@@ -573,11 +627,55 @@ void StructureSpawner::try_place_pending_structures(const glm::ivec2 &chunk_coor
         return;
 
     const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
-    (void)chunk_coords;
+    const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+    const int chunk_pixel_w = chunk_dims.x * ps;
+    const int chunk_pixel_h = chunk_dims.y * ps;
+
+    // Scale store count with explored world size: ~1 store per 100 generated chunks.
+    Structure *store_blueprint = get_blueprint("store");
+    if (store_blueprint)
+    {
+        const int generated_chunks = std::max(0, world->get_chunks_size());
+        const int desired_store_targets = std::max(1, generated_chunks / STORE_CHUNKS_PER_SPAWN);
+
+        int current_store_targets = 0;
+        for (const auto &entry : predetermined_entries)
+        {
+            if (entry.structure_name == "store" || entry.structure_name == "devushki_store")
+                ++current_store_targets;
+        }
+
+        // Add at most one store target per call to avoid frame spikes.
+        if (current_store_targets < desired_store_targets)
+        {
+            std::uniform_int_distribution<int> random_pos(RANDOM_TARGET_MIN, RANDOM_TARGET_MAX);
+
+            PredeterminedEntry entry;
+            entry.structure_name = "store";
+
+            int target_x = random_pos(rng);
+            int target_y = random_pos(rng);
+            target_x = (target_x / ps) * ps;
+            target_y = (target_y / ps) * ps;
+
+            entry.target_pos = glm::ivec2(target_x, target_y);
+            predetermined_entries.push_back(entry);
+        }
+    }
 
     for (auto &entry : predetermined_entries)
     {
         if (entry.placed)
+            continue;
+
+        const glm::ivec2 target_chunk = get_chunk_pos_from_world_px(
+            entry.target_pos.x,
+            entry.target_pos.y,
+            chunk_pixel_w,
+            chunk_pixel_h);
+        const int chunk_dx = std::abs(target_chunk.x - chunk_coords.x);
+        const int chunk_dy = std::abs(target_chunk.y - chunk_coords.y);
+        if (chunk_dx > ENTRY_PLACE_RADIUS_CHUNKS || chunk_dy > ENTRY_PLACE_RADIUS_CHUNKS)
             continue;
 
         Structure *blueprint = get_blueprint(entry.structure_name);
@@ -659,6 +757,10 @@ Particle ImageStructureLoader::pixel_to_particle(int r, int g, int b, int a)
         return create_stone(true);
     if (r == 200 && g == 200 && b == 200)
         return create_smoke(true);
+    if (r == 139 && g == 94 && b == 60)
+        return create_wood(true);
+    if (r == 255 && g == 110 && b == 30)
+        return create_fire(true);
     if (r == 0 && g == 255 && b == 70)
         return create_uranium(true);
 

@@ -123,6 +123,16 @@ void World_Renderer::set_projection(glm::mat4 projection)
     this->projection = projection;
 }
 
+void World_Renderer::set_fog_center_world(const glm::vec2 &world_pos)
+{
+    fog_center_world = world_pos;
+}
+
+void World_Renderer::set_fog_enabled(bool enabled)
+{
+    fog_enabled = enabled;
+}
+
 void World_Renderer::render_world_compute()
 {
     if (!world)
@@ -284,6 +294,17 @@ void World_Renderer::render_world_compute()
     vertex_ssbo->bind_base(0);
     render_shader->use();
     render_shader->set_mat4("view_projection", projection);
+
+    const float chunk_pixel_width_for_fog = chunk_dimensions.x * Globals::PARTICLE_SIZE;
+    const float fog_start_radius = chunk_pixel_width_for_fog * FOG_START_CHUNK_FACTOR;
+    const float fog_end_radius = chunk_pixel_width_for_fog * FOG_END_CHUNK_FACTOR;
+
+    render_shader->set_bool("u_fog_enabled", fog_enabled);
+    render_shader->set_vec2("u_fog_center_world", fog_center_world);
+    render_shader->set_float("u_fog_start_radius", fog_start_radius);
+    render_shader->set_float("u_fog_end_radius", fog_end_radius);
+    render_shader->set_vec4("u_fog_color", glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+
     dummy_VAO->bind();
 
     glDrawArrays(GL_TRIANGLES, 0, actual_vertex_count);

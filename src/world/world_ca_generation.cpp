@@ -117,6 +117,10 @@ Particle World_CA_Generation::create_particle_by_type(const Particle_Type type)
         return create_uranium(true);
     case Particle_Type::WATER:
         return create_water(true);
+    case Particle_Type::WOOD:
+        return create_wood(true);
+    case Particle_Type::FIRE:
+        return create_fire(true);
     default:
         return create_stone(true);
     }

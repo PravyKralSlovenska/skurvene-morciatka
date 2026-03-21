@@ -66,6 +66,10 @@ public:
     float speed = 10.0f;
     float max_healthpoints = 100.0f;
     float healthpoints = 100.0f;
+    float damage_invuln_duration = 0.15f;
+    float damage_invuln_timer = 0.0f;
+    float damage_flash_duration = 0.12f;
+    float damage_flash_timer = 0.0f;
     glm::vec2 velocity = {0.0f, 0.0f};
     glm::vec2 acceleration = {0.0f, 0.0f};
 
@@ -139,6 +143,8 @@ public:
     void take_damage(float damage);
     void heal(float amount);
     void die();
+    void update_damage_timers(float delta_time);
+    bool can_take_damage() const;
 
     // actions
     void select_item();
@@ -197,6 +203,35 @@ public:
 
     // Get center position (for wand origin)
     glm::vec2 get_center() const { return glm::vec2(coords); }
+};
+
+class Projectile : public Entity
+{
+private:
+    Particle_Type payload_type = Particle_Type::STONE;
+    float damage = 25.0f;
+    Entity_Type owner_type = Entity_Type::PLAYER;
+    float lifetime_seconds = 3.0f;
+    float age_seconds = 0.0f;
+    float gravity_multiplier = 0.3f;
+    float air_drag = 0.995f;
+
+public:
+    Projectile();
+    Projectile(const glm::vec2 &position, const glm::vec2 &velocity, Particle_Type payload_type);
+    ~Projectile() = default;
+
+    void update(float delta_time) override;
+
+    void set_payload_type(Particle_Type type);
+    Particle_Type get_payload_type() const;
+    void set_damage(float value);
+    float get_damage() const;
+    void set_owner_type(Entity_Type owner);
+    Entity_Type get_owner_type() const;
+    void set_lifetime(float seconds);
+    float get_lifetime() const;
+    float get_age() const;
 };
 
 class Enemy : public Entity
@@ -273,6 +308,7 @@ public:
     void set_detection_range(float range);
     void set_attack_range(float range);
     void set_attack_damage(float damage);
+    float get_attack_damage() const;
 
     // Getters
     AI_State get_ai_state() const;
@@ -428,6 +464,7 @@ public:
     void set_attack_range(float range);
     void set_attack_damage(float damage);
     void set_slam_damage(float damage);
+    float get_attack_damage() const;
 
     // Getters
     Boss_AI_State get_boss_ai_state() const;

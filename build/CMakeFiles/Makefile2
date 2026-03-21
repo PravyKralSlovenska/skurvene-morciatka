@@ -124,12 +124,12 @@ CMakeFiles/morciatko.dir/clean:
 CMakeFiles/morciatko_lib.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90 "Built target morciatko_lib"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89 "Built target morciatko_lib"
 .PHONY : CMakeFiles/morciatko_lib.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/morciatko_lib.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles 45
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles 44
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/morciatko_lib.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles 0
 .PHONY : CMakeFiles/morciatko_lib.dir/rule
@@ -141,7 +141,7 @@ morciatko_lib: CMakeFiles/morciatko_lib.dir/rule
 # codegen rule for target.
 CMakeFiles/morciatko_lib.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_lib.dir/build.make CMakeFiles/morciatko_lib.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90 "Finished codegen for target morciatko_lib"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89 "Finished codegen for target morciatko_lib"
 .PHONY : CMakeFiles/morciatko_lib.dir/codegen
 
 # clean rule for target.
@@ -156,7 +156,7 @@ CMakeFiles/morciatko_lib.dir/clean:
 CMakeFiles/morciatko_tests.dir/all: CMakeFiles/morciatko_lib.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=91,92,93,94,95,96,97,98,99,100 "Built target morciatko_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=90,91,92,93,94,95,96,97,98,99,100 "Built target morciatko_tests"
 .PHONY : CMakeFiles/morciatko_tests.dir/all
 
 # Build rule for subdir invocation for target.
@@ -173,7 +173,7 @@ morciatko_tests: CMakeFiles/morciatko_tests.dir/rule
 # codegen rule for target.
 CMakeFiles/morciatko_tests.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=91,92,93,94,95,96,97,98,99,100 "Finished codegen for target morciatko_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=90,91,92,93,94,95,96,97,98,99,100 "Finished codegen for target morciatko_tests"
 .PHONY : CMakeFiles/morciatko_tests.dir/codegen
 
 # clean rule for target.

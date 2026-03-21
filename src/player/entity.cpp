@@ -1,5 +1,6 @@
 #include "engine/player/entity.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include "engine/world/world.hpp"
 #include "engine/world/world_chunk.hpp"
@@ -139,7 +140,7 @@ void Entity::update_sprite_state()
     Sprite_State new_sprite_state;
 
     // If hurt/dead, use hurt sprite
-    if (state == Entity_States::HIT || state == Entity_States::DEAD || !is_alive)
+    if (state == Entity_States::HIT || state == Entity_States::DEAD || !is_alive || damage_flash_timer > 0.0f)
     {
         new_sprite_state = Sprite_State::HURT;
     }
@@ -222,7 +223,12 @@ glm::ivec2 Entity::get_chunk_position(int chunk_pixel_width, int chunk_pixel_hei
 
 void Entity::take_damage(float damage)
 {
+    if (damage <= 0.0f || !can_take_damage())
+        return;
+
     healthpoints -= damage;
+    damage_invuln_timer = damage_invuln_duration;
+    damage_flash_timer = damage_flash_duration;
     state = Entity_States::HIT;
 
     if (healthpoints <= 0)
@@ -234,6 +240,28 @@ void Entity::take_damage(float damage)
 void Entity::heal(float amount)
 {
     healthpoints = std::min(healthpoints + amount, max_healthpoints);
+}
+
+void Entity::update_damage_timers(float delta_time)
+{
+    if (damage_invuln_timer > 0.0f)
+    {
+        damage_invuln_timer -= delta_time;
+        if (damage_invuln_timer < 0.0f)
+            damage_invuln_timer = 0.0f;
+    }
+
+    if (damage_flash_timer > 0.0f)
+    {
+        damage_flash_timer -= delta_time;
+        if (damage_flash_timer < 0.0f)
+            damage_flash_timer = 0.0f;
+    }
+}
+
+bool Entity::can_take_damage() const
+{
+    return is_alive && damage_invuln_timer <= 0.0f;
 }
 
 void Entity::die()
@@ -680,6 +708,129 @@ void Player::change_selected_item(const int inventory_slot)
     }
 }
 
+// ==================== Projectile ====================
+
+Projectile::Projectile()
+{
+    type = Entity_Type::PROJECTILE;
+    speed = 700.0f;
+    max_healthpoints = 1.0f;
+    healthpoints = 1.0f;
+    set_hitbox_dimensions(6, 6);
+}
+
+Projectile::Projectile(const glm::vec2 &position, const glm::vec2 &velocity, Particle_Type payload_type)
+    : Projectile()
+{
+    coords = glm::ivec2(position);
+    this->velocity = velocity;
+    this->payload_type = payload_type;
+    calculate_hitbox();
+}
+
+void Projectile::update(float delta_time)
+{
+    if (!is_alive)
+        return;
+
+    age_seconds += delta_time;
+    if (age_seconds >= lifetime_seconds)
+    {
+        die();
+        return;
+    }
+
+    apply_gravity(GRAVITY * gravity_multiplier, delta_time);
+
+    glm::vec2 displacement = velocity * delta_time;
+    int particle_size = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+    int steps = std::max(1, static_cast<int>(std::ceil(
+                                std::max(std::abs(displacement.x), std::abs(displacement.y)) /
+                                static_cast<float>(particle_size))));
+
+    glm::vec2 step_delta = displacement / static_cast<float>(steps);
+    glm::vec2 simulated_pos = glm::vec2(coords);
+
+    for (int i = 0; i < steps; ++i)
+    {
+        simulated_pos += step_delta;
+        glm::ivec2 next_pos = glm::ivec2(simulated_pos);
+
+        if (check_collision_at(next_pos))
+        {
+            if (world_ref)
+            {
+                static constexpr int IMPACT_DELETE_RADIUS_CELLS = 2;
+                for (int dy = -IMPACT_DELETE_RADIUS_CELLS; dy <= IMPACT_DELETE_RADIUS_CELLS; ++dy)
+                {
+                    for (int dx = -IMPACT_DELETE_RADIUS_CELLS; dx <= IMPACT_DELETE_RADIUS_CELLS; ++dx)
+                    {
+                        if (dx * dx + dy * dy > IMPACT_DELETE_RADIUS_CELLS * IMPACT_DELETE_RADIUS_CELLS)
+                            continue;
+
+                        glm::ivec2 delete_pos = next_pos + glm::ivec2(dx * particle_size, dy * particle_size);
+                        world_ref->place_particle(delete_pos, Particle_Type::EMPTY);
+                    }
+                }
+            }
+            die();
+            calculate_hitbox();
+            return;
+        }
+
+        coords = next_pos;
+    }
+
+    velocity *= air_drag;
+    state = Entity_States::WALKING;
+    calculate_hitbox();
+}
+
+void Projectile::set_payload_type(Particle_Type type)
+{
+    payload_type = type;
+}
+
+Particle_Type Projectile::get_payload_type() const
+{
+    return payload_type;
+}
+
+void Projectile::set_damage(float value)
+{
+    damage = std::max(0.0f, value);
+}
+
+float Projectile::get_damage() const
+{
+    return damage;
+}
+
+void Projectile::set_owner_type(Entity_Type owner)
+{
+    owner_type = owner;
+}
+
+Entity_Type Projectile::get_owner_type() const
+{
+    return owner_type;
+}
+
+void Projectile::set_lifetime(float seconds)
+{
+    lifetime_seconds = std::max(0.05f, seconds);
+}
+
+float Projectile::get_lifetime() const
+{
+    return lifetime_seconds;
+}
+
+float Projectile::get_age() const
+{
+    return age_seconds;
+}
+
 // ==================== Enemy ====================
 
 Enemy::Enemy()
@@ -1103,6 +1254,11 @@ void Enemy::set_attack_range(float range)
 void Enemy::set_attack_damage(float damage)
 {
     attack_damage = damage;
+}
+
+float Enemy::get_attack_damage() const
+{
+    return attack_damage;
 }
 
 AI_State Enemy::get_ai_state() const
@@ -1646,6 +1802,11 @@ void Boss::set_attack_damage(float damage)
 void Boss::set_slam_damage(float damage)
 {
     slam_damage = damage;
+}
+
+float Boss::get_attack_damage() const
+{
+    return is_enraged ? attack_damage * enrage_damage_multiplier : attack_damage;
 }
 
 Boss_AI_State Boss::get_boss_ai_state() const

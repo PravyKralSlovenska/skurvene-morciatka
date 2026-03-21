@@ -8,6 +8,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/morciatko_tests.dir/tests/integration/structure_spawn_rules_test.cpp.o.d"
   "CMakeFiles/morciatko_tests.dir/tests/unit/falling_sand_test.cpp.o"
   "CMakeFiles/morciatko_tests.dir/tests/unit/falling_sand_test.cpp.o.d"
+  "CMakeFiles/morciatko_tests.dir/tests/unit/gun_projectile_test.cpp.o"
+  "CMakeFiles/morciatko_tests.dir/tests/unit/gun_projectile_test.cpp.o.d"
   "CMakeFiles/morciatko_tests.dir/tests/unit/particle_test.cpp.o"
   "CMakeFiles/morciatko_tests.dir/tests/unit/particle_test.cpp.o.d"
   "CMakeFiles/morciatko_tests.dir/tests/unit/random_test.cpp.o"

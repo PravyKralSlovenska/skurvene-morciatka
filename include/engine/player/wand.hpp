@@ -9,10 +9,13 @@ enum class Wand_Type
     NONE,
     SAND_WAND,
     WATER_WAND,
+    WOOD_WAND,
+    FIRE_WAND,
     STONE_WAND,
     DELETE_WAND,
     SMOKE_WAND,
-    URANIUM_WAND
+    URANIUM_WAND,
+    GUN_WAND
 };
 
 struct Wand
@@ -61,6 +64,28 @@ struct Wand
         return w;
     }
 
+    static Wand create_wood_wand()
+    {
+        Wand w;
+        w.type = Wand_Type::WOOD_WAND;
+        w.name = "Wood Wand";
+        w.color = {0.55f, 0.37f, 0.24f, 1.0f}; // Brown wood color
+        w.particle_type = Particle_Type::WOOD;
+        w.brush_size = 5;
+        return w;
+    }
+
+    static Wand create_fire_wand()
+    {
+        Wand w;
+        w.type = Wand_Type::FIRE_WAND;
+        w.name = "Fire Wand";
+        w.color = {1.0f, 0.45f, 0.12f, 1.0f}; // Orange flame color
+        w.particle_type = Particle_Type::FIRE;
+        w.brush_size = 3;
+        return w;
+    }
+
     static Wand create_delete_wand()
     {
         Wand w;
@@ -93,6 +118,18 @@ struct Wand
         w.brush_size = 5;
         return w;
     }
+
+    static Wand create_gun_wand()
+    {
+        Wand w;
+        w.type = Wand_Type::GUN_WAND;
+        w.name = "Gun";
+        w.color = {1.0f, 0.85f, 0.25f, 1.0f};
+        w.particle_type = Particle_Type::STONE;
+        w.brush_size = 1;
+        w.cooldown = 0.08f;
+        return w;
+    }
 };
 
 class Hotbar
@@ -106,13 +143,15 @@ public:
     Hotbar()
     {
         // Initialize default hotbar with wands
-        slots[0] = Wand::create_sand_wand();
-        slots[1] = Wand::create_water_wand();
-        slots[2] = Wand::create_stone_wand();
-        slots[3] = Wand::create_delete_wand();
-        slots[4] = Wand::create_smoke_wand();
-        slots[5] = Wand::create_uranium_wand();
-        // slots 6-8 are empty by default
+        slots[0] = Wand::create_gun_wand();
+        slots[1] = Wand::create_stone_wand();
+        // slots[6] = Wand::create_sand_wand();
+        // slots[2] = Wand::create_water_wand();
+        // slots[3] = Wand::create_delete_wand();
+        // slots[4] = Wand::create_smoke_wand();
+        // slots[5] = Wand::create_uranium_wand();
+        slots[7] = Wand::create_wood_wand();
+        slots[8] = Wand::create_fire_wand();
     }
 
     void select_slot(int slot)

@@ -1,10 +1,130 @@
 #include "engine/player/entity_manager.hpp"
 
 #include <cmath>
+#include <limits>
 #include "engine/player/entity.hpp"
 #include "engine/world/world.hpp"
 #include "engine/world/world_chunk.hpp"
+#include "engine/world/world_cell.hpp"
 #include "others/GLOBALS.hpp"
+
+namespace
+{
+    static constexpr int COIN_DROP_RADIUS_CELLS = 3;
+    static constexpr int COIN_PICKUP_RADIUS_CELLS = 8;
+    static constexpr float STORE_INTERACT_RANGE_PX = 220.0f;
+    static constexpr int STORE_HEAL_PRICE_GOLD = 3;
+    static constexpr int STORE_HEAL_AMOUNT = 30;
+    static constexpr int STORE_HEAL_ITEM_PRICE_GOLD = 10;
+    static constexpr int STORE_HEAL_ITEM_PRICE_SILVER = 5;
+    static constexpr int STORE_AMMO_ITEM_PRICE_GOLD = 2;
+    static constexpr int STORE_WAND_ITEM_PRICE_GOLD = 20;
+    static constexpr int STORE_WAND_ITEM_PRICE_SILVER = 2;
+    static constexpr int SILVER_PER_GOLD = 10;
+    static constexpr int AMMO_PURCHASE_AMOUNT = 20;
+    static constexpr int STORE_ICON_EXTRA_UP_PX = 40;
+
+    bool entities_overlap(const Entity *a, const Entity *b)
+    {
+        if (!a || !b)
+            return false;
+
+        const int left_a = a->coords.x - a->hitbox_dimensions_half.x;
+        const int right_a = a->coords.x + a->hitbox_dimensions_half.x;
+        const int top_a = a->coords.y - a->hitbox_dimensions_half.y;
+        const int bottom_a = a->coords.y + a->hitbox_dimensions_half.y;
+
+        const int left_b = b->coords.x - b->hitbox_dimensions_half.x;
+        const int right_b = b->coords.x + b->hitbox_dimensions_half.x;
+        const int top_b = b->coords.y - b->hitbox_dimensions_half.y;
+        const int bottom_b = b->coords.y + b->hitbox_dimensions_half.y;
+
+        return left_a <= right_b && right_a >= left_b && top_a <= bottom_b && bottom_a >= top_b;
+    }
+
+    bool nearly_equal(float a, float b, float eps = 0.01f)
+    {
+        return std::abs(a - b) <= eps;
+    }
+
+    Particle make_coin_particle(bool is_gold)
+    {
+        Particle coin = create_sand(false); // Dynamic so coins fall like sand.
+        if (is_gold)
+        {
+            coin.base_color = Color(255, 215, 0, 1.0f);
+        }
+        else
+        {
+            coin.base_color = Color(192, 192, 192, 1.0f);
+        }
+        coin.color = coin.base_color;
+        coin.set_static(false);
+        return coin;
+    }
+
+    bool is_gold_coin_particle(const Particle &p)
+    {
+        return p.type == Particle_Type::SAND && nearly_equal(p.base_color.r, 1.0f) &&
+               nearly_equal(p.base_color.g, 215.0f / 255.0f) && nearly_equal(p.base_color.b, 0.0f);
+    }
+
+    bool is_silver_coin_particle(const Particle &p)
+    {
+        const float silver = 192.0f / 255.0f;
+        return p.type == Particle_Type::SAND && nearly_equal(p.base_color.r, silver) &&
+               nearly_equal(p.base_color.g, silver) && nearly_equal(p.base_color.b, silver);
+    }
+
+    bool is_coin_particle(const Particle &p)
+    {
+        return is_gold_coin_particle(p) || is_silver_coin_particle(p);
+    }
+
+    int make_structure_hash(const glm::ivec2 &pos)
+    {
+        return pos.x * 73856093 ^ pos.y * 19349663;
+    }
+
+    int price_to_silver(int gold, int silver)
+    {
+        return gold * SILVER_PER_GOLD + silver;
+    }
+
+    glm::ivec2 snap_to_particle_grid(const glm::ivec2 &pos, int particle_size)
+    {
+        return glm::ivec2(
+            static_cast<int>(std::floor(static_cast<float>(pos.x) / particle_size)) * particle_size,
+            static_cast<int>(std::floor(static_cast<float>(pos.y) / particle_size)) * particle_size);
+    }
+
+    bool world_pos_to_chunk_local(World *world, const glm::ivec2 &world_pos, glm::ivec2 &out_chunk_pos, glm::ivec2 &out_local_pos)
+    {
+        if (!world)
+            return false;
+
+        const int particle_size = static_cast<int>(Globals::PARTICLE_SIZE);
+        const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+        const int chunk_pixel_w = chunk_dims.x * particle_size;
+        const int chunk_pixel_h = chunk_dims.y * particle_size;
+
+        out_chunk_pos = glm::ivec2(
+            static_cast<int>(std::floor(static_cast<float>(world_pos.x) / chunk_pixel_w)),
+            static_cast<int>(std::floor(static_cast<float>(world_pos.y) / chunk_pixel_h)));
+
+        int pixel_offset_x = world_pos.x - out_chunk_pos.x * chunk_pixel_w;
+        int pixel_offset_y = world_pos.y - out_chunk_pos.y * chunk_pixel_h;
+        out_local_pos = glm::ivec2(pixel_offset_x / particle_size, pixel_offset_y / particle_size);
+
+        if (out_local_pos.x < 0)
+            out_local_pos.x += chunk_dims.x;
+        if (out_local_pos.y < 0)
+            out_local_pos.y += chunk_dims.y;
+
+        return out_local_pos.x >= 0 && out_local_pos.x < chunk_dims.x &&
+               out_local_pos.y >= 0 && out_local_pos.y < chunk_dims.y;
+    }
+} // namespace
 
 Entity_Manager::Entity_Manager()
     : rng(std::random_device{}())
@@ -120,6 +240,26 @@ Devushki *Entity_Manager::create_devushki(int x, int y, const std::string &sprit
     return create_devushki(glm::ivec2(x, y), sprite_name);
 }
 
+Projectile *Entity_Manager::create_projectile(const glm::vec2 &position, const glm::vec2 &velocity,
+                                              Particle_Type payload_type,
+                                              float damage,
+                                              Entity_Type owner_type)
+{
+    auto projectile = std::make_unique<Projectile>(position, velocity, payload_type);
+    projectile->set_damage(damage);
+    projectile->set_owner_type(owner_type);
+
+    if (world)
+    {
+        projectile->set_world(world);
+    }
+
+    int id = projectile->get_id();
+    Projectile *projectile_ptr = projectile.get();
+    entities[id] = std::move(projectile);
+    return projectile_ptr;
+}
+
 Boss *Entity_Manager::create_boss(const glm::ivec2 &position, const std::string &sprite_name)
 {
     auto boss = std::make_unique<Boss>();
@@ -169,6 +309,11 @@ void Entity_Manager::remove_all_dead()
     {
         if (!it->second->get_is_alive())
         {
+            if (it->second->type == Entity_Type::ENEMY)
+            {
+                const Enemy *enemy = static_cast<const Enemy *>(it->second.get());
+                drop_enemy_coin_particles(enemy);
+            }
             it = entities.erase(it);
         }
         else
@@ -216,27 +361,348 @@ void Entity_Manager::update(float delta_time)
 {
     // Update spawner
     update_spawner(delta_time);
-    
+
     // Check for newly placed structures and spawn devushki on them
     check_and_spawn_devushki_on_structures();
+    update_store_offers();
 
     // Update player physics (gravity, collision) - input is handled separately
     if (player)
     {
+        player->update_damage_timers(delta_time);
         player->update(delta_time);
     }
 
     // Update all entities (enemies, NPCs, etc.)
     for (auto &[id, entity] : entities)
     {
+        entity->update_damage_timers(delta_time);
         update_entity(entity.get(), delta_time);
     }
+
+    // Resolve projectile impact damage after movement updates.
+    resolve_projectile_entity_hits();
+    resolve_hostile_melee_hits();
 
     // Check devushki collection
     check_devushki_collection();
 
+    // Spawn the objective boss once all devushki are collected.
+    if (devushki_objective.objective_complete && !devushki_objective.boss_spawned)
+    {
+        spawn_boss_for_completed_objective();
+    }
+
     // Remove dead entities
     remove_all_dead();
+
+    // Collect nearby dropped coin particles.
+    resolve_coin_collection();
+}
+
+void Entity_Manager::drop_enemy_coin_particles(const Enemy *enemy)
+{
+    if (!enemy || !world)
+        return;
+
+    const int particle_size = static_cast<int>(Globals::PARTICLE_SIZE);
+    const glm::ivec2 center = snap_to_particle_grid(enemy->coords, particle_size);
+
+    std::uniform_int_distribution<int> gold_count_dist(1, 4);
+    std::uniform_int_distribution<int> silver_count_dist(2, 6);
+    std::uniform_int_distribution<int> offset_dist(-COIN_DROP_RADIUS_CELLS, COIN_DROP_RADIUS_CELLS);
+
+    const int gold_count = gold_count_dist(rng);
+    const int silver_count = silver_count_dist(rng);
+
+    auto drop_coin_batch = [&](int count, bool is_gold)
+    {
+        Particle coin_particle = make_coin_particle(is_gold);
+
+        for (int i = 0; i < count; ++i)
+        {
+            int dx = 0;
+            int dy = 0;
+            do
+            {
+                dx = offset_dist(rng);
+                dy = offset_dist(rng);
+            } while (dx * dx + dy * dy > COIN_DROP_RADIUS_CELLS * COIN_DROP_RADIUS_CELLS);
+
+            glm::ivec2 drop_pos = center + glm::ivec2(dx * particle_size, dy * particle_size);
+            world->place_custom_particle(drop_pos, coin_particle);
+        }
+    };
+
+    drop_coin_batch(gold_count, true);
+    drop_coin_batch(silver_count, false);
+}
+
+void Entity_Manager::resolve_coin_collection()
+{
+    if (!world || !player)
+        return;
+
+    const int particle_size = static_cast<int>(Globals::PARTICLE_SIZE);
+    const int pickup_radius_px = COIN_PICKUP_RADIUS_CELLS * particle_size;
+    const int left = player->coords.x - player->hitbox_dimensions_half.x - pickup_radius_px;
+    const int right = player->coords.x + player->hitbox_dimensions_half.x + pickup_radius_px;
+    const int top = player->coords.y - player->hitbox_dimensions_half.y - pickup_radius_px;
+    const int bottom = player->coords.y + player->hitbox_dimensions_half.y + pickup_radius_px;
+
+    for (int y = top; y <= bottom; y += particle_size)
+    {
+        for (int x = left; x <= right; x += particle_size)
+        {
+            glm::ivec2 world_pos(x, y);
+            glm::ivec2 chunk_pos;
+            glm::ivec2 local_pos;
+            if (!world_pos_to_chunk_local(world, world_pos, chunk_pos, local_pos))
+                continue;
+
+            Chunk *chunk = world->get_chunk(chunk_pos);
+            if (!chunk)
+                continue;
+
+            WorldCell *cell = chunk->get_worldcell(local_pos.x, local_pos.y);
+            if (!cell)
+                continue;
+
+            if (!is_coin_particle(cell->particle))
+                continue;
+
+            if (is_gold_coin_particle(cell->particle))
+            {
+                ++collected_gold_coins;
+                chunk->set_worldcell(local_pos, Particle_Type::EMPTY, false);
+                continue;
+            }
+
+            if (is_silver_coin_particle(cell->particle))
+            {
+                ++collected_silver_coins;
+                chunk->set_worldcell(local_pos, Particle_Type::EMPTY, false);
+            }
+        }
+    }
+
+    normalize_currency();
+}
+
+void Entity_Manager::normalize_currency()
+{
+    if (collected_silver_coins >= SILVER_PER_GOLD)
+    {
+        const int carry_gold = collected_silver_coins / SILVER_PER_GOLD;
+        collected_gold_coins += carry_gold;
+        collected_silver_coins %= SILVER_PER_GOLD;
+    }
+
+    if (collected_silver_coins < 0)
+        collected_silver_coins = 0;
+    if (collected_gold_coins < 0)
+        collected_gold_coins = 0;
+}
+
+int Entity_Manager::get_total_currency_in_silver() const
+{
+    return collected_gold_coins * SILVER_PER_GOLD + collected_silver_coins;
+}
+
+bool Entity_Manager::find_store_display_anchor(const Structure &store_structure, glm::ivec2 &out_anchor_cells) const
+{
+    int top_y = std::numeric_limits<int>::max();
+    int sum_top_x = 0;
+    int top_count = 0;
+
+    for (int y = 0; y < store_structure.get_height(); ++y)
+    {
+        for (int x = 0; x < store_structure.get_width(); ++x)
+        {
+            const Particle &cell = store_structure.get_cell(x, y);
+            if (cell.type == Particle_Type::EMPTY)
+                continue;
+
+            if (y < top_y)
+            {
+                top_y = y;
+                sum_top_x = x;
+                top_count = 1;
+            }
+            else if (y == top_y)
+            {
+                sum_top_x += x;
+                ++top_count;
+            }
+        }
+    }
+
+    if (top_count <= 0)
+        return false;
+
+    out_anchor_cells.x = sum_top_x / top_count;
+    out_anchor_cells.y = top_y;
+    return true;
+}
+
+void Entity_Manager::update_store_offers()
+{
+    if (!world)
+        return;
+
+    Structure *store_structure = world->get_structure_spawner().get_blueprint("store");
+    if (!store_structure)
+        return;
+
+    glm::ivec2 marker_anchor_cells(store_structure->get_width() / 2, store_structure->get_height() / 2);
+    find_store_display_anchor(*store_structure, marker_anchor_cells);
+
+    const int particle_size = static_cast<int>(Globals::PARTICLE_SIZE);
+    const auto &placed_structures = world->get_structure_spawner().get_placed_structures();
+
+    std::unordered_set<int> active_hashes;
+    for (const auto &ps : placed_structures)
+    {
+        if (ps.name != "store" && ps.name != "devushki_store")
+            continue;
+
+        const int structure_hash = make_structure_hash(ps.position);
+        active_hashes.insert(structure_hash);
+
+        if (store_offers_by_structure.find(structure_hash) != store_offers_by_structure.end())
+            continue;
+
+        std::uniform_int_distribution<int> offer_dist(0, 4);
+        Store_Offer offer;
+        offer.structure_hash = structure_hash;
+        offer.structure_world_pos = ps.position;
+        offer.display_world_pos = glm::ivec2(
+            ps.position.x + marker_anchor_cells.x * particle_size,
+            ps.position.y + marker_anchor_cells.y * particle_size - STORE_ICON_EXTRA_UP_PX);
+
+        switch (offer_dist(rng))
+        {
+        case 0:
+            offer.type = Store_Offer_Type::HEAL;
+            offer.item_name = "Heal";
+            offer.icon_path = "../items/devushki_heal.png";
+            offer.price_gold = STORE_HEAL_ITEM_PRICE_GOLD;
+            offer.price_silver = STORE_HEAL_ITEM_PRICE_SILVER;
+            break;
+        case 1:
+            offer.type = Store_Offer_Type::AMMO;
+            offer.item_name = "Ammo";
+            offer.icon_path = "../items/devushki_ammo.png";
+            offer.price_gold = STORE_AMMO_ITEM_PRICE_GOLD;
+            offer.price_silver = 0;
+            break;
+        case 2:
+            offer.type = Store_Offer_Type::WAND_FIRE;
+            offer.item_name = "Fire Wand";
+            offer.icon_path = "builtin://wand_fire";
+            offer.price_gold = STORE_WAND_ITEM_PRICE_GOLD;
+            offer.price_silver = STORE_WAND_ITEM_PRICE_SILVER;
+            break;
+        case 3:
+            offer.type = Store_Offer_Type::WAND_WOOD;
+            offer.item_name = "Wood Wand";
+            offer.icon_path = "builtin://wand_wood";
+            offer.price_gold = STORE_WAND_ITEM_PRICE_GOLD;
+            offer.price_silver = STORE_WAND_ITEM_PRICE_SILVER;
+            break;
+        default:
+            offer.type = Store_Offer_Type::WAND_EMPTY;
+            offer.item_name = "Empty Wand";
+            offer.icon_path = "builtin://wand_empty";
+            offer.price_gold = STORE_WAND_ITEM_PRICE_GOLD;
+            offer.price_silver = STORE_WAND_ITEM_PRICE_SILVER;
+            break;
+        }
+
+        store_offers_by_structure[structure_hash] = offer;
+    }
+
+    for (auto it = store_offers_by_structure.begin(); it != store_offers_by_structure.end();)
+    {
+        if (active_hashes.find(it->first) == active_hashes.end())
+        {
+            it = store_offers_by_structure.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
+}
+
+void Entity_Manager::resolve_hostile_melee_hits()
+{
+    if (!player || !player->get_is_alive())
+        return;
+
+    for (auto &[id, entity] : entities)
+    {
+        if (!entity || !entity->is_active || !entity->get_is_alive())
+            continue;
+
+        if (entity->type == Entity_Type::ENEMY)
+        {
+            Enemy *enemy = static_cast<Enemy *>(entity.get());
+            if (enemy->get_ai_state() == AI_State::ATTACK && enemy->is_in_attack_range(player->coords))
+            {
+                player->take_damage(enemy->get_attack_damage());
+            }
+            continue;
+        }
+
+        if (entity->type == Entity_Type::BOSS)
+        {
+            Boss *boss = static_cast<Boss *>(entity.get());
+            if (boss->get_boss_ai_state() == Boss_AI_State::ATTACK && boss->is_in_attack_range(player->coords))
+            {
+                player->take_damage(boss->get_attack_damage());
+            }
+        }
+    }
+}
+
+void Entity_Manager::resolve_projectile_entity_hits()
+{
+    for (auto &[id, entity] : entities)
+    {
+        if (!entity || entity->type != Entity_Type::PROJECTILE || !entity->is_active || !entity->get_is_alive())
+            continue;
+
+        Projectile *projectile = static_cast<Projectile *>(entity.get());
+        const Entity_Type owner_type = projectile->get_owner_type();
+
+        // Player is stored separately from entities map.
+        if (player && player->get_is_alive() && owner_type != Entity_Type::PLAYER && entities_overlap(projectile, player.get()))
+        {
+            player->take_damage(projectile->get_damage());
+            projectile->die();
+            continue;
+        }
+
+        for (auto &[target_id, target_entity] : entities)
+        {
+            if (!target_entity || target_entity.get() == projectile)
+                continue;
+            if (!target_entity->is_active || !target_entity->get_is_alive())
+                continue;
+            if (target_entity->type == Entity_Type::PROJECTILE)
+                continue;
+            if (target_entity->type == owner_type)
+                continue;
+
+            if (entities_overlap(projectile, target_entity.get()))
+            {
+                target_entity->take_damage(projectile->get_damage());
+                projectile->die();
+                break;
+            }
+        }
+    }
 }
 
 // ==================== Spawn System ====================
@@ -484,6 +950,171 @@ int Entity_Manager::get_boss_count() const
     return count;
 }
 
+int Entity_Manager::get_collected_gold_coins() const
+{
+    return collected_gold_coins;
+}
+
+int Entity_Manager::get_collected_silver_coins() const
+{
+    return collected_silver_coins;
+}
+
+int Entity_Manager::get_player_ammo() const
+{
+    return player_ammo;
+}
+
+bool Entity_Manager::try_consume_ammo_for_shot()
+{
+    if (player_ammo <= 0)
+        return false;
+
+    --player_ammo;
+    return true;
+}
+
+void Entity_Manager::add_player_ammo(int amount)
+{
+    if (amount <= 0)
+        return;
+
+    player_ammo += amount;
+}
+
+bool Entity_Manager::is_player_near_store() const
+{
+    return get_nearest_store_offer() != nullptr;
+}
+
+const Store_Offer *Entity_Manager::get_nearest_store_offer() const
+{
+    if (!player)
+        return nullptr;
+
+    const float interact_range_sq = STORE_INTERACT_RANGE_PX * STORE_INTERACT_RANGE_PX;
+    const Store_Offer *nearest = nullptr;
+    float nearest_dist_sq = std::numeric_limits<float>::max();
+
+    for (const auto &[key, offer] : store_offers_by_structure)
+    {
+        if (offer.purchased)
+            continue;
+
+        const float dx = static_cast<float>(player->coords.x - offer.display_world_pos.x);
+        const float dy = static_cast<float>(player->coords.y - offer.display_world_pos.y);
+        const float dist_sq = dx * dx + dy * dy;
+        if (dist_sq > interact_range_sq)
+            continue;
+
+        if (dist_sq < nearest_dist_sq)
+        {
+            nearest = &offer;
+            nearest_dist_sq = dist_sq;
+        }
+    }
+
+    return nearest;
+}
+
+std::vector<Store_Offer> Entity_Manager::get_active_store_offers() const
+{
+    std::vector<Store_Offer> result;
+    result.reserve(store_offers_by_structure.size());
+
+    for (const auto &[key, offer] : store_offers_by_structure)
+    {
+        if (offer.purchased)
+            continue;
+        result.push_back(offer);
+    }
+
+    return result;
+}
+
+bool Entity_Manager::try_buy_store_item()
+{
+    if (!player)
+        return false;
+
+    const Store_Offer *offer_ptr = get_nearest_store_offer();
+    if (!offer_ptr)
+        return false;
+
+    auto it = store_offers_by_structure.find(offer_ptr->structure_hash);
+    if (it == store_offers_by_structure.end() || it->second.purchased)
+        return false;
+
+    Store_Offer &offer = it->second;
+    const int price_silver_total = price_to_silver(offer.price_gold, offer.price_silver);
+    const int current_total = get_total_currency_in_silver();
+    if (current_total < price_silver_total)
+        return false;
+
+    auto grant_wand = [&](Wand wand) -> bool
+    {
+        Hotbar &hotbar = player->get_hotbar();
+        for (int slot = 0; slot < Hotbar::size(); ++slot)
+        {
+            if (hotbar.get_wand(slot).is_empty())
+            {
+                hotbar.set_wand(slot, wand);
+                return true;
+            }
+        }
+        return false;
+    };
+
+    bool applied = false;
+    switch (offer.type)
+    {
+    case Store_Offer_Type::HEAL:
+        if (player->healthpoints < player->max_healthpoints)
+        {
+            player->heal(static_cast<float>(STORE_HEAL_AMOUNT));
+            applied = true;
+        }
+        break;
+    case Store_Offer_Type::AMMO:
+        add_player_ammo(AMMO_PURCHASE_AMOUNT);
+        applied = true;
+        break;
+    case Store_Offer_Type::WAND_FIRE:
+        applied = grant_wand(Wand::create_fire_wand());
+        break;
+    case Store_Offer_Type::WAND_WOOD:
+        applied = grant_wand(Wand::create_wood_wand());
+        break;
+    case Store_Offer_Type::WAND_EMPTY:
+    {
+        Wand empty_wand = Wand::create_delete_wand();
+        empty_wand.name = "Empty Wand";
+        applied = grant_wand(empty_wand);
+        break;
+    }
+    }
+
+    if (!applied)
+        return false;
+
+    const int new_total = current_total - price_silver_total;
+    collected_gold_coins = new_total / SILVER_PER_GOLD;
+    collected_silver_coins = new_total % SILVER_PER_GOLD;
+    normalize_currency();
+    offer.purchased = true;
+    return true;
+}
+
+int Entity_Manager::get_store_heal_price_gold() const
+{
+    return STORE_HEAL_PRICE_GOLD;
+}
+
+int Entity_Manager::get_store_heal_amount() const
+{
+    return STORE_HEAL_AMOUNT;
+}
+
 bool Entity_Manager::has_entity(int id) const
 {
     return entities.find(id) != entities.end();
@@ -498,52 +1129,113 @@ void Entity_Manager::spawn_devushki_objective(int count, float spread_radius, co
     devushki_objective.collected = 0;
     devushki_objective.objective_active = true;
     devushki_objective.objective_complete = false;
-    
+    devushki_objective.boss_spawned = false;
+
     // Store sprite name for deferred spawning
     devushki_sprite_name = sprite_name;
-    
+
     // Clear spawned positions to start fresh
     spawned_devushki_positions.clear();
+}
+
+void Entity_Manager::spawn_boss_for_completed_objective()
+{
+    if (devushki_objective.boss_spawned || !player)
+        return;
+
+    if (get_boss_count() > 0)
+    {
+        devushki_objective.boss_spawned = true;
+        return;
+    }
+
+    const float min_distance = std::max(260.0f, spawn_config.min_spawn_distance);
+    const float max_distance = std::max(min_distance + 180.0f, spawn_config.max_spawn_distance + 220.0f);
+    const float min_distance_sq = min_distance * min_distance;
+
+    std::uniform_real_distribution<float> angle_dist(0.0f, 2.0f * 3.14159265f);
+    std::uniform_real_distribution<float> dist_dist(min_distance, max_distance);
+
+    glm::ivec2 spawn_pos = player->coords + glm::ivec2(static_cast<int>(max_distance), 0);
+
+    // Try a few candidates around the player while keeping a fair fight distance.
+    for (int i = 0; i < 16; ++i)
+    {
+        const float angle = angle_dist(rng);
+        const float distance = dist_dist(rng);
+
+        glm::ivec2 candidate(
+            player->coords.x + static_cast<int>(std::cos(angle) * distance),
+            player->coords.y + static_cast<int>(std::sin(angle) * distance));
+
+        if (world)
+        {
+            auto probe = std::make_unique<Boss>();
+            probe->set_world(world);
+            candidate = probe->find_valid_spawn_position(candidate);
+        }
+
+        const float dx = static_cast<float>(candidate.x - player->coords.x);
+        const float dy = static_cast<float>(candidate.y - player->coords.y);
+        if (dx * dx + dy * dy >= min_distance_sq)
+        {
+            spawn_pos = candidate;
+            break;
+        }
+    }
+
+    Boss *boss = create_boss(spawn_pos);
+    if (!boss)
+        return;
+
+    boss->name = "Boss of Devushki";
+
+    const float difficulty_scale = std::max(1.0f, spawn_config.difficulty_multiplier);
+    boss->max_healthpoints *= difficulty_scale;
+    boss->healthpoints = boss->max_healthpoints;
+    boss->set_attack_damage(boss->get_attack_damage() * difficulty_scale);
+
+    devushki_objective.boss_spawned = true;
 }
 
 void Entity_Manager::check_and_spawn_devushki_on_structures()
 {
     if (!world || !devushki_objective.objective_active)
         return;
-    
+
     // Get all placed devushki_column structures from the world
-    const auto& placed_structures = world->get_structure_spawner().get_placed_structures();
-    
+    const auto &placed_structures = world->get_structure_spawner().get_placed_structures();
+
     // Get devushki_column structure for its dimensions
-    Structure* devushki_col = world->get_image_structure("devushki_column");
+    Structure *devushki_col = world->get_image_structure("devushki_column");
     if (!devushki_col)
         return;
-    
+
     int struct_width_px = static_cast<int>(devushki_col->get_width() * Globals::PARTICLE_SIZE);
-    
+
     int current_devushki_count = get_devushki_count();
-    
-    for (const auto& ps : placed_structures)
+
+    for (const auto &ps : placed_structures)
     {
         if (ps.name != "devushki_column")
             continue;
-        
+
         // Check if we've already spawned on this position
         // Create a simple hash from position
         int pos_hash = ps.position.x * 73856093 ^ ps.position.y * 19349663;
-        
+
         if (spawned_devushki_positions.count(pos_hash) > 0)
             continue; // Already spawned here
-        
+
         // Check if we've reached the objective count
         if (current_devushki_count >= devushki_objective.total_to_collect)
             break;
-        
+
         // Calculate center-top position of the column
         glm::ivec2 spawn_pos;
         spawn_pos.x = ps.position.x + struct_width_px / 2;
         spawn_pos.y = ps.position.y; // top of structure
-        
+
         Devushki *d = create_devushki(spawn_pos, devushki_sprite_name);
         if (d)
         {

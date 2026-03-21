@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <memory>
+#include <functional>
 
 #include "glad/gl.h"
 #include <GLFW/glfw3.h>
@@ -67,7 +68,9 @@ public:
     GLFWwindow *get_window();
 
     // will render everthing
-    bool render_everything();
+    bool render_everything(bool render_world = true,
+                           bool render_in_game_ui = true,
+                           const std::function<void()> &overlay_ui = nullptr);
 
     void set_time_manager(Time_Manager *time_manager);
     void set_world(World *world);
@@ -98,6 +101,10 @@ public:
     // UI
     void toggle_fullscreen_map();
     bool is_fullscreen_map_open() const;
+    Menu_Actions render_menu_screen(Menu_Screen screen,
+                                    bool enter_pressed,
+                                    bool escape_pressed,
+                                    Menu_Options_Model &options);
 
     // debug
     void print_render_info();

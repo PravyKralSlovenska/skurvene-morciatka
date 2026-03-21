@@ -7,15 +7,13 @@
 #include <random>
 #include <string>
 #include <glm/glm.hpp>
+#include "engine/particle/particle.hpp"
+#include "engine/player/entity.hpp"
 
 // forward declarations
-class Entity;
-class Enemy;
-class Devushki;
-class Boss;
-class Player;
 class World;
 struct Chunk_Coords_to_Hash;
+class Structure;
 
 // Enemy spawn configuration
 struct SpawnConfig
@@ -36,6 +34,7 @@ struct DevushkiObjective
     float collect_range = 50.0f; // Distance at which player "collects" a devushki
     bool objective_active = false;
     bool objective_complete = false;
+    bool boss_spawned = false;
 };
 
 // Sprite sheet configuration for entity types
@@ -48,6 +47,28 @@ struct SpriteConfig
     int frame_height = 32; // Height of each frame
     int frame_count = 4;   // Number of frames in the sheet
     bool is_valid = false; // Whether this config has been set
+};
+
+enum class Store_Offer_Type
+{
+    HEAL,
+    AMMO,
+    WAND_FIRE,
+    WAND_WOOD,
+    WAND_EMPTY
+};
+
+struct Store_Offer
+{
+    int structure_hash = 0;
+    glm::ivec2 structure_world_pos = {0, 0};
+    glm::ivec2 display_world_pos = {0, 0};
+    Store_Offer_Type type = Store_Offer_Type::HEAL;
+    std::string item_name;
+    std::string icon_path;
+    int price_gold = 0;
+    int price_silver = 0;
+    bool purchased = false;
 };
 
 class Entity_Manager
@@ -68,19 +89,38 @@ private:
 
     // Devushki objective
     DevushkiObjective devushki_objective;
-    
+
     // Deferred devushki spawning on structures
-    std::string devushki_sprite_name;  // sprite to use for devushki
+    std::string devushki_sprite_name;                   // sprite to use for devushki
     std::unordered_set<int> spawned_devushki_positions; // hash of positions already spawned
 
     // Sprite registry - stores sprite configs by entity type name
     std::unordered_map<std::string, SpriteConfig> sprite_registry;
 
+    // Currency collected by player
+    int collected_gold_coins = 0;
+    int collected_silver_coins = 0;
+
+    // Gun ammo economy
+    int player_ammo = 60;
+
+    // One offer per store structure
+    std::unordered_map<int, Store_Offer> store_offers_by_structure;
+
 private:
     void remove_all_dead();
+    void drop_enemy_coin_particles(const Enemy *enemy);
     void update_entity(Entity *entity, float delta_time);
+    void resolve_projectile_entity_hits();
+    void resolve_hostile_melee_hits();
+    void resolve_coin_collection();
+    void normalize_currency();
+    int get_total_currency_in_silver() const;
     void update_spawner(float delta_time);
+    void update_store_offers();
+    bool find_store_display_anchor(const Structure &store_structure, glm::ivec2 &out_anchor_cells) const;
     void check_and_spawn_devushki_on_structures(); // check for new structures and spawn devushki
+    void spawn_boss_for_completed_objective();
     glm::ivec2 get_random_spawn_position();
     glm::ivec2 find_valid_position_for_hitbox(const glm::ivec2 &desired_pos, const glm::ivec2 &hitbox_dims, int max_attempts = 20);
     void randomize_enemy_stats(Enemy *enemy);
@@ -103,6 +143,12 @@ public:
     // devushki creation
     Devushki *create_devushki(const glm::ivec2 &position, const std::string &sprite_name = "");
     Devushki *create_devushki(int x, int y, const std::string &sprite_name = "");
+
+    // projectile creation (gun shots)
+    Projectile *create_projectile(const glm::vec2 &position, const glm::vec2 &velocity,
+                                  Particle_Type payload_type = Particle_Type::STONE,
+                                  float damage = 25.0f,
+                                  Entity_Type owner_type = Entity_Type::PLAYER);
 
     // devushki objective system
     void spawn_devushki_objective(int count, float spread_radius = 2000.0f, const std::string &sprite_name = "");
@@ -155,5 +201,16 @@ public:
     int get_enemy_count() const;
     int get_devushki_count() const;
     int get_boss_count() const;
+    int get_collected_gold_coins() const;
+    int get_collected_silver_coins() const;
+    int get_player_ammo() const;
+    bool try_consume_ammo_for_shot();
+    void add_player_ammo(int amount);
+    bool is_player_near_store() const;
+    bool try_buy_store_item();
+    const Store_Offer *get_nearest_store_offer() const;
+    std::vector<Store_Offer> get_active_store_offers() const;
+    int get_store_heal_price_gold() const;
+    int get_store_heal_amount() const;
     bool has_entity(int id) const;
 };

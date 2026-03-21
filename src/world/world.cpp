@@ -492,6 +492,12 @@ void World::load_image_structures(const std::string &folder_path)
 
     for (const auto &pair : image_structures)
     {
+        if (pair.first == "devushki_store")
+        {
+            structure_spawner.add_blueprint("store", pair.second);
+            continue;
+        }
+
         structure_spawner.add_blueprint(pair.first, pair.second);
     }
 }

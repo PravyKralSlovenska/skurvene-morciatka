@@ -2,6 +2,8 @@
 
 #include "imgui/imgui.h"
 #include <glm/glm.hpp>
+#include <string>
+#include <unordered_map>
 
 // forward declarations
 class Player;
@@ -9,6 +11,35 @@ class Camera;
 class World;
 class Time_Manager;
 class Entity_Manager;
+
+enum class Menu_Screen
+{
+    NONE,
+    MENU,
+    PAUSE,
+    OPTIONS,
+    LOADING
+};
+
+struct Menu_Options_Model
+{
+    float enemy_difficulty = 1.0f;
+    float spawn_interval = 3.0f;
+    int max_enemies = 20;
+    bool spawn_enabled = true;
+    bool fullscreen_enabled = false;
+};
+
+struct Menu_Actions
+{
+    bool start_game = false;
+    bool open_options = false;
+    bool resume_game = false;
+    bool back_from_options = false;
+    bool quit_to_menu = false;
+    bool quit_game = false;
+    bool toggle_fullscreen = false;
+};
 
 class UI_Renderer
 {
@@ -26,15 +57,28 @@ private:
     bool show_minimap = true;
     bool show_fullscreen_map = false;
 
+    // Store offer icon textures used for world-space UI labels.
+    std::unordered_map<std::string, unsigned int> store_offer_textures;
+    bool store_offer_textures_loaded = false;
+
     // Fullscreen map dragging state
     bool map_dragging = false;
     glm::vec2 map_offset = {0.0f, 0.0f};
     glm::vec2 map_drag_start = {0.0f, 0.0f};
     float map_zoom = 3.0f;
 
+    void center_next_window(float width, float height);
+    void render_main_menu(Menu_Actions &actions);
+    void render_pause_menu(Menu_Actions &actions);
+    void render_options_menu(Menu_Actions &actions, Menu_Options_Model &options);
+    void render_loading_screen();
+    bool ensure_store_offer_textures_loaded();
+    unsigned int load_ui_texture(const std::string &path);
+    unsigned int create_solid_color_texture(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 255);
+
 public:
     UI_Renderer() = default;
-    ~UI_Renderer() = default;
+    ~UI_Renderer();
 
     void set_player(Player *player);
     void set_camera(Camera *camera);
@@ -52,6 +96,13 @@ public:
     void render_minimap();
     void render_fullscreen_map();
     void render_devushki_objective();
+    void render_store_offers();
+
+    // Main menu/pause/options overlay renderer used by game state machine.
+    Menu_Actions render_menu_screen(Menu_Screen screen,
+                                    bool enter_pressed,
+                                    bool escape_pressed,
+                                    Menu_Options_Model &options);
 
     // shared minimap drawing logic
     void draw_map_content(ImDrawList *draw_list, ImVec2 pos, float map_w, float map_h,

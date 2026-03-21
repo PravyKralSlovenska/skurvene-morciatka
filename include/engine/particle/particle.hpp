@@ -27,6 +27,8 @@ enum class Particle_Type
     SAND,
     WATER,
     SMOKE,
+    WOOD,
+    FIRE,
     URANIUM,
     STONE
 };
@@ -201,6 +203,8 @@ public:
 Particle create_sand(bool is_static = false);
 Particle create_water(bool is_static = false);
 Particle create_smoke(bool is_static = false);
+Particle create_wood(bool is_static = false);
+Particle create_fire(bool is_static = false);
 Particle create_stone(bool is_static = false);
 Particle create_uranium(bool is_static = false);
 

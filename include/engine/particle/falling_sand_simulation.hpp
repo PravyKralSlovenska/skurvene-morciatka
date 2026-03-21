@@ -75,6 +75,9 @@ private:
     void update_liquid(const glm::ivec2 &chunk_coords, int x, int y, WorldCell *cell, Chunk *current_chunk);
     void update_gas(const glm::ivec2 &chunk_coords, int x, int y, WorldCell *cell, Chunk *current_chunk);
 
+    // Fire reaction: consume adjacent wood by igniting it.
+    bool spread_fire_to_adjacent_wood(const glm::ivec2 &chunk_coords, int x, int y);
+
     // Physics updates
     void apply_gravity(Particle &particle, float delta_time);
     void apply_temperature_transfer(WorldCell *cell, const glm::ivec2 &chunk_coords, int x, int y);

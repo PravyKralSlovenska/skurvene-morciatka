@@ -1,6 +1,7 @@
 #include "engine/renderer/renderer.hpp"
 
 #include "engine/player/entity_manager.hpp"
+#include "engine/player/entity.hpp"
 
 IRenderer::IRenderer(float window_width, float window_height)
     : m_window_width(window_width), m_window_height(window_height) {}
@@ -30,7 +31,9 @@ void IRenderer::init()
     init_imgui();
 }
 
-bool IRenderer::render_everything()
+bool IRenderer::render_everything(bool render_world,
+                                  bool render_in_game_ui,
+                                  const std::function<void()> &overlay_ui)
 {
     int width, height;
     glfwGetWindowSize(window, &width, &height);
@@ -51,23 +54,36 @@ bool IRenderer::render_everything()
     world_renderer->set_projection(view_projection);
     entities_renderer->set_projection(view_projection);
 
+    if (entity_manager)
+    {
+        Player *player = entity_manager->get_player();
+        if (player)
+        {
+            world_renderer->set_fog_center_world(glm::vec2(player->coords));
+        }
+    }
+    world_renderer->set_fog_enabled(render_world);
+
     // Na User Interface by nemal platit zoom
     // text_renderer->set_projection(projection);
 
     // render renders
-    world_renderer->render_world_compute();
-
-    // Render entities that are in active chunks
-    if (entity_manager && world)
+    if (render_world)
     {
-        auto *active_chunks = world->get_active_chunks();
-        if (active_chunks)
+        world_renderer->render_world_compute();
+
+        // Render entities that are in active chunks
+        if (entity_manager && world)
         {
-            entities_renderer->render_entities_in_chunks(*active_chunks);
-        }
-        else
-        {
-            entities_renderer->render_entities();
+            auto *active_chunks = world->get_active_chunks();
+            if (active_chunks)
+            {
+                entities_renderer->render_entities_in_chunks(*active_chunks);
+            }
+            else
+            {
+                entities_renderer->render_entities();
+            }
         }
     }
 
@@ -76,7 +92,14 @@ bool IRenderer::render_everything()
 
     // ImGui UI rendering
     imgui_new_frame();
-    ui_renderer->render_ui();
+    if (render_in_game_ui)
+    {
+        ui_renderer->render_ui();
+    }
+    if (overlay_ui)
+    {
+        overlay_ui();
+    }
     imgui_render();
 
     glfwSwapBuffers(window);
@@ -250,6 +273,19 @@ bool IRenderer::is_fullscreen_map_open() const
     if (ui_renderer)
         return ui_renderer->is_fullscreen_map_open();
     return false;
+}
+
+Menu_Actions IRenderer::render_menu_screen(Menu_Screen screen,
+                                           bool enter_pressed,
+                                           bool escape_pressed,
+                                           Menu_Options_Model &options)
+{
+    if (ui_renderer)
+    {
+        return ui_renderer->render_menu_screen(screen, enter_pressed, escape_pressed, options);
+    }
+
+    return Menu_Actions{};
 }
 
 void IRenderer::print_render_info()

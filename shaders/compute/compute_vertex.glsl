@@ -12,6 +12,7 @@ layout(std430, binding = 0) readonly buffer Vertices {
 
 uniform mat4 view_projection;
 out vec4 vColor;
+out vec2 vWorldPos;
 
 void main() {
     Vertex v = vertices[gl_VertexID];
@@ -19,4 +20,5 @@ void main() {
     gl_Position = view_projection * vec4(v.position, 0.0, 1.0);
 
     vColor = v.color;
+    vWorldPos = v.position;
 }

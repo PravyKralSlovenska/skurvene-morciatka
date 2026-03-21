@@ -1,5 +1,5 @@
 {
-  "tests": 76,
+  "tests": 86,
   "name": "AllTests",
   "testsuites": [
     {
@@ -280,6 +280,80 @@
           "name": "AccelerationInFullSimulation",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/falling_sand_test.cpp",
           "line": 896
+        }
+      ]
+    },
+    {
+      "name": "GunWandTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "HotbarContainsGunInDefaultSlot",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
+          "line": 61
+        }
+      ]
+    },
+    {
+      "name": "ProjectileTest",
+      "tests": 3,
+      "testsuite": [
+        {
+          "name": "EntityManagerCreatesProjectileWithPayload",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
+          "line": 71
+        },
+        {
+          "name": "ProjectileMovesAndExpiresByLifetime",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
+          "line": 87
+        },
+        {
+          "name": "ProjectileCollisionDeletesParticlesInRadiusTwo",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
+          "line": 100
+        }
+      ]
+    },
+    {
+      "name": "DamageSystemTest",
+      "tests": 5,
+      "testsuite": [
+        {
+          "name": "PlayerProjectileDamagesEnemyDevushkiAndBoss",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
+          "line": 135
+        },
+        {
+          "name": "EnemyOwnedProjectileDamagesPlayer",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
+          "line": 162
+        },
+        {
+          "name": "PlayerOwnedProjectileDoesNotDamagePlayer",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
+          "line": 178
+        },
+        {
+          "name": "EnemyMeleeAttackDamagesPlayer",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
+          "line": 194
+        },
+        {
+          "name": "PlayerProjectileCanKillDevushki",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
+          "line": 217
+        }
+      ]
+    },
+    {
+      "name": "CoinDropTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "EnemyDeathDropsCollectableGoldAndSilver",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
+          "line": 244
         }
       ]
     },

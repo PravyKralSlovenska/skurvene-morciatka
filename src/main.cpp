@@ -1,5 +1,6 @@
 // Standartne cpp kniznice
 #include <iostream>
+#include <functional>
 
 // Moje main header files
 #include "engine/renderer/renderer.hpp"
@@ -77,6 +78,7 @@ int main()
     controls.set_time_manager(&time_manager);
     controls.set_camera(&camera);
     controls.set_renderer(&render);
+    controls.set_entity_manager(&entity_manager);
 
     // world.entities.push_back(player);
     // world.set_time_manager(&time_manager);
@@ -92,35 +94,164 @@ int main()
     // audio_manager.send_execute(Pending_Execute::Operations::PLAY, "background music");
 
     // game loop
+    GAME_STATES game_state = MENU;
+    GAME_STATES options_return_state = MENU;
+    bool escape_was_down = false;
+    bool enter_was_down = false;
+
+    SpawnConfig spawn_cfg = entity_manager.get_spawn_config();
+    float option_enemy_difficulty = spawn_cfg.difficulty_multiplier;
+    float option_spawn_interval = spawn_cfg.spawn_interval;
+    int option_max_enemies = spawn_cfg.max_enemies;
+    bool option_spawn_enabled = spawn_cfg.spawn_enabled;
+
+    time_manager.pause();
+
     while (!render.should_close())
     {
-        // vsetko by malo dostavat parameter delta_time
-        float delta_time = static_cast<float>(time_manager.get_delta_time());
-
         // time
         time_manager.time_update();
 
-        // controls
-        controls.handle_input();
+        // vsetko by malo dostavat parameter delta_time
+        float delta_time = static_cast<float>(time_manager.get_delta_time());
 
-        // update sveta
-        if (!time_manager.paused())
+        const bool escape_down = glfwGetKey(glfw_window, GLFW_KEY_ESCAPE) == GLFW_PRESS;
+        const bool enter_down = glfwGetKey(glfw_window, GLFW_KEY_ENTER) == GLFW_PRESS;
+        const bool escape_pressed = escape_down && !escape_was_down;
+        const bool enter_pressed = enter_down && !enter_was_down;
+
+        bool render_world = true;
+        bool render_in_game_ui = false;
+        std::function<void()> overlay_ui = nullptr;
+        Menu_Actions menu_actions;
+
+        Menu_Screen menu_screen = Menu_Screen::NONE;
+        Menu_Options_Model options_model = {
+            option_enemy_difficulty,
+            option_spawn_interval,
+            option_max_enemies,
+            option_spawn_enabled,
+            render.get_fullscreen_state()};
+
+        switch (game_state)
         {
-            world.update(delta_time);
+        case MENU:
+            time_manager.pause();
+            render_in_game_ui = false;
+            menu_screen = Menu_Screen::MENU;
+            break;
+
+        case GAME:
+            render_in_game_ui = true;
+
+            if (escape_pressed)
+            {
+                game_state = PAUSE;
+                time_manager.pause();
+            }
+            else
+            {
+                controls.handle_input();
+
+                // update sveta
+                if (!time_manager.paused())
+                {
+                    world.update(delta_time);
+                }
+
+                // update entities (enemies, NPCs, etc. - not the player)
+                if (!time_manager.paused())
+                {
+                    entity_manager.update(delta_time);
+                }
+            }
+            break;
+
+        case PAUSE:
+            time_manager.pause();
+            render_in_game_ui = false;
+            menu_screen = Menu_Screen::PAUSE;
+            break;
+
+        case OPTIONS:
+            time_manager.pause();
+            render_in_game_ui = false;
+            menu_screen = Menu_Screen::OPTIONS;
+            break;
+
+        case LOADING:
+            time_manager.pause();
+            menu_screen = Menu_Screen::LOADING;
+            break;
+
+        case END:
+            menu_actions.quit_game = true;
+            break;
+        }
+
+        if (menu_screen != Menu_Screen::NONE)
+        {
+            overlay_ui = [&]()
+            {
+                menu_actions = render.render_menu_screen(menu_screen, enter_pressed, escape_pressed, options_model);
+            };
         }
 
         // camera update
         camera.follow_target(player->coords, 1);
         camera.update();
 
-        // update entities (enemies, NPCs, etc. - not the player)
-        if (!time_manager.paused())
+        // render frame
+        render.render_everything(render_world, render_in_game_ui, overlay_ui);
+
+        option_enemy_difficulty = options_model.enemy_difficulty;
+        option_spawn_interval = options_model.spawn_interval;
+        option_max_enemies = options_model.max_enemies;
+        option_spawn_enabled = options_model.spawn_enabled;
+
+        if (menu_actions.toggle_fullscreen)
         {
-            entity_manager.update(delta_time);
+            render.toggle_fullscreen();
         }
 
-        // render everything
-        render.render_everything();
+        if (menu_actions.open_options)
+        {
+            options_return_state = game_state;
+            game_state = OPTIONS;
+        }
+
+        if (menu_actions.start_game)
+        {
+            game_state = GAME;
+            time_manager.resume();
+        }
+
+        if (menu_actions.resume_game)
+        {
+            game_state = GAME;
+            time_manager.resume();
+        }
+
+        if (menu_actions.back_from_options)
+        {
+            game_state = options_return_state;
+            if (game_state == GAME)
+                time_manager.resume();
+        }
+
+        if (menu_actions.quit_to_menu)
+        {
+            game_state = MENU;
+            time_manager.pause();
+        }
+
+        if (menu_actions.quit_game)
+        {
+            glfwSetWindowShouldClose(glfw_window, true);
+        }
+
+        escape_was_down = escape_down;
+        enter_was_down = enter_down;
     }
 
     // audio_manager.send_execute(Pending_Execute::Operations::STOP);

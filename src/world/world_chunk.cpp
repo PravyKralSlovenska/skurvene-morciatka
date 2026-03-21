@@ -158,6 +158,14 @@ void Chunk::set_worldcell(int index, Particle_Type particle, bool is_static)
         chunk_data[index].set_particle(create_smoke(is_static));
         break;
 
+    case Particle_Type::WOOD:
+        chunk_data[index].set_particle(create_wood(is_static));
+        break;
+
+    case Particle_Type::FIRE:
+        chunk_data[index].set_particle(create_fire(is_static));
+        break;
+
     case Particle_Type::STONE:
         chunk_data[index].set_particle(create_stone(is_static));
         break;

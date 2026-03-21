@@ -104,6 +104,56 @@ Particle create_smoke(bool is_static)
     return p;
 }
 
+Particle create_wood(bool is_static)
+{
+    Particle_Physics physics;
+    physics.density = 700.0f;       // kg/m^3 - typical dry wood
+    physics.temperature = 293.0f;   // Room temperature
+    physics.melting_point = 873.0f; // Char/pyrolysis starts around 600C
+    physics.boiling_point = 0.0f;   // N/A in this simplified model
+    physics.thermal_conductivity = 0.12f;
+    physics.specific_heat = 1700.0f;
+    physics.viscosity = 0.0f;
+    physics.dispersion_rate = 0;
+
+    Particle p(
+        Particle_Type::WOOD,
+        Particle_State::SOLID,
+        Particle_Movement::STATIC,
+        Color(139, 94, 60, 1.0),
+        physics);
+
+    p.set_static(is_static);
+    p.flags.is_flammable = 1;
+    return p;
+}
+
+Particle create_fire(bool is_static)
+{
+    Particle_Physics physics;
+    physics.density = 0.4f;        // Very light, rises like hot gas
+    physics.temperature = 1100.0f; // Hot flame core
+    physics.melting_point = 0.0f;  // N/A
+    physics.boiling_point = 0.0f;  // N/A
+    physics.thermal_conductivity = 0.08f;
+    physics.specific_heat = 1200.0f;
+    physics.viscosity = 0.0f;
+    physics.dispersion_rate = 2;
+
+    Particle p(
+        Particle_Type::FIRE,
+        Particle_State::GAS,
+        Particle_Movement::MOVE_GAS,
+        Color(255, 110, 30, 0.9),
+        physics);
+
+    p.set_static(is_static);
+    p.flags.is_reactive = 1;
+    p.flags.is_on_fire = 1;
+    p.lifetime = 90;
+    return p;
+}
+
 Particle create_stone(bool is_static)
 {
     Particle_Physics physics;

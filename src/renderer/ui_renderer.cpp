@@ -9,11 +9,261 @@
 #include "engine/time_manager.hpp"
 #include "others/GLOBALS.hpp"
 
+#include <algorithm>
+#include <cstdint>
+#include <cmath>
+
+#include <glad/gl.h>
+#include "stb/stb_image.h"
+
+static constexpr float MENU_WINDOW_WIDTH = 440.0f;
+static constexpr float MENU_WINDOW_HEIGHT = 320.0f;
+static constexpr float OPTIONS_WINDOW_WIDTH = 520.0f;
+static constexpr float OPTIONS_WINDOW_HEIGHT = 420.0f;
+
+UI_Renderer::~UI_Renderer()
+{
+    for (auto &[key, texture_id] : store_offer_textures)
+    {
+        if (texture_id != 0)
+        {
+            glDeleteTextures(1, &texture_id);
+        }
+    }
+}
+
+unsigned int UI_Renderer::load_ui_texture(const std::string &path)
+{
+    int width = 0;
+    int height = 0;
+    int channels = 0;
+
+    stbi_set_flip_vertically_on_load(false);
+    unsigned char *data = stbi_load(path.c_str(), &width, &height, &channels, 4);
+    if (!data)
+        return 0;
+
+    unsigned int texture_id = 0;
+    glGenTextures(1, &texture_id);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    stbi_image_free(data);
+    return texture_id;
+}
+
+unsigned int UI_Renderer::create_solid_color_texture(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+    const unsigned char pixel[4] = {r, g, b, a};
+    unsigned int texture_id = 0;
+    glGenTextures(1, &texture_id);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixel);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    return texture_id;
+}
+
+bool UI_Renderer::ensure_store_offer_textures_loaded()
+{
+    if (store_offer_textures_loaded)
+        return true;
+
+    store_offer_textures["../items/devushki_heal.png"] = load_ui_texture("../items/devushki_heal.png");
+    store_offer_textures["../items/devushki_ammo.png"] = load_ui_texture("../items/devushki_ammo.png");
+    store_offer_textures["builtin://wand_fire"] = create_solid_color_texture(255, 90, 20);
+    store_offer_textures["builtin://wand_wood"] = create_solid_color_texture(139, 94, 60);
+    store_offer_textures["builtin://wand_empty"] = create_solid_color_texture(210, 210, 210);
+
+    store_offer_textures_loaded = true;
+    return true;
+}
+
 void UI_Renderer::set_player(Player *player) { this->player = player; }
 void UI_Renderer::set_camera(Camera *camera) { this->camera = camera; }
 void UI_Renderer::set_world(World *world) { this->world = world; }
 void UI_Renderer::set_time_manager(Time_Manager *time_manager) { this->time_manager = time_manager; }
 void UI_Renderer::set_entity_manager(Entity_Manager *entity_manager) { this->entity_manager = entity_manager; }
+
+void UI_Renderer::center_next_window(float width, float height)
+{
+    ImGuiIO &io = ImGui::GetIO();
+    ImGui::SetNextWindowSize(ImVec2(width, height), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(
+        ImVec2((io.DisplaySize.x - width) * 0.5f, (io.DisplaySize.y - height) * 0.5f),
+        ImGuiCond_Always);
+}
+
+void UI_Renderer::render_main_menu(Menu_Actions &actions)
+{
+    center_next_window(MENU_WINDOW_WIDTH, MENU_WINDOW_HEIGHT);
+
+    ImGuiWindowFlags flags =
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoMove;
+
+    if (ImGui::Begin("Main Menu", nullptr, flags))
+    {
+        ImGui::Text("Morciatko");
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        if (ImGui::Button("Start Game", ImVec2(-1.0f, 40.0f)))
+            actions.start_game = true;
+
+        if (ImGui::Button("Options", ImVec2(-1.0f, 40.0f)))
+            actions.open_options = true;
+
+        if (ImGui::Button("Quit", ImVec2(-1.0f, 40.0f)))
+            actions.quit_game = true;
+
+        ImGui::Spacing();
+        ImGui::TextDisabled("Enter: Start   Esc: Quit");
+    }
+    ImGui::End();
+}
+
+void UI_Renderer::render_pause_menu(Menu_Actions &actions)
+{
+    center_next_window(MENU_WINDOW_WIDTH, MENU_WINDOW_HEIGHT);
+
+    ImGuiWindowFlags flags =
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoMove;
+
+    if (ImGui::Begin("Pause Menu", nullptr, flags))
+    {
+        ImGui::Text("Game is paused");
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        if (ImGui::Button("Resume", ImVec2(-1.0f, 40.0f)))
+            actions.resume_game = true;
+
+        if (ImGui::Button("Options", ImVec2(-1.0f, 40.0f)))
+            actions.open_options = true;
+
+        if (ImGui::Button("Main Menu", ImVec2(-1.0f, 40.0f)))
+            actions.quit_to_menu = true;
+
+        if (ImGui::Button("Quit", ImVec2(-1.0f, 40.0f)))
+            actions.quit_game = true;
+
+        ImGui::Spacing();
+        ImGui::TextDisabled("Esc: Resume");
+    }
+    ImGui::End();
+}
+
+void UI_Renderer::render_options_menu(Menu_Actions &actions, Menu_Options_Model &options)
+{
+    center_next_window(OPTIONS_WINDOW_WIDTH, OPTIONS_WINDOW_HEIGHT);
+
+    ImGuiWindowFlags flags =
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoMove;
+
+    if (ImGui::Begin("Options", nullptr, flags))
+    {
+        ImGui::Text("Gameplay");
+        ImGui::Separator();
+
+        if (ImGui::SliderFloat("Enemy difficulty", &options.enemy_difficulty, 0.5f, 5.0f, "%.2f") && entity_manager)
+            entity_manager->set_difficulty(options.enemy_difficulty);
+
+        if (ImGui::SliderFloat("Enemy spawn interval", &options.spawn_interval, 0.2f, 10.0f, "%.2f s") && entity_manager)
+            entity_manager->set_spawn_interval(options.spawn_interval);
+
+        if (ImGui::SliderInt("Max enemies", &options.max_enemies, 1, 200) && entity_manager)
+            entity_manager->set_max_enemies(options.max_enemies);
+
+        if (ImGui::Checkbox("Enable enemy spawning", &options.spawn_enabled) && entity_manager)
+            entity_manager->set_spawn_enabled(options.spawn_enabled);
+
+        ImGui::Spacing();
+        ImGui::Text("Display");
+        ImGui::Separator();
+        ImGui::Text("Fullscreen: %s", options.fullscreen_enabled ? "ON" : "OFF");
+
+        if (ImGui::Button("Toggle Fullscreen (F11)", ImVec2(-1.0f, 34.0f)))
+            actions.toggle_fullscreen = true;
+
+        ImGui::Spacing();
+
+        if (ImGui::Button("Back", ImVec2(-1.0f, 40.0f)))
+            actions.back_from_options = true;
+
+        ImGui::TextDisabled("Esc: Back");
+    }
+    ImGui::End();
+}
+
+void UI_Renderer::render_loading_screen()
+{
+    center_next_window(MENU_WINDOW_WIDTH, MENU_WINDOW_HEIGHT * 0.45f);
+
+    ImGuiWindowFlags flags =
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoMove;
+
+    if (ImGui::Begin("Loading", nullptr, flags))
+    {
+        ImGui::Text("Loading...");
+    }
+    ImGui::End();
+}
+
+Menu_Actions UI_Renderer::render_menu_screen(Menu_Screen screen,
+                                             bool enter_pressed,
+                                             bool escape_pressed,
+                                             Menu_Options_Model &options)
+{
+    Menu_Actions actions;
+
+    switch (screen)
+    {
+    case Menu_Screen::MENU:
+        if (enter_pressed)
+            actions.start_game = true;
+        if (escape_pressed)
+            actions.quit_game = true;
+        render_main_menu(actions);
+        break;
+
+    case Menu_Screen::PAUSE:
+        if (escape_pressed)
+            actions.resume_game = true;
+        render_pause_menu(actions);
+        break;
+
+    case Menu_Screen::OPTIONS:
+        if (escape_pressed)
+            actions.back_from_options = true;
+        render_options_menu(actions, options);
+        break;
+
+    case Menu_Screen::LOADING:
+        render_loading_screen();
+        break;
+
+    case Menu_Screen::NONE:
+    default:
+        break;
+    }
+
+    return actions;
+}
 
 void UI_Renderer::render_ui()
 {
@@ -25,6 +275,8 @@ void UI_Renderer::render_ui()
         render_hotbar();
     if (entity_manager)
         render_devushki_objective();
+    if (entity_manager)
+        render_store_offers();
 
     // Column locations panel
     if (world && show_debug_info)
@@ -154,6 +406,20 @@ void UI_Renderer::render_debug_overlay()
             ImGui::Text("  Enemies: %d", entity_manager->get_enemy_count());
             ImGui::Text("  NPCs: %d", entity_manager->get_devushki_count());
             ImGui::Text("  Bosses: %d", entity_manager->get_boss_count());
+            ImGui::Text("Coins: %d gold, %d silver",
+                        entity_manager->get_collected_gold_coins(),
+                        entity_manager->get_collected_silver_coins());
+            ImGui::Text("Ammo: %d", entity_manager->get_player_ammo());
+
+            const Store_Offer *offer = entity_manager->get_nearest_store_offer();
+            if (offer)
+            {
+                ImGui::TextColored(ImVec4(1.0f, 0.9f, 0.3f, 1.0f),
+                                   "Store nearby: E to buy %s for %d gold, %d silver",
+                                   offer->item_name.c_str(),
+                                   offer->price_gold,
+                                   offer->price_silver);
+            }
         }
 
         // Player info
@@ -717,9 +983,6 @@ void UI_Renderer::draw_map_content(ImDrawList *draw_list, ImVec2 pos, float map_
     }
 }
 
-// ============================================================================
-// DEVUSHKI OBJECTIVE - top-right corner
-// ============================================================================
 void UI_Renderer::render_devushki_objective()
 {
     if (!entity_manager)
@@ -741,7 +1004,7 @@ void UI_Renderer::render_devushki_objective()
         ImGuiWindowFlags_NoNav;
 
     float padding = 10.0f;
-    ImGui::SetNextWindowPos(ImVec2(screen_w - 260.0f - padding, padding), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(screen_w - 500.0f - padding, padding), ImGuiCond_Always);
     ImGui::SetNextWindowBgAlpha(0.75f);
 
     if (ImGui::Begin("##DevushkiObjective", nullptr, flags))
@@ -750,6 +1013,7 @@ void UI_Renderer::render_devushki_objective()
         {
             ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.4f, 1.0f), "OBJECTIVE COMPLETE!");
             ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "All devushki saved! (%d/%d)", obj.collected, obj.total_to_collect);
+            ImGui::TextColored(ImVec4(1.0f, 0.45f, 0.2f, 1.0f), "BOSS INCOMING!");
         }
         else
         {
@@ -765,4 +1029,56 @@ void UI_Renderer::render_devushki_objective()
         }
     }
     ImGui::End();
+}
+
+void UI_Renderer::render_store_offers()
+{
+    if (!entity_manager || !camera)
+        return;
+
+    ensure_store_offer_textures_loaded();
+
+    const std::vector<Store_Offer> offers = entity_manager->get_active_store_offers();
+    if (offers.empty())
+        return;
+
+    ImGuiIO &io = ImGui::GetIO();
+    ImDrawList *draw_list = ImGui::GetForegroundDrawList();
+
+    const glm::vec2 cam_pos = camera->get_position();
+    const float zoom = camera->get_zoom();
+    const float t = static_cast<float>(ImGui::GetTime());
+
+    for (const Store_Offer &offer : offers)
+    {
+        const float bob = std::sin(t * 2.0f + static_cast<float>(offer.structure_hash) * 0.003f) * 6.0f;
+        const float screen_x = (static_cast<float>(offer.display_world_pos.x) - cam_pos.x) * zoom + io.DisplaySize.x * 0.5f;
+        const float screen_y = (static_cast<float>(offer.display_world_pos.y) - cam_pos.y) * zoom + io.DisplaySize.y * 0.5f - bob;
+
+        if (screen_x < -120.0f || screen_x > io.DisplaySize.x + 120.0f ||
+            screen_y < -120.0f || screen_y > io.DisplaySize.y + 120.0f)
+        {
+            continue;
+        }
+
+        const float icon_size = std::clamp(48.0f * zoom, 32.0f, 72.0f);
+        ImVec2 min(screen_x - icon_size * 0.5f, screen_y - icon_size * 0.5f);
+        ImVec2 max(screen_x + icon_size * 0.5f, screen_y + icon_size * 0.5f);
+
+        unsigned int texture_id = 0;
+        auto tex_it = store_offer_textures.find(offer.icon_path);
+        if (tex_it != store_offer_textures.end())
+            texture_id = tex_it->second;
+
+        if (texture_id != 0)
+        {
+            draw_list->AddImage(static_cast<ImTextureID>(texture_id), min, max);
+        }
+
+        const std::string label = offer.item_name + " - " + std::to_string(offer.price_gold) + "g " + std::to_string(offer.price_silver) + "s";
+        ImVec2 text_size = ImGui::CalcTextSize(label.c_str());
+        ImVec2 text_pos(screen_x - text_size.x * 0.5f, max.y + 4.0f);
+        draw_list->AddText(ImVec2(text_pos.x + 1.0f, text_pos.y + 1.0f), IM_COL32(0, 0, 0, 220), label.c_str());
+        draw_list->AddText(text_pos, IM_COL32(255, 245, 180, 255), label.c_str());
+    }
 }

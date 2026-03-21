@@ -3088,6 +3088,7 @@ CMakeFiles/morciatko.dir/src/controls.cpp.o: /home/jakub/programko/cpp/skurvene-
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/controls.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/particle/particle.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/player/entity.hpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/player/entity_manager.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/player/inventory.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/player/item.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/player/sprite_animation.hpp \
@@ -5707,10 +5708,12 @@ CMakeFiles/morciatko.dir/src/player/entity.cpp.o: /home/jakub/programko/cpp/skur
   /usr/include/bits/wctype-wchar.h \
   /usr/include/bits/wordsize.h \
   /usr/include/bits/xopen_lim.h \
+  /usr/include/c++/15.2.1/algorithm \
   /usr/include/c++/15.2.1/array \
   /usr/include/c++/15.2.1/backward/auto_ptr.h \
   /usr/include/c++/15.2.1/backward/binders.h \
   /usr/include/c++/15.2.1/bit \
+  /usr/include/c++/15.2.1/bits/algorithmfwd.h \
   /usr/include/c++/15.2.1/bits/align.h \
   /usr/include/c++/15.2.1/bits/alloc_traits.h \
   /usr/include/c++/15.2.1/bits/allocated_ptr.h \
@@ -5768,10 +5771,12 @@ CMakeFiles/morciatko.dir/src/player/entity.cpp.o: /home/jakub/programko/cpp/skur
   /usr/include/c++/15.2.1/bits/specfun.h \
   /usr/include/c++/15.2.1/bits/std_abs.h \
   /usr/include/c++/15.2.1/bits/std_function.h \
+  /usr/include/c++/15.2.1/bits/stl_algo.h \
   /usr/include/c++/15.2.1/bits/stl_algobase.h \
   /usr/include/c++/15.2.1/bits/stl_bvector.h \
   /usr/include/c++/15.2.1/bits/stl_construct.h \
   /usr/include/c++/15.2.1/bits/stl_function.h \
+  /usr/include/c++/15.2.1/bits/stl_heap.h \
   /usr/include/c++/15.2.1/bits/stl_iterator.h \
   /usr/include/c++/15.2.1/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/15.2.1/bits/stl_iterator_base_types.h \
@@ -5835,6 +5840,7 @@ CMakeFiles/morciatko.dir/src/player/entity.cpp.o: /home/jakub/programko/cpp/skur
   /usr/include/c++/15.2.1/numeric \
   /usr/include/c++/15.2.1/ostream \
   /usr/include/c++/15.2.1/pstl/execution_defs.h \
+  /usr/include/c++/15.2.1/pstl/glue_algorithm_defs.h \
   /usr/include/c++/15.2.1/pstl/glue_memory_defs.h \
   /usr/include/c++/15.2.1/pstl/glue_numeric_defs.h \
   /usr/include/c++/15.2.1/pstl/pstl_config.h \
@@ -6054,6 +6060,7 @@ CMakeFiles/morciatko.dir/src/player/entity_manager.cpp.o: /home/jakub/programko/
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/player/wand.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/structure.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world.hpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell_gpu.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_chunk.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/others/GLOBALS.hpp \
@@ -8306,7 +8313,11 @@ CMakeFiles/morciatko.dir/src/renderer/renderer.cpp.o: /home/jakub/programko/cpp/
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/camera.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/controls.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/particle/particle.hpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/player/entity.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/player/entity_manager.hpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/player/inventory.hpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/player/item.hpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/player/sprite_animation.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/player/wand.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/renderer/buffers/buffer.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/renderer/buffers/vertex_array_object.hpp \
@@ -9802,6 +9813,7 @@ CMakeFiles/morciatko.dir/src/renderer/text_renderer.cpp.o: /home/jakub/programko
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/syslimits.h
 
 CMakeFiles/morciatko.dir/src/renderer/ui_renderer.cpp.o: /home/jakub/programko/cpp/skurvene-morciatka/src/renderer/ui_renderer.cpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/KHR/khrplatform.h \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/camera.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/particle/particle.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/player/entity.hpp \
@@ -9817,10 +9829,12 @@ CMakeFiles/morciatko.dir/src/renderer/ui_renderer.cpp.o: /home/jakub/programko/c
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell_gpu.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_chunk.hpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/glad/gl.h \
   /home/jakub/programko/cpp/skurvene-morciatka/include/imgui/imconfig.h \
   /home/jakub/programko/cpp/skurvene-morciatka/include/imgui/imgui.h \
   /home/jakub/programko/cpp/skurvene-morciatka/include/others/GLOBALS.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/others/utils.hpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/stb/stb_image.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
   /usr/include/asm-generic/errno-base.h \
@@ -10055,6 +10069,7 @@ CMakeFiles/morciatko.dir/src/renderer/ui_renderer.cpp.o: /home/jakub/programko/c
   /usr/include/c++/15.2.1/random \
   /usr/include/c++/15.2.1/ratio \
   /usr/include/c++/15.2.1/stdexcept \
+  /usr/include/c++/15.2.1/stdlib.h \
   /usr/include/c++/15.2.1/streambuf \
   /usr/include/c++/15.2.1/string \
   /usr/include/c++/15.2.1/string_view \

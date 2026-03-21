@@ -1567,6 +1567,30 @@ tests/unit/falling_sand_test.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/falling_sand_test.cpp.s
 .PHONY : tests/unit/falling_sand_test.cpp.s
 
+tests/unit/gun_projectile_test.o: tests/unit/gun_projectile_test.cpp.o
+.PHONY : tests/unit/gun_projectile_test.o
+
+# target to build an object file
+tests/unit/gun_projectile_test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/gun_projectile_test.cpp.o
+.PHONY : tests/unit/gun_projectile_test.cpp.o
+
+tests/unit/gun_projectile_test.i: tests/unit/gun_projectile_test.cpp.i
+.PHONY : tests/unit/gun_projectile_test.i
+
+# target to preprocess a source file
+tests/unit/gun_projectile_test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/gun_projectile_test.cpp.i
+.PHONY : tests/unit/gun_projectile_test.cpp.i
+
+tests/unit/gun_projectile_test.s: tests/unit/gun_projectile_test.cpp.s
+.PHONY : tests/unit/gun_projectile_test.s
+
+# target to generate assembly for a file
+tests/unit/gun_projectile_test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/gun_projectile_test.cpp.s
+.PHONY : tests/unit/gun_projectile_test.cpp.s
+
 tests/unit/particle_test.o: tests/unit/particle_test.cpp.o
 .PHONY : tests/unit/particle_test.o
 
@@ -1856,6 +1880,9 @@ help:
 	@echo "... tests/unit/falling_sand_test.o"
 	@echo "... tests/unit/falling_sand_test.i"
 	@echo "... tests/unit/falling_sand_test.s"
+	@echo "... tests/unit/gun_projectile_test.o"
+	@echo "... tests/unit/gun_projectile_test.i"
+	@echo "... tests/unit/gun_projectile_test.s"
 	@echo "... tests/unit/particle_test.o"
 	@echo "... tests/unit/particle_test.i"
 	@echo "... tests/unit/particle_test.s"

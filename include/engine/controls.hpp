@@ -9,6 +9,7 @@ class Time_Manager;
 class Audio_Manager;
 class Camera;
 class IRenderer;
+class Entity_Manager;
 class GLFWwindow;
 
 static float zoom = 1.0;
@@ -18,13 +19,14 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 class Controls
 {
 private:
-    GLFWwindow *window;
-    Player *player;
-    World *world;
-    Time_Manager *time_manager;
-    Audio_Manager *audio_manager;
-    Camera *camera;
-    IRenderer *renderer;
+    GLFWwindow *window = nullptr;
+    Player *player = nullptr;
+    World *world = nullptr;
+    Time_Manager *time_manager = nullptr;
+    Audio_Manager *audio_manager = nullptr;
+    Camera *camera = nullptr;
+    IRenderer *renderer = nullptr;
+    Entity_Manager *entity_manager = nullptr;
 
 public:
     glm::vec2 cursor_position;
@@ -41,6 +43,7 @@ public:
     void set_audio_manager(Audio_Manager *audio_manager);
     void set_camera(Camera *camera);
     void set_renderer(IRenderer *renderer);
+    void set_entity_manager(Entity_Manager *entity_manager);
 
     // inputs
     void handle_input();
