@@ -49,6 +49,12 @@ void Structure::set_cell(int x, int y, Particle_Type type, bool is_static)
     case Particle_Type::WATER:
         p = create_water(is_static);
         break;
+    case Particle_Type::ICE:
+        p = create_ice(is_static);
+        break;
+    case Particle_Type::WATER_VAPOR:
+        p = create_water_vapor(is_static);
+        break;
     case Particle_Type::SMOKE:
         p = create_smoke(is_static);
         break;

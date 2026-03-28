@@ -232,6 +232,10 @@ public:
     void set_lifetime(float seconds);
     float get_lifetime() const;
     float get_age() const;
+    void set_gravity_multiplier(float value);
+    float get_gravity_multiplier() const;
+    void set_air_drag(float value);
+    float get_air_drag() const;
 };
 
 class Enemy : public Entity
@@ -419,8 +423,24 @@ private:
     float slam_damage = 40.0f;
     float attack_cooldown = 1.5f;
     float slam_cooldown = 5.0f;
+    float fire_attack_range = 280.0f;
+    float fireball_damage = 18.0f;
+    float fireball_speed = 520.0f;
+    float fireball_cooldown = 2.1f;
     float time_since_attack = 0.0f;
     float time_since_slam = 0.0f;
+    float time_since_fireball = 0.0f;
+    float teleport_cooldown = 2.8f;
+    float time_since_teleport = 0.0f;
+    float teleport_min_distance = 120.0f;
+    float teleport_max_distance = 240.0f;
+
+    // Boss queues combat actions; Entity_Manager executes them in-world.
+    bool pending_fireball = false;
+    glm::vec2 pending_fireball_origin = {0.0f, 0.0f};
+    glm::vec2 pending_fireball_velocity = {0.0f, 0.0f};
+    float pending_fireball_damage = 0.0f;
+    Particle_Type pending_fireball_payload = Particle_Type::FIRE;
 
     // AI timing
     float state_timer = 0.0f;
@@ -443,6 +463,9 @@ private:
     bool should_enrage() const;
     bool can_attack() const;
     bool can_slam() const;
+    bool can_fireball() const;
+    void queue_fireball();
+    glm::ivec2 choose_teleport_position_around_target(const glm::vec2 &preferred_dir) const;
 
     // Movement helpers
     void move_towards(const glm::ivec2 &target, float delta_time);
@@ -472,4 +495,7 @@ public:
     bool is_in_attack_range(const glm::ivec2 &target) const;
     bool is_in_detection_range(const glm::ivec2 &target) const;
     bool get_is_enraged() const;
+    bool consume_pending_fireball(glm::vec2 &out_origin, glm::vec2 &out_velocity,
+                                  float &out_damage, Particle_Type &out_payload);
+    bool try_teleport_dodge_from(const glm::ivec2 &threat_pos, const glm::vec2 &threat_velocity);
 };

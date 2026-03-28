@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <limits>
+#include <vector>
 #include "engine/player/entity.hpp"
 #include "engine/world/world.hpp"
 #include "engine/world/world_chunk.hpp"
@@ -380,6 +381,8 @@ void Entity_Manager::update(float delta_time)
         update_entity(entity.get(), delta_time);
     }
 
+    process_boss_special_actions();
+
     // Resolve projectile impact damage after movement updates.
     resolve_projectile_entity_hits();
     resolve_hostile_melee_hits();
@@ -666,6 +669,87 @@ void Entity_Manager::resolve_hostile_melee_hits()
     }
 }
 
+void Entity_Manager::process_boss_special_actions()
+{
+    if (!player || !player->get_is_alive())
+        return;
+
+    std::vector<Projectile *> player_projectiles;
+    std::vector<Boss *> bosses;
+    player_projectiles.reserve(32);
+    bosses.reserve(8);
+
+    for (auto &[id, entity] : entities)
+    {
+        if (!entity || !entity->is_active || !entity->get_is_alive())
+            continue;
+
+        if (entity->type == Entity_Type::PROJECTILE)
+        {
+            Projectile *projectile = static_cast<Projectile *>(entity.get());
+            if (projectile->get_owner_type() == Entity_Type::PLAYER)
+            {
+                player_projectiles.push_back(projectile);
+            }
+            continue;
+        }
+
+        if (entity->type == Entity_Type::BOSS)
+        {
+            bosses.push_back(static_cast<Boss *>(entity.get()));
+        }
+    }
+
+    for (Boss *boss : bosses)
+    {
+        if (!boss)
+            continue;
+
+        for (Projectile *incoming : player_projectiles)
+        {
+            if (!incoming || !incoming->is_active || !incoming->get_is_alive())
+                continue;
+
+            const glm::vec2 to_boss = glm::vec2(boss->coords - incoming->coords);
+            const float dist_sq = to_boss.x * to_boss.x + to_boss.y * to_boss.y;
+            if (dist_sq > 260.0f * 260.0f)
+                continue;
+
+            const glm::vec2 projectile_velocity = incoming->velocity;
+            const float vel_len = std::sqrt(projectile_velocity.x * projectile_velocity.x + projectile_velocity.y * projectile_velocity.y);
+            if (vel_len > 0.001f)
+            {
+                const glm::vec2 vel_norm = projectile_velocity / vel_len;
+                if (glm::dot(vel_norm, to_boss) <= 0.0f)
+                    continue;
+            }
+
+            if (boss->try_teleport_dodge_from(incoming->coords, incoming->velocity))
+                break;
+        }
+
+        glm::vec2 shot_origin;
+        glm::vec2 shot_velocity;
+        float shot_damage = 0.0f;
+        Particle_Type shot_payload = Particle_Type::FIRE;
+
+        if (boss->consume_pending_fireball(shot_origin, shot_velocity, shot_damage, shot_payload))
+        {
+            Projectile *boss_projectile = create_projectile(
+                shot_origin,
+                shot_velocity,
+                shot_payload,
+                shot_damage,
+                Entity_Type::BOSS);
+
+            if (boss_projectile)
+            {
+                boss_projectile->set_lifetime(4.0f);
+            }
+        }
+    }
+}
+
 void Entity_Manager::resolve_projectile_entity_hits()
 {
     for (auto &[id, entity] : entities)
@@ -718,8 +802,18 @@ void Entity_Manager::update_spawner(float delta_time)
     {
         spawn_timer = 0.0f;
 
-        // Check if we can spawn more enemies
-        if (get_enemy_count() < spawn_config.max_enemies)
+        int active_chunk_enemy_count = get_enemy_count();
+        if (world)
+        {
+            const auto *active_chunks = world->get_active_chunks();
+            if (active_chunks)
+            {
+                active_chunk_enemy_count = get_enemy_count_in_chunks(*active_chunks);
+            }
+        }
+
+        // Check if we can spawn more enemies in currently active chunks.
+        if (active_chunk_enemy_count < spawn_config.max_enemies)
         {
             spawn_random_enemy("slime");
         }
@@ -921,6 +1015,26 @@ int Entity_Manager::get_enemy_count() const
             count++;
         }
     }
+    return count;
+}
+
+int Entity_Manager::get_enemy_count_in_chunks(
+    const std::unordered_set<glm::ivec2, Chunk_Coords_to_Hash> &active_chunks) const
+{
+    int count = 0;
+
+    for (const auto &[id, entity] : entities)
+    {
+        if (!entity->is_active || entity->type != Entity_Type::ENEMY)
+            continue;
+
+        glm::ivec2 entity_chunk = entity->get_chunk_position(chunk_pixel_width, chunk_pixel_height);
+        if (active_chunks.find(entity_chunk) != active_chunks.end())
+        {
+            ++count;
+        }
+    }
+
     return count;
 }
 

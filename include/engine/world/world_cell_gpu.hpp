@@ -11,4 +11,5 @@ struct GPUWorldCell
     glm::vec4 base_color{0.0f};
     glm::vec4 color{0.0f};
     glm::uvec4 meta{0u};
+    glm::vec4 thermal{0.0f}; // x: temperature_c
 };

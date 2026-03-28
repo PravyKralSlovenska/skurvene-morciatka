@@ -204,7 +204,14 @@ void Entities_Renderer::add_entity_to_batch(Entity *entity)
         color = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f); // Blue for NPC
         break;
     case Entity_Type::PROJECTILE:
-        color = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f); // Yellow for projectile
+        color = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f); // Yellow default for projectile
+        if (const Projectile *projectile = static_cast<const Projectile *>(entity))
+        {
+            if (projectile->get_payload_type() == Particle_Type::FIRE)
+            {
+                color = glm::vec4(1.0f, 0.35f, 0.05f, 1.0f); // Hot orange for fireballs
+            }
+        }
         break;
     case Entity_Type::DEVUSHKI:
         color = glm::vec4(1.0f, 0.5f, 0.8f, 1.0f); // Pink for devushki

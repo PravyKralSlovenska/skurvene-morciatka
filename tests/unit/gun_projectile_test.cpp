@@ -56,12 +56,50 @@ namespace
 
         return false;
     }
+
+    int max_forward_fire_distance_cells(World &world, int origin_x_px)
+    {
+        const int particle_size = static_cast<int>(Globals::PARTICLE_SIZE);
+        const glm::ivec2 chunk_dims = world.get_chunk_dimensions();
+        int max_forward_cells = 0;
+
+        auto *chunks = world.get_chunks();
+        if (!chunks)
+            return 0;
+
+        for (auto &[chunk_pos, chunk_ptr] : *chunks)
+        {
+            Chunk *chunk = chunk_ptr.get();
+            if (!chunk)
+                continue;
+
+            for (int y = 0; y < chunk_dims.y; ++y)
+            {
+                for (int x = 0; x < chunk_dims.x; ++x)
+                {
+                    WorldCell *cell = chunk->get_worldcell(x, y);
+                    if (!cell || cell->particle.type != Particle_Type::FIRE)
+                        continue;
+
+                    const int world_cell_x = chunk_pos.x * chunk_dims.x + x;
+                    const int world_x_px = world_cell_x * particle_size;
+                    const int forward_cells = (world_x_px - origin_x_px) / particle_size;
+                    if (forward_cells > max_forward_cells)
+                    {
+                        max_forward_cells = forward_cells;
+                    }
+                }
+            }
+        }
+
+        return max_forward_cells;
+    }
 } // namespace
 
 TEST(GunWandTest, HotbarContainsGunInDefaultSlot)
 {
     Hotbar hotbar;
-    const Wand &gun = hotbar.get_wand(6);
+    const Wand &gun = hotbar.get_selected_wand();
 
     EXPECT_EQ(gun.type, Wand_Type::GUN_WAND);
     EXPECT_EQ(gun.brush_size, 1);
@@ -97,6 +135,42 @@ TEST(ProjectileTest, ProjectileMovesAndExpiresByLifetime)
     EXPECT_FALSE(projectile.get_is_alive());
 }
 
+TEST(FlamethrowerTest, FireParticleTravelsAtLeastTwentyCells)
+{
+    World world;
+    Player player("FlameTester", glm::vec2(0.0f, -500.0f));
+    world.set_player(&player);
+    world.update(0.016f); // Ensure nearby chunks are active.
+
+    const int particle_size = static_cast<int>(Globals::PARTICLE_SIZE);
+    const glm::ivec2 origin = player.coords + glm::ivec2(4 * particle_size, 0);
+
+    // Create a clear lane so the test measures flame kinematics, not terrain collisions.
+    for (int x = origin.x - 4 * particle_size; x <= origin.x + 80 * particle_size; x += particle_size)
+    {
+        for (int y = origin.y - 30 * particle_size; y <= origin.y + 30 * particle_size; y += particle_size)
+        {
+            world.place_particle(glm::ivec2(x, y), Particle_Type::EMPTY);
+        }
+    }
+
+    Particle flame = create_fire(false);
+    flame.physics.velocity.x = 14.5f;
+    flame.physics.velocity.y = -1.0f;
+    world.place_custom_particle(origin, flame);
+
+    EXPECT_EQ(get_particle_type_at(world, origin), Particle_Type::FIRE);
+
+    int max_forward_cells = 0;
+    for (int i = 0; i < 80; ++i)
+    {
+        world.update(1.0f / 60.0f);
+        max_forward_cells = std::max(max_forward_cells, max_forward_fire_distance_cells(world, origin.x));
+    }
+
+    EXPECT_GE(max_forward_cells, 20);
+}
+
 TEST(ProjectileTest, ProjectileCollisionDeletesParticlesInRadiusTwo)
 {
     World world;
@@ -109,6 +183,14 @@ TEST(ProjectileTest, ProjectileCollisionDeletesParticlesInRadiusTwo)
     const glm::ivec2 neighbor_r1 = impact_pos + glm::ivec2(ps, 0);
     const glm::ivec2 neighbor_r2 = impact_pos + glm::ivec2(2 * ps, 0);
     const glm::ivec2 outside_r3 = impact_pos + glm::ivec2(3 * ps, 0);
+
+    for (int x = -2 * ps; x <= outside_r3.x + 2 * ps; x += ps)
+    {
+        for (int y = -2 * ps; y <= 2 * ps; y += ps)
+        {
+            world.place_particle(glm::ivec2(x, y), Particle_Type::EMPTY);
+        }
+    }
 
     world.place_static_particle(impact_pos, Particle_Type::STONE);
     world.place_static_particle(neighbor_r1, Particle_Type::STONE);

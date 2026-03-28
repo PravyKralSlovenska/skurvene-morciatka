@@ -111,6 +111,7 @@ private:
     void remove_all_dead();
     void drop_enemy_coin_particles(const Enemy *enemy);
     void update_entity(Entity *entity, float delta_time);
+    void process_boss_special_actions();
     void resolve_projectile_entity_hits();
     void resolve_hostile_melee_hits();
     void resolve_coin_collection();
@@ -124,6 +125,7 @@ private:
     glm::ivec2 get_random_spawn_position();
     glm::ivec2 find_valid_position_for_hitbox(const glm::ivec2 &desired_pos, const glm::ivec2 &hitbox_dims, int max_attempts = 20);
     void randomize_enemy_stats(Enemy *enemy);
+    int get_enemy_count_in_chunks(const std::unordered_set<glm::ivec2, Chunk_Coords_to_Hash> &active_chunks) const;
 
 public:
     Entity_Manager();

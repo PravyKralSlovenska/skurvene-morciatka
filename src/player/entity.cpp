@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <random>
 #include "engine/world/world.hpp"
 #include "engine/world/world_chunk.hpp"
 #include "engine/world/world_cell.hpp"
@@ -9,6 +10,86 @@
 
 // Static ID counter
 int Entity::next_id = 1;
+
+namespace
+{
+    bool world_pos_to_chunk_local(World *world, const glm::ivec2 &world_pos,
+                                  glm::ivec2 &out_chunk_pos, glm::ivec2 &out_local_pos)
+    {
+        if (!world)
+            return false;
+
+        const int particle_size = static_cast<int>(Globals::PARTICLE_SIZE);
+        const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+        const int chunk_pixel_w = chunk_dims.x * particle_size;
+        const int chunk_pixel_h = chunk_dims.y * particle_size;
+
+        out_chunk_pos = glm::ivec2(
+            static_cast<int>(std::floor(static_cast<float>(world_pos.x) / chunk_pixel_w)),
+            static_cast<int>(std::floor(static_cast<float>(world_pos.y) / chunk_pixel_h)));
+
+        int pixel_offset_x = world_pos.x - out_chunk_pos.x * chunk_pixel_w;
+        int pixel_offset_y = world_pos.y - out_chunk_pos.y * chunk_pixel_h;
+        out_local_pos = glm::ivec2(pixel_offset_x / particle_size, pixel_offset_y / particle_size);
+
+        if (out_local_pos.x < 0)
+            out_local_pos.x += chunk_dims.x;
+        if (out_local_pos.y < 0)
+            out_local_pos.y += chunk_dims.y;
+
+        return out_local_pos.x >= 0 && out_local_pos.x < chunk_dims.x &&
+               out_local_pos.y >= 0 && out_local_pos.y < chunk_dims.y;
+    }
+
+    void heat_and_ignite_particles(World *world, const glm::ivec2 &center_pos, int radius_cells,
+                                   float added_temperature_c, float ignite_temperature_c)
+    {
+        if (!world || radius_cells < 0)
+            return;
+
+        const int particle_size = static_cast<int>(Globals::PARTICLE_SIZE);
+
+        for (int dy = -radius_cells; dy <= radius_cells; ++dy)
+        {
+            for (int dx = -radius_cells; dx <= radius_cells; ++dx)
+            {
+                if (dx * dx + dy * dy > radius_cells * radius_cells)
+                    continue;
+
+                const glm::ivec2 sample_pos = center_pos + glm::ivec2(dx * particle_size, dy * particle_size);
+
+                glm::ivec2 chunk_pos;
+                glm::ivec2 local_pos;
+                if (!world_pos_to_chunk_local(world, sample_pos, chunk_pos, local_pos))
+                    continue;
+
+                Chunk *chunk = world->get_chunk(chunk_pos);
+                if (!chunk)
+                    continue;
+
+                WorldCell *cell = chunk->get_worldcell(local_pos.x, local_pos.y);
+                if (!cell)
+                    continue;
+
+                if (cell->particle.type == Particle_Type::EMPTY)
+                    continue;
+
+                cell->particle.physics.temperature = std::clamp(
+                    cell->particle.physics.temperature + added_temperature_c,
+                    -273.15f,
+                    cell->particle.physics.max_temperature);
+
+                chunk->mark_dirty();
+
+                if (cell->particle.flags.is_flammable &&
+                    cell->particle.physics.temperature >= ignite_temperature_c)
+                {
+                    chunk->set_worldcell(local_pos, Particle_Type::FIRE, false);
+                }
+            }
+        }
+    }
+} // namespace
 
 // ==================== Entity ====================
 
@@ -760,16 +841,24 @@ void Projectile::update(float delta_time)
         {
             if (world_ref)
             {
-                static constexpr int IMPACT_DELETE_RADIUS_CELLS = 2;
-                for (int dy = -IMPACT_DELETE_RADIUS_CELLS; dy <= IMPACT_DELETE_RADIUS_CELLS; ++dy)
+                if (payload_type == Particle_Type::FIRE)
                 {
-                    for (int dx = -IMPACT_DELETE_RADIUS_CELLS; dx <= IMPACT_DELETE_RADIUS_CELLS; ++dx)
+                    // Flamethrower only ignites flammable materials (e.g., wood).
+                    heat_and_ignite_particles(world_ref, next_pos, 1, 75.0f, 300.0f);
+                }
+                else
+                {
+                    static constexpr int IMPACT_DELETE_RADIUS_CELLS = 2;
+                    for (int dy = -IMPACT_DELETE_RADIUS_CELLS; dy <= IMPACT_DELETE_RADIUS_CELLS; ++dy)
                     {
-                        if (dx * dx + dy * dy > IMPACT_DELETE_RADIUS_CELLS * IMPACT_DELETE_RADIUS_CELLS)
-                            continue;
+                        for (int dx = -IMPACT_DELETE_RADIUS_CELLS; dx <= IMPACT_DELETE_RADIUS_CELLS; ++dx)
+                        {
+                            if (dx * dx + dy * dy > IMPACT_DELETE_RADIUS_CELLS * IMPACT_DELETE_RADIUS_CELLS)
+                                continue;
 
-                        glm::ivec2 delete_pos = next_pos + glm::ivec2(dx * particle_size, dy * particle_size);
-                        world_ref->place_particle(delete_pos, Particle_Type::EMPTY);
+                            glm::ivec2 delete_pos = next_pos + glm::ivec2(dx * particle_size, dy * particle_size);
+                            world_ref->place_particle(delete_pos, Particle_Type::EMPTY);
+                        }
                     }
                 }
             }
@@ -779,6 +868,12 @@ void Projectile::update(float delta_time)
         }
 
         coords = next_pos;
+
+        if (world_ref && payload_type == Particle_Type::FIRE)
+        {
+            // Do not paint fire into the world; only ignite flammable particles.
+            heat_and_ignite_particles(world_ref, coords, 0, 22.0f, 300.0f);
+        }
     }
 
     velocity *= air_drag;
@@ -829,6 +924,26 @@ float Projectile::get_lifetime() const
 float Projectile::get_age() const
 {
     return age_seconds;
+}
+
+void Projectile::set_gravity_multiplier(float value)
+{
+    gravity_multiplier = std::clamp(value, -1.5f, 2.0f);
+}
+
+float Projectile::get_gravity_multiplier() const
+{
+    return gravity_multiplier;
+}
+
+void Projectile::set_air_drag(float value)
+{
+    air_drag = std::clamp(value, 0.7f, 1.0f);
+}
+
+float Projectile::get_air_drag() const
+{
+    return air_drag;
 }
 
 // ==================== Enemy ====================
@@ -1576,6 +1691,8 @@ void Boss::update(float delta_time)
 
     time_since_attack += delta_time;
     time_since_slam += delta_time;
+    time_since_fireball += delta_time;
+    time_since_teleport += delta_time;
     state_timer += delta_time;
 
     // Check enrage condition
@@ -1651,6 +1768,11 @@ void Boss::state_chase(float delta_time)
         return;
     }
 
+    if (dist <= fire_attack_range && can_fireball())
+    {
+        queue_fireball();
+    }
+
     // Chase the target using unified movement
     move_towards(target_position, delta_time);
 }
@@ -1673,6 +1795,11 @@ void Boss::state_attack(float delta_time)
         time_since_attack = 0.0f;
         state = Entity_States::HIT;
         // TODO: Deal damage through entity_manager
+
+        if (can_fireball())
+        {
+            queue_fireball();
+        }
     }
 }
 
@@ -1699,6 +1826,11 @@ void Boss::state_enrage(float delta_time)
     if (state_timer >= 1.0f)
     {
         transition_to(Boss_AI_State::CHASE);
+    }
+
+    if (distance_to(target_position) <= fire_attack_range * 1.2f && can_fireball())
+    {
+        queue_fireball();
     }
 }
 
@@ -1746,6 +1878,86 @@ bool Boss::can_attack() const
 bool Boss::can_slam() const
 {
     return time_since_slam >= slam_cooldown;
+}
+
+bool Boss::can_fireball() const
+{
+    const float effective_cooldown = is_enraged ? fireball_cooldown * 0.7f : fireball_cooldown;
+    return time_since_fireball >= effective_cooldown && !pending_fireball;
+}
+
+void Boss::queue_fireball()
+{
+    glm::vec2 direction = glm::vec2(target_position - coords);
+    const float dist = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+    if (dist <= 1.0f)
+        return;
+
+    direction /= dist;
+
+    static thread_local std::mt19937 rng(std::random_device{}());
+    std::uniform_real_distribution<float> spread(-0.18f, 0.18f);
+    const float angle = spread(rng);
+
+    const float cos_a = std::cos(angle);
+    const float sin_a = std::sin(angle);
+    glm::vec2 rotated_dir(
+        direction.x * cos_a - direction.y * sin_a,
+        direction.x * sin_a + direction.y * cos_a);
+
+    pending_fireball = true;
+    pending_fireball_origin = glm::vec2(coords);
+    pending_fireball_velocity = rotated_dir * fireball_speed;
+    pending_fireball_damage = is_enraged ? fireball_damage * 1.25f : fireball_damage;
+    pending_fireball_payload = Particle_Type::FIRE;
+    time_since_fireball = 0.0f;
+}
+
+glm::ivec2 Boss::choose_teleport_position_around_target(const glm::vec2 &preferred_dir) const
+{
+    static thread_local std::mt19937 rng(std::random_device{}());
+    std::uniform_real_distribution<float> dist_dist(teleport_min_distance, teleport_max_distance);
+    std::uniform_real_distribution<float> jitter(-0.7f, 0.7f);
+    std::uniform_int_distribution<int> side_dist(0, 1);
+
+    glm::vec2 dir = preferred_dir;
+    const float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+    if (len <= 0.001f)
+    {
+        dir = glm::vec2(1.0f, 0.0f);
+    }
+    else
+    {
+        dir /= len;
+    }
+
+    const glm::vec2 center = glm::vec2(target_position);
+
+    for (int i = 0; i < 10; ++i)
+    {
+        const float side_mul = side_dist(rng) == 0 ? -1.0f : 1.0f;
+        const float angle = jitter(rng) * side_mul;
+        const float cos_a = std::cos(angle);
+        const float sin_a = std::sin(angle);
+
+        glm::vec2 rotated_dir(
+            dir.x * cos_a - dir.y * sin_a,
+            dir.x * sin_a + dir.y * cos_a);
+
+        const float radius = dist_dist(rng);
+        glm::ivec2 candidate = glm::ivec2(center + rotated_dir * radius);
+        candidate = find_valid_spawn_position(candidate, 280);
+
+        const glm::vec2 delta = glm::vec2(candidate - coords);
+        const float move_dist = std::sqrt(delta.x * delta.x + delta.y * delta.y);
+        if (move_dist < 60.0f)
+            continue;
+
+        if (!check_collision_at(candidate))
+            return candidate;
+    }
+
+    return coords;
 }
 
 void Boss::move_towards(const glm::ivec2 &target, float delta_time)
@@ -1848,4 +2060,65 @@ bool Boss::is_in_detection_range(const glm::ivec2 &target) const
 bool Boss::get_is_enraged() const
 {
     return is_enraged;
+}
+
+bool Boss::consume_pending_fireball(glm::vec2 &out_origin, glm::vec2 &out_velocity,
+                                    float &out_damage, Particle_Type &out_payload)
+{
+    if (!pending_fireball)
+        return false;
+
+    out_origin = pending_fireball_origin;
+    out_velocity = pending_fireball_velocity;
+    out_damage = pending_fireball_damage;
+    out_payload = pending_fireball_payload;
+    pending_fireball = false;
+    return true;
+}
+
+bool Boss::try_teleport_dodge_from(const glm::ivec2 &threat_pos, const glm::vec2 &threat_velocity)
+{
+    if (!is_alive || boss_ai_state == Boss_AI_State::DEAD)
+        return false;
+    if (time_since_teleport < teleport_cooldown)
+        return false;
+    if (!is_in_detection_range(target_position))
+        return false;
+
+    const glm::vec2 to_boss = glm::vec2(coords - threat_pos);
+    const float threat_dist = std::sqrt(to_boss.x * to_boss.x + to_boss.y * to_boss.y);
+    if (threat_dist > 260.0f)
+        return false;
+
+    glm::vec2 preferred_dir(0.0f, 0.0f);
+    const float vel_len = std::sqrt(threat_velocity.x * threat_velocity.x + threat_velocity.y * threat_velocity.y);
+    if (vel_len > 0.001f)
+    {
+        const glm::vec2 vel_norm = threat_velocity / vel_len;
+        preferred_dir = glm::vec2(-vel_norm.y, vel_norm.x);
+    }
+    else if (threat_dist > 0.001f)
+    {
+        preferred_dir = to_boss / threat_dist;
+    }
+    else
+    {
+        preferred_dir = glm::vec2(1.0f, 0.0f);
+    }
+
+    const glm::ivec2 teleport_pos = choose_teleport_position_around_target(preferred_dir);
+    if (teleport_pos == coords)
+        return false;
+
+    set_position(teleport_pos);
+    velocity = {0.0f, 0.0f};
+    state = Entity_States::HIT;
+    time_since_teleport = 0.0f;
+
+    if (boss_ai_state != Boss_AI_State::DEAD)
+    {
+        transition_to(Boss_AI_State::CHASE);
+    }
+
+    return true;
 }

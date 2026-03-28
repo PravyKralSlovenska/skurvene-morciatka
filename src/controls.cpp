@@ -3,6 +3,8 @@
 #include <iostream>
 #include <algorithm>
 #include <array>
+#include <cmath>
+#include <random>
 
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
@@ -142,6 +144,56 @@ void Controls::handle_input()
                             wand.last_use_time = static_cast<float>(now);
                         }
                     }
+                }
+            }
+            else if (wand.type == Wand_Type::FIRE_WAND)
+            {
+                const double now = glfwGetTime();
+                if (entity_manager && now - wand.last_use_time >= wand.cooldown)
+                {
+                    glm::vec2 dir = player->get_aim_direction();
+                    const float len = glm::length(dir);
+
+                    if (len > 0.001f)
+                    {
+                        dir /= len;
+                        const glm::vec2 origin = player->get_center() + dir * 20.0f;
+
+                        static thread_local std::mt19937 rng(std::random_device{}());
+                        std::uniform_real_distribution<float> spread_angle(-0.18f, 0.18f);
+                        std::uniform_real_distribution<float> speed_jitter(-80.0f, 80.0f);
+
+                        // Gun-inspired firing model: multiple fast pellets from muzzle with spread.
+                        static constexpr int FLAME_PELLETS = 6;
+                        static constexpr float BASE_SPEED = 820.0f;
+
+                        for (int i = 0; i < FLAME_PELLETS; ++i)
+                        {
+                            const float angle = spread_angle(rng);
+                            const float cos_a = std::cos(angle);
+                            const float sin_a = std::sin(angle);
+                            glm::vec2 shot_dir(
+                                dir.x * cos_a - dir.y * sin_a,
+                                dir.x * sin_a + dir.y * cos_a);
+
+                            const float speed = BASE_SPEED + speed_jitter(rng);
+                            Projectile *flame_projectile = entity_manager->create_projectile(
+                                origin,
+                                shot_dir * speed,
+                                Particle_Type::FIRE,
+                                8.0f,
+                                Entity_Type::PLAYER);
+
+                            if (flame_projectile)
+                            {
+                                flame_projectile->set_lifetime(0.28f);
+                                flame_projectile->set_gravity_multiplier(-0.18f);
+                                flame_projectile->set_air_drag(0.94f);
+                            }
+                        }
+                    }
+
+                    wand.last_use_time = static_cast<float>(now);
                 }
             }
             else

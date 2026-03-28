@@ -90,7 +90,10 @@ if(BUILD_TESTS)
     )
     
     include(GoogleTest)
-    gtest_discover_tests(morciatko_tests)
+    gtest_discover_tests(morciatko_tests
+        PROPERTIES
+            ENVIRONMENT "MORCIATKO_WORLD_SEED=1"
+    )
     
     add_custom_target(run_tests
         COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure

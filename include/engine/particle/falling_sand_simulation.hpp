@@ -35,6 +35,9 @@ private:
     const float MAX_VELOCITY = 15.0f; // Max cells per tick
     const float FRICTION = 0.95f;     // Horizontal velocity damping
     const float BOUNCE = 0.3f;        // Energy retained on collision
+    const float AMBIENT_TEMPERATURE_C = 25.0f;
+    const float AMBIENT_RELAX_RATE = 0.8f;
+    const uint64_t TEMPERATURE_UPDATE_INTERVAL = 4;
 
     // Processing order alternation (prevents bias)
     bool process_left_first = true;
@@ -80,8 +83,8 @@ private:
 
     // Physics updates
     void apply_gravity(Particle &particle, float delta_time);
-    void apply_temperature_transfer(WorldCell *cell, const glm::ivec2 &chunk_coords, int x, int y);
-    void check_state_change(Particle &particle);
+    void apply_temperature_transfer(WorldCell *cell, const glm::ivec2 &chunk_coords, int x, int y, Chunk *current_chunk);
+    bool check_state_change(Particle &particle);
 
     // Process single chunk
     void process_chunk(Chunk *chunk, const glm::ivec2 &chunk_coords);

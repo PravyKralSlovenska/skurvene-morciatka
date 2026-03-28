@@ -92,6 +92,7 @@ public:
     // individual UI panels
     void render_debug_overlay();
     void render_health_bar();
+    void render_boss_health_bar();
     void render_hotbar();
     void render_minimap();
     void render_fullscreen_map();

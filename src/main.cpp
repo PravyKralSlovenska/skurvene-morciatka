@@ -1,6 +1,6 @@
 // Standartne cpp kniznice
 #include <iostream>
-#include <functional>
+// #include <functional>a
 
 // Moje main header files
 #include "engine/renderer/renderer.hpp"
@@ -12,6 +12,7 @@
 #include "engine/camera.hpp"
 #include "engine/audio/audio_manager.hpp"
 #include "engine/time_manager.hpp"
+#include "others/utils.hpp"
 
 // namespace na globalne premenne
 #include "others/GLOBALS.hpp"
@@ -38,11 +39,15 @@ enum GAME_STATES
 
 int main()
 {
+    Log::init("../logs/runtime.log", true, true, false);
+    Log::info("game start");
+
     time_manager.init();
     // time_manager.set_target_fps(5);
     // time_manager.enable_fps_limiting();
 
     render.init();
+    
     render.enable_blending();
     render.enable_ortho_projection();
     render.set_world(&world);
@@ -66,7 +71,7 @@ int main()
     entity_manager.register_sprite("slime", "../sprites/devushka_slime_enemy1.png");
     // entity_manager.register_sprite("big_boss", "../sprites/boss.png", 256, 64, 64, 64, 4);
 
-    const int devushki_count = 5; // how many devushki to save (change this to set the objective)
+    const int devushki_count = 1; // how many devushki to save (change this to set the objective)
     entity_manager.set_devushki_objective_count(devushki_count);
     entity_manager.spawn_devushki_objective(devushki_count, 2000.0f);
     world.set_devushki_column_spawn_count(devushki_count);
@@ -257,6 +262,8 @@ int main()
     // audio_manager.send_execute(Pending_Execute::Operations::STOP);
     render.cleanup();
 
-    std::cout << "END\n";
+    Log::info("game end");
+    Log::shutdown();
+
     return 0;
 }

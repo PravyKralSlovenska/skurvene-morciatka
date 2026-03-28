@@ -277,6 +277,8 @@ void World_Renderer::render_world_compute()
     compute_shader->set_int("cells_per_chunk", cells_per_chunk);
     compute_shader->set_int("chunk_count", chunk_count);
     compute_shader->set_vec4("visible_bounds", glm::vec4(min_x, min_y, max_x, max_y));
+    compute_shader->set_float("ambient_temperature_c", 25.0f);
+    compute_shader->set_float("hot_reference_temperature_c", 220.0f);
 
     const int work_groups_x = (chunk_dimensions.x + 15) / 16;
     const int work_groups_y = (chunk_dimensions.y + 15) / 16;

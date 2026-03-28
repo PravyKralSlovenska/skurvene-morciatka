@@ -30,7 +30,9 @@ enum class Particle_Type
     WOOD,
     FIRE,
     URANIUM,
-    STONE
+    STONE,
+    ICE,
+    WATER_VAPOR
 };
 
 enum class Particle_Movement : uint8_t
@@ -72,9 +74,9 @@ struct Particle_Physics
     // Sand: ~1600 kg/m^3, Water: ~1000 kg/m^3
     float density = 0.0f;
 
-    // Temperature (teplota) - Kelvin
-    // Room temperature: ~293K (20°C)
-    float temperature = 293.0f;
+    // Temperature (teplota) - Celsius
+    // Room temperature: ~25°C
+    float temperature = 25.0f;
 
     // Velocity (rychlost) - cells per update
     glm::vec2 velocity = {0.0f, 0.0f};
@@ -82,11 +84,17 @@ struct Particle_Physics
     // Acceleration accumulator for physics
     glm::vec2 acceleration = {0.0f, 0.0f};
 
-    // Melting point (bod topenia) - Kelvin
+    // Melting point (bod topenia) - Celsius
     float melting_point = 0.0f;
 
-    // Boiling point (bod varu) - Kelvin
+    // Boiling point (bod varu) - Celsius
     float boiling_point = 0.0f;
+
+    // Maximum stable temperature before hard clamp (Celsius)
+    float max_temperature = 2000.0f;
+
+    // Decomposition/smoke threshold (Celsius), 0 = disabled
+    float smoke_point = 0.0f;
 
     // Thermal conductivity (tepelna vodivost) - how fast heat transfers
     float thermal_conductivity = 0.5f;
@@ -202,6 +210,8 @@ public:
 // Factory functions for creating particles
 Particle create_sand(bool is_static = false);
 Particle create_water(bool is_static = false);
+Particle create_ice(bool is_static = false);
+Particle create_water_vapor(bool is_static = false);
 Particle create_smoke(bool is_static = false);
 Particle create_wood(bool is_static = false);
 Particle create_fire(bool is_static = false);

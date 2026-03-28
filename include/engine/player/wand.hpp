@@ -15,7 +15,9 @@ enum class Wand_Type
     DELETE_WAND,
     SMOKE_WAND,
     URANIUM_WAND,
-    GUN_WAND
+    GUN_WAND,
+    ICE_WAND,
+    WATER_VAPOR_WAND
 };
 
 struct Wand
@@ -53,6 +55,28 @@ struct Wand
         return w;
     }
 
+    static Wand create_ice_wand()
+    {
+        Wand w;
+        w.type = Wand_Type::ICE_WAND;
+        w.name = "Ice Wand";
+        w.color = {0.78f, 0.93f, 1.0f, 1.0f};
+        w.particle_type = Particle_Type::ICE;
+        w.brush_size = 5;
+        return w;
+    }
+
+    static Wand create_water_vapor_wand()
+    {
+        Wand w;
+        w.type = Wand_Type::WATER_VAPOR_WAND;
+        w.name = "Water Vapor Wand";
+        w.color = {0.88f, 0.92f, 0.98f, 0.85f};
+        w.particle_type = Particle_Type::WATER_VAPOR;
+        w.brush_size = 5;
+        return w;
+    }
+
     static Wand create_stone_wand()
     {
         Wand w;
@@ -83,6 +107,7 @@ struct Wand
         w.color = {1.0f, 0.45f, 0.12f, 1.0f}; // Orange flame color
         w.particle_type = Particle_Type::FIRE;
         w.brush_size = 3;
+        w.cooldown = 0.02f;
         return w;
     }
 
@@ -145,6 +170,8 @@ public:
         // Initialize default hotbar with wands
         slots[0] = Wand::create_gun_wand();
         slots[1] = Wand::create_stone_wand();
+        slots[2] = Wand::create_ice_wand();
+        slots[3] = Wand::create_water_vapor_wand();
         // slots[6] = Wand::create_sand_wand();
         // slots[2] = Wand::create_water_wand();
         // slots[3] = Wand::create_delete_wand();

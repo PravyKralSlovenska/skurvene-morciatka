@@ -8,6 +8,7 @@ struct WorldCell {
     vec4 base_color;
     vec4 color;
     uvec4 meta; // x:type y:state z:move w:visited
+    vec4 thermal; // x:temperature_c
 };
 
 struct ChunkInfo {
@@ -41,6 +42,8 @@ layout(std430, binding = 3) buffer VertexCounter {
 uniform float particle_size;
 uniform ivec2 chunk_dimensions;
 uniform vec4 visible_bounds;
+uniform float ambient_temperature_c;
+uniform float hot_reference_temperature_c;
 
 void main() {
     uint chunk_index = gl_GlobalInvocationID.z;
@@ -69,6 +72,13 @@ void main() {
     if (particle_max.x < visible_bounds.x || world_pos.x > visible_bounds.z ||
         particle_max.y < visible_bounds.y || world_pos.y > visible_bounds.w) return;
 
+    float heat_factor = clamp((cell.thermal.x - ambient_temperature_c) /
+                              max(1.0, hot_reference_temperature_c - ambient_temperature_c),
+                              0.0, 1.0);
+    float heat_mix = heat_factor * 0.75;
+    vec3 hot_color = vec3(1.0, 0.18, 0.08);
+    vec4 render_color = vec4(mix(cell.color.rgb, hot_color, heat_mix), cell.color.a);
+
     // Generate vertices
     uint vertex_base = atomicAdd(vertex_count, 6u);
 
@@ -78,15 +88,15 @@ void main() {
     vec2 p3 = world_pos + vec2(particle_size);
 
     vertices[vertex_base + 0].position = p0;
-    vertices[vertex_base + 0].color = cell.color;
+    vertices[vertex_base + 0].color = render_color;
     vertices[vertex_base + 1].position = p1;
-    vertices[vertex_base + 1].color = cell.color;
+    vertices[vertex_base + 1].color = render_color;
     vertices[vertex_base + 2].position = p2;
-    vertices[vertex_base + 2].color = cell.color;
+    vertices[vertex_base + 2].color = render_color;
     vertices[vertex_base + 3].position = p1;
-    vertices[vertex_base + 3].color = cell.color;
+    vertices[vertex_base + 3].color = render_color;
     vertices[vertex_base + 4].position = p3;
-    vertices[vertex_base + 4].color = cell.color;
+    vertices[vertex_base + 4].color = render_color;
     vertices[vertex_base + 5].position = p2;
-    vertices[vertex_base + 5].color = cell.color;
+    vertices[vertex_base + 5].color = render_color;
 }

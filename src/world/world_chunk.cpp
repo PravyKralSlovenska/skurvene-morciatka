@@ -154,6 +154,14 @@ void Chunk::set_worldcell(int index, Particle_Type particle, bool is_static)
         chunk_data[index].set_particle(create_water(is_static));
         break;
 
+    case Particle_Type::ICE:
+        chunk_data[index].set_particle(create_ice(is_static));
+        break;
+
+    case Particle_Type::WATER_VAPOR:
+        chunk_data[index].set_particle(create_water_vapor(is_static));
+        break;
+
     case Particle_Type::SMOKE:
         chunk_data[index].set_particle(create_smoke(is_static));
         break;
@@ -230,6 +238,7 @@ void Chunk::rebuild_gpu_chunk_data()
                                    static_cast<std::uint32_t>(particle.state),
                                    static_cast<std::uint32_t>(particle.move),
                                    cell.visited ? 1u : 0u);
+        gpu_cell.thermal = glm::vec4(particle.physics.temperature, 0.0f, 0.0f, 0.0f);
     }
 
     gpu_dirty = false;

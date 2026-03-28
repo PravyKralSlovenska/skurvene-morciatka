@@ -12,10 +12,27 @@
 #include <random>
 #include <algorithm>
 #include <iostream>
+#include <cstdlib>
 
 namespace
 {
-    static constexpr int WORLD_SEED = 1;
+    int resolve_world_seed()
+    {
+        const char *seed_env = std::getenv("MORCIATKO_WORLD_SEED");
+        if (seed_env && seed_env[0] != '\0')
+        {
+            char *end = nullptr;
+            const long parsed = std::strtol(seed_env, &end, 10);
+            if (end != seed_env)
+            {
+                return static_cast<int>(parsed);
+            }
+        }
+
+        return static_cast<int>(std::random_device{}());
+    }
+
+    const int WORLD_SEED = resolve_world_seed();
 }
 
 World::World()

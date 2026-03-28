@@ -271,6 +271,8 @@ void UI_Renderer::render_ui()
         render_debug_overlay();
     if (show_health_bar && player)
         render_health_bar();
+    if (entity_manager)
+        render_boss_health_bar();
     if (show_hotbar && player)
         render_hotbar();
     if (entity_manager)
@@ -336,6 +338,101 @@ void UI_Renderer::render_ui()
         render_fullscreen_map();
     else if (show_minimap && world && camera)
         render_minimap();
+}
+
+void UI_Renderer::render_boss_health_bar()
+{
+    if (!entity_manager)
+        return;
+
+    Boss *boss = nullptr;
+    auto *entities = entity_manager->get_all_entities();
+    if (!entities)
+        return;
+
+    for (auto &[id, entity] : *entities)
+    {
+        if (!entity || !entity->is_active || !entity->get_is_alive())
+            continue;
+
+        if (entity->type == Entity_Type::BOSS)
+        {
+            boss = static_cast<Boss *>(entity.get());
+            break;
+        }
+    }
+
+    if (!boss)
+        return;
+
+    ImGuiIO &io = ImGui::GetIO();
+    const float screen_w = io.DisplaySize.x;
+
+    const float bar_width = std::min(720.0f, screen_w * 0.62f);
+    const float bar_height = 34.0f;
+    const float bar_x = (screen_w - bar_width) * 0.5f;
+    const float bar_y = 16.0f;
+
+    ImGuiWindowFlags flags =
+        ImGuiWindowFlags_NoDecoration |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoSavedSettings |
+        ImGuiWindowFlags_AlwaysAutoResize |
+        ImGuiWindowFlags_NoFocusOnAppearing |
+        ImGuiWindowFlags_NoNav |
+        ImGuiWindowFlags_NoBackground;
+
+    ImGui::SetNextWindowPos(ImVec2(bar_x, bar_y), ImGuiCond_Always);
+
+    if (ImGui::Begin("##BossHealthBar", nullptr, flags))
+    {
+        float hp_ratio = boss->healthpoints / std::max(1.0f, boss->max_healthpoints);
+        hp_ratio = std::clamp(hp_ratio, 0.0f, 1.0f);
+
+        ImDrawList *draw_list = ImGui::GetWindowDrawList();
+        const ImVec2 pos = ImGui::GetCursorScreenPos();
+
+        // Frame/background
+        draw_list->AddRectFilled(
+            pos,
+            ImVec2(pos.x + bar_width, pos.y + bar_height),
+            IM_COL32(18, 12, 14, 230),
+            6.0f);
+
+        // Boss HP fill
+        draw_list->AddRectFilled(
+            ImVec2(pos.x + 2.0f, pos.y + 2.0f),
+            ImVec2(pos.x + 2.0f + (bar_width - 4.0f) * hp_ratio, pos.y + bar_height - 2.0f),
+            IM_COL32(210, 45, 35, 255),
+            5.0f);
+
+        // Border
+        draw_list->AddRect(
+            pos,
+            ImVec2(pos.x + bar_width, pos.y + bar_height),
+            IM_COL32(245, 205, 105, 255),
+            6.0f,
+            0,
+            2.0f);
+
+        const char *boss_name = boss->name.empty() ? "Boss" : boss->name.c_str();
+        ImVec2 name_size = ImGui::CalcTextSize(boss_name);
+        draw_list->AddText(
+            ImVec2(pos.x + (bar_width - name_size.x) * 0.5f, pos.y - name_size.y - 3.0f),
+            IM_COL32(255, 230, 180, 255),
+            boss_name);
+
+        char hp_text[64];
+        snprintf(hp_text, sizeof(hp_text), "%.0f / %.0f", boss->healthpoints, boss->max_healthpoints);
+        ImVec2 text_size = ImGui::CalcTextSize(hp_text);
+        draw_list->AddText(
+            ImVec2(pos.x + (bar_width - text_size.x) * 0.5f, pos.y + (bar_height - text_size.y) * 0.5f),
+            IM_COL32(255, 255, 255, 255),
+            hp_text);
+
+        ImGui::Dummy(ImVec2(bar_width, bar_height));
+    }
+    ImGui::End();
 }
 
 // ============================================================================
@@ -406,6 +503,34 @@ void UI_Renderer::render_debug_overlay()
             ImGui::Text("  Enemies: %d", entity_manager->get_enemy_count());
             ImGui::Text("  NPCs: %d", entity_manager->get_devushki_count());
             ImGui::Text("  Bosses: %d", entity_manager->get_boss_count());
+
+            if (world)
+            {
+                const auto *active_chunks = world->get_active_chunks();
+                if (active_chunks)
+                {
+                    int active_chunk_enemies = 0;
+                    const auto entities_in_active = entity_manager->get_entities_in_chunks(*active_chunks);
+                    for (const Entity *entity : entities_in_active)
+                    {
+                        if (entity && entity->type == Entity_Type::ENEMY)
+                        {
+                            ++active_chunk_enemies;
+                        }
+                    }
+
+                    const int max_enemies_cap = entity_manager->get_spawn_config().max_enemies;
+                    const ImVec4 cap_color = active_chunk_enemies >= max_enemies_cap
+                                                 ? ImVec4(1.0f, 0.3f, 0.3f, 1.0f)
+                                                 : ImVec4(0.5f, 1.0f, 0.5f, 1.0f);
+
+                    ImGui::TextColored(cap_color,
+                                       "  Active-chunk enemies: %d / %d",
+                                       active_chunk_enemies,
+                                       max_enemies_cap);
+                }
+            }
+
             ImGui::Text("Coins: %d gold, %d silver",
                         entity_manager->get_collected_gold_coins(),
                         entity_manager->get_collected_silver_coins());

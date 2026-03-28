@@ -1,5 +1,5 @@
 {
-  "tests": 86,
+  "tests": 87,
   "name": "AllTests",
   "testsuites": [
     {
@@ -54,17 +54,17 @@
         {
           "name": "BaseFillCreatesSupportUnderStructure",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/devushki_spawn_test.cpp",
-          "line": 254
+          "line": 271
         },
         {
           "name": "BaseFillStopsAtExistingGround",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/devushki_spawn_test.cpp",
-          "line": 329
+          "line": 346
         },
         {
           "name": "SpawnSystemDocumentation",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/devushki_spawn_test.cpp",
-          "line": 412
+          "line": 429
         }
       ]
     },
@@ -290,7 +290,7 @@
         {
           "name": "HotbarContainsGunInDefaultSlot",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
-          "line": 61
+          "line": 99
         }
       ]
     },
@@ -301,17 +301,28 @@
         {
           "name": "EntityManagerCreatesProjectileWithPayload",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
-          "line": 71
+          "line": 109
         },
         {
           "name": "ProjectileMovesAndExpiresByLifetime",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
-          "line": 87
+          "line": 125
         },
         {
           "name": "ProjectileCollisionDeletesParticlesInRadiusTwo",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
-          "line": 100
+          "line": 174
+        }
+      ]
+    },
+    {
+      "name": "FlamethrowerTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "FireParticleTravelsAtLeastTwentyCells",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
+          "line": 138
         }
       ]
     },
@@ -322,27 +333,27 @@
         {
           "name": "PlayerProjectileDamagesEnemyDevushkiAndBoss",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
-          "line": 135
+          "line": 217
         },
         {
           "name": "EnemyOwnedProjectileDamagesPlayer",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
-          "line": 162
+          "line": 244
         },
         {
           "name": "PlayerOwnedProjectileDoesNotDamagePlayer",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
-          "line": 178
+          "line": 260
         },
         {
           "name": "EnemyMeleeAttackDamagesPlayer",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
-          "line": 194
+          "line": 276
         },
         {
           "name": "PlayerProjectileCanKillDevushki",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
-          "line": 217
+          "line": 299
         }
       ]
     },
@@ -353,7 +364,7 @@
         {
           "name": "EnemyDeathDropsCollectableGoldAndSilver",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
-          "line": 244
+          "line": 326
         }
       ]
     },

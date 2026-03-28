@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+#include <string>
 #include <random>
 #include <vector>
 #include <glm/glm.hpp>
@@ -105,14 +107,20 @@ public:
 class Log
 {
 private:
-    const std::string path_to_log_folder = "/log";
+    Log() = delete;
+    ~Log() = delete;
 
 public:
-    Log();
-    ~Log() = default;
+    static void init(const std::string &output_path = "logs/runtime.log",
+                     bool use_background_thread = true,
+                     bool redirect_standard_streams = true,
+                     bool mirror_to_console = false);
+    static void shutdown();
 
-    void create_file();
-    void log_text();
+    static void info(const std::string &message);
+    static void warning(const std::string &message);
+    static void error(const std::string &message);
+    static void debug(const std::string &message);
 };
 
 // mozno nieco na threads? management multithreadov?

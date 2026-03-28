@@ -1,6 +1,7 @@
 #include "engine/particle/falling_sand_simulation.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <iostream>
 
 #include "engine/world/world.hpp"
@@ -240,6 +241,15 @@ void Falling_Sand_Simulation::apply_gravity(Particle &particle, float delta_time
 
     // Apply friction to horizontal velocity
     particle.physics.velocity.x *= FRICTION;
+
+    if (particle.type == Particle_Type::FIRE)
+    {
+        // Flamethrower behavior: strong forward momentum that rapidly degrades,
+        // while buoyancy increasingly bends the trajectory upward.
+        particle.physics.velocity.x *= 0.98f;
+        const float horizontal_energy = std::abs(particle.physics.velocity.x);
+        particle.physics.velocity.y -= (1.0f + horizontal_energy * 0.05f) * delta_time;
+    }
 
     // Reset acceleration after applying (forces are applied each frame)
     particle.physics.acceleration = {0.0f, 0.0f};
@@ -489,81 +499,155 @@ void Falling_Sand_Simulation::update_gas(const glm::ivec2 &chunk_coords, int x, 
         }
     }
 
-    // Gases rise (try to move up)
-    if (try_move(chunk_coords, x, y, chunk_coords, x, y - 1))
+    const int vx_steps = static_cast<int>(std::abs(particle.physics.velocity.x));
+    const int vy_steps = static_cast<int>(std::abs(particle.physics.velocity.y));
+    const int total_steps = std::max(1, std::max(vx_steps, vy_steps));
+
+    int horizontal_dir = (particle.physics.velocity.x >= 0.0f) ? 1 : -1;
+    int vertical_dir = (particle.physics.velocity.y >= 0.0f) ? 1 : -1;
+
+    bool moved_any = false;
+    for (int step = 0; step < total_steps; ++step)
     {
-        return;
+        bool moved_this_step = false;
+
+        float horizontal_bias = 1.0f;
+        if (particle.type == Particle_Type::FIRE)
+        {
+            horizontal_bias = 3.0f;
+        }
+        const bool prefer_horizontal = std::abs(particle.physics.velocity.x) * horizontal_bias >=
+                                       std::abs(particle.physics.velocity.y);
+
+        if (prefer_horizontal)
+        {
+            if (step < vx_steps && try_move(chunk_coords, x, y, chunk_coords, x + horizontal_dir, y))
+            {
+                x += horizontal_dir;
+                moved_this_step = true;
+            }
+            else if (step < vy_steps && try_move(chunk_coords, x, y, chunk_coords, x, y + vertical_dir))
+            {
+                y += vertical_dir;
+                moved_this_step = true;
+            }
+            else if (step < vx_steps && step < vy_steps &&
+                     try_move(chunk_coords, x, y, chunk_coords, x + horizontal_dir, y + vertical_dir))
+            {
+                x += horizontal_dir;
+                y += vertical_dir;
+                moved_this_step = true;
+            }
+        }
+        else
+        {
+            if (step < vy_steps && try_move(chunk_coords, x, y, chunk_coords, x, y + vertical_dir))
+            {
+                y += vertical_dir;
+                moved_this_step = true;
+            }
+            else if (step < vx_steps && try_move(chunk_coords, x, y, chunk_coords, x + horizontal_dir, y))
+            {
+                x += horizontal_dir;
+                moved_this_step = true;
+            }
+            else if (step < vx_steps && step < vy_steps &&
+                     try_move(chunk_coords, x, y, chunk_coords, x + horizontal_dir, y + vertical_dir))
+            {
+                x += horizontal_dir;
+                y += vertical_dir;
+                moved_this_step = true;
+            }
+        }
+
+        if (!moved_this_step)
+            break;
+
+        moved_any = true;
     }
 
-    // Try diagonal up
+    if (moved_any)
+        return;
+
+    // Fallback diffusion when velocity-driven movement is blocked.
     bool try_left_first = (rng() % 2 == 0) ^ process_left_first;
     int dir1 = try_left_first ? -1 : 1;
     int dir2 = try_left_first ? 1 : -1;
 
+    if (try_move(chunk_coords, x, y, chunk_coords, x, y - 1))
+        return;
     if (try_move(chunk_coords, x, y, chunk_coords, x + dir1, y - 1))
-    {
         return;
-    }
-
     if (try_move(chunk_coords, x, y, chunk_coords, x + dir2, y - 1))
-    {
         return;
-    }
 
-    // Spread horizontally
     int dispersion = particle.physics.dispersion_rate;
     for (int d = 1; d <= dispersion; d++)
     {
         if (try_left_first)
         {
             if (try_move(chunk_coords, x, y, chunk_coords, x - d, y))
-            {
                 return;
-            }
             if (try_move(chunk_coords, x, y, chunk_coords, x + d, y))
-            {
                 return;
-            }
         }
         else
         {
             if (try_move(chunk_coords, x, y, chunk_coords, x + d, y))
-            {
                 return;
-            }
             if (try_move(chunk_coords, x, y, chunk_coords, x - d, y))
-            {
                 return;
-            }
         }
     }
 
-    // Couldn't move - mark as updated
+    cell->particle.physics.velocity *= 0.7f;
     cell->particle.mark_updated();
 }
 
-void Falling_Sand_Simulation::apply_temperature_transfer(WorldCell *cell, const glm::ivec2 &chunk_coords, int x, int y)
+void Falling_Sand_Simulation::apply_temperature_transfer(WorldCell *cell, const glm::ivec2 &chunk_coords, int x, int y, Chunk *current_chunk)
 {
     if (!cell || cell->particle.type == Particle_Type::EMPTY)
         return;
 
     Particle &particle = cell->particle;
+
+    if (particle.physics.thermal_conductivity <= 0.0f)
+        return;
+
+    // Skip almost-stable cells to avoid spending CPU on near-equilibrium noise.
+    if (std::abs(particle.physics.temperature - AMBIENT_TEMPERATURE_C) < 0.5f)
+        return;
+
+    const glm::ivec2 chunk_dim = current_chunk->get_chunk_dimensions();
     float total_temp_change = 0.0f;
     int neighbor_count = 0;
 
-    // Check all 8 neighbors
+    // Use 4-neighbor diffusion for cheaper and sufficiently stable heat propagation.
     const glm::ivec2 offsets[] = {
-        {-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
+        {0, -1}, {-1, 0}, {1, 0}, {0, 1}};
 
     for (const auto &offset : offsets)
     {
-        WorldCell *neighbor = get_cell_at(chunk_coords, x + offset.x, y + offset.y);
+        const int nx = x + offset.x;
+        const int ny = y + offset.y;
+
+        WorldCell *neighbor = nullptr;
+        if (nx >= 0 && nx < chunk_dim.x && ny >= 0 && ny < chunk_dim.y)
+        {
+            neighbor = current_chunk->get_worldcell(nx, ny);
+        }
+        else
+        {
+            neighbor = get_cell_at(chunk_coords, nx, ny);
+        }
+
         if (neighbor && neighbor->particle.type != Particle_Type::EMPTY)
         {
             float temp_diff = neighbor->particle.physics.temperature - particle.physics.temperature;
             float transfer_rate = std::min(particle.physics.thermal_conductivity,
                                            neighbor->particle.physics.thermal_conductivity);
-            total_temp_change += temp_diff * transfer_rate * 0.1f;
+            const float heat_capacity_factor = std::max(200.0f, particle.physics.specific_heat);
+            total_temp_change += temp_diff * transfer_rate * (35.0f / heat_capacity_factor);
             neighbor_count++;
         }
     }
@@ -571,38 +655,75 @@ void Falling_Sand_Simulation::apply_temperature_transfer(WorldCell *cell, const 
     if (neighbor_count > 0)
     {
         particle.physics.temperature += total_temp_change / neighbor_count;
+        particle.physics.temperature = std::clamp(
+            particle.physics.temperature,
+            -273.15f,
+            particle.physics.max_temperature);
     }
 }
 
-void Falling_Sand_Simulation::check_state_change(Particle &particle)
+bool Falling_Sand_Simulation::check_state_change(Particle &particle)
 {
-    if (particle.type == Particle_Type::EMPTY || particle.flags.is_static)
-        return;
+    if (particle.type == Particle_Type::EMPTY)
+        return false;
 
-    // Check for melting
-    if (particle.state == Particle_State::SOLID &&
-        particle.physics.melting_point > 0 &&
+    auto preserve_runtime_state = [](Particle &target, const Particle &source)
+    {
+        target.physics.temperature = source.physics.temperature;
+        target.physics.velocity = source.physics.velocity;
+        target.physics.acceleration = source.physics.acceleration;
+        target.flags.is_updated = source.flags.is_updated;
+        target.flags.is_falling = source.flags.is_falling;
+    };
+
+    if (particle.physics.smoke_point > 0.0f &&
+        particle.physics.temperature >= particle.physics.smoke_point &&
+        particle.type != Particle_Type::SMOKE &&
+        particle.type != Particle_Type::FIRE)
+    {
+        Particle smoked = create_smoke(false);
+        preserve_runtime_state(smoked, particle);
+        particle = smoked;
+        return true;
+    }
+
+    if (particle.type == Particle_Type::ICE &&
         particle.physics.temperature >= particle.physics.melting_point)
     {
-        // TODO: Implement state change (e.g., stone -> lava, ice -> water)
-        // For now just track the state
+        Particle melted = create_water(false);
+        preserve_runtime_state(melted, particle);
+        particle = melted;
+        return true;
     }
 
-    // Check for boiling
-    if (particle.state == Particle_State::LIQUID &&
-        particle.physics.boiling_point > 0 &&
+    if (particle.type == Particle_Type::WATER &&
         particle.physics.temperature >= particle.physics.boiling_point)
     {
-        // TODO: Implement state change (e.g., water -> steam)
+        Particle vapor = create_water_vapor(false);
+        preserve_runtime_state(vapor, particle);
+        particle = vapor;
+        return true;
     }
 
-    // Check for freezing
-    if (particle.state == Particle_State::LIQUID &&
-        particle.physics.melting_point > 0 &&
+    if (particle.type == Particle_Type::WATER &&
         particle.physics.temperature <= particle.physics.melting_point)
     {
-        // TODO: Implement state change (e.g., water -> ice)
+        Particle frozen = create_ice(false);
+        preserve_runtime_state(frozen, particle);
+        particle = frozen;
+        return true;
     }
+
+    if (particle.type == Particle_Type::WATER_VAPOR &&
+        particle.physics.temperature < particle.physics.boiling_point)
+    {
+        Particle condensed = create_water(false);
+        preserve_runtime_state(condensed, particle);
+        particle = condensed;
+        return true;
+    }
+
+    return false;
 }
 
 void Falling_Sand_Simulation::process_chunk(Chunk *chunk, const glm::ivec2 &chunk_coords)
@@ -735,7 +856,70 @@ void Falling_Sand_Simulation::update(float delta_time)
                   return a.y > b.y; // Higher Y = lower on screen
               });
 
-    // First pass: Apply gravity to all particles
+    const bool run_temperature_step = (tick_count % TEMPERATURE_UPDATE_INTERVAL == 0);
+
+    if (run_temperature_step)
+    {
+        const int parity = static_cast<int>((tick_count / TEMPERATURE_UPDATE_INTERVAL) & 1ull);
+
+        // First pass: temperature transfer and relaxation to ambient temperature.
+        for (const auto &chunk_coords : sorted_chunks)
+        {
+            Chunk *chunk = get_chunk_cached(chunk_coords);
+            if (!chunk)
+                continue;
+
+            glm::ivec2 dim = chunk->get_chunk_dimensions();
+            for (int y = 0; y < dim.y; ++y)
+            {
+                for (int x = 0; x < dim.x; ++x)
+                {
+                    // Checkerboard update halves temperature workload per pass.
+                    if (((x + y) & 1) != parity)
+                        continue;
+
+                    WorldCell *cell = chunk->get_worldcell(x, y);
+                    if (!cell || cell->particle.type == Particle_Type::EMPTY)
+                        continue;
+
+                    apply_temperature_transfer(cell, chunk_coords, x, y, chunk);
+
+                    Particle &particle = cell->particle;
+                    particle.physics.temperature +=
+                        (AMBIENT_TEMPERATURE_C - particle.physics.temperature) * AMBIENT_RELAX_RATE * delta_time;
+
+                    particle.physics.temperature = std::clamp(
+                        particle.physics.temperature,
+                        -273.15f,
+                        particle.physics.max_temperature);
+                }
+            }
+        }
+
+        // Second pass: apply phase changes caused by temperature.
+        for (const auto &chunk_coords : sorted_chunks)
+        {
+            Chunk *chunk = get_chunk_cached(chunk_coords);
+            if (!chunk)
+                continue;
+
+            bool chunk_changed = false;
+            auto *chunk_data = chunk->get_chunk_data();
+            for (auto &cell : *chunk_data)
+            {
+                if (cell.particle.type == Particle_Type::EMPTY)
+                    continue;
+
+                if (check_state_change(cell.particle))
+                    chunk_changed = true;
+            }
+
+            if (chunk_changed)
+                chunk->mark_dirty();
+        }
+    }
+
+    // Third pass: Apply gravity to all particles
     for (const auto &chunk_coords : sorted_chunks)
     {
         Chunk *chunk = get_chunk_cached(chunk_coords);
@@ -752,7 +936,7 @@ void Falling_Sand_Simulation::update(float delta_time)
         }
     }
 
-    // Second pass: Process movement
+    // Fourth pass: Process movement
     for (const auto &chunk_coords : sorted_chunks)
     {
         Chunk *chunk = get_chunk_cached(chunk_coords);

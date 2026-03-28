@@ -205,11 +205,28 @@ TEST(DevushkiSpawnTest, RealMapAttemptsToPlaceDevushkiColumn)
     Structure *devushki_bp = spawner.get_blueprint("devushki_column");
     ASSERT_NE(devushki_bp, nullptr);
 
-    const int min_chunk = -8;
-    const int max_chunk = 8;
-    for (int cy = min_chunk; cy <= max_chunk; ++cy)
+    const auto &entries = spawner.get_predetermined_entries();
+    const auto entry_it = std::find_if(
+        entries.begin(),
+        entries.end(),
+        [](const auto &entry)
+        { return entry.structure_name == "devushki_column"; });
+    ASSERT_NE(entry_it, entries.end());
+
+    const glm::ivec2 target_pos = entry_it->target_pos;
+    const int chunk_pixel_w = chunk_dims.x * ps;
+    const int chunk_pixel_h = chunk_dims.y * ps;
+    const glm::ivec2 target_chunk(
+        static_cast<int>(std::floor(static_cast<float>(target_pos.x) / chunk_pixel_w)),
+        static_cast<int>(std::floor(static_cast<float>(target_pos.y) / chunk_pixel_h)));
+
+    const int min_chunk_x = target_chunk.x - 8;
+    const int max_chunk_x = target_chunk.x + 8;
+    const int min_chunk_y = target_chunk.y - 8;
+    const int max_chunk_y = target_chunk.y + 8;
+    for (int cy = min_chunk_y; cy <= max_chunk_y; ++cy)
     {
-        for (int cx = min_chunk; cx <= max_chunk; ++cx)
+        for (int cx = min_chunk_x; cx <= max_chunk_x; ++cx)
         {
             glm::ivec2 coords(cx, cy);
             auto chunk = std::make_unique<Chunk>(coords, chunk_dims.x, chunk_dims.y);
@@ -223,10 +240,10 @@ TEST(DevushkiSpawnTest, RealMapAttemptsToPlaceDevushkiColumn)
 
     // Prepare one guaranteed valid placement area in the generated map:
     // empty footprint + empty air above + solid support below.
-    const int desired_x = 20;
-    const int desired_y = 120;
+    const int desired_x = target_pos.x;
+    const int desired_y = target_pos.y;
     const int ground_y = desired_y + struct_h_px;
-    const int loaded_min_y = min_chunk * chunk_dims.y * ps;
+    const int loaded_min_y = min_chunk_y * chunk_dims.y * ps;
 
     for (int x = desired_x; x < desired_x + struct_w_px; x += ps)
     {
@@ -237,7 +254,7 @@ TEST(DevushkiSpawnTest, RealMapAttemptsToPlaceDevushkiColumn)
         world.place_static_particle(glm::ivec2(x, ground_y), Particle_Type::STONE);
     }
 
-    spawner.try_place_pending_structures(glm::ivec2(0, 0));
+    spawner.try_place_pending_structures(target_chunk);
 
     const auto &placed_structures = spawner.get_placed_structures();
     const int devushki_columns = static_cast<int>(std::count_if(
