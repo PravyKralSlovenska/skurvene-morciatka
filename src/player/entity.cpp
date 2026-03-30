@@ -13,6 +13,21 @@ int Entity::next_id = 1;
 
 namespace
 {
+    glm::vec2 safe_normalize_vec2(const glm::vec2 &v, const glm::vec2 &fallback)
+    {
+        const float len = std::sqrt(v.x * v.x + v.y * v.y);
+        if (len <= 0.001f)
+            return fallback;
+        return v / len;
+    }
+
+    glm::vec2 rotate_vec2(const glm::vec2 &v, float angle)
+    {
+        const float c = std::cos(angle);
+        const float s = std::sin(angle);
+        return glm::vec2(v.x * c - v.y * s, v.x * s + v.y * c);
+    }
+
     bool world_pos_to_chunk_local(World *world, const glm::ivec2 &world_pos,
                                   glm::ivec2 &out_chunk_pos, glm::ivec2 &out_local_pos)
     {
@@ -839,7 +854,7 @@ void Projectile::update(float delta_time)
 
         if (check_collision_at(next_pos))
         {
-            if (world_ref)
+            if (world_ref && world_impact_enabled)
             {
                 if (payload_type == Particle_Type::FIRE)
                 {
@@ -944,6 +959,16 @@ void Projectile::set_air_drag(float value)
 float Projectile::get_air_drag() const
 {
     return air_drag;
+}
+
+void Projectile::set_world_impact_enabled(bool enabled)
+{
+    world_impact_enabled = enabled;
+}
+
+bool Projectile::is_world_impact_enabled() const
+{
+    return world_impact_enabled;
 }
 
 // ==================== Enemy ====================
@@ -1883,34 +1908,96 @@ bool Boss::can_slam() const
 bool Boss::can_fireball() const
 {
     const float effective_cooldown = is_enraged ? fireball_cooldown * 0.7f : fireball_cooldown;
-    return time_since_fireball >= effective_cooldown && !pending_fireball;
+    return time_since_fireball >= effective_cooldown && pending_fireball_shots.size() < 18;
 }
 
 void Boss::queue_fireball()
 {
-    glm::vec2 direction = glm::vec2(target_position - coords);
-    const float dist = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-    if (dist <= 1.0f)
+    if (is_enraged)
+    {
+        switch (fire_pattern_cycle % 3)
+        {
+        case 0:
+            queue_fireball_fan(3, 0.55f, 1.08f);
+            break;
+        case 1:
+            queue_fireball_spiral(5, 0.34f, 0.92f);
+            break;
+        default:
+            queue_fireball_fan(5, 1.02f, 1.0f);
+            break;
+        }
+    }
+    else
+    {
+        if (fire_pattern_cycle % 4 == 3)
+            queue_fireball_fan(2, 0.22f, 0.95f);
+        else
+            queue_fireball_fan(1, 0.0f, 1.0f);
+    }
+
+    ++fire_pattern_cycle;
+    time_since_fireball = 0.0f;
+}
+
+void Boss::queue_fireball_shot(const glm::vec2 &direction, float damage_scale, Particle_Type payload)
+{
+    const glm::vec2 dir = safe_normalize_vec2(direction, glm::vec2(1.0f, 0.0f));
+
+    PendingFireballShot shot;
+    shot.origin = glm::vec2(coords);
+    shot.velocity = dir * fireball_speed;
+    shot.damage = fireball_damage * damage_scale;
+    if (is_enraged)
+    {
+        shot.damage *= 1.2f;
+    }
+    shot.payload = payload;
+    pending_fireball_shots.push_back(shot);
+}
+
+void Boss::queue_fireball_fan(int shot_count, float total_arc_radians, float damage_scale)
+{
+    if (shot_count <= 0)
         return;
 
-    direction /= dist;
+    const glm::vec2 aim_dir = safe_normalize_vec2(glm::vec2(target_position - coords), glm::vec2(1.0f, 0.0f));
 
-    static thread_local std::mt19937 rng(std::random_device{}());
-    std::uniform_real_distribution<float> spread(-0.18f, 0.18f);
-    const float angle = spread(rng);
+    if (shot_count == 1)
+    {
+        queue_fireball_shot(aim_dir, damage_scale);
+        return;
+    }
 
-    const float cos_a = std::cos(angle);
-    const float sin_a = std::sin(angle);
-    glm::vec2 rotated_dir(
-        direction.x * cos_a - direction.y * sin_a,
-        direction.x * sin_a + direction.y * cos_a);
+    const float start_angle = -0.5f * total_arc_radians;
+    const float angle_step = total_arc_radians / static_cast<float>(shot_count - 1);
 
-    pending_fireball = true;
-    pending_fireball_origin = glm::vec2(coords);
-    pending_fireball_velocity = rotated_dir * fireball_speed;
-    pending_fireball_damage = is_enraged ? fireball_damage * 1.25f : fireball_damage;
-    pending_fireball_payload = Particle_Type::FIRE;
-    time_since_fireball = 0.0f;
+    for (int i = 0; i < shot_count; ++i)
+    {
+        const float angle = start_angle + angle_step * static_cast<float>(i);
+        queue_fireball_shot(rotate_vec2(aim_dir, angle), damage_scale);
+    }
+}
+
+void Boss::queue_fireball_spiral(int shot_count, float angle_step_radians, float damage_scale)
+{
+    if (shot_count <= 0)
+        return;
+
+    const glm::vec2 aim_dir = safe_normalize_vec2(glm::vec2(target_position - coords), glm::vec2(1.0f, 0.0f));
+
+    for (int i = 0; i < shot_count; ++i)
+    {
+        const float angle = spiral_seed_angle + angle_step_radians * static_cast<float>(i);
+        queue_fireball_shot(rotate_vec2(aim_dir, angle), damage_scale);
+    }
+
+    spiral_seed_angle += angle_step_radians * 0.7f;
+    const float two_pi = 6.28318530718f;
+    if (spiral_seed_angle > two_pi)
+    {
+        spiral_seed_angle = std::fmod(spiral_seed_angle, two_pi);
+    }
 }
 
 glm::ivec2 Boss::choose_teleport_position_around_target(const glm::vec2 &preferred_dir) const
@@ -2065,14 +2152,16 @@ bool Boss::get_is_enraged() const
 bool Boss::consume_pending_fireball(glm::vec2 &out_origin, glm::vec2 &out_velocity,
                                     float &out_damage, Particle_Type &out_payload)
 {
-    if (!pending_fireball)
+    if (pending_fireball_shots.empty())
         return false;
 
-    out_origin = pending_fireball_origin;
-    out_velocity = pending_fireball_velocity;
-    out_damage = pending_fireball_damage;
-    out_payload = pending_fireball_payload;
-    pending_fireball = false;
+    const PendingFireballShot shot = pending_fireball_shots.front();
+    pending_fireball_shots.erase(pending_fireball_shots.begin());
+
+    out_origin = shot.origin;
+    out_velocity = shot.velocity;
+    out_damage = shot.damage;
+    out_payload = shot.payload;
     return true;
 }
 

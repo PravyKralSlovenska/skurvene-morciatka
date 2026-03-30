@@ -78,6 +78,7 @@ bool UI_Renderer::ensure_store_offer_textures_loaded()
 
     store_offer_textures["../items/devushki_heal.png"] = load_ui_texture("../items/devushki_heal.png");
     store_offer_textures["../items/devushki_ammo.png"] = load_ui_texture("../items/devushki_ammo.png");
+    store_offer_textures["../items/devushki_compass.png"] = load_ui_texture("../items/devushki_compass.png");
     store_offer_textures["builtin://wand_fire"] = create_solid_color_texture(255, 90, 20);
     store_offer_textures["builtin://wand_wood"] = create_solid_color_texture(139, 94, 60);
     store_offer_textures["builtin://wand_empty"] = create_solid_color_texture(210, 210, 210);
@@ -267,6 +268,9 @@ Menu_Actions UI_Renderer::render_menu_screen(Menu_Screen screen,
 
 void UI_Renderer::render_ui()
 {
+    if (entity_manager)
+        ensure_store_offer_textures_loaded();
+
     if (show_debug_info)
         render_debug_overlay();
     if (show_health_bar && player)
@@ -720,17 +724,39 @@ void UI_Renderer::render_hotbar()
             if (!wand.is_empty())
             {
                 float swatch_margin = 8.0f;
-                ImU32 wand_color = IM_COL32(
-                    (int)(wand.color.r * 255),
-                    (int)(wand.color.g * 255),
-                    (int)(wand.color.b * 255),
-                    (int)(wand.color.a * 255));
+                if (wand.type == Wand_Type::COMPASS_WAND)
+                {
+                    auto icon_it = store_offer_textures.find("../items/devushki_compass.png");
+                    if (icon_it != store_offer_textures.end() && icon_it->second != 0)
+                    {
+                        draw_list->AddImage(
+                            static_cast<ImTextureID>(icon_it->second),
+                            ImVec2(pos.x + swatch_margin, pos.y + swatch_margin),
+                            ImVec2(pos.x + slot_size - swatch_margin, pos.y + slot_size - swatch_margin - 12.0f));
+                    }
+                    else
+                    {
+                        draw_list->AddRectFilled(
+                            ImVec2(pos.x + swatch_margin, pos.y + swatch_margin),
+                            ImVec2(pos.x + slot_size - swatch_margin, pos.y + slot_size - swatch_margin - 12.0f),
+                            IM_COL32(255, 220, 80, 255),
+                            3.0f);
+                    }
+                }
+                else
+                {
+                    ImU32 wand_color = IM_COL32(
+                        (int)(wand.color.r * 255),
+                        (int)(wand.color.g * 255),
+                        (int)(wand.color.b * 255),
+                        (int)(wand.color.a * 255));
 
-                draw_list->AddRectFilled(
-                    ImVec2(pos.x + swatch_margin, pos.y + swatch_margin),
-                    ImVec2(pos.x + slot_size - swatch_margin, pos.y + slot_size - swatch_margin - 12.0f),
-                    wand_color,
-                    3.0f);
+                    draw_list->AddRectFilled(
+                        ImVec2(pos.x + swatch_margin, pos.y + swatch_margin),
+                        ImVec2(pos.x + slot_size - swatch_margin, pos.y + slot_size - swatch_margin - 12.0f),
+                        wand_color,
+                        3.0f);
+                }
 
                 // Wand name (abbreviated)
                 const char *name = wand.name.c_str();

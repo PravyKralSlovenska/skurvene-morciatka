@@ -215,6 +215,7 @@ private:
     float age_seconds = 0.0f;
     float gravity_multiplier = 0.3f;
     float air_drag = 0.995f;
+    bool world_impact_enabled = true;
 
 public:
     Projectile();
@@ -236,6 +237,8 @@ public:
     float get_gravity_multiplier() const;
     void set_air_drag(float value);
     float get_air_drag() const;
+    void set_world_impact_enabled(bool enabled);
+    bool is_world_impact_enabled() const;
 };
 
 class Enemy : public Entity
@@ -436,11 +439,16 @@ private:
     float teleport_max_distance = 240.0f;
 
     // Boss queues combat actions; Entity_Manager executes them in-world.
-    bool pending_fireball = false;
-    glm::vec2 pending_fireball_origin = {0.0f, 0.0f};
-    glm::vec2 pending_fireball_velocity = {0.0f, 0.0f};
-    float pending_fireball_damage = 0.0f;
-    Particle_Type pending_fireball_payload = Particle_Type::FIRE;
+    struct PendingFireballShot
+    {
+        glm::vec2 origin = {0.0f, 0.0f};
+        glm::vec2 velocity = {0.0f, 0.0f};
+        float damage = 0.0f;
+        Particle_Type payload = Particle_Type::FIRE;
+    };
+    std::vector<PendingFireballShot> pending_fireball_shots;
+    int fire_pattern_cycle = 0;
+    float spiral_seed_angle = 0.0f;
 
     // AI timing
     float state_timer = 0.0f;
@@ -465,6 +473,10 @@ private:
     bool can_slam() const;
     bool can_fireball() const;
     void queue_fireball();
+    void queue_fireball_shot(const glm::vec2 &direction, float damage_scale,
+                             Particle_Type payload = Particle_Type::FIRE);
+    void queue_fireball_fan(int shot_count, float total_arc_radians, float damage_scale);
+    void queue_fireball_spiral(int shot_count, float angle_step_radians, float damage_scale);
     glm::ivec2 choose_teleport_position_around_target(const glm::vec2 &preferred_dir) const;
 
     // Movement helpers

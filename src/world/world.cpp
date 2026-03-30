@@ -16,7 +16,7 @@
 
 namespace
 {
-    int resolve_world_seed()
+    int resolve_world_seed_from_env_or_random()
     {
         const char *seed_env = std::getenv("MORCIATKO_WORLD_SEED");
         if (seed_env && seed_env[0] != '\0')
@@ -31,14 +31,14 @@ namespace
 
         return static_cast<int>(std::random_device{}());
     }
-
-    const int WORLD_SEED = resolve_world_seed();
 }
 
 World::World()
 {
+    world_seed = resolve_world_seed_from_env_or_random();
+
     world_gen = std::make_unique<World_CA_Generation>(chunk_width, chunk_height);
-    world_gen->set_seed(WORLD_SEED);
+    world_gen->set_seed(world_seed);
 
     // Initialize falling sand simulation
     sand_simulation = std::make_unique<Falling_Sand_Simulation>();
@@ -46,11 +46,11 @@ World::World()
 
     // Initialize structure spawner
     structure_spawner.set_world(this);
-    structure_spawner.set_seed(WORLD_SEED);
+    structure_spawner.set_seed(world_seed);
 
     // Load structure blueprints and generate deterministic targets.
     load_image_structures("../structure_images");
-    structure_spawner.generate_predetermined_positions(WORLD_SEED);
+    structure_spawner.generate_predetermined_positions(world_seed);
 }
 
 World::~World() = default;
@@ -109,6 +109,31 @@ void World::update_active_chunks()
 void World::set_player(Player *player)
 {
     this->player = player;
+}
+
+int World::get_seed() const
+{
+    return world_seed;
+}
+
+void World::regenerate_with_seed(int seed)
+{
+    world_seed = seed;
+    world.clear();
+    active_chunks.clear();
+
+    if (world_gen)
+    {
+        world_gen->set_seed(world_seed);
+    }
+
+    structure_spawner.set_seed(world_seed);
+    structure_spawner.generate_predetermined_positions(world_seed);
+}
+
+void World::regenerate_random_seed()
+{
+    regenerate_with_seed(static_cast<int>(std::random_device{}()));
 }
 
 inline int World::get_index(int x, int y)
@@ -490,7 +515,7 @@ StructureSpawner &World::get_structure_spawner()
 void World::set_devushki_column_spawn_count(int count)
 {
     structure_spawner.set_structure_spawn_count("devushki_column", count);
-    structure_spawner.generate_predetermined_positions(WORLD_SEED);
+    structure_spawner.generate_predetermined_positions(world_seed);
 }
 
 void World::place_structure(const Structure &structure, const glm::ivec2 &world_pos)

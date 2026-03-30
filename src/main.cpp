@@ -34,7 +34,8 @@ enum GAME_STATES
     PAUSE,
     OPTIONS, // ???
     LOADING, // ???
-    END
+    END,
+    BOSS_DEFEATED
 };
 
 int main()
@@ -47,7 +48,7 @@ int main()
     // time_manager.enable_fps_limiting();
 
     render.init();
-    
+
     render.enable_blending();
     render.enable_ortho_projection();
     render.set_world(&world);
@@ -71,10 +72,28 @@ int main()
     entity_manager.register_sprite("slime", "../sprites/devushka_slime_enemy1.png");
     // entity_manager.register_sprite("big_boss", "../sprites/boss.png", 256, 64, 64, 64, 4);
 
-    const int devushki_count = 1; // how many devushki to save (change this to set the objective)
+    const int devushki_count = 4; // how many devushki to save (change this to set the objective)
     entity_manager.set_devushki_objective_count(devushki_count);
-    entity_manager.spawn_devushki_objective(devushki_count, 2000.0f);
+    entity_manager.spawn_devushki_objective(devushki_count, 5000.0f);
     world.set_devushki_column_spawn_count(devushki_count);
+
+    auto rebuild_world_with_new_seed = [&]()
+    {
+        world.regenerate_random_seed();
+        entity_manager.reset_for_new_world();
+        entity_manager.set_world(&world);
+
+        Player *active_player = entity_manager.get_player();
+        world.set_player(active_player);
+        controls.set_player(active_player);
+        entity_manager.ensure_player_valid_position();
+
+        entity_manager.set_devushki_objective_count(devushki_count);
+        entity_manager.spawn_devushki_objective(devushki_count, 2000.0f);
+        world.set_devushki_column_spawn_count(devushki_count);
+
+        Log::info("new world seed: " + std::to_string(world.get_seed()));
+    };
 
     controls.set_player(player);
     controls.set_window(render.get_window());
@@ -103,6 +122,7 @@ int main()
     GAME_STATES options_return_state = MENU;
     bool escape_was_down = false;
     bool enter_was_down = false;
+    bool boss_defeat_menu_shown = false;
 
     SpawnConfig spawn_cfg = entity_manager.get_spawn_config();
     float option_enemy_difficulty = spawn_cfg.difficulty_multiplier;
@@ -168,6 +188,15 @@ int main()
                 if (!time_manager.paused())
                 {
                     entity_manager.update(delta_time);
+
+                    DevushkiObjective &objective = entity_manager.get_devushki_objective();
+                    const bool boss_defeated = objective.boss_spawned && entity_manager.get_boss_count() == 0;
+                    if (!boss_defeat_menu_shown && boss_defeated)
+                    {
+                        boss_defeat_menu_shown = true;
+                        game_state = BOSS_DEFEATED;
+                        time_manager.pause();
+                    }
                 }
             }
             break;
@@ -176,6 +205,12 @@ int main()
             time_manager.pause();
             render_in_game_ui = false;
             menu_screen = Menu_Screen::PAUSE;
+            break;
+
+        case BOSS_DEFEATED:
+            time_manager.pause();
+            render_in_game_ui = false;
+            menu_screen = Menu_Screen::BOSS_DEFEATED;
             break;
 
         case OPTIONS:
@@ -227,30 +262,38 @@ int main()
 
         if (menu_actions.start_game)
         {
+            if (game_state == MENU)
+            {
+                rebuild_world_with_new_seed();
+                boss_defeat_menu_shown = false;
+            }
             game_state = GAME;
             time_manager.resume();
         }
-
-        if (menu_actions.resume_game)
+        else if (menu_actions.resume_game)
         {
             game_state = GAME;
             time_manager.resume();
         }
-
-        if (menu_actions.back_from_options)
+        else if (menu_actions.create_new_world)
+        {
+            rebuild_world_with_new_seed();
+            boss_defeat_menu_shown = false;
+            game_state = GAME;
+            time_manager.resume();
+        }
+        else if (menu_actions.back_from_options)
         {
             game_state = options_return_state;
             if (game_state == GAME)
                 time_manager.resume();
         }
-
-        if (menu_actions.quit_to_menu)
+        else if (menu_actions.quit_to_menu)
         {
             game_state = MENU;
             time_manager.pause();
         }
-
-        if (menu_actions.quit_game)
+        else if (menu_actions.quit_game)
         {
             glfwSetWindowShouldClose(glfw_window, true);
         }

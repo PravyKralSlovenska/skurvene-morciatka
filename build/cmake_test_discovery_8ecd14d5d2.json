@@ -1,5 +1,5 @@
 {
-  "tests": 87,
+  "tests": 88,
   "name": "AllTests",
   "testsuites": [
     {
@@ -81,6 +81,17 @@
           "name": "DevushkiColumnTargetIsOnConfiguredCircle",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/structure_spawn_rules_test.cpp",
           "line": 26
+        }
+      ]
+    },
+    {
+      "name": "BossSpawnRadiusTest",
+      "tests": 1,
+      "testsuite": [
+        {
+          "name": "Spawns100BossesInsideConfiguredRadiusBand",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/boss_spawn_radius_test.cpp",
+          "line": 32
         }
       ]
     },

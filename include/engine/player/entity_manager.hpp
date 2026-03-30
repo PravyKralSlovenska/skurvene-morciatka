@@ -55,7 +55,8 @@ enum class Store_Offer_Type
     AMMO,
     WAND_FIRE,
     WAND_WOOD,
-    WAND_EMPTY
+    WAND_EMPTY,
+    COMPASS
 };
 
 struct Store_Offer
@@ -104,6 +105,9 @@ private:
     // Gun ammo economy
     int player_ammo = 60;
 
+    // Special utility store items
+    bool player_has_compass = true;
+
     // One offer per store structure
     std::unordered_map<int, Store_Offer> store_offers_by_structure;
 
@@ -132,6 +136,7 @@ public:
     ~Entity_Manager();
 
     void set_world(World *world);
+    void reset_for_new_world();
     void ensure_player_valid_position();
     void update();
     void update(float delta_time);
@@ -206,6 +211,8 @@ public:
     int get_collected_gold_coins() const;
     int get_collected_silver_coins() const;
     int get_player_ammo() const;
+    bool has_compass() const;
+    bool get_nearest_devushki_position(glm::ivec2 &out_position, float *out_distance = nullptr) const;
     bool try_consume_ammo_for_shot();
     void add_player_ammo(int amount);
     bool is_player_near_store() const;

@@ -21,6 +21,8 @@ namespace
     static constexpr int STORE_AMMO_ITEM_PRICE_GOLD = 2;
     static constexpr int STORE_WAND_ITEM_PRICE_GOLD = 20;
     static constexpr int STORE_WAND_ITEM_PRICE_SILVER = 2;
+    static constexpr int STORE_COMPASS_ITEM_PRICE_GOLD = 20;
+    static constexpr int STORE_COMPASS_ITEM_PRICE_SILVER = 0;
     static constexpr int SILVER_PER_GOLD = 10;
     static constexpr int AMMO_PURCHASE_AMOUNT = 20;
     static constexpr int STORE_ICON_EXTRA_UP_PX = 40;
@@ -156,6 +158,37 @@ void Entity_Manager::set_world(World *world)
         {
             entity->set_world(world);
         }
+    }
+}
+
+void Entity_Manager::reset_for_new_world()
+{
+    remove_all_entities();
+
+    spawn_timer = 0.0f;
+    spawned_devushki_positions.clear();
+    store_offers_by_structure.clear();
+
+    devushki_objective.collected = 0;
+    devushki_objective.objective_active = false;
+    devushki_objective.objective_complete = false;
+    devushki_objective.boss_spawned = false;
+
+    collected_gold_coins = 0;
+    collected_silver_coins = 0;
+    player_ammo = 60;
+    player_has_compass = true;
+
+    if (player)
+    {
+        player->set_world(world);
+        player->set_position(0, 0);
+        player->set_velocity(0.0f, 0.0f);
+        player->acceleration = glm::vec2(0.0f, 0.0f);
+        player->healthpoints = player->max_healthpoints;
+        player->is_alive = true;
+        player->is_active = true;
+        player->state = Entity_States::STILL;
     }
 }
 
@@ -575,7 +608,7 @@ void Entity_Manager::update_store_offers()
         if (store_offers_by_structure.find(structure_hash) != store_offers_by_structure.end())
             continue;
 
-        std::uniform_int_distribution<int> offer_dist(0, 4);
+        std::uniform_int_distribution<int> offer_dist(0, player_has_compass ? 4 : 5);
         Store_Offer offer;
         offer.structure_hash = structure_hash;
         offer.structure_world_pos = ps.position;
@@ -613,12 +646,19 @@ void Entity_Manager::update_store_offers()
             offer.price_gold = STORE_WAND_ITEM_PRICE_GOLD;
             offer.price_silver = STORE_WAND_ITEM_PRICE_SILVER;
             break;
-        default:
+        case 4:
             offer.type = Store_Offer_Type::WAND_EMPTY;
             offer.item_name = "Empty Wand";
             offer.icon_path = "builtin://wand_empty";
             offer.price_gold = STORE_WAND_ITEM_PRICE_GOLD;
             offer.price_silver = STORE_WAND_ITEM_PRICE_SILVER;
+            break;
+        default:
+            offer.type = Store_Offer_Type::COMPASS;
+            offer.item_name = "Compass";
+            offer.icon_path = "../items/devushki_compass.png";
+            offer.price_gold = STORE_COMPASS_ITEM_PRICE_GOLD;
+            offer.price_silver = STORE_COMPASS_ITEM_PRICE_SILVER;
             break;
         }
 
@@ -733,7 +773,8 @@ void Entity_Manager::process_boss_special_actions()
         float shot_damage = 0.0f;
         Particle_Type shot_payload = Particle_Type::FIRE;
 
-        if (boss->consume_pending_fireball(shot_origin, shot_velocity, shot_damage, shot_payload))
+        int spawned_shots_this_tick = 0;
+        while (boss->consume_pending_fireball(shot_origin, shot_velocity, shot_damage, shot_payload))
         {
             Projectile *boss_projectile = create_projectile(
                 shot_origin,
@@ -746,6 +787,10 @@ void Entity_Manager::process_boss_special_actions()
             {
                 boss_projectile->set_lifetime(4.0f);
             }
+
+            ++spawned_shots_this_tick;
+            if (spawned_shots_this_tick >= 12)
+                break;
         }
     }
 }
@@ -1079,6 +1124,46 @@ int Entity_Manager::get_player_ammo() const
     return player_ammo;
 }
 
+bool Entity_Manager::has_compass() const
+{
+    return player_has_compass;
+}
+
+bool Entity_Manager::get_nearest_devushki_position(glm::ivec2 &out_position, float *out_distance) const
+{
+    if (!player)
+        return false;
+
+    const Entity *nearest = nullptr;
+    float nearest_dist_sq = std::numeric_limits<float>::max();
+
+    for (const auto &[id, entity] : entities)
+    {
+        if (!entity || !entity->is_active || !entity->get_is_alive())
+            continue;
+        if (entity->type != Entity_Type::DEVUSHKI)
+            continue;
+
+        const float dx = static_cast<float>(entity->coords.x - player->coords.x);
+        const float dy = static_cast<float>(entity->coords.y - player->coords.y);
+        const float dist_sq = dx * dx + dy * dy;
+
+        if (dist_sq < nearest_dist_sq)
+        {
+            nearest = entity.get();
+            nearest_dist_sq = dist_sq;
+        }
+    }
+
+    if (!nearest)
+        return false;
+
+    out_position = nearest->coords;
+    if (out_distance)
+        *out_distance = std::sqrt(nearest_dist_sq);
+    return true;
+}
+
 bool Entity_Manager::try_consume_ammo_for_shot()
 {
     if (player_ammo <= 0)
@@ -1206,6 +1291,13 @@ bool Entity_Manager::try_buy_store_item()
         applied = grant_wand(empty_wand);
         break;
     }
+    case Store_Offer_Type::COMPASS:
+        if (!player_has_compass)
+        {
+            player_has_compass = true;
+            applied = true;
+        }
+        break;
     }
 
     if (!applied)
@@ -1263,17 +1355,28 @@ void Entity_Manager::spawn_boss_for_completed_objective()
         return;
     }
 
-    const float min_distance = std::max(260.0f, spawn_config.min_spawn_distance);
-    const float max_distance = std::max(min_distance + 180.0f, spawn_config.max_spawn_distance + 220.0f);
+    // Keep boss spawn in a fair annulus around the player (not too close, not too far).
+    const float min_distance = std::max(260.0f, spawn_config.min_spawn_distance + 40.0f);
+    const float max_distance = std::max(min_distance + 140.0f, spawn_config.max_spawn_distance + 80.0f);
     const float min_distance_sq = min_distance * min_distance;
+    const float max_distance_sq = max_distance * max_distance;
+
+    auto is_within_spawn_radius = [&](const glm::ivec2 &pos) -> bool
+    {
+        const float dx = static_cast<float>(pos.x - player->coords.x);
+        const float dy = static_cast<float>(pos.y - player->coords.y);
+        const float dist_sq = dx * dx + dy * dy;
+        return dist_sq >= min_distance_sq && dist_sq <= max_distance_sq;
+    };
 
     std::uniform_real_distribution<float> angle_dist(0.0f, 2.0f * 3.14159265f);
     std::uniform_real_distribution<float> dist_dist(min_distance, max_distance);
 
     glm::ivec2 spawn_pos = player->coords + glm::ivec2(static_cast<int>(max_distance), 0);
+    bool found_spawn_pos = false;
 
     // Try a few candidates around the player while keeping a fair fight distance.
-    for (int i = 0; i < 16; ++i)
+    for (int i = 0; i < 32; ++i)
     {
         const float angle = angle_dist(rng);
         const float distance = dist_dist(rng);
@@ -1289,18 +1392,27 @@ void Entity_Manager::spawn_boss_for_completed_objective()
             candidate = probe->find_valid_spawn_position(candidate);
         }
 
-        const float dx = static_cast<float>(candidate.x - player->coords.x);
-        const float dy = static_cast<float>(candidate.y - player->coords.y);
-        if (dx * dx + dy * dy >= min_distance_sq)
+        if (is_within_spawn_radius(candidate))
         {
             spawn_pos = candidate;
+            found_spawn_pos = true;
             break;
         }
     }
 
+    if (!found_spawn_pos)
+        return;
+
     Boss *boss = create_boss(spawn_pos);
     if (!boss)
         return;
+
+    // create_boss may nudge position again to fit hitbox; enforce the same spawn radius rule.
+    if (!is_within_spawn_radius(boss->coords))
+    {
+        remove_entity(boss->get_id());
+        return;
+    }
 
     boss->name = "Boss of Devushki";
 

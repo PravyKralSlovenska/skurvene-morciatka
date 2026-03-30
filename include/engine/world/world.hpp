@@ -42,6 +42,7 @@ class World
 {
 private:
     Player *player;
+    int world_seed = 0;
 
     const int chunk_width = 10;
     const int chunk_height = 10;
@@ -92,6 +93,9 @@ public:
     ~World();
 
     void set_player(Player *player);
+    int get_seed() const;
+    void regenerate_with_seed(int seed);
+    void regenerate_random_seed();
 
     void update();
     void update(float delta_time); // Update with delta time for physics

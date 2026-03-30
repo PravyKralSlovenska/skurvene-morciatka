@@ -43,4 +43,3 @@ linky [pornhub](https://pornhub.com)
 
 > [!CAUTION]
 > Advises about risks or negative outcomes of certain actions.
-pri

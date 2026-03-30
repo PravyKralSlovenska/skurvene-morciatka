@@ -146,6 +146,61 @@ void Controls::handle_input()
                     }
                 }
             }
+            else if (wand.type == Wand_Type::COMPASS_WAND)
+            {
+                const double now = glfwGetTime();
+                if (entity_manager && now - wand.last_use_time >= wand.cooldown)
+                {
+                    glm::vec2 dir = player->get_aim_direction();
+
+                    glm::ivec2 nearest_devushki_pos(0, 0);
+                    if (entity_manager->get_nearest_devushki_position(nearest_devushki_pos, nullptr))
+                    {
+                        const glm::vec2 toward = glm::vec2(nearest_devushki_pos) - player->get_center();
+                        const float toward_len = glm::length(toward);
+                        if (toward_len > 0.001f)
+                        {
+                            dir = toward / toward_len;
+                        }
+                    }
+
+                    const float len = glm::length(dir);
+                    if (len > 0.001f)
+                    {
+                        dir /= len;
+
+                        // "General direction" behavior: accurate guidance with slight random spread.
+                        static thread_local std::mt19937 rng(std::random_device{}());
+                        std::uniform_real_distribution<float> spread_angle(-0.24f, 0.24f);
+                        const float angle = spread_angle(rng);
+                        const float cos_a = std::cos(angle);
+                        const float sin_a = std::sin(angle);
+                        glm::vec2 launch_dir(
+                            dir.x * cos_a - dir.y * sin_a,
+                            dir.x * sin_a + dir.y * cos_a);
+
+                        const float projectile_speed = 520.0f;
+                        glm::vec2 spawn_pos = player->get_center() + launch_dir * 20.0f;
+                        Projectile *compass_particle = entity_manager->create_projectile(
+                            spawn_pos,
+                            launch_dir * projectile_speed,
+                            Particle_Type::SAND,
+                            0.0f,
+                            Entity_Type::PLAYER);
+
+                        if (compass_particle)
+                        {
+                            compass_particle->set_hitbox_dimensions(44, 22);
+                            compass_particle->set_lifetime(1.65f);
+                            compass_particle->set_gravity_multiplier(0.0f);
+                            compass_particle->set_air_drag(0.998f);
+                            compass_particle->set_world_impact_enabled(false);
+                        }
+
+                        wand.last_use_time = static_cast<float>(now);
+                    }
+                }
+            }
             else if (wand.type == Wand_Type::FIRE_WAND)
             {
                 const double now = glfwGetTime();

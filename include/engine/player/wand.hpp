@@ -17,7 +17,8 @@ enum class Wand_Type
     URANIUM_WAND,
     GUN_WAND,
     ICE_WAND,
-    WATER_VAPOR_WAND
+    WATER_VAPOR_WAND,
+    COMPASS_WAND
 };
 
 struct Wand
@@ -155,6 +156,18 @@ struct Wand
         w.cooldown = 0.08f;
         return w;
     }
+
+    static Wand create_compass_wand()
+    {
+        Wand w;
+        w.type = Wand_Type::COMPASS_WAND;
+        w.name = "Compass";
+        w.color = {1.0f, 0.9f, 0.25f, 1.0f};
+        w.particle_type = Particle_Type::SAND;
+        w.brush_size = 1;
+        w.cooldown = 0.25f;
+        return w;
+    }
 };
 
 class Hotbar
@@ -172,6 +185,7 @@ public:
         slots[1] = Wand::create_stone_wand();
         slots[2] = Wand::create_ice_wand();
         slots[3] = Wand::create_water_vapor_wand();
+        slots[4] = Wand::create_compass_wand();
         // slots[6] = Wand::create_sand_wand();
         // slots[2] = Wand::create_water_wand();
         // slots[3] = Wand::create_delete_wand();
