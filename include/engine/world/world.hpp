@@ -130,6 +130,8 @@ public:
     // Structure spawning
     StructureSpawner &get_structure_spawner();
     void set_devushki_column_spawn_count(int count);
+    void set_devushki_column_spawn_radius_particles(int radius_particles);
+    int get_devushki_column_spawn_radius_particles() const;
     void place_structure(const Structure &structure, const glm::ivec2 &world_pos);
     void place_structure_centered(const Structure &structure, const glm::ivec2 &center_pos);
 

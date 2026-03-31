@@ -516,6 +516,20 @@ void World::set_devushki_column_spawn_count(int count)
 {
     structure_spawner.set_structure_spawn_count("devushki_column", count);
     structure_spawner.generate_predetermined_positions(world_seed);
+
+    // Resolve column placements up-front so objective spawn positions are stable before gameplay starts.
+    const int placement_passes = std::max(12, std::max(1, count) * 6);
+    structure_spawner.place_pending_for_structure("devushki_column", placement_passes);
+}
+
+void World::set_devushki_column_spawn_radius_particles(int radius_particles)
+{
+    structure_spawner.set_devushki_spawn_radius_particles(radius_particles);
+}
+
+int World::get_devushki_column_spawn_radius_particles() const
+{
+    return structure_spawner.get_devushki_spawn_radius_particles();
 }
 
 void World::place_structure(const Structure &structure, const glm::ivec2 &world_pos)

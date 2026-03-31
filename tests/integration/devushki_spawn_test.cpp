@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <memory>
 #include <cmath>
+#include <cstdlib>
 
 #include "engine/world/structure.hpp"
 #include "engine/player/entity_manager.hpp"
@@ -418,6 +419,151 @@ TEST(DevushkiSpawnTest, BaseFillStopsAtExistingGround)
         EXPECT_FALSE(cell_is_empty(x, base_y + 2 * ps));
         EXPECT_TRUE(cell_is_empty(x, base_y + 3 * ps));
     }
+}
+
+TEST(DevushkiSpawnTest, DevushkiColumnsPlacedBeforeGameplayStarts)
+{
+    const char *seed_env_name = "MORCIATKO_WORLD_SEED";
+    const char *existing_seed = std::getenv(seed_env_name);
+    std::string saved_seed = existing_seed ? existing_seed : "";
+
+    setenv(seed_env_name, "1337", 1);
+
+    constexpr int requested_columns = 4;
+    World world;
+    world.set_devushki_column_spawn_count(requested_columns);
+
+    if (existing_seed)
+    {
+        setenv(seed_env_name, saved_seed.c_str(), 1);
+    }
+    else
+    {
+        unsetenv(seed_env_name);
+    }
+
+    const auto &entries = world.get_structure_spawner().get_predetermined_entries();
+    const int configured_columns = static_cast<int>(std::count_if(
+        entries.begin(),
+        entries.end(),
+        [](const auto &entry)
+        { return entry.structure_name == "devushki_column"; }));
+
+    const int placed_columns = static_cast<int>(std::count_if(
+        entries.begin(),
+        entries.end(),
+        [](const auto &entry)
+        { return entry.structure_name == "devushki_column" && entry.placed; }));
+
+    const auto spawn_positions = world.get_devushki_column_spawn_positions();
+
+    ASSERT_EQ(configured_columns, requested_columns);
+    EXPECT_EQ(placed_columns, configured_columns)
+        << "All devushki columns should have concrete placed positions before gameplay starts";
+    EXPECT_EQ(static_cast<int>(spawn_positions.size()), placed_columns)
+        << "Spawn positions should match already placed devushki columns";
+}
+
+TEST(DevushkiSpawnTest, ObjectiveDevushkiSpawnsAndStaysOnColumn)
+{
+    World world;
+    Entity_Manager manager;
+    manager.set_spawn_enabled(false);
+    manager.set_world(&world);
+
+    Player *player = manager.get_player();
+    ASSERT_NE(player, nullptr);
+    player->set_position(glm::ivec2(-5000, -5000)); // keep player outside follow range
+
+    Structure *devushki_col = world.get_image_structure("devushki_column");
+    ASSERT_NE(devushki_col, nullptr);
+
+    const glm::ivec2 chunk_dims = world.get_chunk_dimensions();
+    const int ps = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+    const int column_width_px = devushki_col->get_width() * ps;
+    const int column_height_px = devushki_col->get_height() * ps;
+    const glm::ivec2 column_top_left(200, 140);
+
+    auto *chunks = world.get_chunks();
+    auto *world_gen = world.get_world_gen();
+    ASSERT_NE(chunks, nullptr);
+    ASSERT_NE(world_gen, nullptr);
+
+    for (int cy = -8; cy <= 8; ++cy)
+    {
+        for (int cx = -8; cx <= 8; ++cx)
+        {
+            const glm::ivec2 coords(cx, cy);
+            if (world.get_chunk(coords))
+                continue;
+
+            auto chunk = std::make_unique<Chunk>(coords, chunk_dims.x, chunk_dims.y);
+            world_gen->generate_chunk_with_biome(chunk.get());
+            chunks->emplace(coords, std::move(chunk));
+        }
+    }
+
+    for (int y = column_top_left.y; y < column_top_left.y + column_height_px + 8 * ps; y += ps)
+    {
+        for (int x = column_top_left.x; x < column_top_left.x + column_width_px; x += ps)
+        {
+            world.place_static_particle(glm::ivec2(x, y), Particle_Type::STONE);
+        }
+    }
+
+    manager.set_devushki_objective_count(1);
+    manager.spawn_devushki_objective(1, 2000.0f);
+    world.get_structure_spawner().record_placed_structure(column_top_left, "devushki_column");
+
+    manager.update(1.0f / 60.0f);
+
+    ASSERT_EQ(manager.get_devushki_count(), 1);
+
+    Devushki *spawned = nullptr;
+    auto *entities = manager.get_all_entities();
+    ASSERT_NE(entities, nullptr);
+    for (auto &[id, entity] : *entities)
+    {
+        if (entity && entity->type == Entity_Type::DEVUSHKI)
+        {
+            spawned = static_cast<Devushki *>(entity.get());
+            break;
+        }
+    }
+    ASSERT_NE(spawned, nullptr);
+
+    auto has_support_below = [&](const Devushki *d) -> bool
+    {
+        const int left = d->coords.x - d->hitbox_dimensions_half.x;
+        const int right = d->coords.x + d->hitbox_dimensions_half.x;
+        const int support_y = d->coords.y + d->hitbox_dimensions_half.y + ps;
+
+        for (int x = left; x <= right; x += ps)
+        {
+            if (d->is_solid_at(x, support_y))
+                return true;
+        }
+
+        return d->is_solid_at(right, support_y);
+    };
+
+    EXPECT_FALSE(spawned->check_collision_at(spawned->coords));
+    EXPECT_TRUE(has_support_below(spawned));
+    EXPECT_GE(spawned->coords.x, column_top_left.x);
+    EXPECT_LE(spawned->coords.x, column_top_left.x + column_width_px);
+
+    const glm::ivec2 initial_pos = spawned->coords;
+    for (int i = 0; i < 600; ++i)
+    {
+        manager.update(1.0f / 60.0f);
+    }
+
+    EXPECT_LE(std::abs(spawned->coords.x - initial_pos.x), ps * 2)
+        << "Devushki should stay anchored on the column when player is out of range";
+    EXPECT_LE(spawned->coords.y, initial_pos.y + ps)
+        << "Devushki should not fall off the column while idling";
+    EXPECT_TRUE(has_support_below(spawned));
+    EXPECT_NE(spawned->get_npc_ai_state(), NPC_AI_State::WANDER);
 }
 
 // This test documents how the system should work:

@@ -116,6 +116,7 @@ void IRenderer::init_glfw()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // Make window resizable
+    glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE); // Start with a big maximized window
 }
 
 void IRenderer::init_glad()
@@ -152,11 +153,21 @@ void IRenderer::create_window()
 
     glfwMakeContextCurrent(window);
 
+    // Sync renderer size to real window size (important when starting maximized).
+    int actual_width = 0;
+    int actual_height = 0;
+    glfwGetWindowSize(window, &actual_width, &actual_height);
+    if (actual_width > 0 && actual_height > 0)
+    {
+        m_window_width = static_cast<float>(actual_width);
+        m_window_height = static_cast<float>(actual_height);
+    }
+
     glfwSwapInterval(0); // Vsync 0 = off, 1 = on
 
     // Store windowed dimensions for fullscreen toggle
-    windowed_width = m_window_width;
-    windowed_height = m_window_height;
+    windowed_width = static_cast<int>(m_window_width);
+    windowed_height = static_cast<int>(m_window_height);
     glfwGetWindowPos(window, &windowed_xpos, &windowed_ypos);
 }
 

@@ -48,6 +48,7 @@ int main()
     // time_manager.enable_fps_limiting();
 
     render.init();
+    render.maximize_window(); // Auto-apply the same maximize action as F10 at startup
 
     render.enable_blending();
     render.enable_ortho_projection();
@@ -66,16 +67,31 @@ int main()
     // entity_manager.set_spawn_distance();
     // entity_manager.set_max_enemies(50);
     // entity_manager.set_spawn_enabled(false);
-    Player *player = entity_manager.get_player();
     entity_manager.set_world(&world);
-    entity_manager.ensure_player_valid_position();
     entity_manager.register_sprite("slime", "../sprites/devushka_slime_enemy1.png");
     // entity_manager.register_sprite("big_boss", "../sprites/boss.png", 256, 64, 64, 64, 4);
 
-    const int devushki_count = 4; // how many devushki to save (change this to set the objective)
+    SpawnConfig spawn_cfg = entity_manager.get_spawn_config();
+    float option_enemy_difficulty = spawn_cfg.difficulty_multiplier;
+    float option_spawn_interval = spawn_cfg.spawn_interval;
+    int option_max_enemies = spawn_cfg.max_enemies;
+    int option_column_spawn_radius = world.get_devushki_column_spawn_radius_particles();
+    bool option_spawn_enabled = spawn_cfg.spawn_enabled;
+
+    const int devushki_count = 1; // how many devushki to save (change this to set the objective)
     entity_manager.set_devushki_objective_count(devushki_count);
     entity_manager.spawn_devushki_objective(devushki_count, 5000.0f);
+
+    // Startup workflow:
+    // 1) seed already chosen in World constructor
+    // 2) predetermined column coords picked
+    // 3) columns placed with fillers
+    // 4) player spawn validated in final terrain
+    world.set_devushki_column_spawn_radius_particles(option_column_spawn_radius);
     world.set_devushki_column_spawn_count(devushki_count);
+
+    Player *player = entity_manager.get_player();
+    entity_manager.ensure_player_valid_position();
 
     auto rebuild_world_with_new_seed = [&]()
     {
@@ -86,11 +102,14 @@ int main()
         Player *active_player = entity_manager.get_player();
         world.set_player(active_player);
         controls.set_player(active_player);
-        entity_manager.ensure_player_valid_position();
 
         entity_manager.set_devushki_objective_count(devushki_count);
         entity_manager.spawn_devushki_objective(devushki_count, 2000.0f);
+
+        // Keep the same startup ordering for rebuilt worlds.
+        world.set_devushki_column_spawn_radius_particles(option_column_spawn_radius);
         world.set_devushki_column_spawn_count(devushki_count);
+        entity_manager.ensure_player_valid_position();
 
         Log::info("new world seed: " + std::to_string(world.get_seed()));
     };
@@ -124,12 +143,6 @@ int main()
     bool enter_was_down = false;
     bool boss_defeat_menu_shown = false;
 
-    SpawnConfig spawn_cfg = entity_manager.get_spawn_config();
-    float option_enemy_difficulty = spawn_cfg.difficulty_multiplier;
-    float option_spawn_interval = spawn_cfg.spawn_interval;
-    int option_max_enemies = spawn_cfg.max_enemies;
-    bool option_spawn_enabled = spawn_cfg.spawn_enabled;
-
     time_manager.pause();
 
     while (!render.should_close())
@@ -155,6 +168,7 @@ int main()
             option_enemy_difficulty,
             option_spawn_interval,
             option_max_enemies,
+            option_column_spawn_radius,
             option_spawn_enabled,
             render.get_fullscreen_state()};
 
@@ -247,6 +261,7 @@ int main()
         option_enemy_difficulty = options_model.enemy_difficulty;
         option_spawn_interval = options_model.spawn_interval;
         option_max_enemies = options_model.max_enemies;
+        option_column_spawn_radius = options_model.devushki_column_spawn_radius_particles;
         option_spawn_enabled = options_model.spawn_enabled;
 
         if (menu_actions.toggle_fullscreen)

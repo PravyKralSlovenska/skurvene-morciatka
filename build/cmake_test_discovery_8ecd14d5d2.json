@@ -1,70 +1,80 @@
 {
-  "tests": 88,
+  "tests": 94,
   "name": "AllTests",
   "testsuites": [
     {
       "name": "DevushkiSpawnTest",
-      "tests": 12,
+      "tests": 14,
       "testsuite": [
         {
           "name": "StructureSpawnerTracksPlacedStructures",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/devushki_spawn_test.cpp",
-          "line": 21
+          "line": 22
         },
         {
           "name": "PlacedStructuresAccessible",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/devushki_spawn_test.cpp",
-          "line": 40
+          "line": 41
         },
         {
           "name": "DevushkiColumnImageLoading",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/devushki_spawn_test.cpp",
-          "line": 52
+          "line": 53
         },
         {
           "name": "PositionHashingConsistency",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/devushki_spawn_test.cpp",
-          "line": 68
+          "line": 69
         },
         {
           "name": "SpawnCenterCalculation",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/devushki_spawn_test.cpp",
-          "line": 91
+          "line": 92
         },
         {
           "name": "DevushkiObjectiveConfig",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/devushki_spawn_test.cpp",
-          "line": 119
+          "line": 120
         },
         {
           "name": "RecordPlacedStructure",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/devushki_spawn_test.cpp",
-          "line": 143
+          "line": 144
         },
         {
           "name": "MultipleStructureTracking",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/devushki_spawn_test.cpp",
-          "line": 167
+          "line": 168
         },
         {
           "name": "RealMapAttemptsToPlaceDevushkiColumn",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/devushki_spawn_test.cpp",
-          "line": 192
+          "line": 193
         },
         {
           "name": "BaseFillCreatesSupportUnderStructure",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/devushki_spawn_test.cpp",
-          "line": 271
+          "line": 272
         },
         {
           "name": "BaseFillStopsAtExistingGround",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/devushki_spawn_test.cpp",
-          "line": 346
+          "line": 347
+        },
+        {
+          "name": "DevushkiColumnsPlacedBeforeGameplayStarts",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/devushki_spawn_test.cpp",
+          "line": 424
+        },
+        {
+          "name": "ObjectiveDevushkiSpawnsAndStaysOnColumn",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/devushki_spawn_test.cpp",
+          "line": 467
         },
         {
           "name": "SpawnSystemDocumentation",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/devushki_spawn_test.cpp",
-          "line": 429
+          "line": 575
         }
       ]
     },
@@ -376,6 +386,32 @@
           "name": "EnemyDeathDropsCollectableGoldAndSilver",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/gun_projectile_test.cpp",
           "line": 326
+        }
+      ]
+    },
+    {
+      "name": "SpawnBiomeRestrictionTest",
+      "tests": 4,
+      "testsuite": [
+        {
+          "name": "PlayerRelocatesFromIcyBiome",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/spawn_biome_restriction_test.cpp",
+          "line": 160
+        },
+        {
+          "name": "PlayerEscapesSolidOverlap",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/spawn_biome_restriction_test.cpp",
+          "line": 192
+        },
+        {
+          "name": "CreateEnemyDevushkiBossAvoidIcyBiome",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/spawn_biome_restriction_test.cpp",
+          "line": 244
+        },
+        {
+          "name": "ObjectiveBossSpawnAvoidsIcyBiome",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/spawn_biome_restriction_test.cpp",
+          "line": 288
         }
       ]
     },

@@ -104,10 +104,10 @@ struct Wand
     {
         Wand w;
         w.type = Wand_Type::FIRE_WAND;
-        w.name = "Fire Wand";
+        w.name = "Flamethrower";
         w.color = {1.0f, 0.45f, 0.12f, 1.0f}; // Orange flame color
         w.particle_type = Particle_Type::FIRE;
-        w.brush_size = 3;
+        w.brush_size = 5;
         w.cooldown = 0.02f;
         return w;
     }
@@ -116,7 +116,7 @@ struct Wand
     {
         Wand w;
         w.type = Wand_Type::DELETE_WAND;
-        w.name = "Delete Wand";
+        w.name = "Empty Wand";
         w.color = {1.0f, 0.2f, 0.2f, 1.0f}; // Red delete color
         w.particle_type = Particle_Type::EMPTY;
         w.brush_size = 5;
@@ -180,19 +180,12 @@ private:
 public:
     Hotbar()
     {
-        // Initialize default hotbar with wands
+        // Initialize default hotbar with requested baseline loadout.
         slots[0] = Wand::create_gun_wand();
-        slots[1] = Wand::create_stone_wand();
-        slots[2] = Wand::create_ice_wand();
-        slots[3] = Wand::create_water_vapor_wand();
-        slots[4] = Wand::create_compass_wand();
-        // slots[6] = Wand::create_sand_wand();
-        // slots[2] = Wand::create_water_wand();
-        // slots[3] = Wand::create_delete_wand();
-        // slots[4] = Wand::create_smoke_wand();
-        // slots[5] = Wand::create_uranium_wand();
-        slots[7] = Wand::create_wood_wand();
-        slots[8] = Wand::create_fire_wand();
+        slots[1] = Wand::create_fire_wand();
+        slots[2] = Wand::create_compass_wand();
+        slots[3] = Wand::create_stone_wand();
+        slots[4] = Wand::create_delete_wand();
     }
 
     void select_slot(int slot)

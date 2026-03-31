@@ -237,7 +237,7 @@ TEST(StructureSpawnerTest, DevushkiEntryIsOnCircleAndGrid)
     float radius = std::sqrt(
         static_cast<float>(entries[0].target_pos.x * entries[0].target_pos.x +
                            entries[0].target_pos.y * entries[0].target_pos.y));
-    EXPECT_NEAR(radius, 1000.0f, static_cast<float>(ps * 2));
+    EXPECT_NEAR(radius, static_cast<float>(5000 * ps), static_cast<float>(ps * 2));
 }
 
 TEST(StructureSpawnerTest, DevushkiEntryCountFollowsConfiguredSpawnCount)

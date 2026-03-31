@@ -1663,6 +1663,30 @@ tests/unit/random_test.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/random_test.cpp.s
 .PHONY : tests/unit/random_test.cpp.s
 
+tests/unit/spawn_biome_restriction_test.o: tests/unit/spawn_biome_restriction_test.cpp.o
+.PHONY : tests/unit/spawn_biome_restriction_test.o
+
+# target to build an object file
+tests/unit/spawn_biome_restriction_test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/spawn_biome_restriction_test.cpp.o
+.PHONY : tests/unit/spawn_biome_restriction_test.cpp.o
+
+tests/unit/spawn_biome_restriction_test.i: tests/unit/spawn_biome_restriction_test.cpp.i
+.PHONY : tests/unit/spawn_biome_restriction_test.i
+
+# target to preprocess a source file
+tests/unit/spawn_biome_restriction_test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/spawn_biome_restriction_test.cpp.i
+.PHONY : tests/unit/spawn_biome_restriction_test.cpp.i
+
+tests/unit/spawn_biome_restriction_test.s: tests/unit/spawn_biome_restriction_test.cpp.s
+.PHONY : tests/unit/spawn_biome_restriction_test.s
+
+# target to generate assembly for a file
+tests/unit/spawn_biome_restriction_test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/morciatko_tests.dir/build.make CMakeFiles/morciatko_tests.dir/tests/unit/spawn_biome_restriction_test.cpp.s
+.PHONY : tests/unit/spawn_biome_restriction_test.cpp.s
+
 tests/unit/structure_test.o: tests/unit/structure_test.cpp.o
 .PHONY : tests/unit/structure_test.o
 
@@ -1916,6 +1940,9 @@ help:
 	@echo "... tests/unit/random_test.o"
 	@echo "... tests/unit/random_test.i"
 	@echo "... tests/unit/random_test.s"
+	@echo "... tests/unit/spawn_biome_restriction_test.o"
+	@echo "... tests/unit/spawn_biome_restriction_test.i"
+	@echo "... tests/unit/spawn_biome_restriction_test.s"
 	@echo "... tests/unit/structure_test.o"
 	@echo "... tests/unit/structure_test.i"
 	@echo "... tests/unit/structure_test.s"

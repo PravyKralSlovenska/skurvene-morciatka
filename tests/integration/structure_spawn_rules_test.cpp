@@ -40,5 +40,5 @@ TEST(StructureSpawnRulesTest, DevushkiColumnTargetIsOnConfiguredCircle)
     const float radius = std::sqrt(
         static_cast<float>(it->target_pos.x * it->target_pos.x + it->target_pos.y * it->target_pos.y));
 
-    EXPECT_NEAR(radius, 1000.0f, static_cast<float>(ps * 2));
+    EXPECT_NEAR(radius, static_cast<float>(5000 * ps), static_cast<float>(ps * 2));
 }

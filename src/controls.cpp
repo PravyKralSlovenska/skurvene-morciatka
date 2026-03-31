@@ -254,14 +254,15 @@ void Controls::handle_input()
             else
             {
                 glm::ivec2 target_pos = glm::ivec2(cursor_world);
-                int brush = wand.brush_size;
+                const int brush = std::max(1, wand.brush_size);
+                const int particle_size = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
 
                 // Place particles in a square brush area
                 for (int dx = -brush / 2; dx <= brush / 2; dx++)
                 {
                     for (int dy = -brush / 2; dy <= brush / 2; dy++)
                     {
-                        glm::ivec2 pos = target_pos + glm::ivec2(dx, dy);
+                        glm::ivec2 pos = target_pos + glm::ivec2(dx * particle_size, dy * particle_size);
 
                         if (wand.type == Wand_Type::DELETE_WAND)
                         {

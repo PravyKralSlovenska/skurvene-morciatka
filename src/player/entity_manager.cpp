@@ -1,10 +1,14 @@
 #include "engine/player/entity_manager.hpp"
 
+#include <array>
 #include <cmath>
 #include <limits>
+#include <memory>
 #include <vector>
 #include "engine/player/entity.hpp"
 #include "engine/world/world.hpp"
+#include "engine/world/world_biomes.hpp"
+#include "engine/world/world_ca_generation.hpp"
 #include "engine/world/world_chunk.hpp"
 #include "engine/world/world_cell.hpp"
 #include "others/GLOBALS.hpp"
@@ -127,6 +131,345 @@ namespace
         return out_local_pos.x >= 0 && out_local_pos.x < chunk_dims.x &&
                out_local_pos.y >= 0 && out_local_pos.y < chunk_dims.y;
     }
+
+    bool ensure_chunk_generated(World *world, const glm::ivec2 &chunk_coords)
+    {
+        if (!world)
+            return false;
+
+        if (world->get_chunk(chunk_coords))
+            return true;
+
+        auto *chunks = world->get_chunks();
+        World_CA_Generation *world_gen = world->get_world_gen();
+        if (!chunks || !world_gen)
+            return false;
+
+        const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+        auto chunk = std::make_unique<Chunk>(chunk_coords, chunk_dims.x, chunk_dims.y);
+        world_gen->generate_chunk_with_biome(chunk.get());
+        chunks->emplace(chunk_coords, std::move(chunk));
+        return true;
+    }
+
+    bool ensure_chunks_for_entity_probe(World *world, const Entity *entity, const glm::ivec2 &center_pos, int extra_down_cells = 0)
+    {
+        if (!world || !entity)
+            return false;
+
+        const int ps = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+        const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+        const int chunk_pixel_w = chunk_dims.x * ps;
+        const int chunk_pixel_h = chunk_dims.y * ps;
+
+        const int left = center_pos.x - entity->hitbox_dimensions_half.x;
+        const int right = center_pos.x + entity->hitbox_dimensions_half.x;
+        const int top = center_pos.y - entity->hitbox_dimensions_half.y;
+        const int bottom = center_pos.y + entity->hitbox_dimensions_half.y + extra_down_cells * ps;
+
+        const int first_chunk_x = static_cast<int>(std::floor(static_cast<float>(left) / chunk_pixel_w));
+        const int last_chunk_x = static_cast<int>(std::floor(static_cast<float>(right) / chunk_pixel_w));
+        const int first_chunk_y = static_cast<int>(std::floor(static_cast<float>(top) / chunk_pixel_h));
+        const int last_chunk_y = static_cast<int>(std::floor(static_cast<float>(bottom) / chunk_pixel_h));
+
+        for (int cy = first_chunk_y; cy <= last_chunk_y; ++cy)
+        {
+            for (int cx = first_chunk_x; cx <= last_chunk_x; ++cx)
+            {
+                if (!ensure_chunk_generated(world, glm::ivec2(cx, cy)))
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    bool has_solid_support_below(const Entity *entity, const glm::ivec2 &position)
+    {
+        if (!entity || !entity->world_ref)
+            return false;
+
+        const int ps = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+        const int left = position.x - entity->hitbox_dimensions_half.x;
+        const int right = position.x + entity->hitbox_dimensions_half.x;
+        const int support_y = position.y + entity->hitbox_dimensions_half.y + ps;
+
+        for (int x = left; x <= right; x += ps)
+        {
+            if (entity->is_solid_at(x, support_y))
+                return true;
+        }
+
+        return entity->is_solid_at(right, support_y);
+    }
+
+    glm::ivec2 snap_spawn_to_surface(Entity *entity, World *world, const glm::ivec2 &start_pos)
+    {
+        if (!entity || !world)
+            return start_pos;
+
+        const int ps = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+        static constexpr int MAX_LIFT_CELLS = 40;
+        static constexpr int MAX_DROP_CELLS = 260;
+
+        glm::ivec2 candidate = snap_to_particle_grid(start_pos, ps);
+        ensure_chunks_for_entity_probe(world, entity, candidate, 4);
+
+        if (entity->check_collision_at(candidate))
+        {
+            for (int lift = 1; lift <= MAX_LIFT_CELLS; ++lift)
+            {
+                glm::ivec2 lifted = candidate - glm::ivec2(0, lift * ps);
+                ensure_chunks_for_entity_probe(world, entity, lifted, 4);
+                if (!entity->check_collision_at(lifted))
+                {
+                    candidate = lifted;
+                    break;
+                }
+            }
+        }
+
+        for (int drop = 0; drop < MAX_DROP_CELLS; ++drop)
+        {
+            glm::ivec2 next = candidate + glm::ivec2(0, ps);
+            ensure_chunks_for_entity_probe(world, entity, next, 2);
+            if (entity->check_collision_at(next))
+                break;
+
+            candidate = next;
+        }
+
+        return candidate;
+    }
+
+    bool is_grounded_spawn_position(Entity *entity, World *world, const glm::ivec2 &position)
+    {
+        if (!entity || !world)
+            return false;
+
+        ensure_chunks_for_entity_probe(world, entity, position, 2);
+        if (entity->check_collision_at(position))
+            return false;
+
+        return has_solid_support_below(entity, position);
+    }
+
+    bool is_icy_biome_world_pos(World *world, const glm::ivec2 &world_pos)
+    {
+        if (!world)
+            return false;
+
+        World_CA_Generation *world_gen = world->get_world_gen();
+        if (!world_gen)
+            return false;
+
+        const float particle_size = static_cast<float>(Globals::PARTICLE_SIZE);
+        const int world_cell_x = static_cast<int>(std::floor(static_cast<float>(world_pos.x) / particle_size));
+        const int world_cell_y = static_cast<int>(std::floor(static_cast<float>(world_pos.y) / particle_size));
+        const glm::vec2 world_cell_coords(
+            static_cast<float>(world_cell_x),
+            static_cast<float>(world_cell_y));
+
+        return world_gen->get_biome(world_cell_coords).type == Biome_Type::ICY;
+    }
+
+    glm::ivec2 find_non_icy_spawn_position(Entity *entity, World *world, std::mt19937 &rng,
+                                           const glm::ivec2 &desired_pos,
+                                           int max_search_radius = 500)
+    {
+        if (!entity)
+            return desired_pos;
+
+        glm::ivec2 valid_pos = entity->find_valid_spawn_position(desired_pos, max_search_radius);
+        if (!is_icy_biome_world_pos(world, valid_pos))
+        {
+            return valid_pos;
+        }
+
+        (void)rng;
+
+        const int particle_size = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+        const int step = particle_size * 2;
+        const int max_radius = std::max(max_search_radius + 2200, 2600);
+
+        auto try_candidate = [&](const glm::ivec2 &candidate) -> bool
+        {
+            if (is_icy_biome_world_pos(world, candidate))
+                return false;
+
+            const glm::ivec2 candidate_valid = entity->find_valid_spawn_position(candidate, max_search_radius + 700);
+            if (is_icy_biome_world_pos(world, candidate_valid))
+                return false;
+
+            valid_pos = candidate_valid;
+            return true;
+        };
+
+        for (int radius = step; radius <= max_radius; radius += step)
+        {
+            for (int dx = -radius; dx <= radius; dx += step)
+            {
+                if (try_candidate(glm::ivec2(desired_pos.x + dx, desired_pos.y - radius)))
+                    return valid_pos;
+                if (try_candidate(glm::ivec2(desired_pos.x + dx, desired_pos.y + radius)))
+                    return valid_pos;
+            }
+
+            for (int dy = -radius + step; dy <= radius - step; dy += step)
+            {
+                if (try_candidate(glm::ivec2(desired_pos.x - radius, desired_pos.y + dy)))
+                    return valid_pos;
+                if (try_candidate(glm::ivec2(desired_pos.x + radius, desired_pos.y + dy)))
+                    return valid_pos;
+            }
+        }
+
+        // Fallback keeps previous behavior if no non-icy spot was found.
+        return valid_pos;
+    }
+
+    glm::ivec2 find_safe_spawn_position(Entity *entity,
+                                        World *world,
+                                        std::mt19937 &rng,
+                                        const glm::ivec2 &desired_pos,
+                                        bool require_ground_support,
+                                        int max_search_radius = 2200)
+    {
+        if (!entity || !world)
+            return desired_pos;
+
+        const int ps = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+        const int radius_step = ps * 14;
+        const int max_radius = std::max(radius_step, max_search_radius);
+        glm::ivec2 resolved = snap_to_particle_grid(desired_pos, ps);
+
+        auto try_candidate = [&](const glm::ivec2 &raw_candidate) -> bool
+        {
+            glm::ivec2 candidate = snap_to_particle_grid(raw_candidate, ps);
+
+            ensure_chunks_for_entity_probe(world, entity, candidate, require_ground_support ? 6 : 0);
+
+            if (require_ground_support)
+            {
+                candidate = snap_spawn_to_surface(entity, world, candidate);
+                ensure_chunks_for_entity_probe(world, entity, candidate, 4);
+            }
+
+            if (entity->check_collision_at(candidate))
+            {
+                for (int lift = 1; lift <= 120; ++lift)
+                {
+                    glm::ivec2 lifted = candidate - glm::ivec2(0, lift * ps);
+                    ensure_chunks_for_entity_probe(world, entity, lifted, 4);
+                    if (!entity->check_collision_at(lifted))
+                    {
+                        candidate = require_ground_support ? snap_spawn_to_surface(entity, world, lifted) : lifted;
+                        break;
+                    }
+                }
+            }
+
+            if (is_icy_biome_world_pos(world, candidate))
+                return false;
+
+            if (entity->check_collision_at(candidate))
+                return false;
+
+            if (require_ground_support && !has_solid_support_below(entity, candidate))
+                return false;
+
+            resolved = candidate;
+            return true;
+        };
+
+        const glm::ivec2 non_icy_seed =
+            find_non_icy_spawn_position(entity, world, rng, desired_pos, std::max(500, max_search_radius / 2));
+
+        if (try_candidate(non_icy_seed))
+            return resolved;
+        if (try_candidate(desired_pos))
+            return resolved;
+
+        const std::array<glm::ivec2, 8> directions = {
+            glm::ivec2(1, 0),
+            glm::ivec2(-1, 0),
+            glm::ivec2(0, 1),
+            glm::ivec2(0, -1),
+            glm::ivec2(1, 1),
+            glm::ivec2(-1, 1),
+            glm::ivec2(1, -1),
+            glm::ivec2(-1, -1)};
+
+        for (int radius = radius_step; radius <= max_radius; radius += radius_step)
+        {
+            for (const auto &dir : directions)
+            {
+                if (try_candidate(desired_pos + dir * radius))
+                    return resolved;
+                if (try_candidate(non_icy_seed + dir * radius))
+                    return resolved;
+            }
+        }
+
+        // Last resort: guarantee we do not spawn embedded, even if support/non-icy constraints cannot be satisfied.
+        for (int lift = 1; lift <= 1400; ++lift)
+        {
+            glm::ivec2 lifted = snap_to_particle_grid(desired_pos - glm::ivec2(0, lift * ps), ps);
+            ensure_chunks_for_entity_probe(world, entity, lifted, 3);
+            if (!entity->check_collision_at(lifted))
+                return lifted;
+        }
+
+        return resolved;
+    }
+
+    glm::ivec2 find_devushki_column_anchor_position(Devushki *devushki,
+                                                    World *world,
+                                                    const glm::ivec2 &column_top_left,
+                                                    int column_width_px)
+    {
+        if (!devushki || !world)
+            return column_top_left;
+
+        const int ps = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+        const int center_x = column_top_left.x + column_width_px / 2;
+        const int base_spawn_y = column_top_left.y - devushki->hitbox_dimensions_half.y - 1;
+
+        auto is_valid_anchor = [&](const glm::ivec2 &pos) -> bool
+        {
+            ensure_chunks_for_entity_probe(world, devushki, pos, 4);
+            if (devushki->check_collision_at(pos))
+                return false;
+            return has_solid_support_below(devushki, pos);
+        };
+
+        glm::ivec2 centered(center_x, base_spawn_y);
+        if (is_valid_anchor(centered))
+            return centered;
+
+        const int max_offset_steps = std::max(1, column_width_px / (2 * ps));
+        for (int step = 1; step <= max_offset_steps; ++step)
+        {
+            const int offset = step * ps;
+
+            glm::ivec2 right(center_x + offset, base_spawn_y);
+            if (is_valid_anchor(right))
+                return right;
+
+            glm::ivec2 left(center_x - offset, base_spawn_y);
+            if (is_valid_anchor(left))
+                return left;
+        }
+
+        // Last resort: find nearby free space and settle onto nearest support.
+        glm::ivec2 lifted(center_x, base_spawn_y - 6 * ps);
+        glm::ivec2 free_pos = devushki->find_valid_spawn_position(lifted, 250);
+        glm::ivec2 settled = snap_spawn_to_surface(devushki, world, free_pos);
+        if (is_valid_anchor(settled))
+            return settled;
+
+        return centered;
+    }
 } // namespace
 
 Entity_Manager::Entity_Manager()
@@ -197,8 +540,107 @@ void Entity_Manager::ensure_player_valid_position()
     if (!player || !world)
         return;
 
-    glm::ivec2 valid_pos = player->find_valid_spawn_position(player->coords);
+    const glm::ivec2 origin = player->coords;
+    glm::ivec2 valid_pos = find_non_icy_spawn_position(player.get(), world, rng, player->coords);
+
+    valid_pos = snap_spawn_to_surface(player.get(), world, valid_pos);
+
+    if (is_icy_biome_world_pos(world, valid_pos) || !is_grounded_spawn_position(player.get(), world, valid_pos))
+    {
+        const int ps = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+        const int radius_step = ps * 20;
+        const int max_radius = 1800;
+        const std::array<glm::ivec2, 8> directions = {
+            glm::ivec2(1, 0),
+            glm::ivec2(-1, 0),
+            glm::ivec2(0, 1),
+            glm::ivec2(0, -1),
+            glm::ivec2(1, 1),
+            glm::ivec2(-1, 1),
+            glm::ivec2(1, -1),
+            glm::ivec2(-1, -1)};
+
+        bool found = false;
+        for (int radius = radius_step; radius <= max_radius && !found; radius += radius_step)
+        {
+            for (const auto &dir : directions)
+            {
+                glm::ivec2 candidate = origin + dir * radius;
+                glm::ivec2 non_icy = find_non_icy_spawn_position(player.get(), world, rng, candidate, radius + 250);
+                glm::ivec2 grounded = snap_spawn_to_surface(player.get(), world, non_icy);
+
+                if (is_icy_biome_world_pos(world, grounded))
+                    continue;
+                if (!is_grounded_spawn_position(player.get(), world, grounded))
+                    continue;
+
+                valid_pos = grounded;
+                found = true;
+                break;
+            }
+        }
+    }
+
+    // Hard guarantee: final spawn must not overlap solids/structures.
+    if (player->check_collision_at(valid_pos))
+    {
+        const int ps = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+        const int radius_step = ps * 16;
+        const int max_radius = 2800;
+        const std::array<glm::ivec2, 8> directions = {
+            glm::ivec2(1, 0),
+            glm::ivec2(-1, 0),
+            glm::ivec2(0, 1),
+            glm::ivec2(0, -1),
+            glm::ivec2(1, 1),
+            glm::ivec2(-1, 1),
+            glm::ivec2(1, -1),
+            glm::ivec2(-1, -1)};
+
+        bool escaped = false;
+        for (int radius = radius_step; radius <= max_radius && !escaped; radius += radius_step)
+        {
+            for (const auto &dir : directions)
+            {
+                glm::ivec2 candidate = origin + dir * radius;
+                glm::ivec2 free_pos = player->find_valid_spawn_position(candidate, radius + 500);
+                free_pos = snap_spawn_to_surface(player.get(), world, free_pos);
+
+                if (player->check_collision_at(free_pos))
+                    continue;
+                if (is_icy_biome_world_pos(world, free_pos))
+                    continue;
+                if (!has_solid_support_below(player.get(), free_pos))
+                    continue;
+
+                valid_pos = free_pos;
+                escaped = true;
+                break;
+            }
+        }
+
+        if (!escaped)
+        {
+            // Last resort: move up until hitbox is clear, then settle onto nearest surface.
+            for (int lift = 1; lift <= 900; ++lift)
+            {
+                glm::ivec2 lifted = origin - glm::ivec2(0, lift * ps);
+                ensure_chunks_for_entity_probe(world, player.get(), lifted, 6);
+                if (player->check_collision_at(lifted))
+                    continue;
+
+                glm::ivec2 settled = snap_spawn_to_surface(player.get(), world, lifted);
+                if (!player->check_collision_at(settled))
+                {
+                    valid_pos = settled;
+                    break;
+                }
+            }
+        }
+    }
+
     player->set_position(valid_pos);
+    player->set_velocity(0.0f, 0.0f);
 }
 
 Entity *Entity_Manager::create_entity()
@@ -219,8 +661,8 @@ Enemy *Entity_Manager::create_enemy(const glm::ivec2 &position, const std::strin
         enemy->set_world(world);
     }
 
-    // Find valid spawn position that fits the enemy's hitbox
-    glm::ivec2 valid_pos = enemy->find_valid_spawn_position(position);
+    // Resolve spawn against generated terrain/structures so enemy never starts embedded.
+    glm::ivec2 valid_pos = find_safe_spawn_position(enemy.get(), world, rng, position, true);
     enemy->set_position(valid_pos);
 
     int id = enemy->get_id();
@@ -251,8 +693,8 @@ Devushki *Entity_Manager::create_devushki(const glm::ivec2 &position, const std:
         devushki->set_world(world);
     }
 
-    // Find valid spawn position that fits the devushki's hitbox
-    glm::ivec2 valid_pos = devushki->find_valid_spawn_position(position);
+    // Resolve spawn against generated terrain/structures so devushki never starts embedded.
+    glm::ivec2 valid_pos = find_safe_spawn_position(devushki.get(), world, rng, position, true);
     devushki->set_position(valid_pos);
     devushki->set_home_position(valid_pos);
 
@@ -304,8 +746,8 @@ Boss *Entity_Manager::create_boss(const glm::ivec2 &position, const std::string 
         boss->set_world(world);
     }
 
-    // Find valid spawn position that fits the boss's hitbox
-    glm::ivec2 valid_pos = boss->find_valid_spawn_position(position);
+    // Resolve spawn against generated terrain/structures so boss never starts embedded.
+    glm::ivec2 valid_pos = find_safe_spawn_position(boss.get(), world, rng, position, true);
     boss->set_position(valid_pos);
     boss->set_home_position(valid_pos);
 
@@ -949,7 +1391,7 @@ Enemy *Entity_Manager::spawn_random_enemy(const std::string &sprite_name)
 
     if (enemy)
     {
-        enemy->set_home_position(valid_pos);
+        enemy->set_home_position(enemy->coords);
         randomize_enemy_stats(enemy);
     }
 
@@ -1164,6 +1606,46 @@ bool Entity_Manager::get_nearest_devushki_position(glm::ivec2 &out_position, flo
     return true;
 }
 
+bool Entity_Manager::get_compass_target_position(glm::ivec2 &out_position, float *out_distance) const
+{
+    if (!player)
+        return false;
+
+    if (devushki_objective.objective_complete && devushki_objective.boss_spawned)
+    {
+        const Entity *nearest_boss = nullptr;
+        float nearest_dist_sq = std::numeric_limits<float>::max();
+
+        for (const auto &[id, entity] : entities)
+        {
+            if (!entity || !entity->is_active || !entity->get_is_alive())
+                continue;
+            if (entity->type != Entity_Type::BOSS)
+                continue;
+
+            const float dx = static_cast<float>(entity->coords.x - player->coords.x);
+            const float dy = static_cast<float>(entity->coords.y - player->coords.y);
+            const float dist_sq = dx * dx + dy * dy;
+
+            if (dist_sq < nearest_dist_sq)
+            {
+                nearest_boss = entity.get();
+                nearest_dist_sq = dist_sq;
+            }
+        }
+
+        if (nearest_boss)
+        {
+            out_position = nearest_boss->coords;
+            if (out_distance)
+                *out_distance = std::sqrt(nearest_dist_sq);
+            return true;
+        }
+    }
+
+    return get_nearest_devushki_position(out_position, out_distance);
+}
+
 bool Entity_Manager::try_consume_ammo_for_shot()
 {
     if (player_ammo <= 0)
@@ -1372,11 +1854,10 @@ void Entity_Manager::spawn_boss_for_completed_objective()
     std::uniform_real_distribution<float> angle_dist(0.0f, 2.0f * 3.14159265f);
     std::uniform_real_distribution<float> dist_dist(min_distance, max_distance);
 
-    glm::ivec2 spawn_pos = player->coords + glm::ivec2(static_cast<int>(max_distance), 0);
-    bool found_spawn_pos = false;
+    Boss *boss = nullptr;
 
-    // Try a few candidates around the player while keeping a fair fight distance.
-    for (int i = 0; i < 32; ++i)
+    // Try several random candidates and only accept those that are both safe and inside the annulus.
+    for (int i = 0; i < 80 && !boss; ++i)
     {
         const float angle = angle_dist(rng);
         const float distance = dist_dist(rng);
@@ -1389,30 +1870,27 @@ void Entity_Manager::spawn_boss_for_completed_objective()
         {
             auto probe = std::make_unique<Boss>();
             probe->set_world(world);
-            candidate = probe->find_valid_spawn_position(candidate);
+            candidate = find_safe_spawn_position(probe.get(), world, rng, candidate, true, 700);
         }
 
-        if (is_within_spawn_radius(candidate))
+        if (!is_within_spawn_radius(candidate))
+            continue;
+
+        Boss *spawned = create_boss(candidate);
+        if (!spawned)
+            continue;
+
+        if (!is_within_spawn_radius(spawned->coords))
         {
-            spawn_pos = candidate;
-            found_spawn_pos = true;
-            break;
+            remove_entity(spawned->get_id());
+            continue;
         }
+
+        boss = spawned;
     }
 
-    if (!found_spawn_pos)
-        return;
-
-    Boss *boss = create_boss(spawn_pos);
     if (!boss)
         return;
-
-    // create_boss may nudge position again to fit hitbox; enforce the same spawn radius rule.
-    if (!is_within_spawn_radius(boss->coords))
-    {
-        remove_entity(boss->get_id());
-        return;
-    }
 
     boss->name = "Boss of Devushki";
 
@@ -1465,6 +1943,16 @@ void Entity_Manager::check_and_spawn_devushki_on_structures()
         Devushki *d = create_devushki(spawn_pos, devushki_sprite_name);
         if (d)
         {
+            const glm::ivec2 anchored_pos = find_devushki_column_anchor_position(
+                d,
+                world,
+                ps.position,
+                struct_width_px);
+
+            d->set_position(anchored_pos);
+            d->set_home_position(anchored_pos);
+            d->set_velocity(0.0f, 0.0f);
+
             d->name = "Devushki #" + std::to_string(current_devushki_count + 1);
             spawned_devushki_positions.insert(pos_hash);
             current_devushki_count++;

@@ -5530,8 +5530,11 @@ CMakeFiles/morciatko_lib.dir/src/player/entity_manager.cpp.o
  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/player/item.hpp
  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/player/sprite_animation.hpp
  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/player/wand.hpp
+ /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/FastNoiseLite.h
  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/structure.hpp
  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world.hpp
+ /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_biomes.hpp
+ /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_ca_generation.hpp
  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell.hpp
  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell_gpu.hpp
  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_chunk.hpp

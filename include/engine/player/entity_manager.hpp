@@ -213,6 +213,7 @@ public:
     int get_player_ammo() const;
     bool has_compass() const;
     bool get_nearest_devushki_position(glm::ivec2 &out_position, float *out_distance = nullptr) const;
+    bool get_compass_target_position(glm::ivec2 &out_position, float *out_distance = nullptr) const;
     bool try_consume_ammo_for_shot();
     void add_player_ammo(int amount);
     bool is_player_near_store() const;

@@ -165,6 +165,41 @@ void UI_Renderer::render_pause_menu(Menu_Actions &actions)
     ImGui::End();
 }
 
+void UI_Renderer::render_boss_defeated_menu(Menu_Actions &actions)
+{
+    center_next_window(MENU_WINDOW_WIDTH, MENU_WINDOW_HEIGHT + 20.0f);
+
+    ImGuiWindowFlags flags =
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoMove;
+
+    if (ImGui::Begin("Victory", nullptr, flags))
+    {
+        ImGui::Text("Boss Defeated!");
+        ImGui::Separator();
+        ImGui::Spacing();
+        ImGui::TextWrapped("You rescued all devushki and defeated the boss.");
+        ImGui::Spacing();
+
+        if (ImGui::Button("Free Play", ImVec2(-1.0f, 40.0f)))
+            actions.resume_game = true;
+
+        if (ImGui::Button("Create New World", ImVec2(-1.0f, 40.0f)))
+            actions.create_new_world = true;
+
+        if (ImGui::Button("Main Menu", ImVec2(-1.0f, 40.0f)))
+            actions.quit_to_menu = true;
+
+        if (ImGui::Button("Quit", ImVec2(-1.0f, 40.0f)))
+            actions.quit_game = true;
+
+        ImGui::Spacing();
+        ImGui::TextDisabled("Enter: New World   Esc: Main Menu");
+    }
+    ImGui::End();
+}
+
 void UI_Renderer::render_options_menu(Menu_Actions &actions, Menu_Options_Model &options)
 {
     center_next_window(OPTIONS_WINDOW_WIDTH, OPTIONS_WINDOW_HEIGHT);
@@ -190,6 +225,18 @@ void UI_Renderer::render_options_menu(Menu_Actions &actions, Menu_Options_Model 
 
         if (ImGui::Checkbox("Enable enemy spawning", &options.spawn_enabled) && entity_manager)
             entity_manager->set_spawn_enabled(options.spawn_enabled);
+
+        if (ImGui::InputInt("Column spawn radius (particles)",
+                            &options.devushki_column_spawn_radius_particles,
+                            100,
+                            1000))
+        {
+            options.devushki_column_spawn_radius_particles = std::clamp(
+                options.devushki_column_spawn_radius_particles,
+                500,
+                50000);
+        }
+        ImGui::TextDisabled("Applied when creating a new world");
 
         ImGui::Spacing();
         ImGui::Text("Display");
@@ -246,6 +293,14 @@ Menu_Actions UI_Renderer::render_menu_screen(Menu_Screen screen,
         if (escape_pressed)
             actions.resume_game = true;
         render_pause_menu(actions);
+        break;
+
+    case Menu_Screen::BOSS_DEFEATED:
+        if (enter_pressed)
+            actions.create_new_world = true;
+        if (escape_pressed)
+            actions.quit_to_menu = true;
+        render_boss_defeated_menu(actions);
         break;
 
     case Menu_Screen::OPTIONS:

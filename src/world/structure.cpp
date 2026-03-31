@@ -149,6 +149,16 @@ void StructureSpawner::set_structure_spawn_count(const std::string &name, int co
     structure_spawn_counts[name] = std::max(1, count);
 }
 
+void StructureSpawner::set_devushki_spawn_radius_particles(int radius_particles)
+{
+    devushki_spawn_radius_particles = std::max(100, radius_particles);
+}
+
+int StructureSpawner::get_devushki_spawn_radius_particles() const
+{
+    return devushki_spawn_radius_particles;
+}
+
 void StructureSpawner::add_blueprint(const std::string &name, const Structure &structure)
 {
     blueprints[name] = structure;
@@ -209,7 +219,6 @@ namespace
 {
     static constexpr int RANDOM_TARGET_MIN = -15000;
     static constexpr int RANDOM_TARGET_MAX = 15000;
-    static constexpr float DEVUSHKI_SPAWN_RADIUS = 1000.0f;
     static constexpr float STORE_SPAWN_RADIUS_MIN = 250.0f;
     static constexpr float STORE_SPAWN_RADIUS_MAX = 800.0f;
     static constexpr int MAX_VERTICAL_LIFT_CELLS = 120;
@@ -219,7 +228,7 @@ namespace
     static constexpr int BASE_FEATHER_SIDE_SPREAD_CELLS = 2;
     static constexpr int BASE_FEATHER_MAX_DEPTH_CELLS = 24;
     static constexpr int STRUCTURE_CLEARANCE_CELLS = 1;
-    static constexpr int STORE_CHUNKS_PER_SPAWN = 100;
+    static constexpr int STORE_CHUNKS_PER_SPAWN = 220;
     static constexpr int ENTRY_PLACE_RADIUS_CHUNKS = 10;
 
     float deterministic_noise_01(int x, int y, int salt)
@@ -340,6 +349,10 @@ namespace
         const int cand_top = world_pos.y - clearance_px;
         const int cand_right = world_pos.x + structure.get_width() * ps + clearance_px;
         const int cand_bottom = world_pos.y + structure.get_height() * ps + clearance_px;
+        const int cand_left_nominal = world_pos.x;
+        const int cand_top_nominal = world_pos.y;
+        const int cand_right_nominal = world_pos.x + structure.get_width() * ps;
+        const int cand_bottom_nominal = world_pos.y + structure.get_height() * ps;
 
         for (const auto &placed : spawner->get_placed_structures())
         {
@@ -360,6 +373,26 @@ namespace
 
             if (!separated)
                 return false;
+
+            // Rule 0.5: prevent vertical stacking (one structure directly above/below another)
+            // whenever their horizontal footprints overlap.
+            const bool x_overlap =
+                cand_right_nominal > placed_left &&
+                cand_left_nominal < placed_right;
+
+            if (x_overlap)
+            {
+                const bool sits_on_top =
+                    cand_bottom_nominal >= placed_top - ps &&
+                    cand_bottom_nominal <= placed_top + ps;
+
+                const bool sits_below =
+                    placed_bottom >= cand_top_nominal - ps &&
+                    placed_bottom <= cand_top_nominal + ps;
+
+                if (sits_on_top || sits_below)
+                    return false;
+            }
         }
 
         // Rule 1.1: every non-empty structure cell must map to empty world cell.
@@ -573,6 +606,7 @@ void StructureSpawner::generate_predetermined_positions(int world_seed)
     std::uniform_int_distribution<int> random_pos(RANDOM_TARGET_MIN, RANDOM_TARGET_MAX);
 
     const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+    const float devushki_spawn_radius_px = static_cast<float>(devushki_spawn_radius_particles * ps);
     for (const auto &pair : blueprints)
     {
         int spawn_count = 1;
@@ -591,8 +625,8 @@ void StructureSpawner::generate_predetermined_positions(int world_seed)
             {
                 const float angle = angle_dist(local_rng);
 
-                int target_x = static_cast<int>(std::cos(angle) * DEVUSHKI_SPAWN_RADIUS);
-                int target_y = static_cast<int>(std::sin(angle) * DEVUSHKI_SPAWN_RADIUS);
+                int target_x = static_cast<int>(std::cos(angle) * devushki_spawn_radius_px);
+                int target_y = static_cast<int>(std::sin(angle) * devushki_spawn_radius_px);
 
                 target_x = (target_x / ps) * ps;
                 target_y = (target_y / ps) * ps;
@@ -637,7 +671,7 @@ void StructureSpawner::try_place_pending_structures(const glm::ivec2 &chunk_coor
     const int chunk_pixel_w = chunk_dims.x * ps;
     const int chunk_pixel_h = chunk_dims.y * ps;
 
-    // Scale store count with explored world size: ~1 store per 100 generated chunks.
+    // Scale store count with explored world size: ~1 store per 220 generated chunks.
     Structure *store_blueprint = get_blueprint("store");
     if (store_blueprint)
     {
@@ -714,6 +748,63 @@ void StructureSpawner::try_place_pending_structures(const glm::ivec2 &chunk_coor
             entry.placed = true;
             entry.target_pos = raw_pos;
         }
+    }
+}
+
+void StructureSpawner::place_pending_for_structure(const std::string &name, int max_passes)
+{
+    if (!world)
+        return;
+
+    max_passes = std::max(1, max_passes);
+
+    const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+
+    for (int pass = 0; pass < max_passes; ++pass)
+    {
+        bool has_pending = false;
+
+        for (auto &entry : predetermined_entries)
+        {
+            if (entry.placed || entry.structure_name != name)
+                continue;
+
+            has_pending = true;
+
+            Structure *blueprint = get_blueprint(entry.structure_name);
+            if (!blueprint)
+            {
+                entry.placed = true;
+                continue;
+            }
+
+            bool placed = false;
+            glm::ivec2 raw_pos = entry.target_pos;
+
+            std::uniform_int_distribution<int> retry_offset(-RAW_RETRY_DISTANCE_CELLS * ps,
+                                                            RAW_RETRY_DISTANCE_CELLS * ps);
+
+            for (int attempt = 0; attempt < MAX_RAW_RETRY_ATTEMPTS && !placed; ++attempt)
+            {
+                placed = try_place_with_vertical_lift(this, world, *blueprint, raw_pos, entry.structure_name, ps);
+                if (placed)
+                    break;
+
+                raw_pos.x += retry_offset(rng);
+                raw_pos.y += retry_offset(rng);
+                raw_pos.x = (raw_pos.x / ps) * ps;
+                raw_pos.y = (raw_pos.y / ps) * ps;
+            }
+
+            if (placed)
+            {
+                entry.placed = true;
+                entry.target_pos = raw_pos;
+            }
+        }
+
+        if (!has_pending)
+            break;
     }
 }
 

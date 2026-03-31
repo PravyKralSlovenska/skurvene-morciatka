@@ -18,7 +18,8 @@ enum class Menu_Screen
     MENU,
     PAUSE,
     OPTIONS,
-    LOADING
+    LOADING,
+    BOSS_DEFEATED
 };
 
 struct Menu_Options_Model
@@ -26,6 +27,7 @@ struct Menu_Options_Model
     float enemy_difficulty = 1.0f;
     float spawn_interval = 3.0f;
     int max_enemies = 20;
+    int devushki_column_spawn_radius_particles = 5000;
     bool spawn_enabled = true;
     bool fullscreen_enabled = false;
 };
@@ -37,6 +39,7 @@ struct Menu_Actions
     bool resume_game = false;
     bool back_from_options = false;
     bool quit_to_menu = false;
+    bool create_new_world = false;
     bool quit_game = false;
     bool toggle_fullscreen = false;
 };
@@ -70,6 +73,7 @@ private:
     void center_next_window(float width, float height);
     void render_main_menu(Menu_Actions &actions);
     void render_pause_menu(Menu_Actions &actions);
+    void render_boss_defeated_menu(Menu_Actions &actions);
     void render_options_menu(Menu_Actions &actions, Menu_Options_Model &options);
     void render_loading_screen();
     bool ensure_store_offer_textures_loaded();

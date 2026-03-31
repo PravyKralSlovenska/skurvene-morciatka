@@ -1505,11 +1505,10 @@ void Devushki::state_idle(float delta_time)
         return;
     }
 
-    // After idle duration, start wandering
+    // Column objective behavior: do not wander away from home while player is out of range.
     if (state_timer >= idle_duration)
     {
-        wander_target = get_random_wander_point();
-        transition_to(NPC_AI_State::WANDER);
+        state_timer = 0.0f;
     }
 }
 
@@ -1618,7 +1617,29 @@ void Devushki::move_towards(const glm::ivec2 &target, float delta_time)
     {
         direction /= dist;
         // Only set horizontal velocity - gravity handles vertical
-        velocity.x = direction.x * speed * follow_speed_multiplier;
+        float desired_vx = direction.x * speed * follow_speed_multiplier;
+
+        // Avoid stepping off edges when standing on narrow supports (like devushki columns).
+        if (on_ground && world_ref && !noclip && std::abs(desired_vx) > 0.01f)
+        {
+            const int ps = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+            const int dir = (desired_vx > 0.0f) ? 1 : -1;
+            const int probe_x = coords.x + dir * (hitbox_dimensions_half.x + ps);
+            const int support_y = coords.y + hitbox_dimensions_half.y + ps;
+
+            const bool support_ahead =
+                is_solid_at(probe_x, support_y) ||
+                is_solid_at(probe_x - hitbox_dimensions_half.x / 2, support_y) ||
+                is_solid_at(probe_x + hitbox_dimensions_half.x / 2, support_y);
+
+            if (!support_ahead)
+            {
+                velocity.x = 0.0f;
+                return;
+            }
+        }
+
+        velocity.x = desired_vx;
 
         // Jump if target is above and we're on the ground
         if (target.y < coords.y - 10 && on_ground)
