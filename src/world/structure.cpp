@@ -225,7 +225,9 @@ namespace
     static constexpr int MAX_RAW_RETRY_ATTEMPTS = 6;
     static constexpr int RAW_RETRY_DISTANCE_CELLS = 250;
     static constexpr int GROUND_FILL_MAX_DEPTH_CELLS = 512;
-    static constexpr int BASE_FEATHER_SIDE_SPREAD_CELLS = 2;
+    static constexpr float BASE_BOWL_EDGE_DEPTH_RATIO = 0.35f;
+    static constexpr int BASE_BOWL_SMOOTH_DELTA_CELLS = 2;
+    static constexpr int BASE_FEATHER_SIDE_SPREAD_CELLS = 3;
     static constexpr int BASE_FEATHER_MAX_DEPTH_CELLS = 24;
     static constexpr int STRUCTURE_CLEARANCE_CELLS = 1;
     static constexpr int STORE_CHUNKS_PER_SPAWN = 220;
@@ -511,9 +513,14 @@ void StructureSpawner::fill_structure_base(const Structure &structure, const glm
 
     const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
     const int ground_y = world_pos.y + structure.get_height() * ps;
-    std::vector<int> filled_depth_by_column(structure.get_width(), 0);
+    const int width = structure.get_width();
+    if (width <= 0)
+        return;
 
-    for (int sx = 0; sx < structure.get_width(); ++sx)
+    std::vector<int> available_depth_by_column(width, 0);
+    std::vector<int> filled_depth_by_column(width, 0);
+
+    for (int sx = 0; sx < width; ++sx)
     {
         const int world_x = world_pos.x + sx * ps;
 
@@ -534,15 +541,69 @@ void StructureSpawner::fill_structure_base(const Structure &structure, const glm
             if (!chunk->is_empty(local_cell.x, local_cell.y))
                 break;
 
-            world->place_static_particle(glm::ivec2(world_x, fill_y), Particle_Type::STONE);
-            filled_depth_by_column[sx] = depth + 1;
+            available_depth_by_column[sx] = depth + 1;
         }
     }
 
-    // Feather support edges so the base transitions into terrain more naturally,
-    // while keeping the full vertical support directly under the structure.
-    const int half_width = structure.get_width() / 2;
-    for (int sx = 0; sx < structure.get_width(); ++sx)
+    // Shape the support into a shallow bowl: deepest near center, shallower toward edges.
+    const float center = 0.5f * static_cast<float>(width - 1);
+    const float half_span = std::max(1.0f, 0.5f * static_cast<float>(width));
+    for (int sx = 0; sx < width; ++sx)
+    {
+        const int available = available_depth_by_column[sx];
+        if (available <= 0)
+            continue;
+
+        const float normalized = std::abs(static_cast<float>(sx) - center) / half_span;
+        const float bowl = std::clamp(1.0f - normalized * normalized, 0.0f, 1.0f);
+        const float keep_ratio = BASE_BOWL_EDGE_DEPTH_RATIO + (1.0f - BASE_BOWL_EDGE_DEPTH_RATIO) * bowl;
+
+        int target_depth = static_cast<int>(std::ceil(static_cast<float>(available) * keep_ratio));
+        target_depth = std::clamp(target_depth, 1, available);
+        filled_depth_by_column[sx] = target_depth;
+    }
+
+    // Smooth adjacent columns to avoid staircase artifacts and keep a natural curve.
+    for (int pass = 0; pass < 2; ++pass)
+    {
+        for (int sx = 1; sx < width; ++sx)
+        {
+            filled_depth_by_column[sx] = std::min(
+                filled_depth_by_column[sx],
+                filled_depth_by_column[sx - 1] + BASE_BOWL_SMOOTH_DELTA_CELLS);
+        }
+
+        for (int sx = width - 2; sx >= 0; --sx)
+        {
+            filled_depth_by_column[sx] = std::min(
+                filled_depth_by_column[sx],
+                filled_depth_by_column[sx + 1] + BASE_BOWL_SMOOTH_DELTA_CELLS);
+        }
+    }
+
+    for (int sx = 0; sx < width; ++sx)
+    {
+        const int world_x = world_pos.x + sx * ps;
+        const int target_depth = std::min(filled_depth_by_column[sx], available_depth_by_column[sx]);
+        for (int depth = 0; depth < target_depth; ++depth)
+        {
+            const int fill_y = ground_y + depth * ps;
+            Chunk *chunk = nullptr;
+            glm::ivec2 local_cell;
+
+            if (!get_chunk_and_local_cell(world, world_x, fill_y, chunk, local_cell))
+                break;
+
+            if (!chunk->is_empty(local_cell.x, local_cell.y))
+                break;
+
+            world->place_static_particle(glm::ivec2(world_x, fill_y), Particle_Type::STONE);
+        }
+    }
+
+    // Feather support edges so the bowl transitions into terrain more naturally.
+    const int half_width = width / 2;
+    for (int sx = 0; sx < width; ++sx)
     {
         const int core_x = world_pos.x + sx * ps;
         int core_depth = filled_depth_by_column[sx];
@@ -555,7 +616,7 @@ void StructureSpawner::fill_structure_base(const Structure &structure, const glm
         {
             const int left_x = core_x - side * ps;
             const int right_x = core_x + side * ps;
-            const int tapered_depth = std::max(0, core_depth - side + 1);
+            const int tapered_depth = std::max(0, core_depth - side * 2 + 1);
 
             for (int depth = 0; depth < tapered_depth; ++depth)
             {

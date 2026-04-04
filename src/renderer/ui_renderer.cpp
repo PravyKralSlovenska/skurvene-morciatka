@@ -12,6 +12,8 @@
 #include <algorithm>
 #include <cstdint>
 #include <cmath>
+#include <cctype>
+#include <limits>
 
 #include <glad/gl.h>
 #include "stb/stb_image.h"
@@ -19,7 +21,42 @@
 static constexpr float MENU_WINDOW_WIDTH = 440.0f;
 static constexpr float MENU_WINDOW_HEIGHT = 320.0f;
 static constexpr float OPTIONS_WINDOW_WIDTH = 520.0f;
-static constexpr float OPTIONS_WINDOW_HEIGHT = 420.0f;
+static constexpr float OPTIONS_WINDOW_HEIGHT = 560.0f;
+static constexpr float NEW_GAME_WINDOW_WIDTH = 560.0f;
+static constexpr float NEW_GAME_WINDOW_HEIGHT = 560.0f;
+
+namespace
+{
+    bool parse_seed_text(const std::string &seed_text, int &parsed_seed, bool &is_empty)
+    {
+        size_t start = 0;
+        size_t end = seed_text.size();
+
+        while (start < end && std::isspace(static_cast<unsigned char>(seed_text[start])))
+            start++;
+        while (end > start && std::isspace(static_cast<unsigned char>(seed_text[end - 1])))
+            end--;
+
+        is_empty = (start == end);
+        if (is_empty)
+            return true;
+
+        std::string trimmed = seed_text.substr(start, end - start);
+        try
+        {
+            const long long value = std::stoll(trimmed);
+            if (value < std::numeric_limits<int>::min() || value > std::numeric_limits<int>::max())
+                return false;
+
+            parsed_seed = static_cast<int>(value);
+            return true;
+        }
+        catch (...)
+        {
+            return false;
+        }
+    }
+}
 
 UI_Renderer::~UI_Renderer()
 {
@@ -118,7 +155,7 @@ void UI_Renderer::render_main_menu(Menu_Actions &actions)
         ImGui::Spacing();
 
         if (ImGui::Button("Start Game", ImVec2(-1.0f, 40.0f)))
-            actions.start_game = true;
+            actions.open_new_game_setup = true;
 
         if (ImGui::Button("Options", ImVec2(-1.0f, 40.0f)))
             actions.open_options = true;
@@ -127,7 +164,88 @@ void UI_Renderer::render_main_menu(Menu_Actions &actions)
             actions.quit_game = true;
 
         ImGui::Spacing();
-        ImGui::TextDisabled("Enter: Start   Esc: Quit");
+        ImGui::TextDisabled("Enter: New Game Setup   Esc: Quit");
+    }
+    ImGui::End();
+}
+
+void UI_Renderer::render_new_game_setup_menu(Menu_Actions &actions, Menu_Options_Model &options)
+{
+    center_next_window(NEW_GAME_WINDOW_WIDTH, NEW_GAME_WINDOW_HEIGHT);
+
+    ImGuiWindowFlags flags =
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoMove;
+
+    if (ImGui::Begin("New Game Setup", nullptr, flags))
+    {
+        ImGui::Text("World");
+        ImGui::Separator();
+
+        char seed_buffer[64] = {};
+        const size_t copy_len = std::min(options.world_seed_input.size(), sizeof(seed_buffer) - 1);
+        std::copy_n(options.world_seed_input.c_str(), copy_len, seed_buffer);
+        if (ImGui::InputText("Seed (optional)", seed_buffer, sizeof(seed_buffer)))
+            options.world_seed_input = seed_buffer;
+
+        int parsed_seed = 0;
+        bool seed_empty = true;
+        const bool valid_seed_input = parse_seed_text(options.world_seed_input, parsed_seed, seed_empty);
+
+        if (!valid_seed_input)
+            ImGui::TextColored(ImVec4(0.95f, 0.2f, 0.2f, 1.0f), "Invalid seed. Use an integer value.");
+        else if (seed_empty)
+            ImGui::TextDisabled("Seed is empty: random seed will be used.");
+        else
+            ImGui::Text("Selected seed: %d", parsed_seed);
+
+        ImGui::Spacing();
+        ImGui::Text("Gameplay");
+        ImGui::Separator();
+
+        if (ImGui::SliderFloat("Enemy difficulty", &options.enemy_difficulty, 0.5f, 5.0f, "%.2f") && entity_manager)
+            entity_manager->set_difficulty(options.enemy_difficulty);
+
+        if (ImGui::SliderFloat("Enemy spawn interval", &options.spawn_interval, 0.2f, 10.0f, "%.2f s") && entity_manager)
+            entity_manager->set_spawn_interval(options.spawn_interval);
+
+        if (ImGui::SliderInt("Max enemies", &options.max_enemies, 1, 200) && entity_manager)
+            entity_manager->set_max_enemies(options.max_enemies);
+
+        if (ImGui::Checkbox("Enable enemy spawning", &options.spawn_enabled) && entity_manager)
+            entity_manager->set_spawn_enabled(options.spawn_enabled);
+
+        if (ImGui::InputInt("Column spawn radius (particles)",
+                            &options.devushki_column_spawn_radius_particles,
+                            100,
+                            1000))
+        {
+            options.devushki_column_spawn_radius_particles = std::clamp(
+                options.devushki_column_spawn_radius_particles,
+                500,
+                50000);
+        }
+
+        ImGui::Spacing();
+
+        if (!valid_seed_input)
+            ImGui::BeginDisabled();
+
+        if (ImGui::Button("Create World and Start", ImVec2(-1.0f, 40.0f)))
+        {
+            options.use_custom_seed = !seed_empty;
+            options.custom_seed = parsed_seed;
+            actions.start_game = true;
+        }
+
+        if (!valid_seed_input)
+            ImGui::EndDisabled();
+
+        if (ImGui::Button("Back", ImVec2(-1.0f, 40.0f)))
+            actions.back_from_new_game_setup = true;
+
+        ImGui::TextDisabled("Esc: Back");
     }
     ImGui::End();
 }
@@ -200,6 +318,36 @@ void UI_Renderer::render_boss_defeated_menu(Menu_Actions &actions)
     ImGui::End();
 }
 
+void UI_Renderer::render_player_lost_menu(Menu_Actions &actions)
+{
+    center_next_window(MENU_WINDOW_WIDTH, MENU_WINDOW_HEIGHT + 20.0f);
+
+    ImGuiWindowFlags flags =
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_NoMove;
+
+    if (ImGui::Begin("Game Over", nullptr, flags))
+    {
+        ImGui::TextColored(ImVec4(0.95f, 0.2f, 0.2f, 1.0f), "You have lost");
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        if (ImGui::Button("Back to Menu", ImVec2(-1.0f, 40.0f)))
+            actions.quit_to_menu = true;
+
+        if (ImGui::Button("Start a New Game", ImVec2(-1.0f, 40.0f)))
+            actions.create_new_world = true;
+
+        if (ImGui::Button("Quit", ImVec2(-1.0f, 40.0f)))
+            actions.quit_game = true;
+
+        ImGui::Spacing();
+        ImGui::TextDisabled("Enter: New Game   Esc: Main Menu");
+    }
+    ImGui::End();
+}
+
 void UI_Renderer::render_options_menu(Menu_Actions &actions, Menu_Options_Model &options)
 {
     center_next_window(OPTIONS_WINDOW_WIDTH, OPTIONS_WINDOW_HEIGHT);
@@ -237,6 +385,16 @@ void UI_Renderer::render_options_menu(Menu_Actions &actions, Menu_Options_Model 
                 50000);
         }
         ImGui::TextDisabled("Applied when creating a new world");
+
+        ImGui::Spacing();
+        ImGui::Text("Audio");
+        ImGui::Separator();
+
+        ImGui::SliderFloat("Master Volume", &options.audio_master_volume, 0.0f, 1.5f, "%.2f");
+        ImGui::SliderFloat("Player Died", &options.audio_player_died_volume, 0.0f, 1.5f, "%.2f");
+        ImGui::SliderFloat("Player Damaged", &options.audio_player_damaged_volume, 0.0f, 1.5f, "%.2f");
+        ImGui::SliderFloat("Gunshot", &options.audio_gunshot_volume, 0.0f, 1.5f, "%.2f");
+        ImGui::SliderFloat("Flamethrower", &options.audio_flamethrower_volume, 0.0f, 1.5f, "%.2f");
 
         ImGui::Spacing();
         ImGui::Text("Display");
@@ -283,10 +441,16 @@ Menu_Actions UI_Renderer::render_menu_screen(Menu_Screen screen,
     {
     case Menu_Screen::MENU:
         if (enter_pressed)
-            actions.start_game = true;
+            actions.open_new_game_setup = true;
         if (escape_pressed)
             actions.quit_game = true;
         render_main_menu(actions);
+        break;
+
+    case Menu_Screen::NEW_GAME_SETUP:
+        if (escape_pressed)
+            actions.back_from_new_game_setup = true;
+        render_new_game_setup_menu(actions, options);
         break;
 
     case Menu_Screen::PAUSE:
@@ -301,6 +465,14 @@ Menu_Actions UI_Renderer::render_menu_screen(Menu_Screen screen,
         if (escape_pressed)
             actions.quit_to_menu = true;
         render_boss_defeated_menu(actions);
+        break;
+
+    case Menu_Screen::PLAYER_LOST:
+        if (enter_pressed)
+            actions.create_new_world = true;
+        if (escape_pressed)
+            actions.quit_to_menu = true;
+        render_player_lost_menu(actions);
         break;
 
     case Menu_Screen::OPTIONS:

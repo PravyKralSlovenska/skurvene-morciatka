@@ -357,6 +357,9 @@ void Entity::update_damage_timers(float delta_time)
 
 bool Entity::can_take_damage() const
 {
+    if (type == Entity_Type::PLAYER && noclip)
+        return false;
+
     return is_alive && damage_invuln_timer <= 0.0f;
 }
 
@@ -771,6 +774,14 @@ Player::Player(std::string name, glm::vec2 coords)
 
 void Player::update(float delta_time)
 {
+    if (!is_alive)
+    {
+        state = Entity_States::DEAD;
+        velocity = {0.0f, 0.0f};
+        update_sprite_state();
+        return;
+    }
+
     // Player physics - gravity and collision
     update_physics(delta_time);
 
@@ -794,6 +805,8 @@ void Player::update(float delta_time)
     {
         state = Entity_States::STILL;
     }
+
+    update_sprite_state();
 }
 
 void Player::change_selected_item(const int inventory_slot)
@@ -1467,7 +1480,12 @@ Devushki::Devushki(std::string name, glm::vec2 coords)
 void Devushki::update(float delta_time)
 {
     if (!is_alive)
+    {
+        state = Entity_States::DEAD;
+        velocity = {0.0f, 0.0f};
+        update_sprite_state();
         return;
+    }
 
     state_timer += delta_time;
 
@@ -1489,6 +1507,7 @@ void Devushki::update(float delta_time)
 
     update_physics(delta_time);
     calculate_hitbox();
+    update_sprite_state();
 }
 
 // ==================== Devushki State Handlers ====================
@@ -1731,7 +1750,10 @@ void Boss::update(float delta_time)
 {
     if (!is_alive)
     {
+        state = Entity_States::DEAD;
         boss_ai_state = Boss_AI_State::DEAD;
+        velocity = {0.0f, 0.0f};
+        update_sprite_state();
         return;
     }
 
@@ -1772,6 +1794,7 @@ void Boss::update(float delta_time)
 
     update_physics(delta_time);
     calculate_hitbox();
+    update_sprite_state();
 }
 
 // ==================== Boss State Handlers ====================

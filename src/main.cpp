@@ -1,5 +1,8 @@
 // Standartne cpp kniznice
 #include <iostream>
+#include <filesystem>
+#include <optional>
+#include <string>
 // #include <functional>a
 
 // Moje main header files
@@ -30,12 +33,14 @@ IRenderer render(Globals::WINDOW_WIDTH, Globals::WINDOW_HEIGHT);
 enum GAME_STATES
 {
     MENU,
+    NEW_GAME_SETUP,
     GAME,
     PAUSE,
     OPTIONS, // ???
     LOADING, // ???
     END,
-    BOSS_DEFEATED
+    BOSS_DEFEATED,
+    PLAYER_LOST
 };
 
 int main()
@@ -68,19 +73,32 @@ int main()
     // entity_manager.set_max_enemies(50);
     // entity_manager.set_spawn_enabled(false);
     entity_manager.set_world(&world);
+    entity_manager.register_sprite("player", "../sprites/devushka_player.png");
     entity_manager.register_sprite("slime", "../sprites/devushka_slime_enemy1.png");
-    // entity_manager.register_sprite("big_boss", "../sprites/boss.png", 256, 64, 64, 64, 4);
+    entity_manager.register_sprite("big_boss", "../sprites/devushka_boss.png");
+    entity_manager.register_sprite("devushki_1", "../sprites/devushki_devushka1.png");
+    entity_manager.register_sprite("devushki_2", "../sprites/devushki_devushka2.png");
+    entity_manager.register_sprite("devushki_3", "../sprites/devushki_devushka3.png");
+    entity_manager.apply_sprite(entity_manager.get_player(), "player");
 
     SpawnConfig spawn_cfg = entity_manager.get_spawn_config();
     float option_enemy_difficulty = spawn_cfg.difficulty_multiplier;
     float option_spawn_interval = spawn_cfg.spawn_interval;
     int option_max_enemies = spawn_cfg.max_enemies;
     int option_column_spawn_radius = world.get_devushki_column_spawn_radius_particles();
+    std::string option_world_seed_input;
+    bool option_use_custom_seed = false;
+    int option_custom_seed = 0;
     bool option_spawn_enabled = spawn_cfg.spawn_enabled;
+    float option_audio_master_volume = 1.0f;
+    float option_audio_player_died_volume = 0.90f;
+    float option_audio_player_damaged_volume = 0.70f;
+    float option_audio_gunshot_volume = 0.58f;
+    float option_audio_flamethrower_volume = 0.27f;
 
     const int devushki_count = 1; // how many devushki to save (change this to set the objective)
     entity_manager.set_devushki_objective_count(devushki_count);
-    entity_manager.spawn_devushki_objective(devushki_count, 5000.0f);
+    entity_manager.spawn_devushki_objective(devushki_count, 200.0f, "devushki");
 
     // Startup workflow:
     // 1) seed already chosen in World constructor
@@ -91,20 +109,28 @@ int main()
     world.set_devushki_column_spawn_count(devushki_count);
 
     Player *player = entity_manager.get_player();
+    bool player_death_sound_played = false;
     entity_manager.ensure_player_valid_position();
 
-    auto rebuild_world_with_new_seed = [&]()
+    auto rebuild_world_with_new_seed = [&](const std::optional<int> &requested_seed)
     {
-        world.regenerate_random_seed();
+        if (requested_seed.has_value())
+            world.regenerate_with_seed(*requested_seed);
+        else
+            world.regenerate_random_seed();
+
         entity_manager.reset_for_new_world();
         entity_manager.set_world(&world);
 
         Player *active_player = entity_manager.get_player();
+        player = active_player;
         world.set_player(active_player);
         controls.set_player(active_player);
+        audio_manager.set_player(active_player);
+        player_death_sound_played = false;
 
         entity_manager.set_devushki_objective_count(devushki_count);
-        entity_manager.spawn_devushki_objective(devushki_count, 2000.0f);
+        entity_manager.spawn_devushki_objective(devushki_count, 2000.0f, "devushki");
 
         // Keep the same startup ordering for rebuilt worlds.
         world.set_devushki_column_spawn_radius_particles(option_column_spawn_radius);
@@ -130,11 +156,37 @@ int main()
     // Image structures are now loaded inside World::World() before predetermined positions are generated
     // world.load_image_structures("../structure_images");
 
-    // audio_manager.init();
-    // audio_manager.set_player(player);
-    // audio_manager.set_time_manager(&time_manager);
-    // audio_manager.send_execute(Pending_Execute::Operations::LOAD, "background music", "../music/menu/Rick Ross - Maybach Music III.mp3");
-    // audio_manager.send_execute(Pending_Execute::Operations::PLAY, "background music");
+    auto resolve_asset_path = [](const std::string &relative_path) -> std::string
+    {
+        const std::filesystem::path direct(relative_path);
+        if (std::filesystem::exists(direct))
+            return direct.string();
+
+        const std::filesystem::path parent = std::filesystem::path("..") / direct;
+        if (std::filesystem::exists(parent))
+            return parent.string();
+
+        return relative_path;
+    };
+
+    audio_manager.init();
+    audio_manager.set_player(player);
+    audio_manager.set_time_manager(&time_manager);
+
+    audio_manager.send_execute(Pending_Execute::LOAD, "sfx_player_died", resolve_asset_path("music/sounds/devushki_church_bell_player_died.mp3"));
+    audio_manager.send_execute(Pending_Execute::LOAD, "sfx_player_damaged", resolve_asset_path("music/sounds/devushki_player_getting_damaged.mp3"));
+    audio_manager.send_execute(Pending_Execute::LOAD, "sfx_gunshot", resolve_asset_path("music/sounds/devushki_desert_eagle_gunshot.mp3"));
+    audio_manager.send_execute(Pending_Execute::LOAD, "sfx_flamethrower", resolve_asset_path("music/sounds/devushki_flamethrower.mp3"));
+
+    auto apply_audio_volumes = [&]()
+    {
+        audio_manager.set_sound_gain("sfx_player_died", option_audio_master_volume * option_audio_player_died_volume);
+        audio_manager.set_sound_gain("sfx_player_damaged", option_audio_master_volume * option_audio_player_damaged_volume);
+        audio_manager.set_sound_gain("sfx_gunshot", option_audio_master_volume * option_audio_gunshot_volume);
+        audio_manager.set_sound_gain("sfx_flamethrower", option_audio_master_volume * option_audio_flamethrower_volume);
+    };
+
+    apply_audio_volumes();
 
     // game loop
     GAME_STATES game_state = MENU;
@@ -169,8 +221,16 @@ int main()
             option_spawn_interval,
             option_max_enemies,
             option_column_spawn_radius,
+            option_world_seed_input,
+            option_use_custom_seed,
+            option_custom_seed,
             option_spawn_enabled,
-            render.get_fullscreen_state()};
+            render.get_fullscreen_state(),
+            option_audio_master_volume,
+            option_audio_player_died_volume,
+            option_audio_player_damaged_volume,
+            option_audio_gunshot_volume,
+            option_audio_flamethrower_volume};
 
         switch (game_state)
         {
@@ -180,7 +240,28 @@ int main()
             menu_screen = Menu_Screen::MENU;
             break;
 
+        case NEW_GAME_SETUP:
+            time_manager.pause();
+            render_in_game_ui = false;
+            menu_screen = Menu_Screen::NEW_GAME_SETUP;
+            break;
+
         case GAME:
+            if (!player || !player->get_is_alive())
+            {
+                if (player && !player_death_sound_played)
+                {
+                    audio_manager.send_execute(Pending_Execute::PLAY, "sfx_player_died");
+                    player_death_sound_played = true;
+                }
+
+                game_state = PLAYER_LOST;
+                time_manager.pause();
+                render_in_game_ui = false;
+                menu_screen = Menu_Screen::PLAYER_LOST;
+                break;
+            }
+
             render_in_game_ui = true;
 
             if (escape_pressed)
@@ -201,7 +282,29 @@ int main()
                 // update entities (enemies, NPCs, etc. - not the player)
                 if (!time_manager.paused())
                 {
+                    const float health_before_update = player->healthpoints;
                     entity_manager.update(delta_time);
+                    const float health_after_update = player->healthpoints;
+
+                    if (health_after_update < health_before_update && player->get_is_alive())
+                    {
+                        audio_manager.send_execute(Pending_Execute::PLAY, "sfx_player_damaged");
+                    }
+
+                    if (!player->get_is_alive())
+                    {
+                        if (!player_death_sound_played)
+                        {
+                            audio_manager.send_execute(Pending_Execute::PLAY, "sfx_player_died");
+                            player_death_sound_played = true;
+                        }
+
+                        game_state = PLAYER_LOST;
+                        time_manager.pause();
+                        render_in_game_ui = false;
+                        menu_screen = Menu_Screen::PLAYER_LOST;
+                        break;
+                    }
 
                     DevushkiObjective &objective = entity_manager.get_devushki_objective();
                     const bool boss_defeated = objective.boss_spawned && entity_manager.get_boss_count() == 0;
@@ -225,6 +328,12 @@ int main()
             time_manager.pause();
             render_in_game_ui = false;
             menu_screen = Menu_Screen::BOSS_DEFEATED;
+            break;
+
+        case PLAYER_LOST:
+            time_manager.pause();
+            render_in_game_ui = false;
+            menu_screen = Menu_Screen::PLAYER_LOST;
             break;
 
         case OPTIONS:
@@ -262,11 +371,27 @@ int main()
         option_spawn_interval = options_model.spawn_interval;
         option_max_enemies = options_model.max_enemies;
         option_column_spawn_radius = options_model.devushki_column_spawn_radius_particles;
+        option_world_seed_input = options_model.world_seed_input;
+        option_use_custom_seed = options_model.use_custom_seed;
+        option_custom_seed = options_model.custom_seed;
         option_spawn_enabled = options_model.spawn_enabled;
+        option_audio_master_volume = options_model.audio_master_volume;
+        option_audio_player_died_volume = options_model.audio_player_died_volume;
+        option_audio_player_damaged_volume = options_model.audio_player_damaged_volume;
+        option_audio_gunshot_volume = options_model.audio_gunshot_volume;
+        option_audio_flamethrower_volume = options_model.audio_flamethrower_volume;
+
+        apply_audio_volumes();
 
         if (menu_actions.toggle_fullscreen)
         {
             render.toggle_fullscreen();
+        }
+
+        if (menu_actions.open_new_game_setup)
+        {
+            game_state = NEW_GAME_SETUP;
+            time_manager.pause();
         }
 
         if (menu_actions.open_options)
@@ -277,25 +402,38 @@ int main()
 
         if (menu_actions.start_game)
         {
-            if (game_state == MENU)
+            if (game_state == NEW_GAME_SETUP)
             {
-                rebuild_world_with_new_seed();
+                rebuild_world_with_new_seed(option_use_custom_seed ? std::optional<int>(option_custom_seed) : std::nullopt);
                 boss_defeat_menu_shown = false;
+            }
+            if (player && player->get_is_alive())
+            {
+                player_death_sound_played = false;
             }
             game_state = GAME;
             time_manager.resume();
         }
         else if (menu_actions.resume_game)
         {
+            if (player && player->get_is_alive())
+            {
+                player_death_sound_played = false;
+            }
             game_state = GAME;
             time_manager.resume();
         }
         else if (menu_actions.create_new_world)
         {
-            rebuild_world_with_new_seed();
+            rebuild_world_with_new_seed(std::nullopt);
             boss_defeat_menu_shown = false;
             game_state = GAME;
             time_manager.resume();
+        }
+        else if (menu_actions.back_from_new_game_setup)
+        {
+            game_state = MENU;
+            time_manager.pause();
         }
         else if (menu_actions.back_from_options)
         {
@@ -317,7 +455,7 @@ int main()
         enter_was_down = enter_down;
     }
 
-    // audio_manager.send_execute(Pending_Execute::Operations::STOP);
+    audio_manager.send_execute(Pending_Execute::STOP);
     render.cleanup();
 
     Log::info("game end");

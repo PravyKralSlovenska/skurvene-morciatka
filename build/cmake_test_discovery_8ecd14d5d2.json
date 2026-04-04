@@ -1,5 +1,5 @@
 {
-  "tests": 94,
+  "tests": 96,
   "name": "AllTests",
   "testsuites": [
     {
@@ -391,7 +391,7 @@
     },
     {
       "name": "SpawnBiomeRestrictionTest",
-      "tests": 4,
+      "tests": 6,
       "testsuite": [
         {
           "name": "PlayerRelocatesFromIcyBiome",
@@ -412,6 +412,16 @@
           "name": "ObjectiveBossSpawnAvoidsIcyBiome",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/spawn_biome_restriction_test.cpp",
           "line": 288
+        },
+        {
+          "name": "EnemySpawnDistanceSetterClampsToExclusionFloor",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/spawn_biome_restriction_test.cpp",
+          "line": 325
+        },
+        {
+          "name": "RandomEnemySpawnStaysOutsidePlayerExclusionRadius",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/spawn_biome_restriction_test.cpp",
+          "line": 344
         }
       ]
     },

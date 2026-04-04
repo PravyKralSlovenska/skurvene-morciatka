@@ -4,11 +4,19 @@
 #include "engine/audio/listener.hpp"
 #include "engine/player/entity.hpp"
 #include "engine/time_manager.hpp"
+#include <algorithm>
 
 Pending_Execute::Pending_Execute(Operations operation, std::string name, std::string path)
     : operation(operation), name(name), path(path) {}
 
-Audio_Manager::Audio_Manager() {}
+Audio_Manager::Audio_Manager()
+    : device(nullptr),
+      context(nullptr),
+      listener(nullptr),
+      player(nullptr),
+      time_manager(nullptr),
+      audio_thread_running(false) {}
+
 Audio_Manager::~Audio_Manager()
 {
     cleanup();
@@ -16,13 +24,18 @@ Audio_Manager::~Audio_Manager()
 
 void Audio_Manager::init()
 {
+    if (audio_thread_running.load())
+    {
+        return;
+    }
+
     if (!init_openal())
     {
         std::cout << "nepodaril sa init";
         return;
     }
 
-    audio_thread_running = true;
+    audio_thread_running.store(true);
     audio_thread = std::thread(&Audio_Manager::audio_thread_loop, this);
     // std::cout << audio_thread.get_id() << std::endl;
 }
@@ -53,7 +66,7 @@ void Audio_Manager::audio_thread_loop()
 {
     // listener = &Listener();
 
-    while (audio_thread_running)
+    while (audio_thread_running.load())
     {
         execute_stuff_from_queue();
         // remove not active sources
@@ -66,6 +79,7 @@ void Audio_Manager::audio_thread_loop()
 
 void Audio_Manager::send_execute(const Pending_Execute::Operations operation, const std::string name, const std::string path)
 {
+    std::lock_guard<std::mutex> lock(queue_mutex);
     audio_thread_queue.push(Pending_Execute(operation, name, path));
 }
 
@@ -85,7 +99,7 @@ void Audio_Manager::execute_stuff_from_queue()
             break;
 
         case Pending_Execute::Operations::STOP:
-            audio_thread_running = false;
+            audio_thread_running.store(false);
             break;
 
         case Pending_Execute::Operations::RESUME:
@@ -118,16 +132,28 @@ void Audio_Manager::execute_stuff_from_queue()
 
 void Audio_Manager::cleanup()
 {
-
-    // niekde tu by mal byt prikaz aby sa zastail loop v audio_thread_loop
+    audio_thread_running.store(false);
 
     if (audio_thread.joinable())
     {
         audio_thread.join();
     }
 
-    alcCloseDevice(device);
-    alcDestroyContext(context);
+    active_sources.clear();
+    sounds.clear();
+
+    if (context)
+    {
+        alcMakeContextCurrent(nullptr);
+        alcDestroyContext(context);
+        context = nullptr;
+    }
+
+    if (device)
+    {
+        alcCloseDevice(device);
+        device = nullptr;
+    }
 }
 
 void Audio_Manager::set_player(Player *player)
@@ -148,6 +174,12 @@ bool Audio_Manager::load_music(const std::string name, const std::string path_to
     return true;
 }
 
+void Audio_Manager::set_sound_gain(const std::string &name, float gain)
+{
+    std::lock_guard<std::mutex> lock(queue_mutex);
+    sound_gains[name] = std::clamp(gain, 0.0f, 2.0f);
+}
+
 bool Audio_Manager::play(const std::string name)
 {
     auto it = sounds.find(name);
@@ -157,9 +189,16 @@ bool Audio_Manager::play(const std::string name)
         return false;
     }
 
-    const Sound_Buffer buffer = it->second;
+    const Sound_Buffer &buffer = it->second;
 
-    active_sources.emplace_back(glm::ivec3(0, 0, 0), glm::ivec3(0, 0, 0), 1.0f, 1.0f);
+    float gain = 1.0f;
+    auto gain_it = sound_gains.find(name);
+    if (gain_it != sound_gains.end())
+    {
+        gain = gain_it->second;
+    }
+
+    active_sources.emplace_back(glm::ivec3(0, 0, 0), glm::ivec3(0, 0, 0), 1.0f, gain);
     // active_sources.emplace_back(glm::ivec3(0, 0, 0), glm::ivec3(0, 0, 0), 2.0f, 2.0f);
     Audio_Source &source = active_sources.back();
     source.play_sound(buffer);

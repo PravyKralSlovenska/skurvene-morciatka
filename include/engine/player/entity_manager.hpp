@@ -18,7 +18,7 @@ class Structure;
 // Enemy spawn configuration
 struct SpawnConfig
 {
-    float min_spawn_distance = 200.0f;  // Min distance from player
+    float min_spawn_distance = 250.0f;  // Min distance from player (50 particles)
     float max_spawn_distance = 500.0f;  // Max distance from player
     float spawn_interval = 3.0f;        // Seconds between spawn attempts
     int max_enemies = 20;               // Maximum enemies at once

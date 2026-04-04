@@ -321,3 +321,64 @@ TEST(SpawnBiomeRestrictionTest, ObjectiveBossSpawnAvoidsIcyBiome)
             << boss->coords.x << ", " << boss->coords.y << ")";
     }
 }
+
+TEST(SpawnBiomeRestrictionTest, EnemySpawnDistanceSetterClampsToExclusionFloor)
+{
+    Entity_Manager manager;
+
+    const float exclusion_radius_px = 50.0f * Globals::PARTICLE_SIZE;
+
+    manager.set_spawn_distance(0.0f, 25.0f);
+    SpawnConfig cfg = manager.get_spawn_config();
+
+    EXPECT_GE(cfg.min_spawn_distance, exclusion_radius_px);
+    EXPECT_GE(cfg.max_spawn_distance, cfg.min_spawn_distance + 1.0f);
+
+    manager.set_spawn_distance(exclusion_radius_px + 30.0f, exclusion_radius_px - 5.0f);
+    cfg = manager.get_spawn_config();
+
+    EXPECT_GE(cfg.min_spawn_distance, exclusion_radius_px + 30.0f);
+    EXPECT_GE(cfg.max_spawn_distance, cfg.min_spawn_distance + 1.0f);
+}
+
+TEST(SpawnBiomeRestrictionTest, RandomEnemySpawnStaysOutsidePlayerExclusionRadius)
+{
+    World world;
+    Entity_Manager manager;
+    manager.set_spawn_enabled(false);
+    manager.set_world(&world);
+
+    Player *player = manager.get_player();
+    ASSERT_NE(player, nullptr);
+
+    manager.ensure_player_valid_position();
+
+    const float exclusion_radius_px = 50.0f * Globals::PARTICLE_SIZE;
+    const float exclusion_radius_sq = exclusion_radius_px * exclusion_radius_px;
+
+    // Intentionally request a too-small minimum to verify clamping during active spawn attempts.
+    manager.set_spawn_distance(1.0f, exclusion_radius_px + 220.0f);
+
+    int spawned_count = 0;
+    for (int attempt = 0; attempt < 140 && spawned_count < 20; ++attempt)
+    {
+        Enemy *enemy = manager.spawn_random_enemy("slime");
+        if (!enemy)
+            continue;
+
+        const glm::ivec2 enemy_pos = enemy->coords;
+        const float dx = static_cast<float>(enemy_pos.x - player->coords.x);
+        const float dy = static_cast<float>(enemy_pos.y - player->coords.y);
+        const float dist_sq = dx * dx + dy * dy;
+
+        EXPECT_GE(dist_sq, exclusion_radius_sq)
+            << "Enemy spawned too close to player at ("
+            << enemy_pos.x << ", " << enemy_pos.y << ") vs player ("
+            << player->coords.x << ", " << player->coords.y << ")";
+
+        manager.remove_entity(enemy->get_id());
+        ++spawned_count;
+    }
+
+    EXPECT_GE(spawned_count, 10) << "Too few enemies spawned during distance regression test.";
+}

@@ -7,6 +7,7 @@
 #include <queue>
 #include <chrono>
 #include <mutex>
+#include <atomic>
 #include <string>
 #include <glm/glm.hpp>
 #include <AL/al.h>
@@ -48,12 +49,12 @@ private:
     Time_Manager *time_manager;
 
     std::thread audio_thread;
-    // std::atomic<bool> 
-    bool audio_thread_running;
+    std::atomic<bool> audio_thread_running;
     std::queue<Pending_Execute> audio_thread_queue;
     std::mutex queue_mutex;
 
     std::unordered_map<std::string, Sound_Buffer> sounds;
+    std::unordered_map<std::string, float> sound_gains;
     std::vector<Audio_Source> active_sources;
 
 private:
@@ -75,6 +76,7 @@ public:
     void set_time_manager(Time_Manager *time_manager);
 
     bool load_music(const std::string name, const std::string path_to_sound);
+    void set_sound_gain(const std::string &name, float gain);
     bool play(const std::string name);
     bool stop(const ALuint audio_source_id);
     bool forward();

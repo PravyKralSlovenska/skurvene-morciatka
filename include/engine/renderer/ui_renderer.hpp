@@ -16,10 +16,12 @@ enum class Menu_Screen
 {
     NONE,
     MENU,
+    NEW_GAME_SETUP,
     PAUSE,
     OPTIONS,
     LOADING,
-    BOSS_DEFEATED
+    BOSS_DEFEATED,
+    PLAYER_LOST
 };
 
 struct Menu_Options_Model
@@ -28,16 +30,26 @@ struct Menu_Options_Model
     float spawn_interval = 3.0f;
     int max_enemies = 20;
     int devushki_column_spawn_radius_particles = 5000;
+    std::string world_seed_input;
+    bool use_custom_seed = false;
+    int custom_seed = 0;
     bool spawn_enabled = true;
     bool fullscreen_enabled = false;
+    float audio_master_volume = 1.0f;
+    float audio_player_died_volume = 0.90f;
+    float audio_player_damaged_volume = 0.70f;
+    float audio_gunshot_volume = 0.58f;
+    float audio_flamethrower_volume = 0.27f;
 };
 
 struct Menu_Actions
 {
     bool start_game = false;
+    bool open_new_game_setup = false;
     bool open_options = false;
     bool resume_game = false;
     bool back_from_options = false;
+    bool back_from_new_game_setup = false;
     bool quit_to_menu = false;
     bool create_new_world = false;
     bool quit_game = false;
@@ -72,8 +84,10 @@ private:
 
     void center_next_window(float width, float height);
     void render_main_menu(Menu_Actions &actions);
+    void render_new_game_setup_menu(Menu_Actions &actions, Menu_Options_Model &options);
     void render_pause_menu(Menu_Actions &actions);
     void render_boss_defeated_menu(Menu_Actions &actions);
+    void render_player_lost_menu(Menu_Actions &actions);
     void render_options_menu(Menu_Actions &actions, Menu_Options_Model &options);
     void render_loading_screen();
     bool ensure_store_offer_textures_loaded();

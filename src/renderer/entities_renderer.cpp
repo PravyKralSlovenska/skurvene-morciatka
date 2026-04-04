@@ -189,6 +189,8 @@ void Entities_Renderer::add_entity_to_batch(Entity *entity)
     // Get entity position and dimensions
     glm::vec2 pos = glm::vec2(entity->coords);
     glm::vec2 half_size = glm::vec2(entity->hitbox_dimensions_half);
+    glm::vec2 render_pos = pos;
+    glm::vec2 render_half_size = half_size;
 
     // Determine color based on entity type
     glm::vec4 color;
@@ -237,10 +239,16 @@ void Entities_Renderer::add_entity_to_batch(Entity *entity)
 
     if (entity->has_sprite_animation())
     {
+        static constexpr float SPRITE_RENDER_SCALE = 1.5f;
+
         // Get UV coordinates from sprite animation
         Sprite_Animation &anim = entity->get_sprite_animation();
         uv_min = anim.get_uv_min();
         uv_max = anim.get_uv_max();
+
+        // Render sprite bigger without changing gameplay hitbox.
+        render_half_size = half_size * SPRITE_RENDER_SCALE;
+        render_pos.y -= (render_half_size.y - half_size.y);
 
         // When using a texture, use white color to show true texture colors
         color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -257,22 +265,22 @@ void Entities_Renderer::add_entity_to_batch(Entity *entity)
 
     // Note: UV Y is flipped because OpenGL textures are usually loaded with Y pointing up
     // Top-left
-    vertices.push_back({{pos.x - half_size.x, pos.y - half_size.y},
+    vertices.push_back({{render_pos.x - render_half_size.x, render_pos.y - render_half_size.y},
                         {uv_min.x, uv_max.y},
                         color});
 
     // Top-right
-    vertices.push_back({{pos.x + half_size.x, pos.y - half_size.y},
+    vertices.push_back({{render_pos.x + render_half_size.x, render_pos.y - render_half_size.y},
                         {uv_max.x, uv_max.y},
                         color});
 
     // Bottom-right
-    vertices.push_back({{pos.x + half_size.x, pos.y + half_size.y},
+    vertices.push_back({{render_pos.x + render_half_size.x, render_pos.y + render_half_size.y},
                         {uv_max.x, uv_min.y},
                         color});
 
     // Bottom-left
-    vertices.push_back({{pos.x - half_size.x, pos.y + half_size.y},
+    vertices.push_back({{render_pos.x - render_half_size.x, render_pos.y + render_half_size.y},
                         {uv_min.x, uv_min.y},
                         color});
 

@@ -138,10 +138,17 @@ void Controls::handle_input()
                             const float projectile_speed = 900.0f;
                             const float projectile_damage = 25.0f;
                             glm::vec2 spawn_pos = player->get_center() + dir * 20.0f;
-                            entity_manager->create_projectile(spawn_pos, dir * projectile_speed,
-                                                              wand.particle_type, projectile_damage,
-                                                              Entity_Type::PLAYER);
-                            wand.last_use_time = static_cast<float>(now);
+                            Projectile *projectile = entity_manager->create_projectile(spawn_pos, dir * projectile_speed,
+                                                                                       wand.particle_type, projectile_damage,
+                                                                                       Entity_Type::PLAYER);
+                            if (projectile)
+                            {
+                                if (audio_manager)
+                                {
+                                    audio_manager->send_execute(Pending_Execute::PLAY, "sfx_gunshot");
+                                }
+                                wand.last_use_time = static_cast<float>(now);
+                            }
                         }
                     }
                 }
@@ -221,6 +228,7 @@ void Controls::handle_input()
                         // Gun-inspired firing model: multiple fast pellets from muzzle with spread.
                         static constexpr int FLAME_PELLETS = 6;
                         static constexpr float BASE_SPEED = 820.0f;
+                        bool fired_flame = false;
 
                         for (int i = 0; i < FLAME_PELLETS; ++i)
                         {
@@ -241,10 +249,16 @@ void Controls::handle_input()
 
                             if (flame_projectile)
                             {
+                                fired_flame = true;
                                 flame_projectile->set_lifetime(0.28f);
                                 flame_projectile->set_gravity_multiplier(-0.18f);
                                 flame_projectile->set_air_drag(0.94f);
                             }
+                        }
+
+                        if (fired_flame && audio_manager)
+                        {
+                            audio_manager->send_execute(Pending_Execute::PLAY, "sfx_flamethrower");
                         }
                     }
 
