@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <cstdint>
 #include <AL/al.h>
 
 // konkretna pesnicka/zvuk (cdcko)
