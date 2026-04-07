@@ -22,10 +22,10 @@ ctest --test-dir build --output-on-failure
 # BUILD NA WINDOWS
 
 ```powershell
-cmake -S . -B build -DUSE_BUNDLED_DEPS=ON -DBUILD_TESTS=ON
-cmake --build build --config Release --parallel --target morciatko morciatko_tests
-ctest --test-dir build -C Release --output-on-failure
-.\build\Release\morciatko.exe
+cmake -S . -B build -G "MinGW Makefiles" -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DUSE_BUNDLED_DEPS=ON -DBUILD_TESTS=ON
+cmake --build build --parallel --target morciatko morciatko_tests
+ctest --test-dir build --output-on-failure
+.\build\morciatko.exe
 ```
 
 # BEZ INSTALACIE NA SKOLSKOM PC (WINDOWS)
@@ -33,14 +33,19 @@ ctest --test-dir build -C Release --output-on-failure
 Na skolskom PC nemusis nic instalovat, ale build musis spravit doma na svojom PC.
 
 ```powershell
-cmake -S . -B build -G Ninja -DUSE_BUNDLED_DEPS=ON -DBUILD_TESTS=OFF
-cmake --build build --config Release --parallel --target morciatko package_portable_windows
+cmake -S . -B build -G "MinGW Makefiles" -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DUSE_BUNDLED_DEPS=ON -DBUILD_TESTS=OFF
+cmake --build build --parallel --target morciatko package_portable_windows
 ```
 
-Potom skopiruj na skolsky PC priecinok `portable` alebo subor `morciatko-portable.zip`:
+Ak CMake nenajde make automaticky, pridaj:
 
-- pri Visual Studio generatore je to typicky v `build\Release\`
-- pri single-config generatore je to typicky v `build\`
+```powershell
+-DCMAKE_MAKE_PROGRAM=make
+```
+
+Potom skopiruj na skolsky PC priecinok `portable` alebo subor `morciatko-portable.zip` z `build\`:
+
+- pri MinGW Makefiles je to v `build\`
 
 Na skolskom PC rozbal zip (ak pouzivas zip) a spustaj iba z priecinku `portable`:
 

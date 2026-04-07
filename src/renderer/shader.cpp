@@ -10,7 +10,7 @@
 Shader::Shader() {}
 
 Shader::Shader(const std::string &vertex_path, const std::string &fragment_path)
-    : vertex_path(vertex_path), fragment_path(fragment_path)
+    : vertex_path(resolve_asset_path(vertex_path)), fragment_path(resolve_asset_path(fragment_path))
 {
     create_shader();
 }

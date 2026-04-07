@@ -1,4 +1,5 @@
 #include "engine/renderer/text_renderer.hpp"
+#include "others/utils.hpp"
 
 Character::Character(unsigned int textureID, glm::ivec2 size, glm::ivec2 bearing, unsigned int advance)
     : TextureID(textureID), Size(size), Bearing(bearing), Advance(advance) {}
@@ -23,7 +24,8 @@ Text_Renderer::~Text_Renderer()
 
 void Text_Renderer::init()
 {
-    font_path = "../fonts/Minecraft.ttf";
+    static std::string resolved_font_path = resolve_asset_path("fonts/Minecraft.ttf");
+    font_path = resolved_font_path.c_str();
     // font_path = "../fonts/EmojiFont.ttf";
     // font_path = "../fonts/MySims.ttf";
     // font_path = "../fonts/Coolvetica.otf";

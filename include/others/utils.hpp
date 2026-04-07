@@ -6,6 +6,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 
+std::string resolve_asset_path(const std::string &path);
 std::string read_file(const std::string &filepath);
 
 /*

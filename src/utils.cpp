@@ -277,17 +277,64 @@ Vertex::Vertex() {}
 Vertex::Vertex(float x, float y, Color color)
     : x(x), y(y), color(color) {}
 
+std::string resolve_asset_path(const std::string &path)
+{
+    namespace fs = std::filesystem;
+
+    if (path.empty())
+    {
+        return path;
+    }
+
+    auto strip_legacy_prefixes = [](std::string value)
+    {
+        while (value.rfind("../", 0) == 0 || value.rfind("..\\", 0) == 0 ||
+               value.rfind("./", 0) == 0 || value.rfind(".\\", 0) == 0)
+        {
+            const size_t erase_len = (value.size() >= 2 && value[1] == '.') ? 3u : 2u;
+            value.erase(0, erase_len);
+        }
+        return value;
+    };
+
+    const fs::path input(path);
+    const fs::path normalized_input = input.lexically_normal();
+    const std::string stripped = strip_legacy_prefixes(path);
+    const fs::path stripped_path = fs::path(stripped).lexically_normal();
+
+    std::vector<fs::path> candidates;
+    candidates.push_back(normalized_input);
+    candidates.push_back(fs::path("..") / normalized_input);
+
+    if (!stripped.empty())
+    {
+        candidates.push_back(stripped_path);
+        candidates.push_back(fs::path("..") / stripped_path);
+    }
+
+    for (const fs::path &candidate : candidates)
+    {
+        std::error_code ec;
+        if (fs::exists(candidate, ec))
+        {
+            return candidate.lexically_normal().generic_string();
+        }
+    }
+
+    return normalized_input.generic_string();
+}
+
 /*
  * z utils.hpp
  *
  */
 std::string read_file(const std::string &filepath)
 {
-    // std::string font_name = FileSystem::getPath();
-    std::ifstream file(filepath);
+    const std::string resolved_path = resolve_asset_path(filepath);
+    std::ifstream file(resolved_path);
     if (!file)
     {
-        std::cerr << "Failed to open file: " << filepath << std::endl;
+        std::cerr << "Failed to open file: " << resolved_path << std::endl;
         return "";
     }
     std::stringstream ss;

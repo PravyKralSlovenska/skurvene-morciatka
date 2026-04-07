@@ -8,6 +8,7 @@
 #include "engine/world/herringbone_world_generation.hpp"
 #include "engine/particle/particle.hpp"
 #include "engine/particle/falling_sand_simulation.hpp"
+#include "others/utils.hpp"
 
 #include <random>
 #include <algorithm>
@@ -49,7 +50,7 @@ World::World()
     structure_spawner.set_seed(world_seed);
 
     // Load structure blueprints and generate deterministic targets.
-    load_image_structures("../structure_images");
+    load_image_structures(resolve_asset_path("structure_images"));
     structure_spawner.generate_predetermined_positions(world_seed);
 }
 

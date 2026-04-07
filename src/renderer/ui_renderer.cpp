@@ -8,6 +8,7 @@
 #include "engine/world/world_cell.hpp"
 #include "engine/time_manager.hpp"
 #include "others/GLOBALS.hpp"
+#include "others/utils.hpp"
 
 #include <algorithm>
 #include <cstdint>
@@ -75,8 +76,10 @@ unsigned int UI_Renderer::load_ui_texture(const std::string &path)
     int height = 0;
     int channels = 0;
 
+    const std::string resolved_path = resolve_asset_path(path);
+
     stbi_set_flip_vertically_on_load(false);
-    unsigned char *data = stbi_load(path.c_str(), &width, &height, &channels, 4);
+    unsigned char *data = stbi_load(resolved_path.c_str(), &width, &height, &channels, 4);
     if (!data)
         return 0;
 
@@ -113,9 +116,9 @@ bool UI_Renderer::ensure_store_offer_textures_loaded()
     if (store_offer_textures_loaded)
         return true;
 
-    store_offer_textures["../items/devushki_heal.png"] = load_ui_texture("../items/devushki_heal.png");
-    store_offer_textures["../items/devushki_ammo.png"] = load_ui_texture("../items/devushki_ammo.png");
-    store_offer_textures["../items/devushki_compass.png"] = load_ui_texture("../items/devushki_compass.png");
+    store_offer_textures["items/devushki_heal.png"] = load_ui_texture("items/devushki_heal.png");
+    store_offer_textures["items/devushki_ammo.png"] = load_ui_texture("items/devushki_ammo.png");
+    store_offer_textures["items/devushki_compass.png"] = load_ui_texture("items/devushki_compass.png");
     store_offer_textures["builtin://wand_fire"] = create_solid_color_texture(255, 90, 20);
     store_offer_textures["builtin://wand_wood"] = create_solid_color_texture(139, 94, 60);
     store_offer_textures["builtin://wand_empty"] = create_solid_color_texture(210, 210, 210);
@@ -953,7 +956,7 @@ void UI_Renderer::render_hotbar()
                 float swatch_margin = 8.0f;
                 if (wand.type == Wand_Type::COMPASS_WAND)
                 {
-                    auto icon_it = store_offer_textures.find("../items/devushki_compass.png");
+                    auto icon_it = store_offer_textures.find("items/devushki_compass.png");
                     if (icon_it != store_offer_textures.end() && icon_it->second != 0)
                     {
                         draw_list->AddImage(

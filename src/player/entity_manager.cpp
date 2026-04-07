@@ -13,6 +13,7 @@
 #include "engine/world/world_chunk.hpp"
 #include "engine/world/world_cell.hpp"
 #include "others/GLOBALS.hpp"
+#include "others/utils.hpp"
 
 namespace
 {
@@ -1130,14 +1131,14 @@ void Entity_Manager::update_store_offers()
         case 0:
             offer.type = Store_Offer_Type::HEAL;
             offer.item_name = "Heal";
-            offer.icon_path = "../items/devushki_heal.png";
+            offer.icon_path = "items/devushki_heal.png";
             offer.price_gold = STORE_HEAL_ITEM_PRICE_GOLD;
             offer.price_silver = STORE_HEAL_ITEM_PRICE_SILVER;
             break;
         case 1:
             offer.type = Store_Offer_Type::AMMO;
             offer.item_name = "Ammo";
-            offer.icon_path = "../items/devushki_ammo.png";
+            offer.icon_path = "items/devushki_ammo.png";
             offer.price_gold = STORE_AMMO_ITEM_PRICE_GOLD;
             offer.price_silver = 0;
             break;
@@ -1165,7 +1166,7 @@ void Entity_Manager::update_store_offers()
         default:
             offer.type = Store_Offer_Type::COMPASS;
             offer.item_name = "Compass";
-            offer.icon_path = "../items/devushki_compass.png";
+            offer.icon_path = "items/devushki_compass.png";
             offer.price_gold = STORE_COMPASS_ITEM_PRICE_GOLD;
             offer.price_silver = STORE_COMPASS_ITEM_PRICE_SILVER;
             break;
@@ -2117,7 +2118,7 @@ void Entity_Manager::register_sprite(const std::string &name, const std::string 
                                      int sheet_width, int sheet_height, int frame_width, int frame_height, int frame_count)
 {
     SpriteConfig config;
-    config.path = sprite_path;
+    config.path = resolve_asset_path(sprite_path);
     config.sheet_width = sheet_width;
     config.sheet_height = sheet_height;
     config.frame_width = frame_width;

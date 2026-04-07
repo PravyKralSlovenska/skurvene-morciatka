@@ -5,7 +5,7 @@
 #include "others/utils.hpp"
 
 Compute_Shader::Compute_Shader(const std::string &compute_path)
-    : compute_path(compute_path)
+    : compute_path(resolve_asset_path(compute_path))
 {
     init();
 }

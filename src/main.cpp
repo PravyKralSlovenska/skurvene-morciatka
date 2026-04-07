@@ -1,6 +1,5 @@
 // Standartne cpp kniznice
 #include <iostream>
-#include <filesystem>
 #include <optional>
 #include <string>
 // #include <functional>a
@@ -73,12 +72,12 @@ int main()
     // entity_manager.set_max_enemies(50);
     // entity_manager.set_spawn_enabled(false);
     entity_manager.set_world(&world);
-    entity_manager.register_sprite("player", "../sprites/devushka_player.png");
-    entity_manager.register_sprite("slime", "../sprites/devushka_slime_enemy1.png");
-    entity_manager.register_sprite("big_boss", "../sprites/devushka_boss.png");
-    entity_manager.register_sprite("devushki_1", "../sprites/devushki_devushka1.png");
-    entity_manager.register_sprite("devushki_2", "../sprites/devushki_devushka2.png");
-    entity_manager.register_sprite("devushki_3", "../sprites/devushki_devushka3.png");
+    entity_manager.register_sprite("player", "sprites/devushka_player.png");
+    entity_manager.register_sprite("slime", "sprites/devushka_slime_enemy1.png");
+    entity_manager.register_sprite("big_boss", "sprites/devushka_boss.png");
+    entity_manager.register_sprite("devushki_1", "sprites/devushki_devushka1.png");
+    entity_manager.register_sprite("devushki_2", "sprites/devushki_devushka2.png");
+    entity_manager.register_sprite("devushki_3", "sprites/devushki_devushka3.png");
     entity_manager.apply_sprite(entity_manager.get_player(), "player");
 
     SpawnConfig spawn_cfg = entity_manager.get_spawn_config();
@@ -155,19 +154,6 @@ int main()
 
     // Image structures are now loaded inside World::World() before predetermined positions are generated
     // world.load_image_structures("../structure_images");
-
-    auto resolve_asset_path = [](const std::string &relative_path) -> std::string
-    {
-        const std::filesystem::path direct(relative_path);
-        if (std::filesystem::exists(direct))
-            return direct.string();
-
-        const std::filesystem::path parent = std::filesystem::path("..") / direct;
-        if (std::filesystem::exists(parent))
-            return parent.string();
-
-        return relative_path;
-    };
 
     audio_manager.init();
     audio_manager.set_player(player);
