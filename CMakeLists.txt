@@ -160,6 +160,52 @@ if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.21)
             $<TARGET_FILE_DIR:morciatko>
         COMMAND_EXPAND_LISTS
     )
+
+    add_custom_target(package_portable_windows
+        COMMAND ${CMAKE_COMMAND} -E rm -rf "$<TARGET_FILE_DIR:morciatko>/portable"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:morciatko>/portable"
+
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "$<TARGET_FILE:morciatko>"
+            "$<TARGET_FILE_DIR:morciatko>/portable/"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_RUNTIME_DLLS:morciatko>
+            "$<TARGET_FILE_DIR:morciatko>/portable/"
+
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${CMAKE_SOURCE_DIR}/shaders"
+            "$<TARGET_FILE_DIR:morciatko>/portable/shaders"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${CMAKE_SOURCE_DIR}/sprites"
+            "$<TARGET_FILE_DIR:morciatko>/portable/sprites"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${CMAKE_SOURCE_DIR}/fonts"
+            "$<TARGET_FILE_DIR:morciatko>/portable/fonts"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${CMAKE_SOURCE_DIR}/music"
+            "$<TARGET_FILE_DIR:morciatko>/portable/music"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${CMAKE_SOURCE_DIR}/tilesets"
+            "$<TARGET_FILE_DIR:morciatko>/portable/tilesets"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${CMAKE_SOURCE_DIR}/items"
+            "$<TARGET_FILE_DIR:morciatko>/portable/items"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${CMAKE_SOURCE_DIR}/structure_images"
+            "$<TARGET_FILE_DIR:morciatko>/portable/structure_images"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${CMAKE_SOURCE_DIR}/saves"
+            "$<TARGET_FILE_DIR:morciatko>/portable/saves"
+
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_SOURCE_DIR}/imgui.ini"
+            "$<TARGET_FILE_DIR:morciatko>/portable/"
+
+        COMMAND ${CMAKE_COMMAND} -E tar cf "morciatko-portable.zip" --format=zip "portable"
+        WORKING_DIRECTORY "$<TARGET_FILE_DIR:morciatko>"
+        DEPENDS morciatko
+        COMMAND_EXPAND_LISTS
+    )
 endif()
 
 # TESTING SETUP
