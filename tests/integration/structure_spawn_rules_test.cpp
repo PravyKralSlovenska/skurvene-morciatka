@@ -8,6 +8,8 @@
 
 TEST(StructureSpawnRulesTest, PredeterminedEntriesGeneratedForRegisteredStructures)
 {
+    constexpr int kNonColumnDefaultOpportunities = 10;
+
     World world;
     StructureSpawner &spawner = world.get_structure_spawner();
 
@@ -15,7 +17,14 @@ TEST(StructureSpawnRulesTest, PredeterminedEntriesGeneratedForRegisteredStructur
     const auto &entries = spawner.get_predetermined_entries();
 
     ASSERT_FALSE(blueprints.empty());
-    EXPECT_EQ(entries.size(), blueprints.size());
+
+    size_t expected_entries = 0;
+    for (const auto &blueprint : blueprints)
+    {
+        expected_entries += (blueprint.first == "devushki_column") ? 1 : kNonColumnDefaultOpportunities;
+    }
+
+    EXPECT_EQ(entries.size(), expected_entries);
 
     for (const auto &entry : entries)
     {
@@ -40,5 +49,5 @@ TEST(StructureSpawnRulesTest, DevushkiColumnTargetIsOnConfiguredCircle)
     const float radius = std::sqrt(
         static_cast<float>(it->target_pos.x * it->target_pos.x + it->target_pos.y * it->target_pos.y));
 
-    EXPECT_NEAR(radius, static_cast<float>(5000 * ps), static_cast<float>(ps * 2));
+    EXPECT_NEAR(radius, static_cast<float>(500 * ps), static_cast<float>(ps * 2));
 }

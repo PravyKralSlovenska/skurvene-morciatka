@@ -63,7 +63,7 @@ private:
     World *world = nullptr;
     std::mt19937 rng;
     int seed = 0;
-    int devushki_spawn_radius_particles = 5000;
+    int devushki_spawn_radius_particles = 500;
 
     // Optional per-structure override for deterministic predetermined entry count.
     std::map<std::string, int> structure_spawn_counts;
@@ -108,7 +108,7 @@ public:
 
     // New deterministic, chunk-event-driven spawn workflow.
     void generate_predetermined_positions(int world_seed);
-    void try_place_pending_structures(const glm::ivec2 &chunk_coords);
+    void try_place_pending_structures(const glm::ivec2 &chunk_coords, int max_entries_to_place = -1);
     void place_pending_for_structure(const std::string &name, int max_passes = 1);
     const std::vector<PredeterminedEntry> &get_predetermined_entries() const;
 

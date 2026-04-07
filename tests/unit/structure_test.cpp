@@ -192,6 +192,8 @@ TEST(StructureSpawnerTest, GetNonexistentBlueprintReturnsNull)
 
 TEST(StructureSpawnerTest, GeneratePredeterminedEntries)
 {
+    constexpr int kNonColumnDefaultOpportunities = 10;
+
     StructureSpawner spawner;
     Structure column("devushki_column", 5, 10);
     column.fill_rect(0, 0, 5, 10, Particle_Type::STONE);
@@ -203,20 +205,20 @@ TEST(StructureSpawnerTest, GeneratePredeterminedEntries)
     spawner.generate_predetermined_positions(1);
 
     const auto &entries = spawner.get_predetermined_entries();
-    EXPECT_EQ(entries.size(), 2u);
+    EXPECT_EQ(entries.size(), static_cast<size_t>(1 + kNonColumnDefaultOpportunities));
 
-    bool found_devushki = false;
-    bool found_tower = false;
+    int found_devushki = 0;
+    int found_tower = 0;
     for (const auto &entry : entries)
     {
         if (entry.structure_name == "devushki_column")
-            found_devushki = true;
+            found_devushki++;
         if (entry.structure_name == "tower")
-            found_tower = true;
+            found_tower++;
     }
 
-    EXPECT_TRUE(found_devushki);
-    EXPECT_TRUE(found_tower);
+    EXPECT_EQ(found_devushki, 1);
+    EXPECT_EQ(found_tower, kNonColumnDefaultOpportunities);
 }
 
 TEST(StructureSpawnerTest, DevushkiEntryIsOnCircleAndGrid)
@@ -237,7 +239,7 @@ TEST(StructureSpawnerTest, DevushkiEntryIsOnCircleAndGrid)
     float radius = std::sqrt(
         static_cast<float>(entries[0].target_pos.x * entries[0].target_pos.x +
                            entries[0].target_pos.y * entries[0].target_pos.y));
-    EXPECT_NEAR(radius, static_cast<float>(5000 * ps), static_cast<float>(ps * 2));
+    EXPECT_NEAR(radius, static_cast<float>(500 * ps), static_cast<float>(ps * 2));
 }
 
 TEST(StructureSpawnerTest, DevushkiEntryCountFollowsConfiguredSpawnCount)

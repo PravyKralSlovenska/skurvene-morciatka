@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <deque>
 #include <unordered_map>
 #include <unordered_set>
 #include <memory>
@@ -59,6 +60,9 @@ private:
 
     // Structure spawning
     StructureSpawner structure_spawner;
+    std::deque<glm::ivec2> pending_structure_chunk_events;
+    std::unordered_set<glm::ivec2, Chunk_Coords_to_Hash> pending_structure_chunk_event_set;
+    static constexpr int STRUCTURE_CHUNK_EVENTS_PER_FRAME_BUDGET = 1;
 
     // Image-loaded structures
     std::map<std::string, Structure> image_structures;
@@ -77,6 +81,8 @@ private:
 
     void add_chunk(int x, int y);
     void add_chunk(glm::ivec2 coords);
+    void enqueue_structure_chunk_event(const glm::ivec2 &coords);
+    void process_structure_chunk_events();
 
     void remove_chunk(int x, int y);
     void remove_chunk(int index);

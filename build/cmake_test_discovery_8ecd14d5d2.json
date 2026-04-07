@@ -90,7 +90,7 @@
         {
           "name": "DevushkiColumnTargetIsOnConfiguredCircle",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/structure_spawn_rules_test.cpp",
-          "line": 26
+          "line": 35
         }
       ]
     },
@@ -529,17 +529,17 @@
         {
           "name": "DevushkiEntryIsOnCircleAndGrid",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
-          "line": 222
+          "line": 224
         },
         {
           "name": "DevushkiEntryCountFollowsConfiguredSpawnCount",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
-          "line": 243
+          "line": 245
         },
         {
           "name": "PlacedStructureTracking",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
-          "line": 265
+          "line": 267
         }
       ]
     },
@@ -550,12 +550,12 @@
         {
           "name": "EmptyCellsAreSkippedNotCarved",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
-          "line": 280
+          "line": 282
         },
         {
           "name": "SpawnAnalysis",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
-          "line": 308
+          "line": 310
         }
       ]
     },
@@ -566,17 +566,17 @@
         {
           "name": "ImageLoading",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
-          "line": 332
+          "line": 334
         },
         {
           "name": "CoordinateMath",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
-          "line": 374
+          "line": 376
         },
         {
           "name": "StructurePlacementSpan",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
-          "line": 433
+          "line": 435
         }
       ]
     },
@@ -587,27 +587,27 @@
         {
           "name": "SurfaceFinding",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
-          "line": 492
+          "line": 494
         },
         {
           "name": "SurfaceFindingMultipleColumns",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
-          "line": 522
+          "line": 524
         },
         {
           "name": "GroundBeneathRequired",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
-          "line": 554
+          "line": 556
         },
         {
           "name": "FlatSurfaceCheck",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
-          "line": 609
+          "line": 611
         },
         {
           "name": "StructuresNotInAir",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/structure_test.cpp",
-          "line": 675
+          "line": 677
         }
       ]
     },

@@ -63,6 +63,7 @@ void World::update()
 void World::update(float delta_time)
 {
     calculate_active_chunks();
+    process_structure_chunk_events();
     // update_active_chunks();
 
     // Run falling sand simulation
@@ -121,6 +122,8 @@ void World::regenerate_with_seed(int seed)
     world_seed = seed;
     world.clear();
     active_chunks.clear();
+    pending_structure_chunk_events.clear();
+    pending_structure_chunk_event_set.clear();
 
     if (world_gen)
     {
@@ -179,7 +182,33 @@ void World::add_chunk(glm::ivec2 coords)
     if (world.find(coords) == world.end())
     {
         world.emplace(coords, create_chunk(coords));
-        structure_spawner.try_place_pending_structures(coords);
+        enqueue_structure_chunk_event(coords);
+    }
+}
+
+void World::enqueue_structure_chunk_event(const glm::ivec2 &coords)
+{
+    if (pending_structure_chunk_event_set.find(coords) != pending_structure_chunk_event_set.end())
+        return;
+
+    pending_structure_chunk_events.push_back(coords);
+    pending_structure_chunk_event_set.insert(coords);
+}
+
+void World::process_structure_chunk_events()
+{
+    int processed = 0;
+
+    while (!pending_structure_chunk_events.empty() &&
+           processed < STRUCTURE_CHUNK_EVENTS_PER_FRAME_BUDGET)
+    {
+        const glm::ivec2 coords = pending_structure_chunk_events.front();
+        pending_structure_chunk_events.pop_front();
+        pending_structure_chunk_event_set.erase(coords);
+
+        // Process at most one structure placement per chunk event to avoid frame spikes.
+        structure_spawner.try_place_pending_structures(coords, 1);
+        processed++;
     }
 }
 

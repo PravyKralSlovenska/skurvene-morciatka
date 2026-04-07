@@ -29,7 +29,7 @@ struct Menu_Options_Model
     float enemy_difficulty = 1.0f;
     float spawn_interval = 3.0f;
     int max_enemies = 20;
-    int devushki_column_spawn_radius_particles = 5000;
+    int devushki_column_spawn_radius_particles = 500;
     std::string world_seed_input;
     bool use_custom_seed = false;
     int custom_seed = 0;

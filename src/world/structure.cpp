@@ -232,6 +232,7 @@ namespace
     static constexpr int STRUCTURE_CLEARANCE_CELLS = 1;
     static constexpr int STORE_CHUNKS_PER_SPAWN = 220;
     static constexpr int ENTRY_PLACE_RADIUS_CHUNKS = 10;
+    static constexpr int NON_COLUMN_DEFAULT_SPAWN_OPPORTUNITIES = 10;
 
     float deterministic_noise_01(int x, int y, int salt)
     {
@@ -670,7 +671,7 @@ void StructureSpawner::generate_predetermined_positions(int world_seed)
     const float devushki_spawn_radius_px = static_cast<float>(devushki_spawn_radius_particles * ps);
     for (const auto &pair : blueprints)
     {
-        int spawn_count = 1;
+        int spawn_count = (pair.first == "devushki_column") ? 1 : NON_COLUMN_DEFAULT_SPAWN_OPPORTUNITIES;
         auto count_it = structure_spawn_counts.find(pair.first);
         if (count_it != structure_spawn_counts.end())
         {
@@ -722,10 +723,13 @@ void StructureSpawner::generate_predetermined_positions(int world_seed)
     }
 }
 
-void StructureSpawner::try_place_pending_structures(const glm::ivec2 &chunk_coords)
+void StructureSpawner::try_place_pending_structures(const glm::ivec2 &chunk_coords, int max_entries_to_place)
 {
     if (!world)
         return;
+
+    const bool use_entry_budget = max_entries_to_place > 0;
+    int processed_entries = 0;
 
     const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
     const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
@@ -766,6 +770,9 @@ void StructureSpawner::try_place_pending_structures(const glm::ivec2 &chunk_coor
 
     for (auto &entry : predetermined_entries)
     {
+        if (use_entry_budget && processed_entries >= max_entries_to_place)
+            break;
+
         if (entry.placed)
             continue;
 
@@ -808,6 +815,7 @@ void StructureSpawner::try_place_pending_structures(const glm::ivec2 &chunk_coor
         {
             entry.placed = true;
             entry.target_pos = raw_pos;
+            processed_entries++;
         }
     }
 }
