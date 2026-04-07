@@ -848,9 +848,11 @@ morciatko: CMakeFiles/morciatko.dir/include/imgui/imgui_widgets.cpp.o
 morciatko: CMakeFiles/morciatko.dir/src/main.cpp.o
 morciatko: CMakeFiles/morciatko.dir/build.make
 morciatko: CMakeFiles/morciatko.dir/compiler_depend.ts
-morciatko: /usr/lib/libOpenGL.so
+morciatko: /usr/lib/libglfw.so.3.4
+morciatko: /usr/lib/libfreetype.so
+morciatko: /usr/lib/libopenal.so
 morciatko: /usr/lib/libGLX.so
-morciatko: /usr/lib/libGLU.so
+morciatko: /usr/lib/libOpenGL.so
 morciatko: CMakeFiles/morciatko.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_49) "Linking CXX executable morciatko"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/morciatko.dir/link.txt --verbose=$(VERBOSE)

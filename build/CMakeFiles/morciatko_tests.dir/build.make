@@ -273,10 +273,12 @@ morciatko_tests: CMakeFiles/morciatko_tests.dir/tests/unit/world_test.cpp.o
 morciatko_tests: CMakeFiles/morciatko_tests.dir/build.make
 morciatko_tests: CMakeFiles/morciatko_tests.dir/compiler_depend.ts
 morciatko_tests: libmorciatko_lib.a
-morciatko_tests: /usr/lib/libOpenGL.so
-morciatko_tests: /usr/lib/libGLX.so
-morciatko_tests: /usr/lib/libGLU.so
 morciatko_tests: /usr/lib/libgtest_main.so.1.17.0
+morciatko_tests: /usr/lib/libGLX.so
+morciatko_tests: /usr/lib/libOpenGL.so
+morciatko_tests: /usr/lib/libglfw.so.3.4
+morciatko_tests: /usr/lib/libfreetype.so
+morciatko_tests: /usr/lib/libopenal.so
 morciatko_tests: /usr/lib/libgtest.so.1.17.0
 morciatko_tests: CMakeFiles/morciatko_tests.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable morciatko_tests"

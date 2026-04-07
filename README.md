@@ -10,36 +10,38 @@ perf script | stackcollapse-perf.pl | flamegraph.pl > flame.svg
 firefox flame.svg
 ```
 
-# hellou
+# BUILD NA LINUX
 
-## hellou
-
-### hellou
-
-**bold**
-_italic_
-
-> citat
-
-```
-nejaky ten kodik
+```bash
+cmake -S . -B build -DUSE_BUNDLED_DEPS=OFF -DBUILD_TESTS=ON
+cmake --build build --parallel --target morciatko morciatko_tests
+ctest --test-dir build --output-on-failure
+./build/morciatko
 ```
 
-farbicka `#ff0000`
-farbicka `rgb(255,0,0)`
-linky [pornhub](https://pornhub.com)
+# BUILD NA WINDOWS
 
-> [!NOTE]
-> Useful information that users should know, even when skimming content.
+```powershell
+cmake -S . -B build -DUSE_BUNDLED_DEPS=ON -DBUILD_TESTS=ON
+cmake --build build --config Release --parallel --target morciatko morciatko_tests
+ctest --test-dir build -C Release --output-on-failure
+.\build\Release\morciatko.exe
+```
 
-> [!TIP]
-> Helpful advice for doing things better or more easily.
+# JEDEN BUILD FOLDER
 
-> [!IMPORTANT]
-> Key information users need to know to achieve their goal.
+Pouzivaj stale iba priecinok `build`.
 
-> [!WARNING]
-> Urgent info that needs immediate user attention to avoid problems.
+- Ked buildis Linux system deps: `-DUSE_BUNDLED_DEPS=OFF`
+- Ked buildis Windows/bundled deps: `-DUSE_BUNDLED_DEPS=ON`
 
-> [!CAUTION]
-> Advises about risks or negative outcomes of certain actions.
+Pri prepnuti medzi rezimami v rovnakom `build` priecinku urob jeden z krokov:
+
+```bash
+# varianta A: cisty rebuild
+rm -rf build
+
+# varianta B: vymazat iba CMake cache
+rm -f build/CMakeCache.txt
+rm -rf build/CMakeFiles
+```

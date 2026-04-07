@@ -5,13 +5,13 @@
 # compile CXX with /usr/bin/c++
 C_DEFINES = 
 
-C_INCLUDES = -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/home/jakub/programko/cpp/skurvene-morciatka/include/imgui -I/home/jakub/programko/cpp/skurvene-morciatka/include/imgui/backends -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL
+C_INCLUDES = -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/home/jakub/programko/cpp/skurvene-morciatka/include/imgui -I/home/jakub/programko/cpp/skurvene-morciatka/include/imgui/backends -I/home/jakub/programko/cpp/skurvene-morciatka/include/glm -isystem /usr/include/freetype2 -isystem /usr/include/AL
 
 C_FLAGS = 
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/home/jakub/programko/cpp/skurvene-morciatka/include/imgui -I/home/jakub/programko/cpp/skurvene-morciatka/include/imgui/backends -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/AL
+CXX_INCLUDES = -I/home/jakub/programko/cpp/skurvene-morciatka/include -I/home/jakub/programko/cpp/skurvene-morciatka/include/imgui -I/home/jakub/programko/cpp/skurvene-morciatka/include/imgui/backends -I/home/jakub/programko/cpp/skurvene-morciatka/include/glm -isystem /usr/include/freetype2 -isystem /usr/include/AL
 
-CXX_FLAGS = -std=gnu++17
+CXX_FLAGS = -std=c++17
 
