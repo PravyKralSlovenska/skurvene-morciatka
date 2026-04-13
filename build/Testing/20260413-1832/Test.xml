@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="(empty)"
+	BuildStamp="20260413-1832-Experimental"
+	Name="(empty)"
+	Generator="ctest-4.3.1"
+	CompilerName=""
+	CompilerVersion=""
+	OSName="Linux"
+	Hostname="stefancik"
+	OSRelease="6.19.11-arch1-1"
+	OSVersion="#1 SMP PREEMPT_DYNAMIC Thu, 02 Apr 2026 23:33:01 +0000"
+	OSPlatform="x86_64"
+	Is64Bits="1"
+	VendorString="GenuineIntel"
+	VendorID="Intel Corporation"
+	FamilyID="6"
+	ModelID="142"
+	ModelName="Intel(R) Core(TM) i5-8350U CPU @ 1.70GHz"
+	ProcessorCacheSize="6144"
+	NumberOfLogicalCPU="8"
+	NumberOfPhysicalCPU="4"
+	TotalVirtualMemory="0"
+	TotalPhysicalMemory="15860"
+	LogicalProcessorsPerPhysical="2"
+	ProcessorClockFrequency="2400.008057"
+	>
+	<Testing>
+		<StartDateTime>Apr 13 20:55 CEST</StartDateTime>
+		<StartTestTime>1776106509</StartTestTime>
+		<TestList>
+			<Test>./SpawnBiomeRestrictionTest.PlayerPhysicsCanEscapeVerticalSeamEmbedding</Test>
+		</TestList>
+		<Test Status="passed">
+			<Name>SpawnBiomeRestrictionTest.PlayerPhysicsCanEscapeVerticalSeamEmbedding</Name>
+			<Path>.</Path>
+			<FullName>./SpawnBiomeRestrictionTest.PlayerPhysicsCanEscapeVerticalSeamEmbedding</FullName>
+			<FullCommandLine>/home/jakub/programko/cpp/skurvene-morciatka/build/morciatko_tests "--gtest_filter=SpawnBiomeRestrictionTest.PlayerPhysicsCanEscapeVerticalSeamEmbedding" "--gtest_also_run_disabled_tests"</FullCommandLine>
+			<StartTestTime>1776106509.125374</StartTestTime>
+			<Results>
+				<NamedMeasurement type="numeric/double" name="Execution Time">
+					<Value>0.060138</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="numeric/double" name="Processors">
+					<Value>1</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Completion Status">
+					<Value>Completed</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Command Line">
+					<Value>/home/jakub/programko/cpp/skurvene-morciatka/build/morciatko_tests "--gtest_filter=SpawnBiomeRestrictionTest.PlayerPhysicsCanEscapeVerticalSeamEmbedding" "--gtest_also_run_disabled_tests"</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Environment">
+					<Value>MORCIATKO_WORLD_SEED=1
+#CTEST_RESOURCE_GROUP_COUNT=</Value>
+				</NamedMeasurement>
+				<Measurement>
+					<Value encoding="base64" compression="gzip">eJztkzFvwjAQhff8ivsDiUphaKlYWiE2hALtEmVwnAOf6tiWfYbm39cQFVWVKjG0TLzJ+vx89zy8pWWcwsLanUbYYGDYkmb0MIO1EwfzTLbDMnFPksmao6VYadGjX6k+kAwvwsyDFA7f0DNJodcounnXYNuS2WXV7KwaymhMgjACPq3ytvs6h0iMRVblZ9Ww0LYRerhHsydvTYcmeZHz6H6Yv8/8NXpWQfm6hJPqP/qhiVo79iBVNO9TyCdP+eNlcHwteIt0YaSHy+D4WvDfIxVFqtFGUQAnPIPdAiscmmQju8hwEAE8dnaPLQQyEoFSGz8kYhsGs/IYlNXt8fXo7n4CTZ8GFHX2CSZHcGo=</Value>
+				</Measurement>
+			</Results>
+		</Test>
+		<EndDateTime>Apr 13 20:55 CEST</EndDateTime>
+		<EndTestTime>1776106509</EndTestTime>
+		<ElapsedMinutes>0</ElapsedMinutes>
+	</Testing>
+</Site>

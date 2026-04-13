@@ -14,6 +14,7 @@
 #include <cstdint>
 #include <cmath>
 #include <cctype>
+#include <cstdio>
 #include <limits>
 
 #include <glad/gl.h>
@@ -419,7 +420,7 @@ void UI_Renderer::render_options_menu(Menu_Actions &actions, Menu_Options_Model 
 
 void UI_Renderer::render_loading_screen()
 {
-    center_next_window(MENU_WINDOW_WIDTH, MENU_WINDOW_HEIGHT * 0.45f);
+    center_next_window(MENU_WINDOW_WIDTH, MENU_WINDOW_HEIGHT * 0.62f);
 
     ImGuiWindowFlags flags =
         ImGuiWindowFlags_NoResize |
@@ -428,7 +429,15 @@ void UI_Renderer::render_loading_screen()
 
     if (ImGui::Begin("Loading", nullptr, flags))
     {
-        ImGui::Text("Loading...");
+        ImGui::Text("Loading world...");
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        ImGui::ProgressBar(loading_progress, ImVec2(-1.0f, 0.0f));
+        ImGui::Spacing();
+        ImGui::Text("%d%%", static_cast<int>(loading_progress * 100.0f));
+        ImGui::Spacing();
+        ImGui::TextWrapped("%s", loading_status.c_str());
     }
     ImGui::End();
 }
@@ -555,9 +564,26 @@ void UI_Renderer::render_ui()
                                        ? ImVec4(0.0f, 1.0f, 0.4f, 1.0f)  // green = spawned
                                        : ImVec4(0.8f, 0.8f, 0.8f, 1.0f); // gray = pending
 
-                    ImGui::TextColored(color, "#%d: (%d, %d) %s",
-                                       shown, pos.x, pos.y,
-                                       placed ? "[placed]" : "[pending]");
+                    char row_text[128];
+                    std::snprintf(row_text, sizeof(row_text), "#%d: (%d, %d) %s",
+                                  shown, pos.x, pos.y,
+                                  placed ? "[placed]" : "[pending]");
+
+                    ImGui::PushStyleColor(ImGuiCol_Text, color);
+                    if (ImGui::Selectable(row_text))
+                    {
+                        if (player)
+                        {
+                            player->set_position(pos);
+                            player->set_velocity(0.0f, 0.0f);
+                        }
+                    }
+                    ImGui::PopStyleColor();
+
+                    if (ImGui::IsItemHovered())
+                    {
+                        ImGui::SetTooltip("Click to move player to this column coordinate");
+                    }
                 }
 
                 if (shown == 0)

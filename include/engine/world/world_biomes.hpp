@@ -50,7 +50,7 @@ inline Biome get_stone_biome()
 
 inline Biome get_icy_biome()
 {
-    return Biome(Biome_Type::ICY, -0.04f, 0.0005f, -20.0f, Particle_Type::WATER);
+    return Biome(Biome_Type::ICY, -0.04f, 0.0005f, -20.0f, Particle_Type::ICE);
 }
 
 inline Biome get_uranium_biome()

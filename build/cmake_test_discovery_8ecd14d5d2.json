@@ -1,5 +1,5 @@
 {
-  "tests": 96,
+  "tests": 98,
   "name": "AllTests",
   "testsuites": [
     {
@@ -62,7 +62,7 @@
           "line": 347
         },
         {
-          "name": "DevushkiColumnsPlacedBeforeGameplayStarts",
+          "name": "DevushkiColumnTargetsPreparedBeforeGameplayStarts",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/devushki_spawn_test.cpp",
           "line": 424
         },
@@ -391,37 +391,47 @@
     },
     {
       "name": "SpawnBiomeRestrictionTest",
-      "tests": 6,
+      "tests": 8,
       "testsuite": [
         {
-          "name": "PlayerRelocatesFromIcyBiome",
+          "name": "PlayerCanSpawnInIcyBiomeWhenOtherwiseValid",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/spawn_biome_restriction_test.cpp",
           "line": 160
         },
         {
           "name": "PlayerEscapesSolidOverlap",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/spawn_biome_restriction_test.cpp",
-          "line": 192
+          "line": 201
         },
         {
-          "name": "CreateEnemyDevushkiBossAvoidIcyBiome",
+          "name": "PlayerPlacementRemainsPhysicallyValidAcrossRandomOrigins",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/spawn_biome_restriction_test.cpp",
-          "line": 244
+          "line": 253
         },
         {
-          "name": "ObjectiveBossSpawnAvoidsIcyBiome",
+          "name": "PlayerPhysicsCanEscapeVerticalSeamEmbedding",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/spawn_biome_restriction_test.cpp",
-          "line": 288
+          "line": 291
+        },
+        {
+          "name": "CreateEnemyDevushkiBossRemainPhysicallyValid",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/spawn_biome_restriction_test.cpp",
+          "line": 364
+        },
+        {
+          "name": "ObjectiveBossSpawnRemainsPhysicallyValid",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/spawn_biome_restriction_test.cpp",
+          "line": 419
         },
         {
           "name": "EnemySpawnDistanceSetterClampsToExclusionFloor",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/spawn_biome_restriction_test.cpp",
-          "line": 325
+          "line": 453
         },
         {
           "name": "RandomEnemySpawnStaysOutsidePlayerExclusionRadius",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/unit\/spawn_biome_restriction_test.cpp",
-          "line": 344
+          "line": 472
         }
       ]
     },

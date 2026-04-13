@@ -10,6 +10,15 @@
 #include "engine/particle/particle.hpp"
 #include "others/utils.hpp"
 
+namespace
+{
+    bool is_temperature_immune_terrain_particle(const Particle &particle)
+    {
+        // Terrain ice should stay frozen even in biome transition zones.
+        return particle.flags.is_static && particle.type == Particle_Type::ICE;
+    }
+}
+
 Falling_Sand_Simulation::Falling_Sand_Simulation()
 {
     // Initialize random number generator with random seed
@@ -667,6 +676,9 @@ bool Falling_Sand_Simulation::check_state_change(Particle &particle)
     if (particle.type == Particle_Type::EMPTY)
         return false;
 
+    if (is_temperature_immune_terrain_particle(particle))
+        return false;
+
     auto preserve_runtime_state = [](Particle &target, const Particle &source)
     {
         target.physics.temperature = source.physics.temperature;
@@ -882,6 +894,9 @@ void Falling_Sand_Simulation::update(float delta_time)
                     if (!cell || cell->particle.type == Particle_Type::EMPTY)
                         continue;
 
+                    if (is_temperature_immune_terrain_particle(cell->particle))
+                        continue;
+
                     apply_temperature_transfer(cell, chunk_coords, x, y, chunk);
 
                     Particle &particle = cell->particle;
@@ -904,14 +919,22 @@ void Falling_Sand_Simulation::update(float delta_time)
                 continue;
 
             bool chunk_changed = false;
-            auto *chunk_data = chunk->get_chunk_data();
-            for (auto &cell : *chunk_data)
-            {
-                if (cell.particle.type == Particle_Type::EMPTY)
-                    continue;
+            glm::ivec2 dim = chunk->get_chunk_dimensions();
 
-                if (check_state_change(cell.particle))
-                    chunk_changed = true;
+            for (int y = 0; y < dim.y; ++y)
+            {
+                for (int x = 0; x < dim.x; ++x)
+                {
+                    WorldCell *cell = chunk->get_worldcell(x, y);
+                    if (!cell || cell->particle.type == Particle_Type::EMPTY)
+                        continue;
+
+                    if (is_temperature_immune_terrain_particle(cell->particle))
+                        continue;
+
+                    if (check_state_change(cell->particle))
+                        chunk_changed = true;
+                }
             }
 
             if (chunk_changed)

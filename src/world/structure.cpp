@@ -3,6 +3,7 @@
 #include "engine/world/world_chunk.hpp"
 #include "engine/world/world_cell.hpp"
 #include "engine/world/world_ca_generation.hpp"
+#include "engine/world/world_biomes.hpp"
 #include "others/GLOBALS.hpp"
 #include "others/utils.hpp"
 
@@ -15,6 +16,7 @@
 #include <climits>
 #include <memory>
 #include <cstdint>
+#include <unordered_map>
 
 static int pixel_to_cell(int px)
 {
@@ -233,6 +235,23 @@ namespace
     static constexpr int STORE_CHUNKS_PER_SPAWN = 220;
     static constexpr int ENTRY_PLACE_RADIUS_CHUNKS = 10;
     static constexpr int NON_COLUMN_DEFAULT_SPAWN_OPPORTUNITIES = 10;
+    static constexpr bool STORE_SPAWNING_ENABLED = false;
+
+    struct ReservedPlacement
+    {
+        glm::ivec2 position;
+        const Structure *blueprint = nullptr;
+    };
+
+    using ProbeChunkCache = std::unordered_map<glm::ivec2, std::unique_ptr<Chunk>, Chunk_Coords_to_Hash>;
+
+    int align_to_particle_grid(int value, int particle_size)
+    {
+        if (particle_size <= 0)
+            return value;
+
+        return static_cast<int>(std::floor(static_cast<float>(value) / static_cast<float>(particle_size))) * particle_size;
+    }
 
     float deterministic_noise_01(int x, int y, int salt)
     {
@@ -248,6 +267,23 @@ namespace
         return glm::ivec2(
             static_cast<int>(std::floor(static_cast<float>(world_x) / static_cast<float>(chunk_pixel_w))),
             static_cast<int>(std::floor(static_cast<float>(world_y) / static_cast<float>(chunk_pixel_h))));
+    }
+
+    Particle_Type get_support_particle_type_for_world_px(World *world, int world_x, int world_y)
+    {
+        if (!world)
+            return Particle_Type::STONE;
+
+        World_CA_Generation *world_gen = world->get_world_gen();
+        if (!world_gen)
+            return Particle_Type::STONE;
+
+        const glm::vec2 world_cell_coords(
+            static_cast<float>(pixel_to_cell(world_x)),
+            static_cast<float>(pixel_to_cell(world_y)));
+
+        const Biome biome = world_gen->get_biome(world_cell_coords);
+        return biome.particle_fill;
     }
 
     bool get_chunk_and_local_cell(World *world, int world_x, int world_y,
@@ -302,6 +338,217 @@ namespace
         world_gen->generate_chunk_with_biome(chunk.get());
         chunks->emplace(chunk_coords, std::move(chunk));
         return true;
+    }
+
+    Chunk *get_or_create_probe_chunk(World *world, ProbeChunkCache &probe_chunks, const glm::ivec2 &chunk_coords)
+    {
+        if (!world)
+            return nullptr;
+
+        if (Chunk *existing = world->get_chunk(chunk_coords))
+            return existing;
+
+        auto it = probe_chunks.find(chunk_coords);
+        if (it != probe_chunks.end())
+            return it->second.get();
+
+        World_CA_Generation *world_gen = world->get_world_gen();
+        if (!world_gen)
+            return nullptr;
+
+        const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+        auto chunk = std::make_unique<Chunk>(chunk_coords, chunk_dims.x, chunk_dims.y);
+        world_gen->generate_chunk_with_biome(chunk.get());
+
+        Chunk *chunk_ptr = chunk.get();
+        probe_chunks.emplace(chunk_coords, std::move(chunk));
+        return chunk_ptr;
+    }
+
+    bool get_probe_chunk_and_local_cell(World *world, ProbeChunkCache &probe_chunks,
+                                        int world_x, int world_y,
+                                        Chunk *&out_chunk, glm::ivec2 &out_local_cell)
+    {
+        if (!world)
+            return false;
+
+        const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+        const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+        const int chunk_pixel_w = chunk_dims.x * ps;
+        const int chunk_pixel_h = chunk_dims.y * ps;
+
+        const glm::ivec2 chunk_pos = get_chunk_pos_from_world_px(world_x, world_y, chunk_pixel_w, chunk_pixel_h);
+        Chunk *chunk = get_or_create_probe_chunk(world, probe_chunks, chunk_pos);
+        if (!chunk)
+            return false;
+
+        int offset_x = world_x - chunk_pos.x * chunk_pixel_w;
+        int offset_y = world_y - chunk_pos.y * chunk_pixel_h;
+        int cell_x = offset_x / ps;
+        int cell_y = offset_y / ps;
+
+        if (cell_x < 0)
+            cell_x += chunk_dims.x;
+        if (cell_y < 0)
+            cell_y += chunk_dims.y;
+
+        if (cell_x < 0 || cell_x >= chunk_dims.x || cell_y < 0 || cell_y >= chunk_dims.y)
+            return false;
+
+        out_chunk = chunk;
+        out_local_cell = glm::ivec2(cell_x, cell_y);
+        return true;
+    }
+
+    bool overlaps_reserved(const Structure &candidate_structure,
+                           const glm::ivec2 &candidate_pos,
+                           const std::vector<ReservedPlacement> &reserved,
+                           int ps)
+    {
+        const int clearance_px = STRUCTURE_CLEARANCE_CELLS * ps;
+        const int cand_left = candidate_pos.x - clearance_px;
+        const int cand_top = candidate_pos.y - clearance_px;
+        const int cand_right = candidate_pos.x + candidate_structure.get_width() * ps + clearance_px;
+        const int cand_bottom = candidate_pos.y + candidate_structure.get_height() * ps + clearance_px;
+        const int cand_left_nominal = candidate_pos.x;
+        const int cand_top_nominal = candidate_pos.y;
+        const int cand_right_nominal = candidate_pos.x + candidate_structure.get_width() * ps;
+        const int cand_bottom_nominal = candidate_pos.y + candidate_structure.get_height() * ps;
+
+        for (const auto &placed : reserved)
+        {
+            if (!placed.blueprint)
+                continue;
+
+            const int placed_left = placed.position.x;
+            const int placed_top = placed.position.y;
+            const int placed_right = placed.position.x + placed.blueprint->get_width() * ps;
+            const int placed_bottom = placed.position.y + placed.blueprint->get_height() * ps;
+
+            const bool separated =
+                cand_right <= placed_left ||
+                cand_left >= placed_right ||
+                cand_bottom <= placed_top ||
+                cand_top >= placed_bottom;
+
+            if (!separated)
+                return true;
+
+            const bool x_overlap =
+                cand_right_nominal > placed_left &&
+                cand_left_nominal < placed_right;
+
+            if (x_overlap)
+            {
+                const bool sits_on_top =
+                    cand_bottom_nominal >= placed_top - ps &&
+                    cand_bottom_nominal <= placed_top + ps;
+
+                const bool sits_below =
+                    placed_bottom >= cand_top_nominal - ps &&
+                    placed_bottom <= cand_top_nominal + ps;
+
+                if (sits_on_top || sits_below)
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool is_valid_placement_probe(World *world,
+                                  const Structure &structure,
+                                  const glm::ivec2 &world_pos,
+                                  const std::vector<ReservedPlacement> &reserved,
+                                  ProbeChunkCache &probe_chunks)
+    {
+        if (!world)
+            return false;
+
+        const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+        if (overlaps_reserved(structure, world_pos, reserved, ps))
+            return false;
+
+        for (int sy = 0; sy < structure.get_height(); ++sy)
+        {
+            for (int sx = 0; sx < structure.get_width(); ++sx)
+            {
+                const Particle &cell = structure.get_cell(sx, sy);
+                if (cell.type == Particle_Type::EMPTY)
+                    continue;
+
+                const int world_x = world_pos.x + sx * ps;
+                const int world_y = world_pos.y + sy * ps;
+
+                Chunk *chunk = nullptr;
+                glm::ivec2 local_cell;
+                if (!get_probe_chunk_and_local_cell(world, probe_chunks, world_x, world_y, chunk, local_cell))
+                    return false;
+
+                if (!chunk->is_empty(local_cell.x, local_cell.y))
+                    return false;
+            }
+        }
+
+        const int ground_y = world_pos.y + structure.get_height() * ps;
+        int supported_columns = 0;
+        for (int sx = 0; sx < structure.get_width(); ++sx)
+        {
+            const int world_x = world_pos.x + sx * ps;
+            Chunk *chunk = nullptr;
+            glm::ivec2 local_cell;
+            if (!get_probe_chunk_and_local_cell(world, probe_chunks, world_x, ground_y, chunk, local_cell))
+                return false;
+
+            if (!chunk->is_empty(local_cell.x, local_cell.y))
+                ++supported_columns;
+        }
+
+        return supported_columns > 0;
+    }
+
+    bool resolve_valid_target_for_entry(World *world,
+                                        const Structure &blueprint,
+                                        const glm::ivec2 &original_target,
+                                        std::size_t entry_index,
+                                        int retry_phase,
+                                        const std::vector<ReservedPlacement> &reserved,
+                                        glm::ivec2 &resolved_out)
+    {
+        if (!world)
+            return false;
+
+        ProbeChunkCache probe_chunks;
+        const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+
+        glm::ivec2 raw_pos = original_target;
+        std::mt19937 retry_rng(static_cast<std::uint32_t>(entry_index * 73856093u) ^ static_cast<std::uint32_t>(retry_phase * 19349663u));
+        std::uniform_int_distribution<int> retry_offset(-RAW_RETRY_DISTANCE_CELLS * ps,
+                                                        RAW_RETRY_DISTANCE_CELLS * ps);
+
+        for (int attempt = 0; attempt < MAX_RAW_RETRY_ATTEMPTS; ++attempt)
+        {
+            if (attempt > 0)
+            {
+                raw_pos.x += retry_offset(retry_rng);
+                raw_pos.y += retry_offset(retry_rng);
+            }
+
+            raw_pos.x = align_to_particle_grid(raw_pos.x, ps);
+            raw_pos.y = align_to_particle_grid(raw_pos.y, ps);
+
+            for (int lift = 0; lift <= MAX_VERTICAL_LIFT_CELLS; ++lift)
+            {
+                glm::ivec2 candidate_pos(raw_pos.x, raw_pos.y - lift * ps);
+                if (!is_valid_placement_probe(world, blueprint, candidate_pos, reserved, probe_chunks))
+                    continue;
+
+                resolved_out = candidate_pos;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     bool ensure_footprint_chunks_generated(World *world, const Structure &structure, const glm::ivec2 &world_pos)
@@ -598,7 +845,8 @@ void StructureSpawner::fill_structure_base(const Structure &structure, const glm
             if (!chunk->is_empty(local_cell.x, local_cell.y))
                 break;
 
-            world->place_static_particle(glm::ivec2(world_x, fill_y), Particle_Type::STONE);
+            const Particle_Type fill_type = get_support_particle_type_for_world_px(world, world_x, fill_y);
+            world->place_static_particle(glm::ivec2(world_x, fill_y), fill_type);
         }
     }
 
@@ -647,7 +895,8 @@ void StructureSpawner::fill_structure_base(const Structure &structure, const glm
                     if (!chunk->is_empty(local_cell.x, local_cell.y))
                         return;
 
-                    world->place_static_particle(glm::ivec2(world_x, fill_y), Particle_Type::STONE);
+                    const Particle_Type fill_type = get_support_particle_type_for_world_px(world, world_x, fill_y);
+                    world->place_static_particle(glm::ivec2(world_x, fill_y), fill_type);
                 };
 
                 try_fill(left_x);
@@ -671,6 +920,9 @@ void StructureSpawner::generate_predetermined_positions(int world_seed)
     const float devushki_spawn_radius_px = static_cast<float>(devushki_spawn_radius_particles * ps);
     for (const auto &pair : blueprints)
     {
+        if (!STORE_SPAWNING_ENABLED && (pair.first == "store" || pair.first == "devushki_store"))
+            continue;
+
         int spawn_count = (pair.first == "devushki_column") ? 1 : NON_COLUMN_DEFAULT_SPAWN_OPPORTUNITIES;
         auto count_it = structure_spawn_counts.find(pair.first);
         if (count_it != structure_spawn_counts.end())
@@ -738,7 +990,7 @@ void StructureSpawner::try_place_pending_structures(const glm::ivec2 &chunk_coor
 
     // Scale store count with explored world size: ~1 store per 220 generated chunks.
     Structure *store_blueprint = get_blueprint("store");
-    if (store_blueprint)
+    if (STORE_SPAWNING_ENABLED && store_blueprint)
     {
         const int generated_chunks = std::max(0, world->get_chunks_size());
         const int desired_store_targets = std::max(1, generated_chunks / STORE_CHUNKS_PER_SPAWN);
@@ -775,6 +1027,12 @@ void StructureSpawner::try_place_pending_structures(const glm::ivec2 &chunk_coor
 
         if (entry.placed)
             continue;
+
+        if (!STORE_SPAWNING_ENABLED && (entry.structure_name == "store" || entry.structure_name == "devushki_store"))
+        {
+            entry.placed = true;
+            continue;
+        }
 
         const glm::ivec2 target_chunk = get_chunk_pos_from_world_px(
             entry.target_pos.x,
@@ -875,6 +1133,143 @@ void StructureSpawner::place_pending_for_structure(const std::string &name, int 
         if (!has_pending)
             break;
     }
+}
+
+void StructureSpawner::prepare_pending_targets_for_structure(
+    const std::string &name,
+    int max_passes,
+    const std::function<void(const std::string &, float)> &progress_callback)
+{
+    if (!world)
+        return;
+
+    max_passes = std::max(1, max_passes);
+
+    std::unordered_map<std::size_t, int> entry_ordinals;
+    int ordinal_counter = 0;
+    int pending_target_count = 0;
+
+    for (std::size_t i = 0; i < predetermined_entries.size(); ++i)
+    {
+        const auto &entry = predetermined_entries[i];
+        if (entry.structure_name != name)
+            continue;
+
+        ordinal_counter++;
+        entry_ordinals[i] = ordinal_counter;
+        if (!entry.placed)
+            pending_target_count++;
+    }
+
+    const int total_attempts = std::max(1, pending_target_count * max_passes);
+    int attempts_done = 0;
+
+    auto report_progress = [&](const std::string &status, float progress)
+    {
+        if (progress_callback)
+            progress_callback(status, std::clamp(progress, 0.0f, 1.0f));
+    };
+
+    if (pending_target_count == 0)
+    {
+        report_progress("No pending targets to prepare.", 1.0f);
+        return;
+    }
+
+    report_progress("Preparing structure targets...", 0.0f);
+
+    std::vector<ReservedPlacement> reserved;
+    reserved.reserve(placed_structures.size() + predetermined_entries.size());
+
+    for (const auto &placed : placed_structures)
+    {
+        Structure *placed_blueprint = get_blueprint(placed.name);
+        if (!placed_blueprint)
+            continue;
+        reserved.push_back({placed.position, placed_blueprint});
+    }
+
+    for (int pass = 0; pass < max_passes; ++pass)
+    {
+        bool has_pending = false;
+
+        for (std::size_t entry_index = 0; entry_index < predetermined_entries.size(); ++entry_index)
+        {
+            auto &entry = predetermined_entries[entry_index];
+            if (entry.placed || entry.structure_name != name)
+                continue;
+
+            has_pending = true;
+
+            const int ordinal = entry_ordinals.count(entry_index) ? entry_ordinals[entry_index] : static_cast<int>(entry_index + 1);
+            const float attempt_start_progress = static_cast<float>(attempts_done) / static_cast<float>(total_attempts);
+
+            if (name == "devushki_column")
+            {
+                report_progress(
+                    "Trying to find coords for column " + std::to_string(ordinal) +
+                        " (pass " + std::to_string(pass + 1) + "/" + std::to_string(max_passes) + ")",
+                    attempt_start_progress);
+            }
+            else
+            {
+                report_progress(
+                    "Resolving target for " + name + " #" + std::to_string(ordinal),
+                    attempt_start_progress);
+            }
+
+            attempts_done++;
+
+            Structure *blueprint = get_blueprint(entry.structure_name);
+            if (!blueprint)
+            {
+                entry.placed = true;
+                continue;
+            }
+
+            glm::ivec2 resolved_target;
+            const bool found_target = resolve_valid_target_for_entry(
+                world,
+                *blueprint,
+                entry.target_pos,
+                entry_index,
+                pass,
+                reserved,
+                resolved_target);
+
+            if (!found_target)
+            {
+                report_progress(
+                    name == "devushki_column"
+                        ? ("Could not resolve column " + std::to_string(ordinal) + " in this pass")
+                        : ("Could not resolve target for " + name + " #" + std::to_string(ordinal)),
+                    static_cast<float>(attempts_done) / static_cast<float>(total_attempts));
+                continue;
+            }
+
+            entry.target_pos = resolved_target;
+            reserved.push_back({resolved_target, blueprint});
+
+            if (name == "devushki_column")
+            {
+                report_progress(
+                    "Found coords for column " + std::to_string(ordinal) +
+                        ": (" + std::to_string(resolved_target.x) + ", " + std::to_string(resolved_target.y) + ")",
+                    static_cast<float>(attempts_done) / static_cast<float>(total_attempts));
+            }
+            else
+            {
+                report_progress(
+                    "Resolved target for " + name + " #" + std::to_string(ordinal),
+                    static_cast<float>(attempts_done) / static_cast<float>(total_attempts));
+            }
+        }
+
+        if (!has_pending)
+            break;
+    }
+
+    report_progress("Target preparation complete.", 1.0f);
 }
 
 const std::vector<StructureSpawner::PredeterminedEntry> &StructureSpawner::get_predetermined_entries() const

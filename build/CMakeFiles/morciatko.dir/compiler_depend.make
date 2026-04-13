@@ -1379,6 +1379,8 @@ CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.o: /home/jakub/programko/cpp
   /usr/include/bits/select.h \
   /usr/include/bits/setjmp.h \
   /usr/include/bits/stdint-intn.h \
+  /usr/include/bits/stdint-least.h \
+  /usr/include/bits/stdint-uintn.h \
   /usr/include/bits/stdio_lim.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
@@ -1489,6 +1491,7 @@ CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.o: /home/jakub/programko/cpp
   /usr/include/c++/15.2.1/clocale \
   /usr/include/c++/15.2.1/concepts \
   /usr/include/c++/15.2.1/cstddef \
+  /usr/include/c++/15.2.1/cstdint \
   /usr/include/c++/15.2.1/cstdio \
   /usr/include/c++/15.2.1/cstdlib \
   /usr/include/c++/15.2.1/cwchar \
@@ -1549,6 +1552,7 @@ CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.o: /home/jakub/programko/cpp
   /usr/include/pthread.h \
   /usr/include/sched.h \
   /usr/include/stdc-predef.h \
+  /usr/include/stdint.h \
   /usr/include/stdio.h \
   /usr/include/stdlib.h \
   /usr/include/string.h \
@@ -1566,6 +1570,7 @@ CMakeFiles/morciatko.dir/src/audio/audio_buffer.cpp.o: /home/jakub/programko/cpp
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/mmintrin.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdarg.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stddef.h \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdint.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/syslimits.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/xmmintrin.h
 
@@ -6153,7 +6158,6 @@ CMakeFiles/morciatko.dir/src/player/entity_manager.cpp.o: /home/jakub/programko/
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/FastNoiseLite.h \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/structure.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world.hpp \
-  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_biomes.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_ca_generation.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell_gpu.hpp \
@@ -12074,6 +12078,7 @@ CMakeFiles/morciatko.dir/src/world/structure.cpp.o: /home/jakub/programko/cpp/sk
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/FastNoiseLite.h \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/structure.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world.hpp \
+  /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_biomes.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_ca_generation.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell.hpp \
   /home/jakub/programko/cpp/skurvene-morciatka/include/engine/world/world_cell_gpu.hpp \
@@ -14661,10 +14666,6 @@ CMakeFiles/morciatko.dir/src/world/world_chunk.cpp.o:
 
 /usr/include/c++/15.2.1/ctime:
 
-/usr/include/freetype2/freetype/config/ftstdlib.h:
-
-/usr/include/c++/15.2.1/cstdint:
-
 /usr/include/c++/15.2.1/compare:
 
 /home/jakub/programko/cpp/skurvene-morciatka/include/glm/glm/gtc/quaternion.inl:
@@ -14802,6 +14803,8 @@ CMakeFiles/morciatko.dir/src/particle/falling_sand_simulation.cpp.o:
 /home/jakub/programko/cpp/skurvene-morciatka/include/glm/glm/ext/vector_double2.hpp:
 
 /home/jakub/programko/cpp/skurvene-morciatka/include/glm/glm/ext/vector_bool4_precision.hpp:
+
+/home/jakub/programko/cpp/skurvene-morciatka/include/glm/glm/ext/vector_bool4.hpp:
 
 /home/jakub/programko/cpp/skurvene-morciatka/src/world/world_chunk.cpp:
 
@@ -15919,6 +15922,10 @@ CMakeFiles/morciatko.dir/src/renderer/buffers/shader_storage_buffer_object.cpp.o
 
 /usr/include/c++/15.2.1/cstddef:
 
+/usr/include/freetype2/freetype/config/ftstdlib.h:
+
+/usr/include/c++/15.2.1/cstdint:
+
 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/avxvnniint8intrin.h:
 
 /usr/include/c++/15.2.1/cstdio:
@@ -16158,5 +16165,3 @@ CMakeFiles/morciatko.dir/src/renderer/shader.cpp.o:
 /home/jakub/programko/cpp/skurvene-morciatka/include/glm/glm/ext/matrix_float2x2_precision.hpp:
 
 /home/jakub/programko/cpp/skurvene-morciatka/include/glm/glm/ext/vector_bool2.hpp:
-
-/home/jakub/programko/cpp/skurvene-morciatka/include/glm/glm/ext/vector_bool4.hpp:

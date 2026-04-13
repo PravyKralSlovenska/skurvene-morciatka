@@ -1,8 +1,9 @@
 // Standartne cpp kniznice
+#include <algorithm>
 #include <iostream>
 #include <optional>
 #include <string>
-// #include <functional>a
+#include <functional>
 
 // Moje main header files
 #include "engine/renderer/renderer.hpp"
@@ -95,15 +96,15 @@ int main()
     float option_audio_gunshot_volume = 0.58f;
     float option_audio_flamethrower_volume = 0.27f;
 
-    const int devushki_count = 1; // how many devushki to save (change this to set the objective)
+    const int devushki_count = 4; // how many devushki to save (change this to set the objective)
     entity_manager.set_devushki_objective_count(devushki_count);
     entity_manager.spawn_devushki_objective(devushki_count, 200.0f, "devushki");
 
     // Startup workflow:
     // 1) seed already chosen in World constructor
-    // 2) predetermined column coords picked
-    // 3) columns placed with fillers
-    // 4) player spawn validated in final terrain
+    // 2) suitable column targets found and remembered (not placed yet)
+    // 3) columns are placed lazily only when nearby chunks load
+    // 4) player spawn validated without forcing remote structure placement
     world.set_devushki_column_spawn_radius_particles(option_column_spawn_radius);
     world.set_devushki_column_spawn_count(devushki_count);
 
@@ -111,15 +112,37 @@ int main()
     bool player_death_sound_played = false;
     entity_manager.ensure_player_valid_position();
 
+    auto render_loading_frame = [&](float progress, const std::string &status)
+    {
+        render.set_loading_screen_state(progress, status);
+        Menu_Options_Model loading_options;
+        render.render_everything(false, false, [&]()
+                                { render.render_menu_screen(Menu_Screen::LOADING, false, false, loading_options); });
+    };
+
     auto rebuild_world_with_new_seed = [&](const std::optional<int> &requested_seed)
     {
+        render_loading_frame(0.0f, "Preparing world rebuild...");
+
         if (requested_seed.has_value())
+        {
+            render_loading_frame(0.02f, "Applying selected seed...");
             world.regenerate_with_seed(*requested_seed);
+        }
         else
+        {
+            render_loading_frame(0.02f, "Generating random seed...");
             world.regenerate_random_seed();
+        }
+
+        render_loading_frame(0.04f, "World seed ready.");
+
+        render_loading_frame(0.06f, "Resetting entities...");
 
         entity_manager.reset_for_new_world();
         entity_manager.set_world(&world);
+
+        render_loading_frame(0.08f, "Rebinding player systems...");
 
         Player *active_player = entity_manager.get_player();
         player = active_player;
@@ -128,13 +151,30 @@ int main()
         audio_manager.set_player(active_player);
         player_death_sound_played = false;
 
+        render_loading_frame(0.10f, "Spawning devushki objective...");
+
         entity_manager.set_devushki_objective_count(devushki_count);
         entity_manager.spawn_devushki_objective(devushki_count, 2000.0f, "devushki");
 
+        render_loading_frame(0.12f, "Objective ready.");
+
         // Keep the same startup ordering for rebuilt worlds.
+        render_loading_frame(0.14f, "Applying column spawn radius...");
         world.set_devushki_column_spawn_radius_particles(option_column_spawn_radius);
-        world.set_devushki_column_spawn_count(devushki_count);
+
+        render_loading_frame(0.15f, "Finding coordinates for columns...");
+        world.set_devushki_column_spawn_count(
+            devushki_count,
+            [&](const std::string &status, float sub_progress)
+            {
+                const float mapped_progress = 0.15f + std::clamp(sub_progress, 0.0f, 1.0f) * 0.80f;
+                render_loading_frame(mapped_progress, status);
+            });
+
+        render_loading_frame(0.95f, "Validating player spawn position...");
         entity_manager.ensure_player_valid_position();
+
+        render_loading_frame(1.0f, "World ready. Entering game...");
 
         Log::info("new world seed: " + std::to_string(world.get_seed()));
     };
@@ -390,6 +430,9 @@ int main()
         {
             if (game_state == NEW_GAME_SETUP)
             {
+                game_state = LOADING;
+                time_manager.pause();
+                render.set_loading_screen_state(0.0f, "Preparing world rebuild...");
                 rebuild_world_with_new_seed(option_use_custom_seed ? std::optional<int>(option_custom_seed) : std::nullopt);
                 boss_defeat_menu_shown = false;
             }
@@ -411,6 +454,9 @@ int main()
         }
         else if (menu_actions.create_new_world)
         {
+            game_state = LOADING;
+            time_manager.pause();
+            render.set_loading_screen_state(0.0f, "Preparing world rebuild...");
             rebuild_world_with_new_seed(std::nullopt);
             boss_defeat_menu_shown = false;
             game_state = GAME;

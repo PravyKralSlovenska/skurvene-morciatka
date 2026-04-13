@@ -421,7 +421,7 @@ TEST(DevushkiSpawnTest, BaseFillStopsAtExistingGround)
     }
 }
 
-TEST(DevushkiSpawnTest, DevushkiColumnsPlacedBeforeGameplayStarts)
+TEST(DevushkiSpawnTest, DevushkiColumnTargetsPreparedBeforeGameplayStarts)
 {
     const char *seed_env_name = "MORCIATKO_WORLD_SEED";
     const char *existing_seed = std::getenv(seed_env_name);
@@ -458,10 +458,10 @@ TEST(DevushkiSpawnTest, DevushkiColumnsPlacedBeforeGameplayStarts)
     const auto spawn_positions = world.get_devushki_column_spawn_positions();
 
     ASSERT_EQ(configured_columns, requested_columns);
-    EXPECT_EQ(placed_columns, configured_columns)
-        << "All devushki columns should have concrete placed positions before gameplay starts";
-    EXPECT_EQ(static_cast<int>(spawn_positions.size()), placed_columns)
-        << "Spawn positions should match already placed devushki columns";
+    EXPECT_EQ(placed_columns, 0)
+        << "Devushki columns should remain pending until nearby chunks are loaded";
+    EXPECT_EQ(static_cast<int>(spawn_positions.size()), configured_columns)
+        << "Spawn positions should expose all remembered column targets";
 }
 
 TEST(DevushkiSpawnTest, ObjectiveDevushkiSpawnsAndStaysOnColumn)

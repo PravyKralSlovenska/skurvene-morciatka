@@ -8,7 +8,6 @@
 #include <vector>
 #include "engine/player/entity.hpp"
 #include "engine/world/world.hpp"
-#include "engine/world/world_biomes.hpp"
 #include "engine/world/world_ca_generation.hpp"
 #include "engine/world/world_chunk.hpp"
 #include "engine/world/world_cell.hpp"
@@ -294,86 +293,6 @@ namespace
         return has_solid_support_below(entity, position);
     }
 
-    bool is_icy_biome_world_pos(World *world, const glm::ivec2 &world_pos)
-    {
-        if (!world)
-            return false;
-
-        World_CA_Generation *world_gen = world->get_world_gen();
-        if (!world_gen)
-            return false;
-
-        const float particle_size = static_cast<float>(Globals::PARTICLE_SIZE);
-        const int world_cell_x = static_cast<int>(std::floor(static_cast<float>(world_pos.x) / particle_size));
-        const int world_cell_y = static_cast<int>(std::floor(static_cast<float>(world_pos.y) / particle_size));
-        const glm::vec2 world_cell_coords(
-            static_cast<float>(world_cell_x),
-            static_cast<float>(world_cell_y));
-
-        return world_gen->get_biome(world_cell_coords).type == Biome_Type::ICY;
-    }
-
-    glm::ivec2 find_non_icy_spawn_position(Entity *entity, World *world, std::mt19937 &rng,
-                                           const glm::ivec2 &desired_pos,
-                                           int max_search_radius = 500)
-    {
-        if (!entity || !world)
-            return desired_pos;
-
-        ensure_chunks_for_entity_probe(world, entity, desired_pos, 8);
-        glm::ivec2 valid_pos = entity->find_valid_spawn_position(desired_pos, max_search_radius);
-        ensure_chunks_for_entity_probe(world, entity, valid_pos, 8);
-        if (!is_icy_biome_world_pos(world, valid_pos) && entity->is_valid_spawn_position(valid_pos))
-        {
-            return valid_pos;
-        }
-
-        (void)rng;
-
-        const int particle_size = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
-        const int step = particle_size * 2;
-        const int max_radius = std::max(max_search_radius + 2200, 2600);
-
-        auto try_candidate = [&](const glm::ivec2 &candidate) -> bool
-        {
-            ensure_chunks_for_entity_probe(world, entity, candidate, 8);
-            if (is_icy_biome_world_pos(world, candidate))
-                return false;
-
-            const glm::ivec2 candidate_valid = entity->find_valid_spawn_position(candidate, max_search_radius + 700);
-            ensure_chunks_for_entity_probe(world, entity, candidate_valid, 8);
-            if (is_icy_biome_world_pos(world, candidate_valid))
-                return false;
-            if (!entity->is_valid_spawn_position(candidate_valid))
-                return false;
-
-            valid_pos = candidate_valid;
-            return true;
-        };
-
-        for (int radius = step; radius <= max_radius; radius += step)
-        {
-            for (int dx = -radius; dx <= radius; dx += step)
-            {
-                if (try_candidate(glm::ivec2(desired_pos.x + dx, desired_pos.y - radius)))
-                    return valid_pos;
-                if (try_candidate(glm::ivec2(desired_pos.x + dx, desired_pos.y + radius)))
-                    return valid_pos;
-            }
-
-            for (int dy = -radius + step; dy <= radius - step; dy += step)
-            {
-                if (try_candidate(glm::ivec2(desired_pos.x - radius, desired_pos.y + dy)))
-                    return valid_pos;
-                if (try_candidate(glm::ivec2(desired_pos.x + radius, desired_pos.y + dy)))
-                    return valid_pos;
-            }
-        }
-
-        // Fallback keeps previous behavior if no non-icy spot was found.
-        return valid_pos;
-    }
-
     glm::ivec2 find_safe_spawn_position(Entity *entity,
                                         World *world,
                                         std::mt19937 &rng,
@@ -415,9 +334,6 @@ namespace
                 }
             }
 
-            if (is_icy_biome_world_pos(world, candidate))
-                return false;
-
             if (!entity->is_valid_spawn_position(candidate))
                 return false;
 
@@ -428,11 +344,8 @@ namespace
             return true;
         };
 
-        const glm::ivec2 non_icy_seed =
-            find_non_icy_spawn_position(entity, world, rng, desired_pos, std::max(500, max_search_radius / 2));
+        (void)rng;
 
-        if (try_candidate(non_icy_seed))
-            return resolved;
         if (try_candidate(desired_pos))
             return resolved;
 
@@ -452,8 +365,6 @@ namespace
             {
                 if (try_candidate(desired_pos + dir * radius))
                     return resolved;
-                if (try_candidate(non_icy_seed + dir * radius))
-                    return resolved;
             }
         }
 
@@ -468,8 +379,6 @@ namespace
             glm::ivec2 settled = require_ground_support ? snap_spawn_to_surface(entity, world, lifted) : lifted;
             ensure_chunks_for_entity_probe(world, entity, settled, 8);
 
-            if (is_icy_biome_world_pos(world, settled))
-                continue;
             if (!entity->is_valid_spawn_position(settled))
                 continue;
             if (require_ground_support && !has_solid_support_below(entity, settled))
@@ -604,8 +513,6 @@ void Entity_Manager::ensure_player_valid_position()
     auto is_strict_safe_player_spawn = [&](const glm::ivec2 &pos) -> bool
     {
         ensure_chunks_for_entity_probe(world, player.get(), pos, 8);
-        if (is_icy_biome_world_pos(world, pos))
-            return false;
         if (!player->is_valid_spawn_position(pos))
             return false;
         if (!has_solid_support_below(player.get(), pos))
@@ -1114,7 +1021,6 @@ void Entity_Manager::update_store_offers()
 
         const int structure_hash = make_structure_hash(ps.position);
         active_hashes.insert(structure_hash);
-
         if (store_offers_by_structure.find(structure_hash) != store_offers_by_structure.end())
             continue;
 
@@ -1732,7 +1638,47 @@ bool Entity_Manager::get_compass_target_position(glm::ivec2 &out_position, float
         }
     }
 
-    return get_nearest_devushki_position(out_position, out_distance);
+    // Prefer a live devushki target while objective is active.
+    if (get_nearest_devushki_position(out_position, out_distance))
+        return true;
+
+    // Fallback: guide toward the nearest column target even if the
+    // structure has not been placed yet.
+    if (!world)
+        return false;
+
+    const std::vector<glm::ivec2> column_positions = world->get_devushki_column_spawn_positions();
+    if (column_positions.empty())
+        return false;
+
+    float nearest_dist_sq = std::numeric_limits<float>::max();
+    bool found = false;
+
+    for (const glm::ivec2 &pos : column_positions)
+    {
+        const int column_hash = make_structure_hash(pos);
+        if (spawned_devushki_positions.count(column_hash) > 0)
+            continue;
+
+        const float dx = static_cast<float>(pos.x - player->coords.x);
+        const float dy = static_cast<float>(pos.y - player->coords.y);
+        const float dist_sq = dx * dx + dy * dy;
+
+        if (dist_sq < nearest_dist_sq)
+        {
+            nearest_dist_sq = dist_sq;
+            out_position = pos;
+            found = true;
+        }
+    }
+
+    if (!found)
+        return false;
+
+    if (out_distance)
+        *out_distance = std::sqrt(nearest_dist_sq);
+
+    return true;
 }
 
 bool Entity_Manager::try_consume_ammo_for_shot()
@@ -2013,9 +1959,14 @@ void Entity_Manager::check_and_spawn_devushki_on_structures()
         if (ps.name != "devushki_column")
             continue;
 
+        // Calculate center-top position of the column.
+        glm::ivec2 spawn_pos;
+        spawn_pos.x = ps.position.x + struct_width_px / 2;
+        spawn_pos.y = ps.position.y; // top of structure
+
         // Check if we've already spawned on this position
-        // Create a simple hash from position
-        int pos_hash = ps.position.x * 73856093 ^ ps.position.y * 19349663;
+        // Track by center position so compass fallback can match these targets.
+        const int pos_hash = make_structure_hash(spawn_pos);
 
         if (spawned_devushki_positions.count(pos_hash) > 0)
             continue; // Already spawned here
@@ -2023,11 +1974,6 @@ void Entity_Manager::check_and_spawn_devushki_on_structures()
         // Check if we've reached the objective count
         if (current_devushki_count >= devushki_objective.total_to_collect)
             break;
-
-        // Calculate center-top position of the column
-        glm::ivec2 spawn_pos;
-        spawn_pos.x = ps.position.x + struct_width_px / 2;
-        spawn_pos.y = ps.position.y; // top of structure
 
         Devushki *d = create_devushki(spawn_pos, devushki_sprite_name);
         if (d)

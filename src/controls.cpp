@@ -160,10 +160,10 @@ void Controls::handle_input()
                 {
                     glm::vec2 dir = player->get_aim_direction();
 
-                    glm::ivec2 nearest_devushki_pos(0, 0);
-                    if (entity_manager->get_nearest_devushki_position(nearest_devushki_pos, nullptr))
+                    glm::ivec2 compass_target_pos(0, 0);
+                    if (entity_manager->get_compass_target_position(compass_target_pos, nullptr))
                     {
-                        const glm::vec2 toward = glm::vec2(nearest_devushki_pos) - player->get_center();
+                        const glm::vec2 toward = glm::vec2(compass_target_pos) - player->get_center();
                         const float toward_len = glm::length(toward);
                         if (toward_len > 0.001f)
                         {

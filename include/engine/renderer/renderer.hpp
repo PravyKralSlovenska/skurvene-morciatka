@@ -101,6 +101,7 @@ public:
     // UI
     void toggle_fullscreen_map();
     bool is_fullscreen_map_open() const;
+    void set_loading_screen_state(float progress, const std::string &status);
     Menu_Actions render_menu_screen(Menu_Screen screen,
                                     bool enter_pressed,
                                     bool escape_pressed,

@@ -93,7 +93,7 @@ private:
 
     // Deferred devushki spawning on structures
     std::string devushki_sprite_name;                   // sprite to use for devushki
-    std::unordered_set<int> spawned_devushki_positions; // hash of positions already spawned
+    std::unordered_set<int> spawned_devushki_positions; // hash of column center positions already used for spawning
 
     // Sprite registry - stores sprite configs by entity type name
     std::unordered_map<std::string, SpriteConfig> sprite_registry;

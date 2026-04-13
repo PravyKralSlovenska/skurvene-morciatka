@@ -13,6 +13,8 @@ int Entity::next_id = 1;
 
 namespace
 {
+    static constexpr float NOCLIP_MOVEMENT_MULTIPLIER = 3.0f;
+
     glm::vec2 safe_normalize_vec2(const glm::vec2 &v, const glm::vec2 &fallback)
     {
         const float len = std::sqrt(v.x * v.x + v.y * v.y);
@@ -57,7 +59,8 @@ namespace
     }
 
     void heat_and_ignite_particles(World *world, const glm::ivec2 &center_pos, int radius_cells,
-                                   float added_temperature_c, float ignite_temperature_c)
+                                   float added_temperature_c, float ignite_temperature_c,
+                                   bool allow_static_ice_melt = false)
     {
         if (!world || radius_cells < 0)
             return;
@@ -88,6 +91,18 @@ namespace
 
                 if (cell->particle.type == Particle_Type::EMPTY)
                     continue;
+
+                if (allow_static_ice_melt &&
+                    cell->particle.flags.is_static &&
+                    cell->particle.type == Particle_Type::ICE)
+                {
+                    // Weapon interaction can carve/melt terrain ice directly.
+                    Particle melted = create_water(false);
+                    melted.physics.temperature = std::max(melted.physics.temperature, 30.0f);
+                    cell->particle = melted;
+                    chunk->mark_dirty();
+                    continue;
+                }
 
                 cell->particle.physics.temperature = std::clamp(
                     cell->particle.physics.temperature + added_temperature_c,
@@ -372,46 +387,50 @@ void Entity::die()
 
 void Entity::move_left()
 {
-    // Set velocity - physics will apply it
-    velocity.x = -speed;
+    const float speed_multiplier = noclip ? NOCLIP_MOVEMENT_MULTIPLIER : 1.0f;
+    velocity.x = -speed * speed_multiplier;
 }
 
 void Entity::move_right()
 {
-    // Set velocity - physics will apply it
-    velocity.x = speed;
+    const float speed_multiplier = noclip ? NOCLIP_MOVEMENT_MULTIPLIER : 1.0f;
+    velocity.x = speed * speed_multiplier;
 }
 
 void Entity::move_up()
 {
+    const float speed_multiplier = noclip ? NOCLIP_MOVEMENT_MULTIPLIER : 1.0f;
+
     // Without world, allow direct up movement
     if (!world_ref)
     {
-        velocity.y = -speed;
+        velocity.y = -speed * speed_multiplier;
         return;
     }
 
     // Jump if on ground, or fly up in noclip mode
     if (on_ground || noclip)
     {
-        velocity.y = -speed * 2.5f;
+        velocity.y = -speed * 2.5f * speed_multiplier;
         on_ground = false;
     }
 }
 
 void Entity::move_down()
 {
+    const float speed_multiplier = noclip ? NOCLIP_MOVEMENT_MULTIPLIER : 1.0f;
+
     // Without world, allow direct down movement
     if (!world_ref)
     {
-        velocity.y = speed;
+        velocity.y = speed * speed_multiplier;
         return;
     }
 
     // Only allow downward movement in noclip mode (gravity handles falling)
     if (noclip)
     {
-        velocity.y = speed;
+        velocity.y = speed * speed_multiplier;
     }
 }
 
@@ -749,6 +768,99 @@ void Entity::resolve_collision(glm::ivec2 &new_pos)
         }
     }
 
+    // If we're still intersecting terrain after normal axis resolution,
+    // perform a local search for the nearest collision-free position.
+    if (check_collision_at(new_pos))
+    {
+        auto try_find_escape = [&](const glm::ivec2 &origin, glm::ivec2 &out_pos) -> bool
+        {
+            if (!check_collision_at(origin))
+            {
+                out_pos = origin;
+                return true;
+            }
+
+            const int max_radius = std::max({hitbox_dimensions.x,
+                                             hitbox_dimensions.y,
+                                             MAX_STEP_HEIGHT * particle_size * 2});
+
+            for (int radius = particle_size; radius <= max_radius; radius += particle_size)
+            {
+                const std::vector<glm::ivec2> priority_positions = {
+                    {origin.x, origin.y - radius},
+                    {origin.x + radius, origin.y},
+                    {origin.x - radius, origin.y},
+                    {origin.x + radius, origin.y - radius},
+                    {origin.x - radius, origin.y - radius},
+                    {origin.x, origin.y + radius}};
+
+                for (const glm::ivec2 &candidate : priority_positions)
+                {
+                    if (!check_collision_at(candidate))
+                    {
+                        out_pos = candidate;
+                        return true;
+                    }
+                }
+
+                for (int dx = -radius; dx <= radius; dx += particle_size)
+                {
+                    const glm::ivec2 top(origin.x + dx, origin.y - radius);
+                    if (!check_collision_at(top))
+                    {
+                        out_pos = top;
+                        return true;
+                    }
+
+                    const glm::ivec2 bottom(origin.x + dx, origin.y + radius);
+                    if (!check_collision_at(bottom))
+                    {
+                        out_pos = bottom;
+                        return true;
+                    }
+                }
+
+                for (int dy = -radius + particle_size; dy <= radius - particle_size; dy += particle_size)
+                {
+                    const glm::ivec2 left(origin.x - radius, origin.y + dy);
+                    if (!check_collision_at(left))
+                    {
+                        out_pos = left;
+                        return true;
+                    }
+
+                    const glm::ivec2 right(origin.x + radius, origin.y + dy);
+                    if (!check_collision_at(right))
+                    {
+                        out_pos = right;
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        };
+
+        glm::ivec2 escaped_pos = new_pos;
+        const bool escaped = try_find_escape(new_pos, escaped_pos) ||
+                             try_find_escape(old_pos, escaped_pos);
+
+        if (escaped)
+        {
+            new_pos = escaped_pos;
+            if (new_pos.y <= old_pos.y)
+            {
+                velocity.y = std::min(0.0f, velocity.y);
+            }
+        }
+        else
+        {
+            new_pos = old_pos;
+            velocity.x = 0.0f;
+            velocity.y = 0.0f;
+        }
+    }
+
     // Final ground check
     glm::ivec2 feet_check = {new_pos.x, new_pos.y + hitbox_dimensions_half.y + 1};
     if (is_solid_at(feet_check.x, feet_check.y) ||
@@ -871,8 +983,9 @@ void Projectile::update(float delta_time)
             {
                 if (payload_type == Particle_Type::FIRE)
                 {
+                    const bool player_fire_interaction = (owner_type == Entity_Type::PLAYER);
                     // Flamethrower only ignites flammable materials (e.g., wood).
-                    heat_and_ignite_particles(world_ref, next_pos, 1, 75.0f, 300.0f);
+                    heat_and_ignite_particles(world_ref, next_pos, 1, 75.0f, 300.0f, player_fire_interaction);
                 }
                 else
                 {
@@ -899,8 +1012,9 @@ void Projectile::update(float delta_time)
 
         if (world_ref && payload_type == Particle_Type::FIRE)
         {
+            const bool player_fire_interaction = (owner_type == Entity_Type::PLAYER);
             // Do not paint fire into the world; only ignite flammable particles.
-            heat_and_ignite_particles(world_ref, coords, 0, 22.0f, 300.0f);
+            heat_and_ignite_particles(world_ref, coords, 0, 22.0f, 300.0f, player_fire_interaction);
         }
     }
 

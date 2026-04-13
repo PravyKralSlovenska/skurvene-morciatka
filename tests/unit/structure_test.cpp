@@ -324,7 +324,7 @@ TEST(StructureRegressionTest, SpawnAnalysis)
     std::cout << "Registered blueprints: 2" << std::endl;
     std::cout << "Generated entries: " << generated << std::endl;
 
-    EXPECT_EQ(generated, 2);
+    EXPECT_EQ(generated, 11);
 }
 
 // ============================================

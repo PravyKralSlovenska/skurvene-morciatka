@@ -5,6 +5,7 @@
 #include <map>
 #include <random>
 #include <array>
+#include <functional>
 #include <glm/glm.hpp>
 
 #include "engine/particle/particle.hpp"
@@ -110,6 +111,9 @@ public:
     void generate_predetermined_positions(int world_seed);
     void try_place_pending_structures(const glm::ivec2 &chunk_coords, int max_entries_to_place = -1);
     void place_pending_for_structure(const std::string &name, int max_passes = 1);
+    void prepare_pending_targets_for_structure(const std::string &name,
+                                               int max_passes = 1,
+                                               const std::function<void(const std::string &, float)> &progress_callback = {});
     const std::vector<PredeterminedEntry> &get_predetermined_entries() const;
 
     // Record a placed structure (for external placement tracking)

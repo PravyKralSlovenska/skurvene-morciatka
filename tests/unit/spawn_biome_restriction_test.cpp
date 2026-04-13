@@ -157,7 +157,7 @@ namespace
     }
 } // namespace
 
-TEST(SpawnBiomeRestrictionTest, PlayerRelocatesFromIcyBiome)
+TEST(SpawnBiomeRestrictionTest, PlayerCanSpawnInIcyBiomeWhenOtherwiseValid)
 {
     World world;
     Entity_Manager manager;
@@ -170,6 +170,8 @@ TEST(SpawnBiomeRestrictionTest, PlayerRelocatesFromIcyBiome)
     std::vector<glm::ivec2> icy_candidates = collect_icy_candidates(world);
     ASSERT_FALSE(icy_candidates.empty()) << "Could not find an icy biome candidate in sampled world area.";
 
+    bool saw_icy_result = false;
+
     for (int i = 0; i < 20; ++i)
     {
         const glm::ivec2 forced_icy = icy_candidates[static_cast<size_t>(i) % icy_candidates.size()];
@@ -178,8 +180,12 @@ TEST(SpawnBiomeRestrictionTest, PlayerRelocatesFromIcyBiome)
         player->set_position(forced_icy);
         manager.ensure_player_valid_position();
 
-        EXPECT_FALSE(is_icy(world, player->coords))
-            << "Player remained in icy biome from forced spawn at ("
+        ensure_probe_chunks(world, player, 10);
+        if (is_icy(world, player->coords))
+            saw_icy_result = true;
+
+        EXPECT_FALSE(player->check_collision_at(player->coords))
+            << "Player should not overlap terrain after spawn correction from ("
             << forced_icy.x << ", " << forced_icy.y << ")"
             << " and final pos (" << player->coords.x << ", " << player->coords.y << ")";
 
@@ -187,6 +193,9 @@ TEST(SpawnBiomeRestrictionTest, PlayerRelocatesFromIcyBiome)
             << "Player spawned without ground support at ("
             << player->coords.x << ", " << player->coords.y << ")";
     }
+
+    EXPECT_TRUE(saw_icy_result)
+        << "Player was always moved out of icy biome despite icy spawn now being allowed.";
 }
 
 TEST(SpawnBiomeRestrictionTest, PlayerEscapesSolidOverlap)
@@ -241,7 +250,118 @@ TEST(SpawnBiomeRestrictionTest, PlayerEscapesSolidOverlap)
         << "Player should be relocated onto supported ground";
 }
 
-TEST(SpawnBiomeRestrictionTest, CreateEnemyDevushkiBossAvoidIcyBiome)
+TEST(SpawnBiomeRestrictionTest, PlayerPlacementRemainsPhysicallyValidAcrossRandomOrigins)
+{
+    World world;
+    Entity_Manager manager;
+    manager.set_spawn_enabled(false);
+    manager.set_world(&world);
+
+    Player *player = manager.get_player();
+    ASSERT_NE(player, nullptr);
+
+    std::mt19937 rng(1337);
+    std::uniform_int_distribution<int> coord_dist(-14000, 14000);
+
+    const int ps = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+
+    for (int i = 0; i < 60; ++i)
+    {
+        glm::ivec2 forced_pos(coord_dist(rng), coord_dist(rng));
+        forced_pos.x = static_cast<int>(std::floor(static_cast<float>(forced_pos.x) / ps)) * ps;
+        forced_pos.y = static_cast<int>(std::floor(static_cast<float>(forced_pos.y) / ps)) * ps;
+
+        player->set_position(forced_pos);
+        manager.ensure_player_valid_position();
+
+        ensure_probe_chunks(world, player, 10);
+
+        EXPECT_FALSE(player->check_collision_at(player->coords))
+            << "Player ended overlapping terrain after random forced origin ("
+            << forced_pos.x << ", " << forced_pos.y << ") -> ("
+            << player->coords.x << ", " << player->coords.y << ")";
+
+        EXPECT_TRUE(has_solid_support_below(player))
+            << "Player ended without solid foundation after random forced origin ("
+            << forced_pos.x << ", " << forced_pos.y << ") -> ("
+            << player->coords.x << ", " << player->coords.y << ")";
+    }
+}
+
+TEST(SpawnBiomeRestrictionTest, PlayerPhysicsCanEscapeVerticalSeamEmbedding)
+{
+    World world;
+    Entity_Manager manager;
+    manager.set_spawn_enabled(false);
+    manager.set_world(&world);
+
+    auto *chunks = world.get_chunks();
+    auto *world_gen = world.get_world_gen();
+    ASSERT_NE(chunks, nullptr);
+    ASSERT_NE(world_gen, nullptr);
+
+    const glm::ivec2 chunk_dims = world.get_chunk_dimensions();
+    const int ps = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+
+    for (int cy = -2; cy <= 2; ++cy)
+    {
+        for (int cx = -2; cx <= 2; ++cx)
+        {
+            glm::ivec2 coords(cx, cy);
+            if (world.get_chunk(coords))
+                continue;
+
+            auto chunk = std::make_unique<Chunk>(coords, chunk_dims.x, chunk_dims.y);
+            world_gen->generate_chunk_with_biome(chunk.get());
+            chunks->emplace(coords, std::move(chunk));
+        }
+    }
+
+    Player *player = manager.get_player();
+    ASSERT_NE(player, nullptr);
+
+    manager.ensure_player_valid_position();
+    ensure_probe_chunks(world, player, 12);
+
+    const glm::ivec2 initial_pos = player->coords;
+    const int left = initial_pos.x - player->hitbox_dimensions_half.x;
+    const int right = initial_pos.x + player->hitbox_dimensions_half.x;
+    const int top = initial_pos.y - player->hitbox_dimensions_half.y - (Entity::MAX_STEP_HEIGHT + 6) * ps;
+    const int bottom = initial_pos.y + player->hitbox_dimensions_half.y + 4 * ps;
+
+    // Build a tall seam that traps the player at current X and blocks simple step-up recovery.
+    for (int y = top; y <= bottom; y += ps)
+    {
+        for (int x = left; x <= right; x += ps)
+        {
+            world.place_static_particle(glm::ivec2(x, y), Particle_Type::STONE);
+        }
+    }
+
+    // Keep a side corridor open so recovery must probe laterally.
+    const int corridor_left = right + ps;
+    const int corridor_right = right + player->hitbox_dimensions.x + 2 * ps;
+    const int corridor_top = initial_pos.y - player->hitbox_dimensions_half.y - 2 * ps;
+    const int corridor_bottom = initial_pos.y + player->hitbox_dimensions_half.y + 2 * ps;
+
+    for (int y = corridor_top; y <= corridor_bottom; y += ps)
+    {
+        for (int x = corridor_left; x <= corridor_right; x += ps)
+        {
+            world.place_static_particle(glm::ivec2(x, y), Particle_Type::EMPTY);
+        }
+    }
+
+    ASSERT_TRUE(player->check_collision_at(player->coords));
+
+    player->set_velocity(0.0f, 0.0f);
+    player->update_physics(1.0f / 60.0f);
+
+    EXPECT_FALSE(player->check_collision_at(player->coords))
+        << "Player remained embedded after physics recovery step.";
+}
+
+TEST(SpawnBiomeRestrictionTest, CreateEnemyDevushkiBossRemainPhysicallyValid)
 {
     World world;
     Entity_Manager manager;
@@ -250,6 +370,10 @@ TEST(SpawnBiomeRestrictionTest, CreateEnemyDevushkiBossAvoidIcyBiome)
 
     std::vector<glm::ivec2> icy_candidates = collect_icy_candidates(world);
     ASSERT_FALSE(icy_candidates.empty()) << "Could not find an icy biome candidate in sampled world area.";
+
+    bool saw_icy_enemy_spawn = false;
+    bool saw_icy_devushki_spawn = false;
+    bool saw_icy_boss_spawn = false;
 
     for (int i = 0; i < 30; ++i)
     {
@@ -260,7 +384,8 @@ TEST(SpawnBiomeRestrictionTest, CreateEnemyDevushkiBossAvoidIcyBiome)
 
         Enemy *enemy = manager.create_enemy(forced_icy);
         ASSERT_NE(enemy, nullptr);
-        EXPECT_FALSE(is_icy(world, enemy->coords)) << "Enemy spawned in icy biome.";
+        if (is_icy(world, enemy->coords))
+            saw_icy_enemy_spawn = true;
         ensure_probe_chunks(world, enemy, 2);
         EXPECT_FALSE(enemy->check_collision_at(enemy->coords)) << "Enemy spawned embedded in terrain/structure.";
         EXPECT_TRUE(has_solid_support_below(enemy)) << "Enemy spawned without solid support.";
@@ -269,7 +394,8 @@ TEST(SpawnBiomeRestrictionTest, CreateEnemyDevushkiBossAvoidIcyBiome)
 
         Devushki *devushki = manager.create_devushki(forced_icy);
         ASSERT_NE(devushki, nullptr);
-        EXPECT_FALSE(is_icy(world, devushki->coords)) << "Devushki spawned in icy biome.";
+        if (is_icy(world, devushki->coords))
+            saw_icy_devushki_spawn = true;
         ensure_probe_chunks(world, devushki, 2);
         EXPECT_FALSE(devushki->check_collision_at(devushki->coords)) << "Devushki spawned embedded in terrain/structure.";
         EXPECT_TRUE(has_solid_support_below(devushki)) << "Devushki spawned without solid support.";
@@ -278,14 +404,19 @@ TEST(SpawnBiomeRestrictionTest, CreateEnemyDevushkiBossAvoidIcyBiome)
 
         Boss *boss = manager.create_boss(forced_icy);
         ASSERT_NE(boss, nullptr);
-        EXPECT_FALSE(is_icy(world, boss->coords)) << "Boss spawned in icy biome.";
+        if (is_icy(world, boss->coords))
+            saw_icy_boss_spawn = true;
         ensure_probe_chunks(world, boss, 2);
         EXPECT_FALSE(boss->check_collision_at(boss->coords)) << "Boss spawned embedded in terrain/structure.";
         EXPECT_TRUE(has_solid_support_below(boss)) << "Boss spawned without solid support.";
     }
+
+    EXPECT_TRUE(saw_icy_enemy_spawn) << "Enemy was always moved out of icy biome despite icy spawn now being allowed.";
+    EXPECT_TRUE(saw_icy_devushki_spawn) << "Devushki was always moved out of icy biome despite icy spawn now being allowed.";
+    EXPECT_TRUE(saw_icy_boss_spawn) << "Boss was always moved out of icy biome despite icy spawn now being allowed.";
 }
 
-TEST(SpawnBiomeRestrictionTest, ObjectiveBossSpawnAvoidsIcyBiome)
+TEST(SpawnBiomeRestrictionTest, ObjectiveBossSpawnRemainsPhysicallyValid)
 {
     World world;
     Entity_Manager manager;
@@ -309,9 +440,6 @@ TEST(SpawnBiomeRestrictionTest, ObjectiveBossSpawnAvoidsIcyBiome)
         Boss *boss = find_single_boss(manager);
         ASSERT_NE(boss, nullptr);
 
-        EXPECT_FALSE(is_icy(world, boss->coords))
-            << "Objective boss spawned in icy biome at ("
-            << boss->coords.x << ", " << boss->coords.y << ")";
         ensure_probe_chunks(world, boss, 2);
         EXPECT_FALSE(boss->check_collision_at(boss->coords))
             << "Objective boss spawned embedded at ("

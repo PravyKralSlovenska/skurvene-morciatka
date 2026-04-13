@@ -1,0 +1,7 @@
+SpawnBiomeRestrictionTest.PlayerCanSpawnInIcyBiomeWhenOtherwiseValid 2 0.898468
+SpawnBiomeRestrictionTest.PlayerEscapesSolidOverlap 2 0.0422198
+SpawnBiomeRestrictionTest.PlayerPlacementRemainsPhysicallyValidAcrossRandomOrigins 2 2.08056
+SpawnBiomeRestrictionTest.CreateEnemyDevushkiBossRemainPhysicallyValid 1 2.72219
+SpawnBiomeRestrictionTest.ObjectiveBossSpawnRemainsPhysicallyValid 1 0.309605
+SpawnBiomeRestrictionTest.PlayerPhysicsCanEscapeVerticalSeamEmbedding 1 0.0601381
+---

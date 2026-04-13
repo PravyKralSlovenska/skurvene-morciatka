@@ -65,6 +65,20 @@ void World::update(float delta_time)
 {
     calculate_active_chunks();
     process_structure_chunk_events();
+
+    // Keep placement responsive to current player location even if the
+    // chunk-event queue still contains old chunks.
+    if (player)
+    {
+        const int chunk_pixel_width = chunk_width * Globals::PARTICLE_SIZE;
+        const int chunk_pixel_height = chunk_height * Globals::PARTICLE_SIZE;
+
+        const glm::ivec2 player_chunk{
+            static_cast<int>(std::floor(player->coords.x / static_cast<float>(chunk_pixel_width))),
+            static_cast<int>(std::floor(player->coords.y / static_cast<float>(chunk_pixel_height)))};
+
+        structure_spawner.try_place_pending_structures(player_chunk, 1);
+    }
     // update_active_chunks();
 
     // Run falling sand simulation
@@ -542,14 +556,34 @@ StructureSpawner &World::get_structure_spawner()
     return structure_spawner;
 }
 
-void World::set_devushki_column_spawn_count(int count)
+void World::set_devushki_column_spawn_count(
+    int count,
+    const std::function<void(const std::string &, float)> &progress_callback)
 {
+    auto report_progress = [&](const std::string &status, float progress)
+    {
+        if (progress_callback)
+            progress_callback(status, std::clamp(progress, 0.0f, 1.0f));
+    };
+
+    report_progress("Generating column targets...", 0.0f);
+
     structure_spawner.set_structure_spawn_count("devushki_column", count);
     structure_spawner.generate_predetermined_positions(world_seed);
 
-    // Resolve column placements up-front so objective spawn positions are stable before gameplay starts.
-    const int placement_passes = std::max(12, std::max(1, count) * 6);
-    structure_spawner.place_pending_for_structure("devushki_column", placement_passes);
+    // Find suitable coordinates up-front, but keep columns pending for lazy placement.
+    const int target_passes = std::max(10, std::max(1, count) * 4);
+    report_progress("Finding coordinates for columns...", 0.0f);
+
+    structure_spawner.prepare_pending_targets_for_structure(
+        "devushki_column",
+        target_passes,
+        [&](const std::string &status, float sub_progress)
+        {
+            report_progress(status, sub_progress);
+        });
+
+    report_progress("Column coordinates ready.", 1.0f);
 }
 
 void World::set_devushki_column_spawn_radius_particles(int radius_particles)
@@ -615,18 +649,18 @@ std::vector<glm::ivec2> World::get_devushki_column_spawn_positions() const
     const Structure &structure = struct_it->second;
     int struct_width_px = static_cast<int>(structure.get_width() * Globals::PARTICLE_SIZE);
 
-    // Use placed structures from the spawner to get actual positions
-    const auto &placed = structure_spawner.get_placed_structures();
+    // Return remembered targets for all devushki column entries.
+    const auto &entries = structure_spawner.get_predetermined_entries();
 
-    for (const auto &ps : placed)
+    for (const auto &entry : entries)
     {
-        if (ps.name == "devushki_column")
+        if (entry.structure_name == "devushki_column")
         {
             // Calculate center-top position of the column
-            // pos is top-left corner, so center is at x + width/2, y stays at top
+            // target_pos stores the intended top-left placement coordinate.
             glm::ivec2 center_pos;
-            center_pos.x = ps.position.x + struct_width_px / 2;
-            center_pos.y = ps.position.y; // top of the structure
+            center_pos.x = entry.target_pos.x + struct_width_px / 2;
+            center_pos.y = entry.target_pos.y;
             spawn_positions.push_back(center_pos);
         }
     }

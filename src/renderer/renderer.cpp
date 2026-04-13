@@ -286,6 +286,12 @@ bool IRenderer::is_fullscreen_map_open() const
     return false;
 }
 
+void IRenderer::set_loading_screen_state(float progress, const std::string &status)
+{
+    if (ui_renderer)
+        ui_renderer->set_loading_state(progress, status);
+}
+
 Menu_Actions IRenderer::render_menu_screen(Menu_Screen screen,
                                            bool enter_pressed,
                                            bool escape_pressed,

@@ -6,6 +6,7 @@
 #include <unordered_set>
 #include <memory>
 #include <random>
+#include <functional>
 #include <glm/glm.hpp>
 
 #include "engine/world/structure.hpp"
@@ -135,7 +136,8 @@ public:
 
     // Structure spawning
     StructureSpawner &get_structure_spawner();
-    void set_devushki_column_spawn_count(int count);
+    void set_devushki_column_spawn_count(int count,
+                                         const std::function<void(const std::string &, float)> &progress_callback = {});
     void set_devushki_column_spawn_radius_particles(int radius_particles);
     int get_devushki_column_spawn_radius_particles() const;
     void place_structure(const Structure &structure, const glm::ivec2 &world_pos);

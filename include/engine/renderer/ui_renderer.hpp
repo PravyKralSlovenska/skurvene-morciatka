@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <string>
 #include <unordered_map>
+#include <algorithm>
 
 // forward declarations
 class Player;
@@ -72,6 +73,9 @@ private:
     bool show_minimap = true;
     bool show_fullscreen_map = false;
 
+    float loading_progress = 0.0f;
+    std::string loading_status = "Preparing loading...";
+
     // Store offer icon textures used for world-space UI labels.
     std::unordered_map<std::string, unsigned int> store_offer_textures;
     bool store_offer_textures_loaded = false;
@@ -116,6 +120,12 @@ public:
     void render_fullscreen_map();
     void render_devushki_objective();
     void render_store_offers();
+
+    void set_loading_state(float progress, const std::string &status)
+    {
+        loading_progress = std::clamp(progress, 0.0f, 1.0f);
+        loading_status = status;
+    }
 
     // Main menu/pause/options overlay renderer used by game state machine.
     Menu_Actions render_menu_screen(Menu_Screen screen,

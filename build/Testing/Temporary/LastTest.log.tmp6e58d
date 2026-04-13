@@ -1,0 +1,311 @@
+Start testing: Apr 13 20:21 CEST
+----------------------------------------------------------
+1/97 Testing: DevushkiSpawnTest.StructureSpawnerTracksPlacedStructures
+1/97 Test: DevushkiSpawnTest.StructureSpawnerTracksPlacedStructures
+Command: "/home/jakub/programko/cpp/skurvene-morciatka/build/morciatko_tests" "--gtest_filter=DevushkiSpawnTest.StructureSpawnerTracksPlacedStructures" "--gtest_also_run_disabled_tests"
+Directory: /home/jakub/programko/cpp/skurvene-morciatka/build
+"DevushkiSpawnTest.StructureSpawnerTracksPlacedStructures" start time: Apr 13 20:21 CEST
+Output:
+----------------------------------------------------------
+Note: Google Test filter = DevushkiSpawnTest.StructureSpawnerTracksPlacedStructures
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DevushkiSpawnTest
+[ RUN      ] DevushkiSpawnTest.StructureSpawnerTracksPlacedStructures
+[       OK ] DevushkiSpawnTest.StructureSpawnerTracksPlacedStructures (0 ms)
+[----------] 1 test from DevushkiSpawnTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"DevushkiSpawnTest.StructureSpawnerTracksPlacedStructures" end time: Apr 13 20:21 CEST
+"DevushkiSpawnTest.StructureSpawnerTracksPlacedStructures" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/97 Testing: DevushkiSpawnTest.PlacedStructuresAccessible
+2/97 Test: DevushkiSpawnTest.PlacedStructuresAccessible
+Command: "/home/jakub/programko/cpp/skurvene-morciatka/build/morciatko_tests" "--gtest_filter=DevushkiSpawnTest.PlacedStructuresAccessible" "--gtest_also_run_disabled_tests"
+Directory: /home/jakub/programko/cpp/skurvene-morciatka/build
+"DevushkiSpawnTest.PlacedStructuresAccessible" start time: Apr 13 20:21 CEST
+Output:
+----------------------------------------------------------
+Note: Google Test filter = DevushkiSpawnTest.PlacedStructuresAccessible
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DevushkiSpawnTest
+[ RUN      ] DevushkiSpawnTest.PlacedStructuresAccessible
+[       OK ] DevushkiSpawnTest.PlacedStructuresAccessible (0 ms)
+[----------] 1 test from DevushkiSpawnTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"DevushkiSpawnTest.PlacedStructuresAccessible" end time: Apr 13 20:21 CEST
+"DevushkiSpawnTest.PlacedStructuresAccessible" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/97 Testing: DevushkiSpawnTest.DevushkiColumnImageLoading
+3/97 Test: DevushkiSpawnTest.DevushkiColumnImageLoading
+Command: "/home/jakub/programko/cpp/skurvene-morciatka/build/morciatko_tests" "--gtest_filter=DevushkiSpawnTest.DevushkiColumnImageLoading" "--gtest_also_run_disabled_tests"
+Directory: /home/jakub/programko/cpp/skurvene-morciatka/build
+"DevushkiSpawnTest.DevushkiColumnImageLoading" start time: Apr 13 20:21 CEST
+Output:
+----------------------------------------------------------
+Note: Google Test filter = DevushkiSpawnTest.DevushkiColumnImageLoading
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DevushkiSpawnTest
+[ RUN      ] DevushkiSpawnTest.DevushkiColumnImageLoading
+
+=== DEVUSHKI_COLUMN IMAGE LOADING ===
+Structure name: devushki_column
+Structure size (particles): 66 x 44
+Structure size (pixels): 330 x 220
+Solid cells: 2176
+[       OK ] DevushkiSpawnTest.DevushkiColumnImageLoading (1 ms)
+[----------] 1 test from DevushkiSpawnTest (1 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (1 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"DevushkiSpawnTest.DevushkiColumnImageLoading" end time: Apr 13 20:21 CEST
+"DevushkiSpawnTest.DevushkiColumnImageLoading" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/97 Testing: DevushkiSpawnTest.PositionHashingConsistency
+4/97 Test: DevushkiSpawnTest.PositionHashingConsistency
+Command: "/home/jakub/programko/cpp/skurvene-morciatka/build/morciatko_tests" "--gtest_filter=DevushkiSpawnTest.PositionHashingConsistency" "--gtest_also_run_disabled_tests"
+Directory: /home/jakub/programko/cpp/skurvene-morciatka/build
+"DevushkiSpawnTest.PositionHashingConsistency" start time: Apr 13 20:21 CEST
+Output:
+----------------------------------------------------------
+Note: Google Test filter = DevushkiSpawnTest.PositionHashingConsistency
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DevushkiSpawnTest
+[ RUN      ] DevushkiSpawnTest.PositionHashingConsistency
+
+=== POSITION HASH TEST ===
+Position (100, 200) hash: 1587349612
+Position (150, 200) hash: 1928942150
+[       OK ] DevushkiSpawnTest.PositionHashingConsistency (0 ms)
+[----------] 1 test from DevushkiSpawnTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"DevushkiSpawnTest.PositionHashingConsistency" end time: Apr 13 20:21 CEST
+"DevushkiSpawnTest.PositionHashingConsistency" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/97 Testing: DevushkiSpawnTest.SpawnCenterCalculation
+5/97 Test: DevushkiSpawnTest.SpawnCenterCalculation
+Command: "/home/jakub/programko/cpp/skurvene-morciatka/build/morciatko_tests" "--gtest_filter=DevushkiSpawnTest.SpawnCenterCalculation" "--gtest_also_run_disabled_tests"
+Directory: /home/jakub/programko/cpp/skurvene-morciatka/build
+"DevushkiSpawnTest.SpawnCenterCalculation" start time: Apr 13 20:21 CEST
+Output:
+----------------------------------------------------------
+Note: Google Test filter = DevushkiSpawnTest.SpawnCenterCalculation
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DevushkiSpawnTest
+[ RUN      ] DevushkiSpawnTest.SpawnCenterCalculation
+
+=== SPAWN CENTER CALCULATION ===
+Structure position: (500, 300)
+Structure size (px): 330 x 220
+Spawn position (center-top): (665, 300)
+[       OK ] DevushkiSpawnTest.SpawnCenterCalculation (1 ms)
+[----------] 1 test from DevushkiSpawnTest (1 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (1 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"DevushkiSpawnTest.SpawnCenterCalculation" end time: Apr 13 20:21 CEST
+"DevushkiSpawnTest.SpawnCenterCalculation" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/97 Testing: DevushkiSpawnTest.DevushkiObjectiveConfig
+6/97 Test: DevushkiSpawnTest.DevushkiObjectiveConfig
+Command: "/home/jakub/programko/cpp/skurvene-morciatka/build/morciatko_tests" "--gtest_filter=DevushkiSpawnTest.DevushkiObjectiveConfig" "--gtest_also_run_disabled_tests"
+Directory: /home/jakub/programko/cpp/skurvene-morciatka/build
+"DevushkiSpawnTest.DevushkiObjectiveConfig" start time: Apr 13 20:21 CEST
+Output:
+----------------------------------------------------------
+Note: Google Test filter = DevushkiSpawnTest.DevushkiObjectiveConfig
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DevushkiSpawnTest
+[ RUN      ] DevushkiSpawnTest.DevushkiObjectiveConfig
+[       OK ] DevushkiSpawnTest.DevushkiObjectiveConfig (0 ms)
+[----------] 1 test from DevushkiSpawnTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"DevushkiSpawnTest.DevushkiObjectiveConfig" end time: Apr 13 20:21 CEST
+"DevushkiSpawnTest.DevushkiObjectiveConfig" time elapsed: 00:00:00
+----------------------------------------------------------
+
+7/97 Testing: DevushkiSpawnTest.RecordPlacedStructure
+7/97 Test: DevushkiSpawnTest.RecordPlacedStructure
+Command: "/home/jakub/programko/cpp/skurvene-morciatka/build/morciatko_tests" "--gtest_filter=DevushkiSpawnTest.RecordPlacedStructure" "--gtest_also_run_disabled_tests"
+Directory: /home/jakub/programko/cpp/skurvene-morciatka/build
+"DevushkiSpawnTest.RecordPlacedStructure" start time: Apr 13 20:21 CEST
+Output:
+----------------------------------------------------------
+Note: Google Test filter = DevushkiSpawnTest.RecordPlacedStructure
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DevushkiSpawnTest
+[ RUN      ] DevushkiSpawnTest.RecordPlacedStructure
+
+=== RECORD_PLACED_STRUCTURE TEST ===
+Recorded structure at (500, 300)
+Structure name: devushki_column
+[       OK ] DevushkiSpawnTest.RecordPlacedStructure (0 ms)
+[----------] 1 test from DevushkiSpawnTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"DevushkiSpawnTest.RecordPlacedStructure" end time: Apr 13 20:21 CEST
+"DevushkiSpawnTest.RecordPlacedStructure" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/97 Testing: DevushkiSpawnTest.MultipleStructureTracking
+8/97 Test: DevushkiSpawnTest.MultipleStructureTracking
+Command: "/home/jakub/programko/cpp/skurvene-morciatka/build/morciatko_tests" "--gtest_filter=DevushkiSpawnTest.MultipleStructureTracking" "--gtest_also_run_disabled_tests"
+Directory: /home/jakub/programko/cpp/skurvene-morciatka/build
+"DevushkiSpawnTest.MultipleStructureTracking" start time: Apr 13 20:21 CEST
+Output:
+----------------------------------------------------------
+Note: Google Test filter = DevushkiSpawnTest.MultipleStructureTracking
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DevushkiSpawnTest
+[ RUN      ] DevushkiSpawnTest.MultipleStructureTracking
+
+=== MULTIPLE STRUCTURE TRACKING ===
+Total structures: 3
+Devushki columns: 2
+[       OK ] DevushkiSpawnTest.MultipleStructureTracking (0 ms)
+[----------] 1 test from DevushkiSpawnTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"DevushkiSpawnTest.MultipleStructureTracking" end time: Apr 13 20:21 CEST
+"DevushkiSpawnTest.MultipleStructureTracking" time elapsed: 00:00:00
+----------------------------------------------------------
+
+9/97 Testing: DevushkiSpawnTest.RealMapAttemptsToPlaceDevushkiColumn
+9/97 Test: DevushkiSpawnTest.RealMapAttemptsToPlaceDevushkiColumn
+Command: "/home/jakub/programko/cpp/skurvene-morciatka/build/morciatko_tests" "--gtest_filter=DevushkiSpawnTest.RealMapAttemptsToPlaceDevushkiColumn" "--gtest_also_run_disabled_tests"
+Directory: /home/jakub/programko/cpp/skurvene-morciatka/build
+"DevushkiSpawnTest.RealMapAttemptsToPlaceDevushkiColumn" start time: Apr 13 20:21 CEST
+Output:
+----------------------------------------------------------
+Note: Google Test filter = DevushkiSpawnTest.RealMapAttemptsToPlaceDevushkiColumn
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DevushkiSpawnTest
+[ RUN      ] DevushkiSpawnTest.RealMapAttemptsToPlaceDevushkiColumn
+[       OK ] DevushkiSpawnTest.RealMapAttemptsToPlaceDevushkiColumn (944 ms)
+[----------] 1 test from DevushkiSpawnTest (944 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (944 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.96 sec
+----------------------------------------------------------
+Test Passed.
+"DevushkiSpawnTest.RealMapAttemptsToPlaceDevushkiColumn" end time: Apr 13 20:21 CEST
+"DevushkiSpawnTest.RealMapAttemptsToPlaceDevushkiColumn" time elapsed: 00:00:00
+----------------------------------------------------------
+
+10/97 Testing: DevushkiSpawnTest.BaseFillCreatesSupportUnderStructure
+10/97 Test: DevushkiSpawnTest.BaseFillCreatesSupportUnderStructure
+Command: "/home/jakub/programko/cpp/skurvene-morciatka/build/morciatko_tests" "--gtest_filter=DevushkiSpawnTest.BaseFillCreatesSupportUnderStructure" "--gtest_also_run_disabled_tests"
+Directory: /home/jakub/programko/cpp/skurvene-morciatka/build
+"DevushkiSpawnTest.BaseFillCreatesSupportUnderStructure" start time: Apr 13 20:21 CEST
+Output:
+----------------------------------------------------------
+Note: Google Test filter = DevushkiSpawnTest.BaseFillCreatesSupportUnderStructure
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DevushkiSpawnTest
+[ RUN      ] DevushkiSpawnTest.BaseFillCreatesSupportUnderStructure
+[       OK ] DevushkiSpawnTest.BaseFillCreatesSupportUnderStructure (28 ms)
+[----------] 1 test from DevushkiSpawnTest (28 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (28 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Passed.
+"DevushkiSpawnTest.BaseFillCreatesSupportUnderStructure" end time: Apr 13 20:21 CEST
+"DevushkiSpawnTest.BaseFillCreatesSupportUnderStructure" time elapsed: 00:00:00
+----------------------------------------------------------
+
+11/97 Testing: DevushkiSpawnTest.BaseFillStopsAtExistingGround
+11/97 Test: DevushkiSpawnTest.BaseFillStopsAtExistingGround
+Command: "/home/jakub/programko/cpp/skurvene-morciatka/build/morciatko_tests" "--gtest_filter=DevushkiSpawnTest.BaseFillStopsAtExistingGround" "--gtest_also_run_disabled_tests"
+Directory: /home/jakub/programko/cpp/skurvene-morciatka/build
+"DevushkiSpawnTest.BaseFillStopsAtExistingGround" start time: Apr 13 20:21 CEST
+Output:
+----------------------------------------------------------
+Note: Google Test filter = DevushkiSpawnTest.BaseFillStopsAtExistingGround
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DevushkiSpawnTest
+[ RUN      ] DevushkiSpawnTest.BaseFillStopsAtExistingGround
+[       OK ] DevushkiSpawnTest.BaseFillStopsAtExistingGround (24 ms)
+[----------] 1 test from DevushkiSpawnTest (24 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (24 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Passed.
+"DevushkiSpawnTest.BaseFillStopsAtExistingGround" end time: Apr 13 20:21 CEST
+"DevushkiSpawnTest.BaseFillStopsAtExistingGround" time elapsed: 00:00:00
+----------------------------------------------------------
+
