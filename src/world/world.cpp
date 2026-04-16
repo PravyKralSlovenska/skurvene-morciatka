@@ -596,6 +596,26 @@ int World::get_devushki_column_spawn_radius_particles() const
     return structure_spawner.get_devushki_spawn_radius_particles();
 }
 
+void World::set_store_spawn_config(const StructureSpawner::StoreSpawnConfig &config)
+{
+    structure_spawner.set_store_spawn_config(config);
+}
+
+const StructureSpawner::StoreSpawnConfig &World::get_store_spawn_config() const
+{
+    return structure_spawner.get_store_spawn_config();
+}
+
+void World::set_store_spawning_enabled(bool enabled)
+{
+    structure_spawner.set_store_spawning_enabled(enabled);
+}
+
+bool World::is_store_spawning_enabled() const
+{
+    return structure_spawner.is_store_spawning_enabled();
+}
+
 void World::place_structure(const Structure &structure, const glm::ivec2 &world_pos)
 {
     structure_spawner.place_structure(structure, world_pos);

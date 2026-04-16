@@ -140,6 +140,10 @@ public:
                                          const std::function<void(const std::string &, float)> &progress_callback = {});
     void set_devushki_column_spawn_radius_particles(int radius_particles);
     int get_devushki_column_spawn_radius_particles() const;
+    void set_store_spawn_config(const StructureSpawner::StoreSpawnConfig &config);
+    const StructureSpawner::StoreSpawnConfig &get_store_spawn_config() const;
+    void set_store_spawning_enabled(bool enabled);
+    bool is_store_spawning_enabled() const;
     void place_structure(const Structure &structure, const glm::ivec2 &world_pos);
     void place_structure_centered(const Structure &structure, const glm::ivec2 &center_pos);
 

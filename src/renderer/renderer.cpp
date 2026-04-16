@@ -273,6 +273,12 @@ void IRenderer::imgui_render()
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+void IRenderer::toggle_debug_info()
+{
+    if (ui_renderer)
+        ui_renderer->toggle_debug_info();
+}
+
 void IRenderer::toggle_fullscreen_map()
 {
     if (ui_renderer)

@@ -231,6 +231,14 @@ void UI_Renderer::render_new_game_setup_menu(Menu_Actions &actions, Menu_Options
                 50000);
         }
 
+        if (ImGui::SliderInt("Devushki columns to spawn",
+                             &options.devushki_column_spawn_count,
+                             1,
+                             20))
+        {
+            options.devushki_column_spawn_count = std::clamp(options.devushki_column_spawn_count, 1, 20);
+        }
+
         ImGui::Spacing();
 
         if (!valid_seed_input)
@@ -388,6 +396,14 @@ void UI_Renderer::render_options_menu(Menu_Actions &actions, Menu_Options_Model 
                 500,
                 50000);
         }
+
+        if (ImGui::SliderInt("Devushki columns to spawn",
+                             &options.devushki_column_spawn_count,
+                             1,
+                             20))
+        {
+            options.devushki_column_spawn_count = std::clamp(options.devushki_column_spawn_count, 1, 20);
+        }
         ImGui::TextDisabled("Applied when creating a new world");
 
         ImGui::Spacing();
@@ -510,6 +526,19 @@ void UI_Renderer::render_ui()
     if (entity_manager)
         ensure_store_offer_textures_loaded();
 
+    objective_panel_bottom_y = 0.0f;
+
+    if (time_manager && !time_manager->paused())
+    {
+        session_play_time_seconds += time_manager->get_delta_time();
+    }
+
+    if (entity_manager)
+        render_devushki_objective();
+
+    if (player)
+        render_player_status_panel();
+
     if (show_debug_info)
         render_debug_overlay();
     if (show_health_bar && player)
@@ -518,8 +547,6 @@ void UI_Renderer::render_ui()
         render_boss_health_bar();
     if (show_hotbar && player)
         render_hotbar();
-    if (entity_manager)
-        render_devushki_objective();
     if (entity_manager)
         render_store_offers();
 
@@ -709,7 +736,7 @@ void UI_Renderer::render_debug_overlay()
         ImGuiWindowFlags_NoNav;
 
     const float padding = 10.0f;
-    ImGui::SetNextWindowPos(ImVec2(padding, padding), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(padding, 110.0f), ImGuiCond_Always);
     ImGui::SetNextWindowBgAlpha(0.6f);
 
     if (ImGui::Begin("##DebugOverlay", nullptr, flags))
@@ -818,6 +845,56 @@ void UI_Renderer::render_debug_overlay()
         }
     }
     ImGui::End();
+}
+
+void UI_Renderer::render_player_status_panel()
+{
+    if (!player)
+        return;
+
+    ImDrawList *draw_list = ImGui::GetForegroundDrawList();
+    if (!draw_list)
+        return;
+
+    const float x = 12.0f;
+    float y = 12.0f;
+    if (objective_panel_bottom_y > 0.0f)
+    {
+        y = objective_panel_bottom_y + 8.0f;
+    }
+    const float line_h = ImGui::GetTextLineHeightWithSpacing();
+
+    auto draw_plain_text = [&](const char *text, ImU32 color)
+    {
+        // Small shadow keeps text readable on bright terrain without a panel.
+        draw_list->AddText(ImVec2(x + 1.0f, y + 1.0f), IM_COL32(0, 0, 0, 200), text);
+        draw_list->AddText(ImVec2(x, y), color, text);
+        y += line_h;
+    };
+
+    int total_seconds = static_cast<int>(std::max(0.0, session_play_time_seconds));
+    const int hours = total_seconds / 3600;
+    const int minutes = (total_seconds % 3600) / 60;
+    const int seconds = total_seconds % 60;
+
+    char playtime_line[96];
+    std::snprintf(playtime_line, sizeof(playtime_line), "Play Time: %02d:%02d:%02d", hours, minutes, seconds);
+    draw_plain_text(playtime_line, IM_COL32(220, 240, 255, 255));
+
+    char coords_line[96];
+    std::snprintf(coords_line, sizeof(coords_line), "Coords: %d, %d", player->coords.x, player->coords.y);
+    draw_plain_text(coords_line, IM_COL32(220, 220, 220, 255));
+
+    if (entity_manager)
+    {
+        char money_line[96];
+        std::snprintf(money_line,
+                      sizeof(money_line),
+                      "Money: %d gold, %d silver",
+                      entity_manager->get_collected_gold_coins(),
+                      entity_manager->get_collected_silver_coins());
+        draw_plain_text(money_line, IM_COL32(255, 235, 170, 255));
+    }
 }
 
 // ============================================================================
@@ -1393,14 +1470,17 @@ void UI_Renderer::draw_map_content(ImDrawList *draw_list, ImVec2 pos, float map_
 void UI_Renderer::render_devushki_objective()
 {
     if (!entity_manager)
+    {
+        objective_panel_bottom_y = 0.0f;
         return;
+    }
 
     DevushkiObjective &obj = entity_manager->get_devushki_objective();
     if (!obj.objective_active)
+    {
+        objective_panel_bottom_y = 0.0f;
         return;
-
-    ImGuiIO &io = ImGui::GetIO();
-    float screen_w = io.DisplaySize.x;
+    }
 
     ImGuiWindowFlags flags =
         ImGuiWindowFlags_NoDecoration |
@@ -1411,7 +1491,7 @@ void UI_Renderer::render_devushki_objective()
         ImGuiWindowFlags_NoNav;
 
     float padding = 10.0f;
-    ImGui::SetNextWindowPos(ImVec2(screen_w - 500.0f - padding, padding), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(padding, padding), ImGuiCond_Always);
     ImGui::SetNextWindowBgAlpha(0.75f);
 
     if (ImGui::Begin("##DevushkiObjective", nullptr, flags))
@@ -1434,6 +1514,10 @@ void UI_Renderer::render_devushki_objective()
             ImGui::Text("Collected: %d / %d", obj.collected, obj.total_to_collect);
             ImGui::Text("Remaining: %d", obj.total_to_collect - obj.collected);
         }
+
+        const ImVec2 panel_pos = ImGui::GetWindowPos();
+        const ImVec2 panel_size = ImGui::GetWindowSize();
+        objective_panel_bottom_y = panel_pos.y + panel_size.y;
     }
     ImGui::End();
 }

@@ -1,5 +1,5 @@
 {
-  "tests": 98,
+  "tests": 99,
   "name": "AllTests",
   "testsuites": [
     {
@@ -80,7 +80,7 @@
     },
     {
       "name": "StructureSpawnRulesTest",
-      "tests": 2,
+      "tests": 3,
       "testsuite": [
         {
           "name": "PredeterminedEntriesGeneratedForRegisteredStructures",
@@ -88,9 +88,14 @@
           "line": 9
         },
         {
+          "name": "InitialPredeterminedGenerationDoesNotPreallocateStores",
+          "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/structure_spawn_rules_test.cpp",
+          "line": 38
+        },
+        {
           "name": "DevushkiColumnTargetIsOnConfiguredCircle",
           "file": "\/home\/jakub\/programko\/cpp\/skurvene-morciatka\/tests\/integration\/structure_spawn_rules_test.cpp",
-          "line": 35
+          "line": 55
         }
       ]
     },

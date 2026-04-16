@@ -86,6 +86,7 @@ int main()
     float option_spawn_interval = spawn_cfg.spawn_interval;
     int option_max_enemies = spawn_cfg.max_enemies;
     int option_column_spawn_radius = world.get_devushki_column_spawn_radius_particles();
+    int option_column_spawn_count = 4;
     std::string option_world_seed_input;
     bool option_use_custom_seed = false;
     int option_custom_seed = 0;
@@ -96,17 +97,26 @@ int main()
     float option_audio_gunshot_volume = 0.58f;
     float option_audio_flamethrower_volume = 0.27f;
 
-    const int devushki_count = 4; // how many devushki to save (change this to set the objective)
-    entity_manager.set_devushki_objective_count(devushki_count);
-    entity_manager.spawn_devushki_objective(devushki_count, 200.0f, "devushki");
+    StructureSpawner::StoreSpawnConfig option_store_spawn_config = world.get_store_spawn_config();
+    option_store_spawn_config.enabled = true;
+    option_store_spawn_config.chunks_per_spawn = 90;
+    option_store_spawn_config.min_generated_chunks_before_first_store = 40;
+    option_store_spawn_config.min_spawn_radius_particles = 80;
+    option_store_spawn_config.max_spawn_radius_particles = 900;
+    option_store_spawn_config.min_distance_between_stores_particles = 320;
+    option_store_spawn_config.min_distance_from_origin_particles = 150;
+
+    entity_manager.set_devushki_objective_count(option_column_spawn_count);
+    entity_manager.spawn_devushki_objective(option_column_spawn_count, 200.0f, "devushki");
 
     // Startup workflow:
     // 1) seed already chosen in World constructor
     // 2) suitable column targets found and remembered (not placed yet)
     // 3) columns are placed lazily only when nearby chunks load
     // 4) player spawn validated without forcing remote structure placement
+    world.set_store_spawn_config(option_store_spawn_config);
     world.set_devushki_column_spawn_radius_particles(option_column_spawn_radius);
-    world.set_devushki_column_spawn_count(devushki_count);
+    world.set_devushki_column_spawn_count(option_column_spawn_count);
 
     Player *player = entity_manager.get_player();
     bool player_death_sound_played = false;
@@ -153,8 +163,8 @@ int main()
 
         render_loading_frame(0.10f, "Spawning devushki objective...");
 
-        entity_manager.set_devushki_objective_count(devushki_count);
-        entity_manager.spawn_devushki_objective(devushki_count, 2000.0f, "devushki");
+        entity_manager.set_devushki_objective_count(option_column_spawn_count);
+        entity_manager.spawn_devushki_objective(option_column_spawn_count, 2000.0f, "devushki");
 
         render_loading_frame(0.12f, "Objective ready.");
 
@@ -164,7 +174,7 @@ int main()
 
         render_loading_frame(0.15f, "Finding coordinates for columns...");
         world.set_devushki_column_spawn_count(
-            devushki_count,
+            option_column_spawn_count,
             [&](const std::string &status, float sub_progress)
             {
                 const float mapped_progress = 0.15f + std::clamp(sub_progress, 0.0f, 1.0f) * 0.80f;
@@ -247,6 +257,7 @@ int main()
             option_spawn_interval,
             option_max_enemies,
             option_column_spawn_radius,
+            option_column_spawn_count,
             option_world_seed_input,
             option_use_custom_seed,
             option_custom_seed,
@@ -397,6 +408,7 @@ int main()
         option_spawn_interval = options_model.spawn_interval;
         option_max_enemies = options_model.max_enemies;
         option_column_spawn_radius = options_model.devushki_column_spawn_radius_particles;
+        option_column_spawn_count = options_model.devushki_column_spawn_count;
         option_world_seed_input = options_model.world_seed_input;
         option_use_custom_seed = options_model.use_custom_seed;
         option_custom_seed = options_model.custom_seed;

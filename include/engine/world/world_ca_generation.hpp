@@ -32,6 +32,7 @@ private:
     int seed = 1234;
 
     FastNoiseLite biome_noise;
+    FastNoiseLite material_blend_noise;
     // FastNoiseLite details_noise;
 
     // const int NOISE_DENSITY = 47; // v percentach

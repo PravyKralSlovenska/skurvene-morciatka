@@ -31,6 +31,7 @@ struct Menu_Options_Model
     float spawn_interval = 3.0f;
     int max_enemies = 20;
     int devushki_column_spawn_radius_particles = 500;
+    int devushki_column_spawn_count = 4;
     std::string world_seed_input;
     bool use_custom_seed = false;
     int custom_seed = 0;
@@ -67,14 +68,16 @@ private:
     Entity_Manager *entity_manager = nullptr;
 
     // UI state
-    bool show_debug_info = true;
+    bool show_debug_info = false;
     bool show_hotbar = true;
     bool show_health_bar = true;
     bool show_minimap = true;
     bool show_fullscreen_map = false;
+    double session_play_time_seconds = 0.0;
 
     float loading_progress = 0.0f;
     std::string loading_status = "Preparing loading...";
+    float objective_panel_bottom_y = 0.0f;
 
     // Store offer icon textures used for world-space UI labels.
     std::unordered_map<std::string, unsigned int> store_offer_textures;
@@ -113,6 +116,7 @@ public:
 
     // individual UI panels
     void render_debug_overlay();
+    void render_player_status_panel();
     void render_health_bar();
     void render_boss_health_bar();
     void render_hotbar();

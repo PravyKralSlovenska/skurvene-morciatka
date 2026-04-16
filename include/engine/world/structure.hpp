@@ -53,6 +53,25 @@ namespace StructureFactory
 class StructureSpawner
 {
 public:
+    struct PlacementProfile
+    {
+        int min_supported_columns = 1;
+        float min_support_ratio = 0.20f;
+        int support_scan_max_depth_cells = 18;
+        int max_ground_variation_cells = 12;
+    };
+
+    struct StoreSpawnConfig
+    {
+        bool enabled = true;
+        int chunks_per_spawn = 220;
+        int min_generated_chunks_before_first_store = 120;
+        int min_spawn_radius_particles = 600;
+        int max_spawn_radius_particles = 2200;
+        int min_distance_between_stores_particles = 800;
+        int min_distance_from_origin_particles = 500;
+    };
+
     struct PredeterminedEntry
     {
         std::string structure_name;
@@ -65,6 +84,10 @@ private:
     std::mt19937 rng;
     int seed = 0;
     int devushki_spawn_radius_particles = 500;
+    StoreSpawnConfig store_spawn_config;
+    PlacementProfile default_placement_profile;
+    std::map<std::string, PlacementProfile> structure_placement_profiles;
+    int store_target_sequence_index = 0;
 
     // Optional per-structure override for deterministic predetermined entry count.
     std::map<std::string, int> structure_spawn_counts;
@@ -85,6 +108,10 @@ private:
 
 private:
     int find_surface_y(int world_x, int start_y, int scan_range) const;
+    bool is_store_name(const std::string &name) const;
+    bool is_store_target_far_enough(const glm::ivec2 &target_px) const;
+    bool try_generate_store_target_for_sequence(int sequence_index, glm::ivec2 &out_target_px) const;
+    PlacementProfile sanitize_placement_profile(const PlacementProfile &profile) const;
 
 public:
     StructureSpawner();
@@ -94,6 +121,16 @@ public:
     void set_structure_spawn_count(const std::string &name, int count);
     void set_devushki_spawn_radius_particles(int radius_particles);
     int get_devushki_spawn_radius_particles() const;
+    void set_default_placement_profile(const PlacementProfile &profile);
+    const PlacementProfile &get_default_placement_profile() const;
+    void set_structure_placement_profile(const std::string &name, const PlacementProfile &profile);
+    bool get_structure_placement_profile(const std::string &name, PlacementProfile &out_profile) const;
+    void clear_structure_placement_profile(const std::string &name);
+    PlacementProfile resolve_structure_placement_profile(const std::string &name) const;
+    void set_store_spawn_config(const StoreSpawnConfig &config);
+    const StoreSpawnConfig &get_store_spawn_config() const;
+    void set_store_spawning_enabled(bool enabled);
+    bool is_store_spawning_enabled() const;
 
     // Manage blueprints
     void add_blueprint(const std::string &name, const Structure &structure);

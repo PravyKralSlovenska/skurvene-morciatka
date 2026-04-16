@@ -197,7 +197,8 @@ void Controls::handle_input()
 
                         if (compass_particle)
                         {
-                            compass_particle->set_hitbox_dimensions(44, 22);
+                            const int particle_size = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+                            compass_particle->set_hitbox_dimensions(2 * particle_size, 2 * particle_size);
                             compass_particle->set_lifetime(1.65f);
                             compass_particle->set_gravity_multiplier(0.0f);
                             compass_particle->set_air_drag(0.998f);
@@ -411,6 +412,14 @@ void Controls::keyboard_input()
         if (renderer)
         {
             renderer->maximize_window();
+        }
+    }
+
+    if (key_just_pressed(GLFW_KEY_F3))
+    {
+        if (renderer)
+        {
+            renderer->toggle_debug_info();
         }
     }
 

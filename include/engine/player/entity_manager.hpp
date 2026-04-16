@@ -6,6 +6,7 @@
 #include <memory>
 #include <random>
 #include <string>
+#include <cstdint>
 #include <glm/glm.hpp>
 #include "engine/particle/particle.hpp"
 #include "engine/player/entity.hpp"
@@ -53,14 +54,22 @@ enum class Store_Offer_Type
 {
     HEAL,
     AMMO,
+    WAND_SAND,
+    WAND_WATER,
     WAND_FIRE,
+    WAND_ICE,
+    WAND_WATER_VAPOR,
     WAND_WOOD,
+    WAND_STONE,
     WAND_EMPTY,
+    WAND_SMOKE,
+    WAND_URANIUM,
     COMPASS
 };
 
 struct Store_Offer
 {
+    std::int64_t offer_key = 0;
     int structure_hash = 0;
     glm::ivec2 structure_world_pos = {0, 0};
     glm::ivec2 display_world_pos = {0, 0};
@@ -108,8 +117,8 @@ private:
     // Special utility store items
     bool player_has_compass = true;
 
-    // One offer per store structure
-    std::unordered_map<int, Store_Offer> store_offers_by_structure;
+    // Multiple offers per store structure (keyed by offer_key)
+    std::unordered_map<std::int64_t, Store_Offer> store_offers_by_structure;
 
 private:
     void remove_all_dead();

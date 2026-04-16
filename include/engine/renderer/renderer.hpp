@@ -99,6 +99,7 @@ public:
     void imgui_render();
 
     // UI
+    void toggle_debug_info();
     void toggle_fullscreen_map();
     bool is_fullscreen_map_open() const;
     void set_loading_screen_state(float progress, const std::string &status);

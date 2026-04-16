@@ -21,6 +21,9 @@ TEST(StructureSpawnRulesTest, PredeterminedEntriesGeneratedForRegisteredStructur
     size_t expected_entries = 0;
     for (const auto &blueprint : blueprints)
     {
+        if (blueprint.first == "store" || blueprint.first == "devushki_store")
+            continue;
+
         expected_entries += (blueprint.first == "devushki_column") ? 1 : kNonColumnDefaultOpportunities;
     }
 
@@ -30,6 +33,23 @@ TEST(StructureSpawnRulesTest, PredeterminedEntriesGeneratedForRegisteredStructur
     {
         EXPECT_NE(spawner.get_blueprint(entry.structure_name), nullptr);
     }
+}
+
+TEST(StructureSpawnRulesTest, InitialPredeterminedGenerationDoesNotPreallocateStores)
+{
+    World world;
+    const auto &entries = world.get_structure_spawner().get_predetermined_entries();
+
+    const int store_entry_count = static_cast<int>(std::count_if(
+        entries.begin(),
+        entries.end(),
+        [](const StructureSpawner::PredeterminedEntry &entry)
+        {
+            return entry.structure_name == "store" || entry.structure_name == "devushki_store";
+        }));
+
+    EXPECT_EQ(store_entry_count, 0)
+        << "Store entries should be generated lazily from explored chunk count, not at seed initialization.";
 }
 
 TEST(StructureSpawnRulesTest, DevushkiColumnTargetIsOnConfiguredCircle)

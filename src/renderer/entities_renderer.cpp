@@ -209,6 +209,16 @@ void Entities_Renderer::add_entity_to_batch(Entity *entity)
         color = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f); // Yellow default for projectile
         if (const Projectile *projectile = static_cast<const Projectile *>(entity))
         {
+            const bool is_compass_guidance =
+                projectile->get_owner_type() == Entity_Type::PLAYER &&
+                projectile->get_payload_type() == Particle_Type::SAND &&
+                projectile->get_damage() <= 0.0f;
+
+            if (is_compass_guidance && entity_manager && entity_manager->get_boss_count() > 0)
+            {
+                color = glm::vec4(1.0f, 0.15f, 0.15f, 1.0f); // Red guidance when boss phase is active
+            }
+
             if (projectile->get_payload_type() == Particle_Type::FIRE)
             {
                 color = glm::vec4(1.0f, 0.35f, 0.05f, 1.0f); // Hot orange for fireballs

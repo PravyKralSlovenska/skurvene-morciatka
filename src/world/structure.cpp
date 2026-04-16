@@ -16,6 +16,7 @@
 #include <climits>
 #include <memory>
 #include <cstdint>
+#include <limits>
 #include <unordered_map>
 
 static int pixel_to_cell(int px)
@@ -161,6 +162,213 @@ int StructureSpawner::get_devushki_spawn_radius_particles() const
     return devushki_spawn_radius_particles;
 }
 
+StructureSpawner::PlacementProfile StructureSpawner::sanitize_placement_profile(const PlacementProfile &profile) const
+{
+    PlacementProfile sanitized = profile;
+    sanitized.min_supported_columns = std::max(1, sanitized.min_supported_columns);
+    sanitized.min_support_ratio = std::clamp(sanitized.min_support_ratio, 0.0f, 1.0f);
+    sanitized.support_scan_max_depth_cells = std::max(1, sanitized.support_scan_max_depth_cells);
+    sanitized.max_ground_variation_cells = std::max(0, sanitized.max_ground_variation_cells);
+    return sanitized;
+}
+
+void StructureSpawner::set_default_placement_profile(const PlacementProfile &profile)
+{
+    default_placement_profile = sanitize_placement_profile(profile);
+}
+
+const StructureSpawner::PlacementProfile &StructureSpawner::get_default_placement_profile() const
+{
+    return default_placement_profile;
+}
+
+void StructureSpawner::set_structure_placement_profile(const std::string &name, const PlacementProfile &profile)
+{
+    structure_placement_profiles[name] = sanitize_placement_profile(profile);
+}
+
+bool StructureSpawner::get_structure_placement_profile(const std::string &name, PlacementProfile &out_profile) const
+{
+    auto it = structure_placement_profiles.find(name);
+    if (it == structure_placement_profiles.end())
+        return false;
+
+    out_profile = it->second;
+    return true;
+}
+
+void StructureSpawner::clear_structure_placement_profile(const std::string &name)
+{
+    structure_placement_profiles.erase(name);
+}
+
+StructureSpawner::PlacementProfile StructureSpawner::resolve_structure_placement_profile(const std::string &name) const
+{
+    auto it = structure_placement_profiles.find(name);
+    if (it != structure_placement_profiles.end())
+        return it->second;
+
+    return default_placement_profile;
+}
+
+void StructureSpawner::set_store_spawn_config(const StoreSpawnConfig &config)
+{
+    StoreSpawnConfig sanitized = config;
+    sanitized.chunks_per_spawn = std::max(1, sanitized.chunks_per_spawn);
+    sanitized.min_generated_chunks_before_first_store = std::max(0, sanitized.min_generated_chunks_before_first_store);
+    sanitized.min_spawn_radius_particles = std::max(0, sanitized.min_spawn_radius_particles);
+    sanitized.max_spawn_radius_particles = std::max(sanitized.min_spawn_radius_particles, sanitized.max_spawn_radius_particles);
+    sanitized.min_distance_between_stores_particles = std::max(0, sanitized.min_distance_between_stores_particles);
+    sanitized.min_distance_from_origin_particles = std::max(0, sanitized.min_distance_from_origin_particles);
+
+    store_spawn_config = sanitized;
+
+    if (!store_spawn_config.enabled)
+    {
+        predetermined_entries.erase(
+            std::remove_if(predetermined_entries.begin(), predetermined_entries.end(),
+                           [&](const PredeterminedEntry &entry)
+                           {
+                               return is_store_name(entry.structure_name) && !entry.placed;
+                           }),
+            predetermined_entries.end());
+    }
+}
+
+const StructureSpawner::StoreSpawnConfig &StructureSpawner::get_store_spawn_config() const
+{
+    return store_spawn_config;
+}
+
+void StructureSpawner::set_store_spawning_enabled(bool enabled)
+{
+    StoreSpawnConfig updated = store_spawn_config;
+    updated.enabled = enabled;
+    set_store_spawn_config(updated);
+}
+
+bool StructureSpawner::is_store_spawning_enabled() const
+{
+    return store_spawn_config.enabled;
+}
+
+bool StructureSpawner::is_store_name(const std::string &name) const
+{
+    return name == "store" || name == "devushki_store";
+}
+
+bool StructureSpawner::is_store_target_far_enough(const glm::ivec2 &target_px) const
+{
+    const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+    const long long min_origin_px = static_cast<long long>(store_spawn_config.min_distance_from_origin_particles) * ps;
+    const long long dist_origin_sq =
+        static_cast<long long>(target_px.x) * static_cast<long long>(target_px.x) +
+        static_cast<long long>(target_px.y) * static_cast<long long>(target_px.y);
+
+    if (dist_origin_sq < min_origin_px * min_origin_px)
+        return false;
+
+    const long long min_store_spacing_px = static_cast<long long>(store_spawn_config.min_distance_between_stores_particles) * ps;
+    const long long min_store_spacing_sq = min_store_spacing_px * min_store_spacing_px;
+
+    for (const auto &entry : predetermined_entries)
+    {
+        if (!is_store_name(entry.structure_name))
+            continue;
+
+        const long long dx = static_cast<long long>(target_px.x) - static_cast<long long>(entry.target_pos.x);
+        const long long dy = static_cast<long long>(target_px.y) - static_cast<long long>(entry.target_pos.y);
+        if (dx * dx + dy * dy < min_store_spacing_sq)
+            return false;
+    }
+
+    for (const auto &placed : placed_structures)
+    {
+        if (!is_store_name(placed.name))
+            continue;
+
+        const long long dx = static_cast<long long>(target_px.x) - static_cast<long long>(placed.position.x);
+        const long long dy = static_cast<long long>(target_px.y) - static_cast<long long>(placed.position.y);
+        if (dx * dx + dy * dy < min_store_spacing_sq)
+            return false;
+    }
+
+    return true;
+}
+
+bool StructureSpawner::try_generate_store_target_for_sequence(int sequence_index, glm::ivec2 &out_target_px) const
+{
+    if (!world)
+        return false;
+
+    auto *chunks = world->get_chunks();
+    if (!chunks || chunks->empty())
+        return false;
+
+    const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
+    const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+    const int chunk_pixel_w = chunk_dims.x * ps;
+    const int chunk_pixel_h = chunk_dims.y * ps;
+
+    int min_chunk_x = std::numeric_limits<int>::max();
+    int max_chunk_x = std::numeric_limits<int>::min();
+    int min_chunk_y = std::numeric_limits<int>::max();
+    int max_chunk_y = std::numeric_limits<int>::min();
+
+    for (const auto &pair : *chunks)
+    {
+        const glm::ivec2 &coords = pair.first;
+        min_chunk_x = std::min(min_chunk_x, coords.x);
+        max_chunk_x = std::max(max_chunk_x, coords.x);
+        min_chunk_y = std::min(min_chunk_y, coords.y);
+        max_chunk_y = std::max(max_chunk_y, coords.y);
+    }
+
+    const float center_chunk_x = 0.5f * static_cast<float>(min_chunk_x + max_chunk_x);
+    const float center_chunk_y = 0.5f * static_cast<float>(min_chunk_y + max_chunk_y);
+    const glm::ivec2 explored_center_px(
+        static_cast<int>((center_chunk_x + 0.5f) * static_cast<float>(chunk_pixel_w)),
+        static_cast<int>((center_chunk_y + 0.5f) * static_cast<float>(chunk_pixel_h)));
+
+    const int span_chunks_x = max_chunk_x - min_chunk_x + 1;
+    const int span_chunks_y = max_chunk_y - min_chunk_y + 1;
+    const int explored_radius_chunks = std::max(span_chunks_x, span_chunks_y) / 2;
+    const int explored_radius_px = explored_radius_chunks * std::max(chunk_pixel_w, chunk_pixel_h);
+
+    const int configured_min_radius_px = std::max(0, store_spawn_config.min_spawn_radius_particles * ps);
+    const int configured_max_radius_px = std::max(configured_min_radius_px, store_spawn_config.max_spawn_radius_particles * ps);
+
+    const int explored_shell_padding_px = std::max(chunk_pixel_w, chunk_pixel_h) * 2;
+    const int min_radius_px = std::max(configured_min_radius_px, explored_radius_px + explored_shell_padding_px);
+    const int max_radius_px = std::max(min_radius_px + ps, configured_max_radius_px + explored_radius_px / 2);
+
+    const std::uint32_t sequence_hash = static_cast<std::uint32_t>(sequence_index + 1) * 2654435761u;
+    std::mt19937 target_rng(static_cast<std::uint32_t>(seed) ^ sequence_hash);
+    std::uniform_real_distribution<float> angle_dist(0.0f, 2.0f * static_cast<float>(M_PI));
+    std::uniform_int_distribution<int> radius_dist(min_radius_px, max_radius_px);
+
+    constexpr int STORE_TARGET_ATTEMPTS_PER_SEQUENCE = 24;
+    for (int attempt = 0; attempt < STORE_TARGET_ATTEMPTS_PER_SEQUENCE; ++attempt)
+    {
+        const float angle = angle_dist(target_rng);
+        const int radius = radius_dist(target_rng);
+
+        int candidate_x = explored_center_px.x + static_cast<int>(std::cos(angle) * static_cast<float>(radius));
+        int candidate_y = explored_center_px.y + static_cast<int>(std::sin(angle) * static_cast<float>(radius));
+        candidate_x = static_cast<int>(std::floor(static_cast<float>(candidate_x) / static_cast<float>(ps))) * ps;
+        candidate_y = static_cast<int>(std::floor(static_cast<float>(candidate_y) / static_cast<float>(ps))) * ps;
+
+        const glm::ivec2 candidate(candidate_x, candidate_y);
+        if (!is_store_target_far_enough(candidate))
+            continue;
+
+        out_target_px = candidate;
+        return true;
+    }
+
+    return false;
+}
+
 void StructureSpawner::add_blueprint(const std::string &name, const Structure &structure)
 {
     blueprints[name] = structure;
@@ -221,8 +429,6 @@ namespace
 {
     static constexpr int RANDOM_TARGET_MIN = -15000;
     static constexpr int RANDOM_TARGET_MAX = 15000;
-    static constexpr float STORE_SPAWN_RADIUS_MIN = 250.0f;
-    static constexpr float STORE_SPAWN_RADIUS_MAX = 800.0f;
     static constexpr int MAX_VERTICAL_LIFT_CELLS = 120;
     static constexpr int MAX_RAW_RETRY_ATTEMPTS = 6;
     static constexpr int RAW_RETRY_DISTANCE_CELLS = 250;
@@ -232,10 +438,9 @@ namespace
     static constexpr int BASE_FEATHER_SIDE_SPREAD_CELLS = 3;
     static constexpr int BASE_FEATHER_MAX_DEPTH_CELLS = 24;
     static constexpr int STRUCTURE_CLEARANCE_CELLS = 1;
-    static constexpr int STORE_CHUNKS_PER_SPAWN = 220;
+    static constexpr int STORE_TARGET_MAX_SEQUENCE_ADVANCE = 32;
     static constexpr int ENTRY_PLACE_RADIUS_CHUNKS = 10;
     static constexpr int NON_COLUMN_DEFAULT_SPAWN_OPPORTUNITIES = 10;
-    static constexpr bool STORE_SPAWNING_ENABLED = false;
 
     struct ReservedPlacement
     {
@@ -582,7 +787,8 @@ namespace
     }
 
     bool is_valid_placement(StructureSpawner *spawner, World *world,
-                            const Structure &structure, const glm::ivec2 &world_pos)
+                            const Structure &structure, const glm::ivec2 &world_pos,
+                            const std::string &structure_name)
     {
         if (!spawner || !world)
             return false;
@@ -667,29 +873,65 @@ namespace
             }
         }
 
-        // Rule 1.2: at least one support column must touch solid ground.
-        // Remaining unsupported columns can be stabilized by filling after placement.
+        // Rule 1.2: support and flatness rules are shared for all structures
+        // and tuned via per-structure placement profiles.
+        const StructureSpawner::PlacementProfile profile = spawner->resolve_structure_placement_profile(structure_name);
         const int ground_y = world_pos.y + structure.get_height() * ps;
         int supported_columns = 0;
+        int min_support_depth = std::numeric_limits<int>::max();
+        int max_support_depth = std::numeric_limits<int>::min();
+
         for (int sx = 0; sx < structure.get_width(); ++sx)
         {
             const int world_x = world_pos.x + sx * ps;
+            int first_solid_depth = -1;
 
-            const glm::ivec2 chunk_pos = get_chunk_pos_from_world_px(world_x, ground_y, chunk_dims.x * ps, chunk_dims.y * ps);
-            if (!ensure_chunk_generated(world, chunk_pos))
-                return false;
+            for (int depth = 0; depth < profile.support_scan_max_depth_cells; ++depth)
+            {
+                const int sample_y = ground_y + depth * ps;
 
-            Chunk *chunk = nullptr;
-            glm::ivec2 local_cell;
-            if (!get_chunk_and_local_cell(world, world_x, ground_y, chunk, local_cell))
-                return false;
+                const glm::ivec2 chunk_pos = get_chunk_pos_from_world_px(world_x,
+                                                                          sample_y,
+                                                                          chunk_dims.x * ps,
+                                                                          chunk_dims.y * ps);
+                if (!ensure_chunk_generated(world, chunk_pos))
+                    return false;
 
-            if (!chunk->is_empty(local_cell.x, local_cell.y))
-                supported_columns++;
+                Chunk *chunk = nullptr;
+                glm::ivec2 local_cell;
+                if (!get_chunk_and_local_cell(world, world_x, sample_y, chunk, local_cell))
+                    return false;
+
+                if (!chunk->is_empty(local_cell.x, local_cell.y))
+                {
+                    first_solid_depth = depth;
+                    break;
+                }
+            }
+
+            if (first_solid_depth < 0)
+                continue;
+
+            supported_columns++;
+            min_support_depth = std::min(min_support_depth, first_solid_depth);
+            max_support_depth = std::max(max_support_depth, first_solid_depth);
         }
 
-        if (supported_columns == 0)
+        const int required_supported_columns = std::min(std::max(1, profile.min_supported_columns), std::max(1, structure.get_width()));
+        if (supported_columns < required_supported_columns)
             return false;
+
+        const int structure_width = std::max(1, structure.get_width());
+        const float support_ratio = static_cast<float>(supported_columns) / static_cast<float>(structure_width);
+        if (support_ratio < profile.min_support_ratio)
+            return false;
+
+        if (supported_columns > 1)
+        {
+            const int variation = max_support_depth - min_support_depth;
+            if (variation > profile.max_ground_variation_cells)
+                return false;
+        }
 
         return true;
     }
@@ -704,7 +946,7 @@ namespace
         for (int lift = 0; lift <= MAX_VERTICAL_LIFT_CELLS; ++lift)
         {
             glm::ivec2 candidate_pos(base_pos.x, base_pos.y - lift * ps);
-            if (!is_valid_placement(spawner, world, blueprint, candidate_pos))
+            if (!is_valid_placement(spawner, world, blueprint, candidate_pos, structure_name))
                 continue;
 
             if (spawner->place_structure(blueprint, candidate_pos))
@@ -910,17 +1152,18 @@ void StructureSpawner::generate_predetermined_positions(int world_seed)
 {
     predetermined_entries.clear();
     placed_structures.clear();
+    store_target_sequence_index = 0;
 
     std::mt19937 local_rng(world_seed);
     std::uniform_real_distribution<float> angle_dist(0.0f, 2.0f * static_cast<float>(M_PI));
-    std::uniform_real_distribution<float> store_radius_dist(STORE_SPAWN_RADIUS_MIN, STORE_SPAWN_RADIUS_MAX);
     std::uniform_int_distribution<int> random_pos(RANDOM_TARGET_MIN, RANDOM_TARGET_MAX);
 
     const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
     const float devushki_spawn_radius_px = static_cast<float>(devushki_spawn_radius_particles * ps);
     for (const auto &pair : blueprints)
     {
-        if (!STORE_SPAWNING_ENABLED && (pair.first == "store" || pair.first == "devushki_store"))
+        // Store targets are generated lazily from explored chunk count.
+        if (is_store_name(pair.first))
             continue;
 
         int spawn_count = (pair.first == "devushki_column") ? 1 : NON_COLUMN_DEFAULT_SPAWN_OPPORTUNITIES;
@@ -941,19 +1184,6 @@ void StructureSpawner::generate_predetermined_positions(int world_seed)
 
                 int target_x = static_cast<int>(std::cos(angle) * devushki_spawn_radius_px);
                 int target_y = static_cast<int>(std::sin(angle) * devushki_spawn_radius_px);
-
-                target_x = (target_x / ps) * ps;
-                target_y = (target_y / ps) * ps;
-
-                entry.target_pos = glm::ivec2(target_x, target_y);
-            }
-            else if (pair.first == "store" || pair.first == "devushki_store")
-            {
-                const float angle = angle_dist(local_rng);
-                const float radius = store_radius_dist(local_rng);
-
-                int target_x = static_cast<int>(std::cos(angle) * radius);
-                int target_y = static_cast<int>(std::sin(angle) * radius);
 
                 target_x = (target_x / ps) * ps;
                 target_y = (target_y / ps) * ps;
@@ -988,35 +1218,47 @@ void StructureSpawner::try_place_pending_structures(const glm::ivec2 &chunk_coor
     const int chunk_pixel_w = chunk_dims.x * ps;
     const int chunk_pixel_h = chunk_dims.y * ps;
 
-    // Scale store count with explored world size: ~1 store per 220 generated chunks.
+    // Scale store count with explored world size.
     Structure *store_blueprint = get_blueprint("store");
-    if (STORE_SPAWNING_ENABLED && store_blueprint)
+    if (store_spawn_config.enabled && store_blueprint)
     {
         const int generated_chunks = std::max(0, world->get_chunks_size());
-        const int desired_store_targets = std::max(1, generated_chunks / STORE_CHUNKS_PER_SPAWN);
+        int desired_store_targets = 0;
+        if (generated_chunks >= store_spawn_config.min_generated_chunks_before_first_store)
+        {
+            desired_store_targets = std::max(1, generated_chunks / store_spawn_config.chunks_per_spawn);
+        }
 
         int current_store_targets = 0;
         for (const auto &entry : predetermined_entries)
         {
-            if (entry.structure_name == "store" || entry.structure_name == "devushki_store")
+            if (is_store_name(entry.structure_name))
                 ++current_store_targets;
         }
 
         // Add at most one store target per call to avoid frame spikes.
         if (current_store_targets < desired_store_targets)
         {
-            std::uniform_int_distribution<int> random_pos(RANDOM_TARGET_MIN, RANDOM_TARGET_MAX);
+            int sequence_advances = 0;
+            while (current_store_targets < desired_store_targets && sequence_advances < STORE_TARGET_MAX_SEQUENCE_ADVANCE)
+            {
+                glm::ivec2 target_pos;
+                const bool generated_target = try_generate_store_target_for_sequence(store_target_sequence_index, target_pos);
+                store_target_sequence_index++;
+                sequence_advances++;
 
-            PredeterminedEntry entry;
-            entry.structure_name = "store";
+                if (!generated_target)
+                    continue;
 
-            int target_x = random_pos(rng);
-            int target_y = random_pos(rng);
-            target_x = (target_x / ps) * ps;
-            target_y = (target_y / ps) * ps;
+                PredeterminedEntry entry;
+                entry.structure_name = "store";
+                entry.target_pos = target_pos;
+                predetermined_entries.push_back(entry);
+                current_store_targets++;
 
-            entry.target_pos = glm::ivec2(target_x, target_y);
-            predetermined_entries.push_back(entry);
+                // Keep one-store-per-call budget to avoid spikes.
+                break;
+            }
         }
     }
 
@@ -1028,7 +1270,7 @@ void StructureSpawner::try_place_pending_structures(const glm::ivec2 &chunk_coor
         if (entry.placed)
             continue;
 
-        if (!STORE_SPAWNING_ENABLED && (entry.structure_name == "store" || entry.structure_name == "devushki_store"))
+        if (!store_spawn_config.enabled && is_store_name(entry.structure_name))
         {
             entry.placed = true;
             continue;

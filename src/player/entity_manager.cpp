@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstdint>
 #include <limits>
 #include <memory>
 #include <vector>
@@ -116,6 +117,64 @@ namespace
     int price_to_silver(int gold, int silver)
     {
         return gold * SILVER_PER_GOLD + silver;
+    }
+
+    std::int64_t make_store_offer_key(int structure_hash, Store_Offer_Type type)
+    {
+        const std::uint64_t hash_part = static_cast<std::uint64_t>(static_cast<std::uint32_t>(structure_hash));
+        const std::uint64_t type_part = static_cast<std::uint64_t>(static_cast<std::uint32_t>(static_cast<int>(type) + 1));
+        return static_cast<std::int64_t>((hash_part << 32) | type_part);
+    }
+
+    struct StoreOfferDefinition
+    {
+        Store_Offer_Type type;
+        const char *item_name;
+        const char *icon_path;
+        int price_gold;
+        int price_silver;
+    };
+
+    StoreOfferDefinition pick_weighted_store_offer(bool include_compass, std::mt19937 &rng)
+    {
+        // Requested probabilities by category:
+        // wands 20%, compass 30%, health 30%, ammo 20%.
+        // If compass is already owned, its weight is redistributed by normalization.
+        const double wands_weight = 20.0;
+        const double compass_weight = include_compass ? 30.0 : 0.0;
+        const double health_weight = 30.0;
+        const double ammo_weight = 20.0;
+
+        std::discrete_distribution<int> category_dist({wands_weight, compass_weight, health_weight, ammo_weight});
+        const int category = category_dist(rng);
+
+        switch (category)
+        {
+        case 0:
+        {
+            static const std::array<StoreOfferDefinition, 10> wand_offers = {
+                StoreOfferDefinition{Store_Offer_Type::WAND_SAND, "Sand Wand", "builtin://wand_sand", STORE_WAND_ITEM_PRICE_GOLD, STORE_WAND_ITEM_PRICE_SILVER},
+                StoreOfferDefinition{Store_Offer_Type::WAND_WATER, "Water Wand", "builtin://wand_water", STORE_WAND_ITEM_PRICE_GOLD, STORE_WAND_ITEM_PRICE_SILVER},
+                StoreOfferDefinition{Store_Offer_Type::WAND_FIRE, "Fire Wand", "builtin://wand_fire", STORE_WAND_ITEM_PRICE_GOLD, STORE_WAND_ITEM_PRICE_SILVER},
+                StoreOfferDefinition{Store_Offer_Type::WAND_ICE, "Ice Wand", "builtin://wand_ice", STORE_WAND_ITEM_PRICE_GOLD, STORE_WAND_ITEM_PRICE_SILVER},
+                StoreOfferDefinition{Store_Offer_Type::WAND_WATER_VAPOR, "Water Vapor Wand", "builtin://wand_water_vapor", STORE_WAND_ITEM_PRICE_GOLD, STORE_WAND_ITEM_PRICE_SILVER},
+                StoreOfferDefinition{Store_Offer_Type::WAND_WOOD, "Wood Wand", "builtin://wand_wood", STORE_WAND_ITEM_PRICE_GOLD, STORE_WAND_ITEM_PRICE_SILVER},
+                StoreOfferDefinition{Store_Offer_Type::WAND_STONE, "Stone Wand", "builtin://wand_stone", STORE_WAND_ITEM_PRICE_GOLD, STORE_WAND_ITEM_PRICE_SILVER},
+                StoreOfferDefinition{Store_Offer_Type::WAND_EMPTY, "Empty Wand", "builtin://wand_empty", STORE_WAND_ITEM_PRICE_GOLD, STORE_WAND_ITEM_PRICE_SILVER},
+                StoreOfferDefinition{Store_Offer_Type::WAND_SMOKE, "Smoke Wand", "builtin://wand_smoke", STORE_WAND_ITEM_PRICE_GOLD, STORE_WAND_ITEM_PRICE_SILVER},
+                StoreOfferDefinition{Store_Offer_Type::WAND_URANIUM, "Uranium Wand", "builtin://wand_uranium", STORE_WAND_ITEM_PRICE_GOLD, STORE_WAND_ITEM_PRICE_SILVER},
+            };
+
+            std::uniform_int_distribution<std::size_t> wand_dist(0, wand_offers.size() - 1);
+            return wand_offers[wand_dist(rng)];
+        }
+        case 1:
+            return {Store_Offer_Type::COMPASS, "Compass", "items/devushki_compass.png", STORE_COMPASS_ITEM_PRICE_GOLD, STORE_COMPASS_ITEM_PRICE_SILVER};
+        case 2:
+            return {Store_Offer_Type::HEAL, "Heal", "items/devushki_heal.png", STORE_HEAL_ITEM_PRICE_GOLD, STORE_HEAL_ITEM_PRICE_SILVER};
+        default:
+            return {Store_Offer_Type::AMMO, "Ammo", "items/devushki_ammo.png", STORE_AMMO_ITEM_PRICE_GOLD, 0};
+        }
     }
 
     glm::ivec2 snap_to_particle_grid(const glm::ivec2 &pos, int particle_size)
@@ -240,6 +299,169 @@ namespace
             entity->is_solid_at(position.x + ps, support_y);
 
         return center_supported && supported_count >= required_supported;
+    }
+
+    struct GeneratedChunkCandidate
+    {
+        glm::ivec2 coords{0, 0};
+        float distance_sq = std::numeric_limits<float>::max();
+    };
+
+    std::vector<GeneratedChunkCandidate> collect_generated_chunks_sorted(World *world, const glm::ivec2 &reference_pos)
+    {
+        std::vector<GeneratedChunkCandidate> candidates;
+        if (!world)
+            return candidates;
+
+        auto *chunks = world->get_chunks();
+        if (!chunks || chunks->empty())
+            return candidates;
+
+        const int ps = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+        const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+        const int chunk_pixel_w = chunk_dims.x * ps;
+        const int chunk_pixel_h = chunk_dims.y * ps;
+
+        candidates.reserve(chunks->size());
+        for (const auto &[coords, chunk] : *chunks)
+        {
+            if (!chunk)
+                continue;
+
+            const float center_x = static_cast<float>(coords.x * chunk_pixel_w + chunk_pixel_w / 2);
+            const float center_y = static_cast<float>(coords.y * chunk_pixel_h + chunk_pixel_h / 2);
+            const float dx = center_x - static_cast<float>(reference_pos.x);
+            const float dy = center_y - static_cast<float>(reference_pos.y);
+
+            candidates.push_back({coords, dx * dx + dy * dy});
+        }
+
+        std::sort(candidates.begin(), candidates.end(),
+                  [](const GeneratedChunkCandidate &a, const GeneratedChunkCandidate &b)
+                  {
+                      return a.distance_sq < b.distance_sq;
+                  });
+
+        return candidates;
+    }
+
+    bool find_free_position_in_generated_chunks(Entity *entity,
+                                                World *world,
+                                                const glm::ivec2 &reference_pos,
+                                                glm::ivec2 &out_position,
+                                                int max_chunks_to_probe = 48)
+    {
+        if (!entity || !world)
+            return false;
+
+        const int ps = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+        const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+        const int chunk_pixel_w = chunk_dims.x * ps;
+        const int chunk_pixel_h = chunk_dims.y * ps;
+
+        const std::vector<GeneratedChunkCandidate> chunks_sorted =
+            collect_generated_chunks_sorted(world, reference_pos);
+
+        const int chunks_to_probe = std::min<int>(max_chunks_to_probe, chunks_sorted.size());
+
+        for (int i = 0; i < chunks_to_probe; ++i)
+        {
+            const glm::ivec2 chunk_coords = chunks_sorted[static_cast<size_t>(i)].coords;
+            const int chunk_left = chunk_coords.x * chunk_pixel_w;
+            const int chunk_top = chunk_coords.y * chunk_pixel_h;
+
+            const int min_x = chunk_left + entity->hitbox_dimensions_half.x + ps;
+            const int max_x = chunk_left + chunk_pixel_w - entity->hitbox_dimensions_half.x - ps;
+            const int min_y = chunk_top + entity->hitbox_dimensions_half.y + ps;
+            const int max_y = chunk_top + chunk_pixel_h - entity->hitbox_dimensions_half.y - 2 * ps;
+
+            if (min_x > max_x || min_y > max_y)
+                continue;
+
+            for (int y = min_y; y <= max_y; y += ps)
+            {
+                for (int x = min_x; x <= max_x; x += ps)
+                {
+                    const glm::ivec2 candidate(x, y);
+                    if (!entity->is_valid_spawn_position(candidate))
+                        continue;
+                    if (!has_solid_support_below(entity, candidate))
+                        continue;
+
+                    out_position = candidate;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    bool carve_spawn_pocket_in_generated_chunk(Entity *entity,
+                                               World *world,
+                                               const glm::ivec2 &reference_pos,
+                                               glm::ivec2 &out_position)
+    {
+        if (!entity || !world)
+            return false;
+
+        const int ps = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+        const glm::ivec2 chunk_dims = world->get_chunk_dimensions();
+        const int chunk_pixel_w = chunk_dims.x * ps;
+        const int chunk_pixel_h = chunk_dims.y * ps;
+
+        const std::vector<GeneratedChunkCandidate> chunks_sorted =
+            collect_generated_chunks_sorted(world, reference_pos);
+        if (chunks_sorted.empty())
+            return false;
+
+        for (const auto &chunk_candidate : chunks_sorted)
+        {
+            const glm::ivec2 chunk_coords = chunk_candidate.coords;
+            if (!world->get_chunk(chunk_coords))
+                continue;
+
+            const int chunk_left = chunk_coords.x * chunk_pixel_w;
+            const int chunk_top = chunk_coords.y * chunk_pixel_h;
+
+            const int min_x = chunk_left + entity->hitbox_dimensions_half.x + ps;
+            const int max_x = chunk_left + chunk_pixel_w - entity->hitbox_dimensions_half.x - ps;
+            const int min_y = chunk_top + entity->hitbox_dimensions_half.y + ps;
+            const int max_y = chunk_top + chunk_pixel_h - entity->hitbox_dimensions_half.y - 2 * ps;
+
+            if (min_x > max_x || min_y > max_y)
+                continue;
+
+            const int pocket_x = snap_to_particle_grid(glm::ivec2((min_x + max_x) / 2, 0), ps).x;
+            const int pocket_y = snap_to_particle_grid(glm::ivec2(0, (min_y + max_y) / 2), ps).y;
+            const glm::ivec2 pocket_center(pocket_x, pocket_y);
+
+            const int left = pocket_center.x - entity->hitbox_dimensions_half.x;
+            const int right = pocket_center.x + entity->hitbox_dimensions_half.x;
+            const int top = pocket_center.y - entity->hitbox_dimensions_half.y;
+            const int bottom = pocket_center.y + entity->hitbox_dimensions_half.y;
+            const int support_y = bottom + ps;
+
+            for (int y = top; y <= bottom; y += ps)
+            {
+                for (int x = left; x <= right; x += ps)
+                {
+                    world->place_static_particle(glm::ivec2(x, y), Particle_Type::EMPTY);
+                }
+                world->place_static_particle(glm::ivec2(right, y), Particle_Type::EMPTY);
+            }
+
+            for (int x = left; x <= right; x += ps)
+            {
+                world->place_static_particle(glm::ivec2(x, support_y), Particle_Type::STONE);
+            }
+            world->place_static_particle(glm::ivec2(right, support_y), Particle_Type::STONE);
+
+            out_position = pocket_center;
+            return true;
+        }
+
+        return false;
     }
 
     glm::ivec2 snap_spawn_to_surface(Entity *entity, World *world, const glm::ivec2 &start_pos)
@@ -520,6 +742,14 @@ void Entity_Manager::ensure_player_valid_position()
         return true;
     };
 
+    glm::ivec2 generated_safe_pos{0, 0};
+    if (find_free_position_in_generated_chunks(player.get(), world, origin, generated_safe_pos))
+    {
+        player->set_position(generated_safe_pos);
+        player->set_velocity(0.0f, 0.0f);
+        return;
+    }
+
     glm::ivec2 valid_pos = find_safe_spawn_position(player.get(), world, rng, origin, true, 3200);
     valid_pos = snap_spawn_to_surface(player.get(), world, valid_pos);
 
@@ -581,6 +811,16 @@ void Entity_Manager::ensure_player_valid_position()
         ensure_chunks_for_entity_probe(world, player.get(), origin, 12);
         glm::ivec2 free_pos = player->find_valid_spawn_position(origin, 5200);
         valid_pos = snap_spawn_to_surface(player.get(), world, free_pos);
+    }
+
+    if (!is_strict_safe_player_spawn(valid_pos))
+    {
+        glm::ivec2 carved_pos{0, 0};
+        if (carve_spawn_pocket_in_generated_chunk(player.get(), world, origin, carved_pos) &&
+            is_strict_safe_player_spawn(carved_pos))
+        {
+            valid_pos = carved_pos;
+        }
     }
 
     player->set_position(valid_pos);
@@ -1012,6 +1252,14 @@ void Entity_Manager::update_store_offers()
 
     const int particle_size = static_cast<int>(Globals::PARTICLE_SIZE);
     const auto &placed_structures = world->get_structure_spawner().get_placed_structures();
+    const bool include_compass_offer = !player_has_compass;
+
+    std::unordered_set<int> existing_offer_hashes;
+    existing_offer_hashes.reserve(store_offers_by_structure.size());
+    for (const auto &[key, offer] : store_offers_by_structure)
+    {
+        existing_offer_hashes.insert(offer.structure_hash);
+    }
 
     std::unordered_set<int> active_hashes;
     for (const auto &ps : placed_structures)
@@ -1021,69 +1269,38 @@ void Entity_Manager::update_store_offers()
 
         const int structure_hash = make_structure_hash(ps.position);
         active_hashes.insert(structure_hash);
-        if (store_offers_by_structure.find(structure_hash) != store_offers_by_structure.end())
+        if (existing_offer_hashes.find(structure_hash) != existing_offer_hashes.end())
             continue;
 
-        std::uniform_int_distribution<int> offer_dist(0, player_has_compass ? 4 : 5);
-        Store_Offer offer;
-        offer.structure_hash = structure_hash;
-        offer.structure_world_pos = ps.position;
-        offer.display_world_pos = glm::ivec2(
+        const glm::ivec2 display_world_pos(
             ps.position.x + marker_anchor_cells.x * particle_size,
             ps.position.y + marker_anchor_cells.y * particle_size - STORE_ICON_EXTRA_UP_PX);
 
-        switch (offer_dist(rng))
-        {
-        case 0:
-            offer.type = Store_Offer_Type::HEAL;
-            offer.item_name = "Heal";
-            offer.icon_path = "items/devushki_heal.png";
-            offer.price_gold = STORE_HEAL_ITEM_PRICE_GOLD;
-            offer.price_silver = STORE_HEAL_ITEM_PRICE_SILVER;
-            break;
-        case 1:
-            offer.type = Store_Offer_Type::AMMO;
-            offer.item_name = "Ammo";
-            offer.icon_path = "items/devushki_ammo.png";
-            offer.price_gold = STORE_AMMO_ITEM_PRICE_GOLD;
-            offer.price_silver = 0;
-            break;
-        case 2:
-            offer.type = Store_Offer_Type::WAND_FIRE;
-            offer.item_name = "Fire Wand";
-            offer.icon_path = "builtin://wand_fire";
-            offer.price_gold = STORE_WAND_ITEM_PRICE_GOLD;
-            offer.price_silver = STORE_WAND_ITEM_PRICE_SILVER;
-            break;
-        case 3:
-            offer.type = Store_Offer_Type::WAND_WOOD;
-            offer.item_name = "Wood Wand";
-            offer.icon_path = "builtin://wand_wood";
-            offer.price_gold = STORE_WAND_ITEM_PRICE_GOLD;
-            offer.price_silver = STORE_WAND_ITEM_PRICE_SILVER;
-            break;
-        case 4:
-            offer.type = Store_Offer_Type::WAND_EMPTY;
-            offer.item_name = "Empty Wand";
-            offer.icon_path = "builtin://wand_empty";
-            offer.price_gold = STORE_WAND_ITEM_PRICE_GOLD;
-            offer.price_silver = STORE_WAND_ITEM_PRICE_SILVER;
-            break;
-        default:
-            offer.type = Store_Offer_Type::COMPASS;
-            offer.item_name = "Compass";
-            offer.icon_path = "items/devushki_compass.png";
-            offer.price_gold = STORE_COMPASS_ITEM_PRICE_GOLD;
-            offer.price_silver = STORE_COMPASS_ITEM_PRICE_SILVER;
-            break;
-        }
+        const StoreOfferDefinition offer_def = pick_weighted_store_offer(include_compass_offer, rng);
+        const std::int64_t offer_key = make_store_offer_key(structure_hash, offer_def.type);
+        if (store_offers_by_structure.find(offer_key) != store_offers_by_structure.end())
+            continue;
 
-        store_offers_by_structure[structure_hash] = offer;
+        Store_Offer offer;
+        offer.offer_key = offer_key;
+        offer.structure_hash = structure_hash;
+        offer.structure_world_pos = ps.position;
+        offer.display_world_pos = display_world_pos;
+        offer.type = offer_def.type;
+        offer.item_name = offer_def.item_name;
+        offer.icon_path = offer_def.icon_path;
+        offer.price_gold = offer_def.price_gold;
+        offer.price_silver = offer_def.price_silver;
+
+        store_offers_by_structure[offer_key] = offer;
+        existing_offer_hashes.insert(structure_hash);
     }
 
     for (auto it = store_offers_by_structure.begin(); it != store_offers_by_structure.end();)
     {
-        if (active_hashes.find(it->first) == active_hashes.end())
+        const bool stale_structure = active_hashes.find(it->second.structure_hash) == active_hashes.end();
+        const bool compass_already_owned = player_has_compass && it->second.type == Store_Offer_Type::COMPASS;
+        if (stale_structure || compass_already_owned)
         {
             it = store_offers_by_structure.erase(it);
         }
@@ -1757,7 +1974,7 @@ bool Entity_Manager::try_buy_store_item()
     if (!offer_ptr)
         return false;
 
-    auto it = store_offers_by_structure.find(offer_ptr->structure_hash);
+    auto it = store_offers_by_structure.find(offer_ptr->offer_key);
     if (it == store_offers_by_structure.end() || it->second.purchased)
         return false;
 
@@ -1795,11 +2012,26 @@ bool Entity_Manager::try_buy_store_item()
         add_player_ammo(AMMO_PURCHASE_AMOUNT);
         applied = true;
         break;
+    case Store_Offer_Type::WAND_SAND:
+        applied = grant_wand(Wand::create_sand_wand());
+        break;
+    case Store_Offer_Type::WAND_WATER:
+        applied = grant_wand(Wand::create_water_wand());
+        break;
     case Store_Offer_Type::WAND_FIRE:
         applied = grant_wand(Wand::create_fire_wand());
         break;
+    case Store_Offer_Type::WAND_ICE:
+        applied = grant_wand(Wand::create_ice_wand());
+        break;
+    case Store_Offer_Type::WAND_WATER_VAPOR:
+        applied = grant_wand(Wand::create_water_vapor_wand());
+        break;
     case Store_Offer_Type::WAND_WOOD:
         applied = grant_wand(Wand::create_wood_wand());
+        break;
+    case Store_Offer_Type::WAND_STONE:
+        applied = grant_wand(Wand::create_stone_wand());
         break;
     case Store_Offer_Type::WAND_EMPTY:
     {
@@ -1808,6 +2040,12 @@ bool Entity_Manager::try_buy_store_item()
         applied = grant_wand(empty_wand);
         break;
     }
+    case Store_Offer_Type::WAND_SMOKE:
+        applied = grant_wand(Wand::create_smoke_wand());
+        break;
+    case Store_Offer_Type::WAND_URANIUM:
+        applied = grant_wand(Wand::create_uranium_wand());
+        break;
     case Store_Offer_Type::COMPASS:
         if (!player_has_compass)
         {

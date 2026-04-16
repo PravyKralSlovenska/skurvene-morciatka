@@ -15,10 +15,13 @@ namespace
     constexpr float BIOME_NOISE_GAIN = 1.50f;
     constexpr float BIOME_NOISE_BIAS = 0.05f;
 
+    constexpr float MATERIAL_BLEND_NOISE_FREQUENCY = 0.0200f;
+    constexpr float MATERIAL_BLEND_NOISE_WARP = 20.0f;
+
     constexpr float SANDY_STONE_EDGE = -0.25f;
     constexpr float STONE_ICY_EDGE = 0.10f;
     constexpr float ICY_URANIUM_EDGE = 0.45f;
-    constexpr float BIOME_BLEND_WIDTH = 0.12f;
+    constexpr float BIOME_BLEND_WIDTH = 0.32f;
 
     float remap_biome_noise(float raw_value)
     {
@@ -87,6 +90,14 @@ void World_CA_Generation::recalculate_noises()
     biome_noise.SetFractalType(FastNoiseLite::FractalType::FractalType_FBm);
     biome_noise.SetDomainWarpType(FastNoiseLite::DomainWarpType_OpenSimplex2);
     biome_noise.SetDomainWarpAmp(100.0f); // Strength of warping
+
+    material_blend_noise.SetSeed(seed + 7919);
+    material_blend_noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
+    material_blend_noise.SetFrequency(MATERIAL_BLEND_NOISE_FREQUENCY);
+    material_blend_noise.SetFractalType(FastNoiseLite::FractalType_FBm);
+    material_blend_noise.SetFractalOctaves(3);
+    material_blend_noise.SetDomainWarpType(FastNoiseLite::DomainWarpType_OpenSimplex2);
+    material_blend_noise.SetDomainWarpAmp(MATERIAL_BLEND_NOISE_WARP);
 
     setup_biome_noises();
 }
@@ -166,13 +177,11 @@ Particle World_CA_Generation::create_particle_by_type(const Particle_Type type)
 
 Particle_Type World_CA_Generation::blend_particle_types(const Particle_Type primary_type, const Particle_Type secondary_type, const float blend_factor, const glm::ivec2 &world_coords)
 {
-    // In transition zones, randomly choose based on blend factor
-    // Use deterministic hash for consistent results
-    int hash_value = hash_coords(world_coords.x, world_coords.y, seed);
-    float random = (hash_value % 1000) / 1000.0f;
+    // Use low-frequency coherent noise so the transition changes gradually in space.
+    const float mask = (get_noise_value(material_blend_noise, world_coords) + 1.0f) * 0.5f;
 
     // blend_factor = 0.0 => fully primary, 1.0 => fully secondary
-    return (random < blend_factor) ? secondary_type : primary_type;
+    return (mask < blend_factor) ? secondary_type : primary_type;
 }
 
 inline glm::ivec2 World_CA_Generation::calculate_world_coords(const glm::ivec2 &local_coords, const glm::ivec2 &chunk_coords, const glm::ivec2 &chunk_dimensions)
