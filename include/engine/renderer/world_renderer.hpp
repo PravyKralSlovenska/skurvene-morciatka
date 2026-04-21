@@ -1,5 +1,6 @@
 #pragma once
 
+// File purpose: Renders world chunks and GPU-side world data.
 // #include <iostream>
 #include <memory>
 #include <vector>
@@ -25,7 +26,7 @@ class Shader_Storage_Buffer_Object;
 
 // struct GPU_chunk
 // {
-// };
+// Renders chunk/world geometry and GPU world data.
 
 class World_Renderer
 {
@@ -44,6 +45,7 @@ private:
     std::unique_ptr<Shader_Storage_Buffer_Object> vertex_counter_ssbo;
 
     World *world = nullptr;
+    // 2D vector helper.
     glm::vec2 fog_center_world = glm::vec2(0.0f, 0.0f);
     bool fog_enabled = true;
 
@@ -51,17 +53,26 @@ public:
     glm::mat4 projection;
 
 public:
+    // Constructs World_Renderer.
     World_Renderer(World *world);
+    // Destroys World_Renderer and releases owned resources.
     ~World_Renderer();
 
+    // Initializes state.
     void init();
+    // Sets world.
     void set_world(World *world);
+    // Sets projection.
     void set_projection(glm::mat4 projection);
+    // Sets fog center world.
     void set_fog_center_world(const glm::vec2 &world_pos);
+    // Sets fog enabled.
     void set_fog_enabled(bool enabled);
 
+    // Renders test triangle.
     void render_test_triangle();
 
+    // Adds chunk to batch.
     void add_chunk_to_batch(Chunk *chunk);
 
     // nove
@@ -69,9 +80,12 @@ public:
 
     // stare
     void render_chunk_borders();
+    // Renders world.
     void render_world();
 
+    // Clears buffers.
     void clear_buffers();
 
+    // Fills vertices.
     void fill_vertices();
 };

@@ -13,15 +13,49 @@
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include <chrono>
 #include <climits>
+#include <cstdlib>
 #include <memory>
 #include <cstdint>
 #include <limits>
+#include <sstream>
 #include <unordered_map>
 
 static int pixel_to_cell(int px)
 {
     return static_cast<int>(std::floor(static_cast<float>(px) / Globals::PARTICLE_SIZE));
+}
+
+static bool is_store_proof_logging_enabled()
+{
+    static const bool enabled = []
+    {
+        const char *value = std::getenv("MORCIATKO_STORE_PROOF");
+        return value != nullptr && value[0] != '\0' && !(value[0] == '0' && value[1] == '\0');
+    }();
+
+    return enabled;
+}
+
+static std::uint64_t splitmix64(std::uint64_t value)
+{
+    value += 0x9E3779B97F4A7C15ull;
+    value = (value ^ (value >> 30)) * 0xBF58476D1CE4E5B9ull;
+    value = (value ^ (value >> 27)) * 0x94D049BB133111EBull;
+    return value ^ (value >> 31);
+}
+
+static int floor_div_int(int value, int divisor)
+{
+    if (divisor <= 0)
+        return 0;
+
+    int quotient = value / divisor;
+    const int remainder = value % divisor;
+    if (remainder != 0 && value < 0)
+        quotient -= 1;
+    return quotient;
 }
 
 // ============================================
@@ -219,9 +253,20 @@ void StructureSpawner::set_store_spawn_config(const StoreSpawnConfig &config)
     sanitized.min_spawn_radius_particles = std::max(0, sanitized.min_spawn_radius_particles);
     sanitized.max_spawn_radius_particles = std::max(sanitized.min_spawn_radius_particles, sanitized.max_spawn_radius_particles);
     sanitized.min_distance_between_stores_particles = std::max(0, sanitized.min_distance_between_stores_particles);
+    sanitized.min_distance_from_columns_particles = std::max(0, sanitized.min_distance_from_columns_particles);
     sanitized.min_distance_from_origin_particles = std::max(0, sanitized.min_distance_from_origin_particles);
+    sanitized.spacing_chunks = std::max(0, sanitized.spacing_chunks);
+    sanitized.separation_chunks = std::max(0, sanitized.separation_chunks);
+    sanitized.active_region_radius_chunks = std::max(1, sanitized.active_region_radius_chunks);
+    sanitized.max_regions_processed_per_call = std::max(1, sanitized.max_regions_processed_per_call);
+    sanitized.max_attempts_per_region = std::max(1, sanitized.max_attempts_per_region);
+    sanitized.retry_generated_chunks = std::max(0, sanitized.retry_generated_chunks);
 
     store_spawn_config = sanitized;
+
+    store_regions.clear();
+    store_region_queue.clear();
+    store_region_queued.clear();
 
     if (!store_spawn_config.enabled)
     {
@@ -257,6 +302,11 @@ bool StructureSpawner::is_store_name(const std::string &name) const
     return name == "store" || name == "devushki_store";
 }
 
+bool StructureSpawner::is_column_name(const std::string &name) const
+{
+    return name == "devushki_column";
+}
+
 bool StructureSpawner::is_store_target_far_enough(const glm::ivec2 &target_px) const
 {
     const int ps = static_cast<int>(Globals::PARTICLE_SIZE);
@@ -270,6 +320,8 @@ bool StructureSpawner::is_store_target_far_enough(const glm::ivec2 &target_px) c
 
     const long long min_store_spacing_px = static_cast<long long>(store_spawn_config.min_distance_between_stores_particles) * ps;
     const long long min_store_spacing_sq = min_store_spacing_px * min_store_spacing_px;
+    const long long min_column_spacing_px = static_cast<long long>(store_spawn_config.min_distance_from_columns_particles) * ps;
+    const long long min_column_spacing_sq = min_column_spacing_px * min_column_spacing_px;
 
     for (const auto &entry : predetermined_entries)
     {
@@ -282,6 +334,17 @@ bool StructureSpawner::is_store_target_far_enough(const glm::ivec2 &target_px) c
             return false;
     }
 
+    for (const auto &entry : predetermined_entries)
+    {
+        if (!is_column_name(entry.structure_name))
+            continue;
+
+        const long long dx = static_cast<long long>(target_px.x) - static_cast<long long>(entry.target_pos.x);
+        const long long dy = static_cast<long long>(target_px.y) - static_cast<long long>(entry.target_pos.y);
+        if (dx * dx + dy * dy < min_column_spacing_sq)
+            return false;
+    }
+
     for (const auto &placed : placed_structures)
     {
         if (!is_store_name(placed.name))
@@ -290,6 +353,17 @@ bool StructureSpawner::is_store_target_far_enough(const glm::ivec2 &target_px) c
         const long long dx = static_cast<long long>(target_px.x) - static_cast<long long>(placed.position.x);
         const long long dy = static_cast<long long>(target_px.y) - static_cast<long long>(placed.position.y);
         if (dx * dx + dy * dy < min_store_spacing_sq)
+            return false;
+    }
+
+    for (const auto &placed : placed_structures)
+    {
+        if (!is_column_name(placed.name))
+            continue;
+
+        const long long dx = static_cast<long long>(target_px.x) - static_cast<long long>(placed.position.x);
+        const long long dy = static_cast<long long>(target_px.y) - static_cast<long long>(placed.position.y);
+        if (dx * dx + dy * dy < min_column_spacing_sq)
             return false;
     }
 
@@ -337,6 +411,10 @@ bool StructureSpawner::try_generate_store_target_for_sequence(int sequence_index
 
     const int configured_min_radius_px = std::max(0, store_spawn_config.min_spawn_radius_particles * ps);
     const int configured_max_radius_px = std::max(configured_min_radius_px, store_spawn_config.max_spawn_radius_particles * ps);
+    const long long min_origin_px = static_cast<long long>(store_spawn_config.min_distance_from_origin_particles) * ps;
+    const long long min_origin_sq = min_origin_px * min_origin_px;
+    const long long min_store_spacing_px = static_cast<long long>(store_spawn_config.min_distance_between_stores_particles) * ps;
+    const long long min_store_spacing_sq = min_store_spacing_px * min_store_spacing_px;
 
     const int explored_shell_padding_px = std::max(chunk_pixel_w, chunk_pixel_h) * 2;
     const int min_radius_px = std::max(configured_min_radius_px, explored_radius_px + explored_shell_padding_px);
@@ -346,6 +424,83 @@ bool StructureSpawner::try_generate_store_target_for_sequence(int sequence_index
     std::mt19937 target_rng(static_cast<std::uint32_t>(seed) ^ sequence_hash);
     std::uniform_real_distribution<float> angle_dist(0.0f, 2.0f * static_cast<float>(M_PI));
     std::uniform_int_distribution<int> radius_dist(min_radius_px, max_radius_px);
+
+    std::unordered_map<glm::ivec2, std::vector<glm::ivec2>, Chunk_Coords_to_Hash> store_buckets;
+    const int bucket_size_px = std::max(ps, static_cast<int>(min_store_spacing_px));
+
+    auto floor_div = [](int value, int divisor)
+    {
+        if (divisor <= 0)
+            return 0;
+
+        int quotient = value / divisor;
+        const int remainder = value % divisor;
+        if (remainder != 0 && value < 0)
+            quotient -= 1;
+        return quotient;
+    };
+
+    auto bucket_coords_for = [&](const glm::ivec2 &position)
+    {
+        return glm::ivec2(
+            floor_div(position.x, bucket_size_px),
+            floor_div(position.y, bucket_size_px));
+    };
+
+    if (min_store_spacing_sq > 0)
+    {
+        store_buckets.reserve(predetermined_entries.size() + placed_structures.size());
+
+        for (const auto &entry : predetermined_entries)
+        {
+            if (!is_store_name(entry.structure_name))
+                continue;
+
+            store_buckets[bucket_coords_for(entry.target_pos)].push_back(entry.target_pos);
+        }
+
+        for (const auto &placed : placed_structures)
+        {
+            if (!is_store_name(placed.name))
+                continue;
+
+            store_buckets[bucket_coords_for(placed.position)].push_back(placed.position);
+        }
+    }
+
+    auto is_store_target_far_enough_fast = [&](const glm::ivec2 &candidate)
+    {
+        const long long dist_origin_sq =
+            static_cast<long long>(candidate.x) * static_cast<long long>(candidate.x) +
+            static_cast<long long>(candidate.y) * static_cast<long long>(candidate.y);
+        if (dist_origin_sq < min_origin_sq)
+            return false;
+
+        if (min_store_spacing_sq <= 0)
+            return true;
+
+        const glm::ivec2 center_bucket = bucket_coords_for(candidate);
+        for (int dy = -1; dy <= 1; ++dy)
+        {
+            for (int dx = -1; dx <= 1; ++dx)
+            {
+                const glm::ivec2 neighbor_bucket(center_bucket.x + dx, center_bucket.y + dy);
+                const auto it = store_buckets.find(neighbor_bucket);
+                if (it == store_buckets.end())
+                    continue;
+
+                for (const auto &position : it->second)
+                {
+                    const long long diff_x = static_cast<long long>(candidate.x) - static_cast<long long>(position.x);
+                    const long long diff_y = static_cast<long long>(candidate.y) - static_cast<long long>(position.y);
+                    if (diff_x * diff_x + diff_y * diff_y < min_store_spacing_sq)
+                        return false;
+                }
+            }
+        }
+
+        return true;
+    };
 
     constexpr int STORE_TARGET_ATTEMPTS_PER_SEQUENCE = 24;
     for (int attempt = 0; attempt < STORE_TARGET_ATTEMPTS_PER_SEQUENCE; ++attempt)
@@ -359,7 +514,7 @@ bool StructureSpawner::try_generate_store_target_for_sequence(int sequence_index
         candidate_y = static_cast<int>(std::floor(static_cast<float>(candidate_y) / static_cast<float>(ps))) * ps;
 
         const glm::ivec2 candidate(candidate_x, candidate_y);
-        if (!is_store_target_far_enough(candidate))
+        if (!is_store_target_far_enough_fast(candidate))
             continue;
 
         out_target_px = candidate;
@@ -891,9 +1046,9 @@ namespace
                 const int sample_y = ground_y + depth * ps;
 
                 const glm::ivec2 chunk_pos = get_chunk_pos_from_world_px(world_x,
-                                                                          sample_y,
-                                                                          chunk_dims.x * ps,
-                                                                          chunk_dims.y * ps);
+                                                                         sample_y,
+                                                                         chunk_dims.x * ps,
+                                                                         chunk_dims.y * ps);
                 if (!ensure_chunk_generated(world, chunk_pos))
                     return false;
 
@@ -1153,6 +1308,11 @@ void StructureSpawner::generate_predetermined_positions(int world_seed)
     predetermined_entries.clear();
     placed_structures.clear();
     store_target_sequence_index = 0;
+    store_regions.clear();
+    store_region_queue.clear();
+    store_region_queued.clear();
+    runtime_stats = RuntimeStats{};
+    runtime_stats_log_tick = 0;
 
     std::mt19937 local_rng(world_seed);
     std::uniform_real_distribution<float> angle_dist(0.0f, 2.0f * static_cast<float>(M_PI));
@@ -1207,8 +1367,65 @@ void StructureSpawner::generate_predetermined_positions(int world_seed)
 
 void StructureSpawner::try_place_pending_structures(const glm::ivec2 &chunk_coords, int max_entries_to_place)
 {
+    const auto profile_start = std::chrono::steady_clock::now();
+    int scanned_entries = 0;
+    int placed_entries = 0;
+    int added_store_targets = 0;
+    int generated_chunks = 0;
+    int desired_store_targets = 0;
+    int current_store_targets = 0;
+
+    auto finalize_runtime_stats = [&](int pending_entries)
+    {
+        const auto profile_end = std::chrono::steady_clock::now();
+        const double elapsed_ms = std::chrono::duration<double, std::milli>(profile_end - profile_start).count();
+
+        runtime_stats.calls++;
+        runtime_stats.last_call_ms = elapsed_ms;
+        runtime_stats.avg_call_ms += (elapsed_ms - runtime_stats.avg_call_ms) / static_cast<double>(runtime_stats.calls);
+        runtime_stats.max_call_ms = std::max(runtime_stats.max_call_ms, elapsed_ms);
+        runtime_stats.scanned_entries_last = scanned_entries;
+        runtime_stats.scanned_entries_avg +=
+            (static_cast<double>(scanned_entries) - runtime_stats.scanned_entries_avg) / static_cast<double>(runtime_stats.calls);
+        runtime_stats.placed_entries_last = placed_entries;
+        runtime_stats.added_store_targets_last = added_store_targets;
+        runtime_stats.generated_chunks_last = generated_chunks;
+        runtime_stats.desired_store_targets_last = desired_store_targets;
+        runtime_stats.current_store_targets_last = current_store_targets;
+        runtime_stats.pending_entries_last = pending_entries;
+        runtime_stats.total_predetermined_entries_last = static_cast<int>(predetermined_entries.size() + store_regions.size());
+
+        if (!is_store_proof_logging_enabled())
+            return;
+
+        runtime_stats_log_tick++;
+        if (runtime_stats_log_tick < 600)
+            return;
+
+        runtime_stats_log_tick = 0;
+        std::ostringstream message;
+        message << "store_prof"
+                << " calls=" << runtime_stats.calls
+                << " entries=" << runtime_stats.total_predetermined_entries_last
+                << " pending=" << runtime_stats.pending_entries_last
+                << " scanned_last=" << runtime_stats.scanned_entries_last
+                << " scanned_avg=" << runtime_stats.scanned_entries_avg
+                << " call_ms_last=" << runtime_stats.last_call_ms
+                << " call_ms_avg=" << runtime_stats.avg_call_ms
+                << " call_ms_max=" << runtime_stats.max_call_ms
+                << " chunks=" << runtime_stats.generated_chunks_last
+                << " stores_desired=" << runtime_stats.desired_store_targets_last
+                << " stores_current=" << runtime_stats.current_store_targets_last
+                << " placed_last=" << runtime_stats.placed_entries_last
+                << " added_store_targets_last=" << runtime_stats.added_store_targets_last;
+        Log::info(message.str());
+    };
+
     if (!world)
+    {
+        finalize_runtime_stats(0);
         return;
+    }
 
     const bool use_entry_budget = max_entries_to_place > 0;
     int processed_entries = 0;
@@ -1218,52 +1435,20 @@ void StructureSpawner::try_place_pending_structures(const glm::ivec2 &chunk_coor
     const int chunk_pixel_w = chunk_dims.x * ps;
     const int chunk_pixel_h = chunk_dims.y * ps;
 
-    // Scale store count with explored world size.
-    Structure *store_blueprint = get_blueprint("store");
-    if (store_spawn_config.enabled && store_blueprint)
-    {
-        const int generated_chunks = std::max(0, world->get_chunks_size());
-        int desired_store_targets = 0;
-        if (generated_chunks >= store_spawn_config.min_generated_chunks_before_first_store)
-        {
-            desired_store_targets = std::max(1, generated_chunks / store_spawn_config.chunks_per_spawn);
-        }
-
-        int current_store_targets = 0;
-        for (const auto &entry : predetermined_entries)
-        {
-            if (is_store_name(entry.structure_name))
-                ++current_store_targets;
-        }
-
-        // Add at most one store target per call to avoid frame spikes.
-        if (current_store_targets < desired_store_targets)
-        {
-            int sequence_advances = 0;
-            while (current_store_targets < desired_store_targets && sequence_advances < STORE_TARGET_MAX_SEQUENCE_ADVANCE)
-            {
-                glm::ivec2 target_pos;
-                const bool generated_target = try_generate_store_target_for_sequence(store_target_sequence_index, target_pos);
-                store_target_sequence_index++;
-                sequence_advances++;
-
-                if (!generated_target)
-                    continue;
-
-                PredeterminedEntry entry;
-                entry.structure_name = "store";
-                entry.target_pos = target_pos;
-                predetermined_entries.push_back(entry);
-                current_store_targets++;
-
-                // Keep one-store-per-call budget to avoid spikes.
-                break;
-            }
-        }
-    }
+    // Legacy migration guard: clear any old runtime-added store entries from the
+    // global predetermined list. Store placement is now region-state driven.
+    predetermined_entries.erase(
+        std::remove_if(predetermined_entries.begin(), predetermined_entries.end(),
+                       [&](const PredeterminedEntry &entry)
+                       {
+                           return is_store_name(entry.structure_name);
+                       }),
+        predetermined_entries.end());
 
     for (auto &entry : predetermined_entries)
     {
+        scanned_entries++;
+
         if (use_entry_budget && processed_entries >= max_entries_to_place)
             break;
 
@@ -1316,8 +1501,181 @@ void StructureSpawner::try_place_pending_structures(const glm::ivec2 &chunk_coor
             entry.placed = true;
             entry.target_pos = raw_pos;
             processed_entries++;
+            placed_entries++;
         }
     }
+
+    Structure *store_blueprint = get_blueprint("store");
+    if (store_spawn_config.enabled && store_blueprint)
+    {
+        generated_chunks = std::max(0, world->get_chunks_size());
+
+        int spacing_chunks = store_spawn_config.spacing_chunks;
+        if (spacing_chunks <= 0)
+        {
+            spacing_chunks = std::max(
+                4,
+                static_cast<int>(std::round(std::sqrt(static_cast<double>(std::max(1, store_spawn_config.chunks_per_spawn))))));
+        }
+
+        int separation_chunks = store_spawn_config.separation_chunks;
+        if (separation_chunks <= 0)
+            separation_chunks = std::max(1, spacing_chunks / 3);
+        separation_chunks = std::clamp(separation_chunks, 0, std::max(0, spacing_chunks - 1));
+
+        current_store_targets = 0;
+        for (const auto &placed : placed_structures)
+        {
+            if (is_store_name(placed.name))
+                current_store_targets++;
+        }
+
+        const int center_rx = floor_div_int(chunk_coords.x, spacing_chunks);
+        const int center_ry = floor_div_int(chunk_coords.y, spacing_chunks);
+        const int active_radius_chunks = std::max(1, store_spawn_config.active_region_radius_chunks);
+        const int region_radius = std::max(1, (active_radius_chunks + spacing_chunks - 1) / spacing_chunks + 1);
+
+        for (int ry = center_ry - region_radius; ry <= center_ry + region_radius; ++ry)
+        {
+            for (int rx = center_rx - region_radius; rx <= center_rx + region_radius; ++rx)
+            {
+                const glm::ivec2 region_key(rx, ry);
+                auto region_insert = store_regions.emplace(region_key, StoreRegionData{});
+                StoreRegionData &region = region_insert.first->second;
+
+                if (!region.candidate_ready)
+                {
+                    const int local_span = std::max(1, spacing_chunks - separation_chunks);
+                    std::uint64_t seed_mix = static_cast<std::uint64_t>(static_cast<std::uint32_t>(seed));
+                    seed_mix ^= static_cast<std::uint64_t>(static_cast<std::uint32_t>(store_spawn_config.salt)) << 1;
+                    seed_mix ^= static_cast<std::uint64_t>(static_cast<std::uint32_t>(rx)) * 0x9E3779B97F4A7C15ull;
+                    seed_mix ^= static_cast<std::uint64_t>(static_cast<std::uint32_t>(ry)) * 0xBF58476D1CE4E5B9ull;
+
+                    const std::uint64_t h1 = splitmix64(seed_mix);
+                    const std::uint64_t h2 = splitmix64(h1 ^ 0x94D049BB133111EBull);
+
+                    const int offset_x = static_cast<int>(h1 % static_cast<std::uint64_t>(local_span));
+                    const int offset_y = static_cast<int>(h2 % static_cast<std::uint64_t>(local_span));
+
+                    region.candidate_chunk = glm::ivec2(
+                        rx * spacing_chunks + offset_x,
+                        ry * spacing_chunks + offset_y);
+                    region.candidate_pos = glm::ivec2(
+                        region.candidate_chunk.x * chunk_pixel_w + chunk_pixel_w / 2,
+                        region.candidate_chunk.y * chunk_pixel_h + chunk_pixel_h / 2);
+                    region.candidate_ready = true;
+                    added_store_targets++;
+                }
+
+                if (generated_chunks < store_spawn_config.min_generated_chunks_before_first_store)
+                    continue;
+
+                if (region.placed || region.exhausted)
+                    continue;
+
+                if (generated_chunks < region.retry_after_generated_chunks)
+                    continue;
+
+                if (store_region_queued.find(region_key) == store_region_queued.end())
+                {
+                    store_region_queue.push_back(region_key);
+                    store_region_queued.insert(region_key);
+                }
+            }
+        }
+
+        desired_store_targets = static_cast<int>(store_regions.size());
+
+        const int region_budget = std::max(1, store_spawn_config.max_regions_processed_per_call);
+        int processed_regions = 0;
+
+        while (!store_region_queue.empty() && processed_regions < region_budget)
+        {
+            const glm::ivec2 region_key = store_region_queue.front();
+            store_region_queue.pop_front();
+            store_region_queued.erase(region_key);
+
+            auto region_it = store_regions.find(region_key);
+            if (region_it == store_regions.end())
+                continue;
+
+            StoreRegionData &region = region_it->second;
+            if (!region.candidate_ready || region.placed || region.exhausted)
+                continue;
+
+            if (generated_chunks < region.retry_after_generated_chunks)
+                continue;
+
+            const int chunk_dx = std::abs(region.candidate_chunk.x - chunk_coords.x);
+            const int chunk_dy = std::abs(region.candidate_chunk.y - chunk_coords.y);
+            if (chunk_dx > ENTRY_PLACE_RADIUS_CHUNKS || chunk_dy > ENTRY_PLACE_RADIUS_CHUNKS)
+                continue;
+
+            glm::ivec2 raw_pos = region.candidate_pos;
+
+            const int jitter_cells = 24;
+            const int jitter_max_px = jitter_cells * ps;
+            std::uint64_t attempt_seed = static_cast<std::uint64_t>(static_cast<std::uint32_t>(seed));
+            attempt_seed ^= static_cast<std::uint64_t>(static_cast<std::uint32_t>(store_spawn_config.salt)) << 7;
+            attempt_seed ^= static_cast<std::uint64_t>(static_cast<std::uint32_t>(region_key.x)) * 0xD6E8FEB86659FD93ull;
+            attempt_seed ^= static_cast<std::uint64_t>(static_cast<std::uint32_t>(region_key.y)) * 0xA5A3564E27F886EDull;
+            attempt_seed ^= static_cast<std::uint64_t>(region.attempts + 1) * 0x9E3779B97F4A7C15ull;
+
+            const std::uint64_t ah1 = splitmix64(attempt_seed);
+            const std::uint64_t ah2 = splitmix64(ah1 ^ 0x9E3779B97F4A7C15ull);
+
+            const int jitter_x = static_cast<int>(ah1 % static_cast<std::uint64_t>(2 * jitter_max_px + 1)) - jitter_max_px;
+            const int jitter_y = static_cast<int>(ah2 % static_cast<std::uint64_t>(2 * jitter_max_px + 1)) - jitter_max_px;
+            raw_pos.x += jitter_x;
+            raw_pos.y += jitter_y;
+            raw_pos.x = floor_div_int(raw_pos.x, ps) * ps;
+            raw_pos.y = floor_div_int(raw_pos.y, ps) * ps;
+
+            bool placed = false;
+            if (is_store_target_far_enough(raw_pos))
+            {
+                placed = try_place_with_vertical_lift(this, world, *store_blueprint, raw_pos, "store", ps);
+            }
+
+            if (placed)
+            {
+                region.placed = true;
+                placed_entries++;
+                current_store_targets++;
+            }
+            else
+            {
+                region.attempts++;
+                if (region.attempts >= store_spawn_config.max_attempts_per_region)
+                {
+                    region.exhausted = true;
+                }
+                else
+                {
+                    region.retry_after_generated_chunks =
+                        generated_chunks + store_spawn_config.retry_generated_chunks;
+                }
+            }
+
+            processed_regions++;
+        }
+    }
+
+    int pending_entries = 0;
+    for (const auto &entry : predetermined_entries)
+    {
+        if (!entry.placed)
+            pending_entries++;
+    }
+
+    for (const auto &[region_key, region] : store_regions)
+    {
+        (void)region_key;
+        if (!region.placed && !region.exhausted)
+            pending_entries++;
+    }
+
+    finalize_runtime_stats(pending_entries);
 }
 
 void StructureSpawner::place_pending_for_structure(const std::string &name, int max_passes)
@@ -1527,6 +1885,11 @@ void StructureSpawner::record_placed_structure(const glm::ivec2 &position, const
 const std::vector<StructureSpawner::PlacedStructure> &StructureSpawner::get_placed_structures() const
 {
     return placed_structures;
+}
+
+StructureSpawner::RuntimeStats StructureSpawner::get_runtime_stats() const
+{
+    return runtime_stats;
 }
 
 // ============================================

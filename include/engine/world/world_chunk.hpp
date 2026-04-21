@@ -1,5 +1,6 @@
 #pragma once
 
+// File purpose: Defines chunk storage, indexing, and per-chunk world data.
 #include <vector>
 #include <glm/glm.hpp>
 
@@ -23,6 +24,7 @@ enum class Chunk_States
  * @param height - ,
  * @param coords coords in the world
  */
+// Stores world-cell data and per-chunk metadata.
 class Chunk
 {
 private:
@@ -40,14 +42,19 @@ private:
     std::vector<unsigned int> cached_indicies;
 
 private:
+    // Initializes chunk data.
     void init_chunk_data();
+    // Returns index.
     inline int get_index(int x, int y);
 
+    // Moves worldcell.
     void move_worldcell(WorldCell &from, WorldCell &to);
     // void commit_cells();
 
     void make_cached_verticies();
+    // Builds cached indicies.
     void make_cached_indicies();
+    // Rebuild gpu chunk data.
     void rebuild_gpu_chunk_data();
 
 public:
@@ -55,42 +62,61 @@ public:
     const glm::ivec2 coords;
 
 public:
+    // Constructs Chunk.
     Chunk(glm::ivec2 coords, int width, int height);
+    // Destroys Chunk and releases owned resources.
     ~Chunk() = default;
 
+    // Updates state.
     void update(); // nieco
 
+    // Returns chunk data.
     std::vector<WorldCell> *get_chunk_data();
+    // Sets chunk data.
     void set_chunk_data(std::vector<WorldCell> &chunk_data);
+    // Returns gpu chunk data.
     const std::vector<GPUWorldCell> &get_gpu_chunk_data();
 
+    // Returns chunk dimensions.
     glm::ivec2 get_chunk_dimensions();
 
+    // Returns state.
     Chunk_States get_state();
+    // Sets state.
     void set_state(Chunk_States state);
 
+    // Returns true if dirty.
     bool is_dirty();
 
+    // Returns true if empty.
     bool is_empty(int x, int y);
+    // Returns true if empty.
     bool is_empty(int index);
     // vrati worldcell ak worldcell particle je typu empty
     WorldCell *get_if_not_empty(const int x, const int y);
     // vrati worldcell ak worldcell nie je prazdny
     WorldCell *get_if_not_empty(const int index);
 
+    // Sets worldcell.
     void set_worldcell(const glm::ivec2 &coords, Particle_Type particle);
+    // Sets worldcell.
     void set_worldcell(int x, int y, Particle_Type particle);
+    // Sets worldcell.
     void set_worldcell(int index, Particle_Type particle);
 
     // Set worldcell with explicit static flag (for player-placed vs world-generated)
     void set_worldcell(const glm::ivec2 &coords, Particle_Type particle, bool is_static);
+    // Sets worldcell.
     void set_worldcell(int x, int y, Particle_Type particle, bool is_static);
+    // Sets worldcell.
     void set_worldcell(int index, Particle_Type particle, bool is_static);
 
     // Set worldcell with a fully constructed particle (for custom-colored particles)
     void set_worldcell(const glm::ivec2 &coords, const Particle &particle);
 
+    // Returns worldcell.
     WorldCell *get_worldcell(int x, int y);
+    // Returns worldcell.
     WorldCell *get_worldcell(int index);
 
     // Mark chunk as needing GPU data rebuild (call after modifying particles directly)
@@ -98,5 +124,6 @@ public:
 
     // get render data
     std::vector<Vertex> *get_cached_verticies();
+    // Returns cached indicies.
     std::vector<unsigned int> *get_cached_indicies();
 };

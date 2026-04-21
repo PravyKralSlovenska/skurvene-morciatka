@@ -37,6 +37,7 @@ namespace
 World::World()
 {
     world_seed = resolve_world_seed_from_env_or_random();
+    cached_active_chunk_offsets = calculate_offsets(chunk_radius);
 
     world_gen = std::make_unique<World_CA_Generation>(chunk_width, chunk_height);
     world_gen->set_seed(world_seed);
@@ -64,6 +65,7 @@ void World::update()
 void World::update(float delta_time)
 {
     calculate_active_chunks();
+
     process_structure_chunk_events();
 
     // Keep placement responsive to current player location even if the
@@ -229,19 +231,30 @@ void World::process_structure_chunk_events()
 
 void World::calculate_active_chunks()
 {
+    if (!player)
+    {
+        active_chunks.clear();
+        return;
+    }
+
     active_chunks.clear();
 
-    std::vector<glm::ivec2> offsets = calculate_offsets(chunk_radius);
-    // std::vector<glm::ivec2> offsets = calculate_offsets_rectangle(5, 3);
-    active_chunks.reserve(offsets.size());
-
-    for (const auto &offset : offsets)
+    if (cached_active_chunk_offsets.empty())
     {
-        int chunk_pixel_width = chunk_width * Globals::PARTICLE_SIZE;
-        int chunk_pixel_height = chunk_height * Globals::PARTICLE_SIZE;
+        cached_active_chunk_offsets = calculate_offsets(chunk_radius);
+    }
 
-        int x = floor(player->coords.x / chunk_pixel_width) + offset.x;
-        int y = floor(player->coords.y / chunk_pixel_height) + offset.y;
+    active_chunks.reserve(cached_active_chunk_offsets.size());
+
+    const int chunk_pixel_width = chunk_width * Globals::PARTICLE_SIZE;
+    const int chunk_pixel_height = chunk_height * Globals::PARTICLE_SIZE;
+    const int player_chunk_x = static_cast<int>(std::floor(player->coords.x / static_cast<float>(chunk_pixel_width)));
+    const int player_chunk_y = static_cast<int>(std::floor(player->coords.y / static_cast<float>(chunk_pixel_height)));
+
+    for (const auto &offset : cached_active_chunk_offsets)
+    {
+        int x = player_chunk_x + offset.x;
+        int y = player_chunk_y + offset.y;
 
         glm::ivec2 coords{x, y};
 
@@ -252,7 +265,6 @@ void World::calculate_active_chunks()
         active_chunks.insert(coords);
     }
 
-    // std::cout << active_chunks.size() << '\n';
     // std::cout << world.size() << '\n';
 }
 

@@ -1,20 +1,25 @@
 #pragma once
 
+// File purpose: Defines a base OpenGL buffer wrapper abstraction.
 #include <glad/gl.h>
 
 /*
  * BUFFER:
  * - base class for other classes
  */
+// Base wrapper for OpenGL buffer objects.
 class Buffer
 {
 public:
     unsigned int id;
 
 public:
+    // Binds.
     virtual void bind() = 0;
+    // Unbinds.
     virtual void unbind() = 0;
 
+    // Returns true if valid.
     bool is_valid() const;
     
     /*

@@ -1,5 +1,6 @@
 #pragma once
 
+// File purpose: Defines biome data structures and biome blending models.
 // forward declarations
 enum class Particle_Type;
 
@@ -26,11 +27,14 @@ struct Biome
 
     Particle_Type particle_fill;
 
+    // Constructs Biome.
     Biome() {}
     Biome(Biome_Type type, float cave_noise, float cave_size, float cave_temperature, Particle_Type particle_fill)
+        // Biome type descriptor.
         : type(type), cave_noise(cave_noise), cave_size(cave_size), cave_temperature(cave_temperature), particle_fill(particle_fill) {}
 };
 
+// Defines the Biome_Blend struct.
 struct Biome_Blend
 {
     Biome primary;

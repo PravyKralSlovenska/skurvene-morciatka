@@ -511,39 +511,72 @@ void Entity::toggle_noclip()
 
 // ==================== Collision Detection ====================
 
-bool Entity::is_solid_at(int world_x, int world_y) const
+bool Entity::is_solid_at_cached(int world_x, int world_y, ChunkLookupCache &cache) const
 {
     if (!world_ref)
         return false;
 
-    int particle_size = static_cast<int>(Globals::PARTICLE_SIZE);
-    glm::ivec2 chunk_dims = world_ref->get_chunk_dimensions();
-    int chunk_pixel_width = chunk_dims.x * particle_size;
-    int chunk_pixel_height = chunk_dims.y * particle_size;
+    if (!cache.initialized)
+    {
+        cache.particle_size = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+        cache.chunk_dims = world_ref->get_chunk_dimensions();
+        cache.chunk_pixel_width = std::max(1, cache.chunk_dims.x * cache.particle_size);
+        cache.chunk_pixel_height = std::max(1, cache.chunk_dims.y * cache.particle_size);
+        cache.initialized = true;
+    }
 
-    // Get chunk coordinates
-    glm::ivec2 chunk_pos{
-        static_cast<int>(std::floor(static_cast<float>(world_x) / chunk_pixel_width)),
-        static_cast<int>(std::floor(static_cast<float>(world_y) / chunk_pixel_height))};
+    const glm::ivec2 chunk_pos{
+        static_cast<int>(std::floor(static_cast<float>(world_x) / cache.chunk_pixel_width)),
+        static_cast<int>(std::floor(static_cast<float>(world_y) / cache.chunk_pixel_height))};
 
-    Chunk *chunk = world_ref->get_chunk(chunk_pos);
-    if (!chunk)
+    if (chunk_pos != cache.cached_chunk_pos)
+    {
+        cache.cached_chunk_pos = chunk_pos;
+        cache.cached_chunk = world_ref->get_chunk(chunk_pos);
+    }
+
+    if (!cache.cached_chunk)
         return false;
 
-    // Get local cell position within chunk
-    int local_x = (world_x - chunk_pos.x * chunk_pixel_width) / particle_size;
-    int local_y = (world_y - chunk_pos.y * chunk_pixel_height) / particle_size;
+    const int local_x = (world_x - chunk_pos.x * cache.chunk_pixel_width) / cache.particle_size;
+    const int local_y = (world_y - chunk_pos.y * cache.chunk_pixel_height) / cache.particle_size;
 
-    // Bounds check
-    if (local_x < 0 || local_x >= chunk_dims.x || local_y < 0 || local_y >= chunk_dims.y)
+    if (local_x < 0 || local_x >= cache.chunk_dims.x || local_y < 0 || local_y >= cache.chunk_dims.y)
         return false;
 
-    WorldCell *cell = chunk->get_worldcell(local_x, local_y);
+    WorldCell *cell = cache.cached_chunk->get_worldcell(local_x, local_y);
     if (!cell)
         return false;
 
-    // Check if particle is solid
     return cell->particle.state == Particle_State::SOLID;
+}
+
+bool Entity::has_solid_on_horizontal_edge(int left, int right, int y, int particle_size, ChunkLookupCache &cache) const
+{
+    for (int x = left; x <= right; x += particle_size)
+    {
+        if (is_solid_at_cached(x, y, cache))
+            return true;
+    }
+
+    return is_solid_at_cached(right, y, cache);
+}
+
+bool Entity::has_solid_on_vertical_edge(int x, int top, int bottom, int particle_size, ChunkLookupCache &cache) const
+{
+    for (int y = top; y <= bottom; y += particle_size)
+    {
+        if (is_solid_at_cached(x, y, cache))
+            return true;
+    }
+
+    return is_solid_at_cached(x, bottom, cache);
+}
+
+bool Entity::is_solid_at(int world_x, int world_y) const
+{
+    ChunkLookupCache cache;
+    return is_solid_at_cached(world_x, world_y, cache);
 }
 
 bool Entity::check_collision_at(const glm::ivec2 &position) const
@@ -557,37 +590,20 @@ bool Entity::check_collision_at(const glm::ivec2 &position) const
     int top = position.y - hitbox_dimensions_half.y;
     int bottom = position.y + hitbox_dimensions_half.y;
 
-    int particle_size = static_cast<int>(Globals::PARTICLE_SIZE);
+    int particle_size = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+    ChunkLookupCache cache;
 
-    // Check bottom edge (feet)
-    for (int x = left; x <= right; x += particle_size)
-    {
-        if (is_solid_at(x, bottom))
-            return true;
-    }
-    if (is_solid_at(right, bottom))
+    if (has_solid_on_horizontal_edge(left, right, bottom, particle_size, cache))
         return true;
 
-    // Check top edge (head)
-    for (int x = left; x <= right; x += particle_size)
-    {
-        if (is_solid_at(x, top))
-            return true;
-    }
+    if (has_solid_on_horizontal_edge(left, right, top, particle_size, cache))
+        return true;
 
-    // Check left edge
-    for (int y = top; y <= bottom; y += particle_size)
-    {
-        if (is_solid_at(left, y))
-            return true;
-    }
+    if (has_solid_on_vertical_edge(left, top, bottom, particle_size, cache))
+        return true;
 
-    // Check right edge
-    for (int y = top; y <= bottom; y += particle_size)
-    {
-        if (is_solid_at(right, y))
-            return true;
-    }
+    if (has_solid_on_vertical_edge(right, top, bottom, particle_size, cache))
+        return true;
 
     return false;
 }
@@ -636,27 +652,28 @@ bool Entity::is_valid_spawn_position(const glm::ivec2 &position) const
     int top = position.y - hitbox_dimensions_half.y;
     int bottom = position.y + hitbox_dimensions_half.y;
 
-    int particle_size = static_cast<int>(Globals::PARTICLE_SIZE);
+    int particle_size = std::max(1, static_cast<int>(Globals::PARTICLE_SIZE));
+    ChunkLookupCache cache;
 
     // Check the full hitbox interior, not just edges
     for (int y = top; y <= bottom; y += particle_size)
     {
         for (int x = left; x <= right; x += particle_size)
         {
-            if (is_solid_at(x, y))
+            if (is_solid_at_cached(x, y, cache))
                 return false;
         }
         // Check right edge explicitly
-        if (is_solid_at(right, y))
+        if (is_solid_at_cached(right, y, cache))
             return false;
     }
     // Check bottom edge explicitly
     for (int x = left; x <= right; x += particle_size)
     {
-        if (is_solid_at(x, bottom))
+        if (is_solid_at_cached(x, bottom, cache))
             return false;
     }
-    if (is_solid_at(right, bottom))
+    if (is_solid_at_cached(right, bottom, cache))
         return false;
 
     return true;

@@ -1,9 +1,11 @@
 #pragma once
 
+// File purpose: Defines packed GPU representation of a world cell.
 #include <cstdint>
 
 #include <glm/glm.hpp>
 
+// Defines the GPUWorldCell struct.
 struct GPUWorldCell
 {
     glm::ivec2 coords{0, 0};

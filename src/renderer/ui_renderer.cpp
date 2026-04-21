@@ -29,6 +29,57 @@ static constexpr float NEW_GAME_WINDOW_HEIGHT = 560.0f;
 
 namespace
 {
+    std::uint64_t make_chunk_cache_key(const glm::ivec2 &coords)
+    {
+        return (static_cast<std::uint64_t>(static_cast<std::uint32_t>(coords.x)) << 32) |
+               static_cast<std::uint32_t>(coords.y);
+    }
+
+    ImU32 sample_chunk_average_color(Chunk *chunk)
+    {
+        if (!chunk)
+            return IM_COL32(20, 20, 35, 100);
+
+        int sample_count = 0;
+        float avg_r = 0.0f;
+        float avg_g = 0.0f;
+        float avg_b = 0.0f;
+
+        const int cw = chunk->width;
+        const int ch = chunk->height;
+        int step = 1;
+        if (cw > 5)
+            step = cw / 5;
+
+        for (int sy = 0; sy < ch; sy += step)
+        {
+            for (int sx = 0; sx < cw; sx += step)
+            {
+                WorldCell *cell = chunk->get_worldcell(sx, sy);
+                if (cell && cell->particle.type != Particle_Type::EMPTY)
+                {
+                    avg_r += cell->particle.color.r;
+                    avg_g += cell->particle.color.g;
+                    avg_b += cell->particle.color.b;
+                    sample_count++;
+                }
+            }
+        }
+
+        if (sample_count <= 0)
+            return IM_COL32(20, 20, 35, 100);
+
+        avg_r /= sample_count;
+        avg_g /= sample_count;
+        avg_b /= sample_count;
+
+        return IM_COL32(
+            static_cast<int>(avg_r * 255.0f),
+            static_cast<int>(avg_g * 255.0f),
+            static_cast<int>(avg_b * 255.0f),
+            220);
+    }
+
     bool parse_seed_text(const std::string &seed_text, int &parsed_seed, bool &is_empty)
     {
         size_t start = 0;
@@ -120,9 +171,16 @@ bool UI_Renderer::ensure_store_offer_textures_loaded()
     store_offer_textures["items/devushki_heal.png"] = load_ui_texture("items/devushki_heal.png");
     store_offer_textures["items/devushki_ammo.png"] = load_ui_texture("items/devushki_ammo.png");
     store_offer_textures["items/devushki_compass.png"] = load_ui_texture("items/devushki_compass.png");
+    store_offer_textures["builtin://wand_sand"] = create_solid_color_texture(194, 178, 128);
+    store_offer_textures["builtin://wand_water"] = create_solid_color_texture(64, 164, 223);
     store_offer_textures["builtin://wand_fire"] = create_solid_color_texture(255, 90, 20);
+    store_offer_textures["builtin://wand_ice"] = create_solid_color_texture(200, 235, 255);
+    store_offer_textures["builtin://wand_water_vapor"] = create_solid_color_texture(220, 230, 245, 220);
     store_offer_textures["builtin://wand_wood"] = create_solid_color_texture(139, 94, 60);
+    store_offer_textures["builtin://wand_stone"] = create_solid_color_texture(128, 128, 128);
     store_offer_textures["builtin://wand_empty"] = create_solid_color_texture(210, 210, 210);
+    store_offer_textures["builtin://wand_smoke"] = create_solid_color_texture(160, 160, 175, 220);
+    store_offer_textures["builtin://wand_uranium"] = create_solid_color_texture(0, 255, 70);
 
     store_offer_textures_loaded = true;
     return true;
@@ -130,7 +188,13 @@ bool UI_Renderer::ensure_store_offer_textures_loaded()
 
 void UI_Renderer::set_player(Player *player) { this->player = player; }
 void UI_Renderer::set_camera(Camera *camera) { this->camera = camera; }
-void UI_Renderer::set_world(World *world) { this->world = world; }
+void UI_Renderer::set_world(World *world)
+{
+    this->world = world;
+    map_chunk_color_cache.clear();
+    map_chunk_color_refresh_due = true;
+    map_chunk_color_refresh_timer_seconds = MAP_CHUNK_COLOR_REFRESH_INTERVAL_SECONDS;
+}
 void UI_Renderer::set_time_manager(Time_Manager *time_manager) { this->time_manager = time_manager; }
 void UI_Renderer::set_entity_manager(Entity_Manager *entity_manager) { this->entity_manager = entity_manager; }
 
@@ -528,9 +592,25 @@ void UI_Renderer::render_ui()
 
     objective_panel_bottom_y = 0.0f;
 
-    if (time_manager && !time_manager->paused())
+    double frame_delta = 1.0 / 60.0;
+    if (time_manager)
     {
-        session_play_time_seconds += time_manager->get_delta_time();
+        frame_delta = std::clamp(time_manager->get_delta_time(), 0.0, 0.25);
+        if (!time_manager->paused())
+        {
+            session_play_time_seconds += frame_delta;
+        }
+    }
+
+    map_chunk_color_refresh_timer_seconds += frame_delta;
+    if (map_chunk_color_refresh_timer_seconds >= MAP_CHUNK_COLOR_REFRESH_INTERVAL_SECONDS)
+    {
+        map_chunk_color_refresh_due = true;
+        map_chunk_color_refresh_timer_seconds = 0.0;
+    }
+    else
+    {
+        map_chunk_color_refresh_due = false;
     }
 
     if (entity_manager)
@@ -781,6 +861,21 @@ void UI_Renderer::render_debug_overlay()
         if (world)
         {
             ImGui::Text("Chunks: %d", world->get_chunks_size());
+
+            const StructureSpawner::RuntimeStats store_stats = world->get_structure_spawner().get_runtime_stats();
+            ImGui::Text("Store entries: %d (pending %d)",
+                        store_stats.total_predetermined_entries_last,
+                        store_stats.pending_entries_last);
+            ImGui::Text("Store scan last/avg: %d / %.1f",
+                        store_stats.scanned_entries_last,
+                        store_stats.scanned_entries_avg);
+            ImGui::Text("Store call ms L/A/M: %.3f / %.3f / %.3f",
+                        store_stats.last_call_ms,
+                        store_stats.avg_call_ms,
+                        store_stats.max_call_ms);
+            ImGui::Text("Store targets cur/desired: %d / %d",
+                        store_stats.current_store_targets_last,
+                        store_stats.desired_store_targets_last);
         }
 
         // Entity counts
@@ -1201,6 +1296,7 @@ void UI_Renderer::render_minimap()
 void UI_Renderer::toggle_fullscreen_map()
 {
     show_fullscreen_map = !show_fullscreen_map;
+    map_chunk_color_refresh_due = true;
     if (show_fullscreen_map)
     {
         // Reset offset to center on player
@@ -1329,6 +1425,7 @@ void UI_Renderer::draw_map_content(ImDrawList *draw_list, ImVec2 pos, float map_
                                    float center_chunk_x, float center_chunk_y, float view_radius, bool show_label)
 {
     auto *chunks_map = world->get_chunks();
+    auto *active_chunks = world->get_active_chunks();
     glm::ivec2 chunk_dims = world->get_chunk_dimensions();
     float chunk_pixel_w = (float)chunk_dims.x * Globals::PARTICLE_SIZE;
     float chunk_pixel_h = (float)chunk_dims.y * Globals::PARTICLE_SIZE;
@@ -1361,66 +1458,59 @@ void UI_Renderer::draw_map_content(ImDrawList *draw_list, ImVec2 pos, float map_
 
     draw_list->PushClipRect(pos, ImVec2(pos.x + map_w, pos.y + map_h), true);
 
-    // Draw chunks
-    for (auto &[coord, chunk] : *chunks_map)
+    const bool use_active_chunks_only = show_label && active_chunks && !active_chunks->empty();
+    const bool allow_cache_refresh = map_chunk_color_refresh_due;
+
+    auto draw_chunk = [&](const glm::ivec2 &coord, Chunk *chunk)
     {
         if (!chunk)
-            continue;
+            return;
 
         // Skip chunks outside visible range
         if (coord.x < min_cx || coord.x > max_cx || coord.y < min_cy || coord.y > max_cy)
-            continue;
+            return;
 
         float rx = (float)(coord.x - min_cx) * scale + offset_x;
         float ry = (float)(coord.y - min_cy) * scale + offset_y;
 
-        // Sample particles for average color
-        int sample_count = 0;
-        float avg_r = 0, avg_g = 0, avg_b = 0;
-        int cw = chunk->width;
-        int ch = chunk->height;
+        const std::uint64_t cache_key = make_chunk_cache_key(coord);
+        auto cache_it = map_chunk_color_cache.find(cache_key);
+        const bool has_cached_color = cache_it != map_chunk_color_cache.end();
 
-        int step = 1;
-        if (cw > 5)
-            step = cw / 5;
-
-        for (int sy = 0; sy < ch; sy += step)
+        if (!has_cached_color || (allow_cache_refresh && chunk->is_dirty()))
         {
-            for (int sx = 0; sx < cw; sx += step)
-            {
-                WorldCell *cell = chunk->get_worldcell(sx, sy);
-                if (cell && cell->particle.type != Particle_Type::EMPTY)
-                {
-                    avg_r += cell->particle.color.r;
-                    avg_g += cell->particle.color.g;
-                    avg_b += cell->particle.color.b;
-                    sample_count++;
-                }
-            }
+            map_chunk_color_cache[cache_key] = sample_chunk_average_color(chunk);
+            cache_it = map_chunk_color_cache.find(cache_key);
         }
 
-        ImU32 chunk_color;
-        if (sample_count > 0)
-        {
-            avg_r /= sample_count;
-            avg_g /= sample_count;
-            avg_b /= sample_count;
-            chunk_color = IM_COL32(
-                (int)(avg_r * 255),
-                (int)(avg_g * 255),
-                (int)(avg_b * 255),
-                220);
-        }
-        else
-        {
-            chunk_color = IM_COL32(20, 20, 35, 100);
-        }
+        const ImU32 chunk_color = (cache_it != map_chunk_color_cache.end())
+                                      ? cache_it->second
+                                      : IM_COL32(20, 20, 35, 100);
 
         float block_size = scale > 1.0f ? scale : 1.0f;
         draw_list->AddRectFilled(
             ImVec2(rx, ry),
             ImVec2(rx + block_size, ry + block_size),
             chunk_color);
+    };
+
+    if (use_active_chunks_only)
+    {
+        for (const auto &coords : *active_chunks)
+        {
+            auto it = chunks_map->find(coords);
+            if (it == chunks_map->end())
+                continue;
+
+            draw_chunk(coords, it->second.get());
+        }
+    }
+    else
+    {
+        for (auto &[coord, chunk] : *chunks_map)
+        {
+            draw_chunk(coord, chunk.get());
+        }
     }
 
     // Player indicator

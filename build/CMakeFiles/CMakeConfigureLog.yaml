@@ -20,9 +20,6 @@ events:
     names:
       - "uname"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -34,17 +31,11 @@ events:
       - "/home/jakub/.local/share/JetBrains/Toolbox/scripts/"
       - "/bin/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/uname"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/uname"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/uname"
       - "/usr/local/sbin/uname"
       - "/usr/local/bin/uname"
     found: "/usr/bin/uname"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -83,9 +74,6 @@ events:
       - "make"
       - "smake"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -96,9 +84,6 @@ events:
       - "/home/jakub/.dotnet/tools/"
       - "/home/jakub/.local/share/JetBrains/Toolbox/scripts/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/gmake"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gmake"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gmake"
       - "/usr/local/sbin/gmake"
       - "/usr/local/bin/gmake"
       - "/usr/bin/gmake"
@@ -108,77 +93,11 @@ events:
       - "/usr/bin/core_perl/gmake"
       - "/home/jakub/.dotnet/tools/gmake"
       - "/home/jakub/.local/share/JetBrains/Toolbox/scripts/gmake"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/make"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/make"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/make"
       - "/usr/local/sbin/make"
       - "/usr/local/bin/make"
     found: "/usr/bin/make"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
-        - "/usr/local/sbin"
-        - "/usr/local/bin"
-        - "/usr/bin"
-        - "/usr/lib/jvm/default/bin"
-        - "/usr/bin/site_perl"
-        - "/usr/bin/vendor_perl"
-        - "/usr/bin/core_perl"
-        - "/home/jakub/.dotnet/tools"
-        - "/home/jakub/.dotnet/tools"
-        - "/home/jakub/.local/share/JetBrains/Toolbox/scripts"
-  -
-    kind: "find-v1"
-    backtrace:
-      - "/usr/share/cmake/Modules/CMakeDetermineCompiler.cmake:73 (find_program)"
-      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:64 (_cmake_find_compiler)"
-      - "CMakeLists.txt:2 (project)"
-    mode: "program"
-    variable: "CMAKE_C_COMPILER"
-    description: "C compiler"
-    settings:
-      SearchFramework: "NEVER"
-      SearchAppBundle: "NEVER"
-      CMAKE_FIND_USE_CMAKE_PATH: true
-      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
-      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
-      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
-      CMAKE_FIND_USE_INSTALL_PREFIX: true
-    names:
-      - "cc"
-      - "gcc"
-      - "cl"
-      - "bcc"
-      - "xlc"
-      - "icx"
-      - "clang"
-    candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
-      - "/usr/local/sbin/"
-      - "/usr/local/bin/"
-      - "/usr/bin/"
-      - "/usr/lib/jvm/default/bin/"
-      - "/usr/bin/site_perl/"
-      - "/usr/bin/vendor_perl/"
-      - "/usr/bin/core_perl/"
-      - "/home/jakub/.dotnet/tools/"
-      - "/home/jakub/.local/share/JetBrains/Toolbox/scripts/"
-    searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/cc"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/cc"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/cc"
-      - "/usr/local/sbin/cc"
-      - "/usr/local/bin/cc"
-    found: "/usr/bin/cc"
-    search_context:
-      ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -216,9 +135,6 @@ events:
     found: "/usr/share/cmake/Modules/CMakeCCompilerId.c.in"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -238,7 +154,7 @@ events:
       - "CMakeLists.txt:2 (project)"
     message: |
       Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
-      Compiler: /usr/bin/cc 
+      Compiler: /usr/bin/gcc 
       Build flags: 
       Id flags:  
       
@@ -272,9 +188,6 @@ events:
       - "ar"
     candidate_directories:
       - "/usr/bin/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/lib/jvm/default/bin/"
@@ -286,9 +199,6 @@ events:
     found: "/usr/bin/ar"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -320,9 +230,6 @@ events:
       - "ranlib"
     candidate_directories:
       - "/usr/bin/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/lib/jvm/default/bin/"
@@ -334,9 +241,6 @@ events:
     found: "/usr/bin/ranlib"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -368,9 +272,6 @@ events:
       - "strip"
     candidate_directories:
       - "/usr/bin/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/lib/jvm/default/bin/"
@@ -382,9 +283,6 @@ events:
     found: "/usr/bin/strip"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -416,9 +314,6 @@ events:
       - "ld"
     candidate_directories:
       - "/usr/bin/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/lib/jvm/default/bin/"
@@ -430,9 +325,6 @@ events:
     found: "/usr/bin/ld"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -464,9 +356,6 @@ events:
       - "nm"
     candidate_directories:
       - "/usr/bin/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/lib/jvm/default/bin/"
@@ -478,9 +367,6 @@ events:
     found: "/usr/bin/nm"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -512,9 +398,6 @@ events:
       - "objdump"
     candidate_directories:
       - "/usr/bin/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/lib/jvm/default/bin/"
@@ -526,9 +409,6 @@ events:
     found: "/usr/bin/objdump"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -560,9 +440,6 @@ events:
       - "objcopy"
     candidate_directories:
       - "/usr/bin/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/lib/jvm/default/bin/"
@@ -574,9 +451,6 @@ events:
     found: "/usr/bin/objcopy"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -608,9 +482,6 @@ events:
       - "readelf"
     candidate_directories:
       - "/usr/bin/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/lib/jvm/default/bin/"
@@ -622,9 +493,6 @@ events:
     found: "/usr/bin/readelf"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -656,9 +524,6 @@ events:
       - "dlltool"
     candidate_directories:
       - "/usr/bin/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/lib/jvm/default/bin/"
@@ -669,9 +534,6 @@ events:
       - "/home/jakub/.local/share/JetBrains/Toolbox/scripts/"
     searched_directories:
       - "/usr/bin/dlltool"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/dlltool"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/dlltool"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/dlltool"
       - "/usr/local/sbin/dlltool"
       - "/usr/local/bin/dlltool"
       - "/usr/lib/jvm/default/bin/dlltool"
@@ -683,9 +545,6 @@ events:
     found: false
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -717,9 +576,6 @@ events:
       - "addr2line"
     candidate_directories:
       - "/usr/bin/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/lib/jvm/default/bin/"
@@ -731,9 +587,6 @@ events:
     found: "/usr/bin/addr2line"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -765,9 +618,6 @@ events:
       - "tapi"
     candidate_directories:
       - "/usr/bin/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/lib/jvm/default/bin/"
@@ -778,9 +628,6 @@ events:
       - "/home/jakub/.local/share/JetBrains/Toolbox/scripts/"
     searched_directories:
       - "/usr/bin/tapi"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/tapi"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/tapi"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/tapi"
       - "/usr/local/sbin/tapi"
       - "/usr/local/bin/tapi"
       - "/usr/lib/jvm/default/bin/tapi"
@@ -792,9 +639,6 @@ events:
     found: false
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -829,9 +673,6 @@ events:
       - "gcc-ar"
     candidate_directories:
       - "/usr/bin/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/lib/jvm/default/bin/"
@@ -842,9 +683,6 @@ events:
       - "/home/jakub/.local/share/JetBrains/Toolbox/scripts/"
     searched_directories:
       - "/usr/bin/gcc-ar-15.2"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/gcc-ar-15.2"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ar-15.2"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ar-15.2"
       - "/usr/local/sbin/gcc-ar-15.2"
       - "/usr/local/bin/gcc-ar-15.2"
       - "/usr/lib/jvm/default/bin/gcc-ar-15.2"
@@ -854,9 +692,6 @@ events:
       - "/home/jakub/.dotnet/tools/gcc-ar-15.2"
       - "/home/jakub/.local/share/JetBrains/Toolbox/scripts/gcc-ar-15.2"
       - "/usr/bin/gcc-ar-15"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/gcc-ar-15"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ar-15"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ar-15"
       - "/usr/local/sbin/gcc-ar-15"
       - "/usr/local/bin/gcc-ar-15"
       - "/usr/lib/jvm/default/bin/gcc-ar-15"
@@ -866,9 +701,6 @@ events:
       - "/home/jakub/.dotnet/tools/gcc-ar-15"
       - "/home/jakub/.local/share/JetBrains/Toolbox/scripts/gcc-ar-15"
       - "/usr/bin/gcc-ar15"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/gcc-ar15"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ar15"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ar15"
       - "/usr/local/sbin/gcc-ar15"
       - "/usr/local/bin/gcc-ar15"
       - "/usr/lib/jvm/default/bin/gcc-ar15"
@@ -880,9 +712,6 @@ events:
     found: "/usr/bin/gcc-ar"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -917,9 +746,6 @@ events:
       - "gcc-ranlib"
     candidate_directories:
       - "/usr/bin/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/lib/jvm/default/bin/"
@@ -930,9 +756,6 @@ events:
       - "/home/jakub/.local/share/JetBrains/Toolbox/scripts/"
     searched_directories:
       - "/usr/bin/gcc-ranlib-15.2"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/gcc-ranlib-15.2"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ranlib-15.2"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ranlib-15.2"
       - "/usr/local/sbin/gcc-ranlib-15.2"
       - "/usr/local/bin/gcc-ranlib-15.2"
       - "/usr/lib/jvm/default/bin/gcc-ranlib-15.2"
@@ -942,9 +765,6 @@ events:
       - "/home/jakub/.dotnet/tools/gcc-ranlib-15.2"
       - "/home/jakub/.local/share/JetBrains/Toolbox/scripts/gcc-ranlib-15.2"
       - "/usr/bin/gcc-ranlib-15"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/gcc-ranlib-15"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ranlib-15"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ranlib-15"
       - "/usr/local/sbin/gcc-ranlib-15"
       - "/usr/local/bin/gcc-ranlib-15"
       - "/usr/lib/jvm/default/bin/gcc-ranlib-15"
@@ -954,9 +774,6 @@ events:
       - "/home/jakub/.dotnet/tools/gcc-ranlib-15"
       - "/home/jakub/.local/share/JetBrains/Toolbox/scripts/gcc-ranlib-15"
       - "/usr/bin/gcc-ranlib15"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/gcc-ranlib15"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ranlib15"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ranlib15"
       - "/usr/local/sbin/gcc-ranlib15"
       - "/usr/local/bin/gcc-ranlib15"
       - "/usr/lib/jvm/default/bin/gcc-ranlib15"
@@ -968,55 +785,6 @@ events:
     found: "/usr/bin/gcc-ranlib"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
-        - "/usr/local/sbin"
-        - "/usr/local/bin"
-        - "/usr/bin"
-        - "/usr/lib/jvm/default/bin"
-        - "/usr/bin/site_perl"
-        - "/usr/bin/vendor_perl"
-        - "/usr/bin/core_perl"
-        - "/home/jakub/.dotnet/tools"
-        - "/home/jakub/.dotnet/tools"
-        - "/home/jakub/.local/share/JetBrains/Toolbox/scripts"
-  -
-    kind: "find-v1"
-    backtrace:
-      - "/usr/share/cmake/Modules/CMakeDetermineCompiler.cmake:54 (find_program)"
-      - "/usr/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake:69 (_cmake_find_compiler)"
-      - "CMakeLists.txt:2 (project)"
-    mode: "program"
-    variable: "CMAKE_CXX_COMPILER"
-    description: "CXX compiler"
-    settings:
-      SearchFramework: "NEVER"
-      SearchAppBundle: "NEVER"
-      CMAKE_FIND_USE_CMAKE_PATH: true
-      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
-      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
-      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
-      CMAKE_FIND_USE_INSTALL_PREFIX: true
-    names:
-      - "c++"
-      - "CC"
-      - "g++"
-      - "aCC"
-      - "cl"
-      - "bcc"
-      - "xlC"
-      - "icpx"
-      - "icx"
-      - "clang++"
-    candidate_directories:
-      - "/usr/bin/"
-    found: "/usr/bin/c++"
-    search_context:
-      ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -1054,9 +822,6 @@ events:
     found: "/usr/share/cmake/Modules/CMakeCXXCompilerId.cpp.in"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -1076,7 +841,7 @@ events:
       - "CMakeLists.txt:2 (project)"
     message: |
       Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
-      Compiler: /usr/bin/c++ 
+      Compiler: /usr/bin/g++ 
       Build flags: 
       Id flags:  
       
@@ -1113,9 +878,6 @@ events:
       - "gcc-ar"
     candidate_directories:
       - "/usr/bin/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/lib/jvm/default/bin/"
@@ -1126,9 +888,6 @@ events:
       - "/home/jakub/.local/share/JetBrains/Toolbox/scripts/"
     searched_directories:
       - "/usr/bin/gcc-ar-15.2"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/gcc-ar-15.2"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ar-15.2"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ar-15.2"
       - "/usr/local/sbin/gcc-ar-15.2"
       - "/usr/local/bin/gcc-ar-15.2"
       - "/usr/lib/jvm/default/bin/gcc-ar-15.2"
@@ -1138,9 +897,6 @@ events:
       - "/home/jakub/.dotnet/tools/gcc-ar-15.2"
       - "/home/jakub/.local/share/JetBrains/Toolbox/scripts/gcc-ar-15.2"
       - "/usr/bin/gcc-ar-15"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/gcc-ar-15"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ar-15"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ar-15"
       - "/usr/local/sbin/gcc-ar-15"
       - "/usr/local/bin/gcc-ar-15"
       - "/usr/lib/jvm/default/bin/gcc-ar-15"
@@ -1150,9 +906,6 @@ events:
       - "/home/jakub/.dotnet/tools/gcc-ar-15"
       - "/home/jakub/.local/share/JetBrains/Toolbox/scripts/gcc-ar-15"
       - "/usr/bin/gcc-ar15"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/gcc-ar15"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ar15"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ar15"
       - "/usr/local/sbin/gcc-ar15"
       - "/usr/local/bin/gcc-ar15"
       - "/usr/lib/jvm/default/bin/gcc-ar15"
@@ -1164,9 +917,6 @@ events:
     found: "/usr/bin/gcc-ar"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -1201,9 +951,6 @@ events:
       - "gcc-ranlib"
     candidate_directories:
       - "/usr/bin/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/lib/jvm/default/bin/"
@@ -1214,9 +961,6 @@ events:
       - "/home/jakub/.local/share/JetBrains/Toolbox/scripts/"
     searched_directories:
       - "/usr/bin/gcc-ranlib-15.2"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/gcc-ranlib-15.2"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ranlib-15.2"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ranlib-15.2"
       - "/usr/local/sbin/gcc-ranlib-15.2"
       - "/usr/local/bin/gcc-ranlib-15.2"
       - "/usr/lib/jvm/default/bin/gcc-ranlib-15.2"
@@ -1226,9 +970,6 @@ events:
       - "/home/jakub/.dotnet/tools/gcc-ranlib-15.2"
       - "/home/jakub/.local/share/JetBrains/Toolbox/scripts/gcc-ranlib-15.2"
       - "/usr/bin/gcc-ranlib-15"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/gcc-ranlib-15"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ranlib-15"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ranlib-15"
       - "/usr/local/sbin/gcc-ranlib-15"
       - "/usr/local/bin/gcc-ranlib-15"
       - "/usr/lib/jvm/default/bin/gcc-ranlib-15"
@@ -1238,9 +979,6 @@ events:
       - "/home/jakub/.dotnet/tools/gcc-ranlib-15"
       - "/home/jakub/.local/share/JetBrains/Toolbox/scripts/gcc-ranlib-15"
       - "/usr/bin/gcc-ranlib15"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/gcc-ranlib15"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gcc-ranlib15"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gcc-ranlib15"
       - "/usr/local/sbin/gcc-ranlib15"
       - "/usr/local/bin/gcc-ranlib15"
       - "/usr/lib/jvm/default/bin/gcc-ranlib15"
@@ -1252,9 +990,6 @@ events:
     found: "/usr/bin/gcc-ranlib"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -1274,8 +1009,8 @@ events:
     checks:
       - "Detecting C compiler ABI info"
     directories:
-      source: "/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-9HOgp9"
-      binary: "/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-9HOgp9"
+      source: "/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-xlN9a0"
+      binary: "/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-xlN9a0"
     cmakeVariables:
       CMAKE_CXX_STDLIB_MODULES_JSON: ""
       CMAKE_C_FLAGS: ""
@@ -1285,22 +1020,22 @@ events:
       variable: "CMAKE_C_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-9HOgp9'
+        Change Dir: '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-xlN9a0'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_d99c6/fast
-        /usr/bin/make  -f CMakeFiles/cmTC_d99c6.dir/build.make CMakeFiles/cmTC_d99c6.dir/build
-        make[1]: Entering directory '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-9HOgp9'
-        Building C object CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.o
-        /usr/bin/cc   -v -o CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake/Modules/CMakeCCompilerABI.c
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_5f345/fast
+        /usr/bin/make  -f CMakeFiles/cmTC_5f345.dir/build.make CMakeFiles/cmTC_5f345.dir/build
+        make[1]: Entering directory '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-xlN9a0'
+        Building C object CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.o
+        /usr/bin/gcc   -v -o CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake/Modules/CMakeCCompilerABI.c
         Using built-in specs.
-        COLLECT_GCC=/usr/bin/cc
+        COLLECT_GCC=/usr/bin/gcc
         Target: x86_64-pc-linux-gnu
         Configured with: /build/gcc/src/gcc/configure --enable-languages=ada,c,c++,d,fortran,go,lto,m2,objc,obj-c++,rust,cobol --enable-bootstrap --prefix=/usr --libdir=/usr/lib --libexecdir=/usr/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=https://gitlab.archlinux.org/archlinux/packaging/packages/gcc/-/issues --with-build-config=bootstrap-lto --with-linker-hash-style=gnu --with-system-zlib --enable-__cxa_atexit --enable-cet=auto --enable-checking=release --enable-clocale=gnu --enable-default-pie --enable-default-ssp --enable-gnu-indirect-function --enable-gnu-unique-object --enable-libstdcxx-backtrace --enable-link-serialization=1 --enable-linker-build-id --enable-lto --enable-multilib --enable-plugin --enable-shared --enable-threads=posix --disable-libssp --disable-libstdcxx-pch --disable-werror
         Thread model: posix
         Supported LTO compression algorithms: zlib zstd
         gcc version 15.2.1 20260209 (GCC) 
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_d99c6.dir/'
-         /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/cc1 -quiet -v /usr/share/cmake/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_d99c6.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mtune=generic -march=x86-64 -version -o /tmp/ccFz7msW.s
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_5f345.dir/'
+         /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/cc1 -quiet -v /usr/share/cmake/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_5f345.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mtune=generic -march=x86-64 -version -o /tmp/ccMmEwdZ.s
         GNU C23 (GCC) version 15.2.1 20260209 (x86_64-pc-linux-gnu)
         	compiled by GNU C version 15.2.1 20260209, GMP version 6.3.0, MPFR version 4.2.2, MPC version 1.3.1, isl version isl-0.27-GMP
         
@@ -1315,16 +1050,16 @@ events:
          /usr/include
         End of search list.
         Compiler executable checksum: 4a3176b8a5098bb872007d0a1d5e5fb3
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_d99c6.dir/'
-         as -v --64 -o CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.o /tmp/ccFz7msW.s
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_5f345.dir/'
+         as -v --64 -o CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.o /tmp/ccMmEwdZ.s
         GNU assembler version 2.46 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.46
         COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/
         LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../:/lib/:/usr/lib/
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.'
-        Linking C executable cmTC_d99c6
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d99c6.dir/link.txt --verbose=1
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.'
+        Linking C executable cmTC_5f345
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5f345.dir/link.txt --verbose=1
         Using built-in specs.
-        COLLECT_GCC=/usr/bin/cc
+        COLLECT_GCC=/usr/bin/gcc
         COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper
         Target: x86_64-pc-linux-gnu
         Configured with: /build/gcc/src/gcc/configure --enable-languages=ada,c,c++,d,fortran,go,lto,m2,objc,obj-c++,rust,cobol --enable-bootstrap --prefix=/usr --libdir=/usr/lib --libexecdir=/usr/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=https://gitlab.archlinux.org/archlinux/packaging/packages/gcc/-/issues --with-build-config=bootstrap-lto --with-linker-hash-style=gnu --with-system-zlib --enable-__cxa_atexit --enable-cet=auto --enable-checking=release --enable-clocale=gnu --enable-default-pie --enable-default-ssp --enable-gnu-indirect-function --enable-gnu-unique-object --enable-libstdcxx-backtrace --enable-link-serialization=1 --enable-linker-build-id --enable-lto --enable-multilib --enable-plugin --enable-shared --enable-threads=posix --disable-libssp --disable-libstdcxx-pch --disable-werror
@@ -1333,14 +1068,14 @@ events:
         gcc version 15.2.1 20260209 (GCC) 
         COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/
         LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../:/lib/:/usr/lib/
-        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_d99c6' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_d99c6.'
-         /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccz3HPL4.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_d99c6 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1 -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_5f345' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_5f345.'
+         /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccpbH0q4.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_5f345 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1 -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o
         collect2 version 15.2.1 20260209
-        /usr/bin/ld -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccz3HPL4.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_d99c6 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1 -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o
+        /usr/bin/ld -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccpbH0q4.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_5f345 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1 -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o
         GNU ld (GNU Binutils) 2.46
-        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_d99c6' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_d99c6.'
-        /usr/bin/cc  -v -Wl,-v CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.o -o cmTC_d99c6
-        make[1]: Leaving directory '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-9HOgp9'
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_5f345' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_5f345.'
+        /usr/bin/gcc  -v -Wl,-v CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.o -o cmTC_5f345
+        make[1]: Leaving directory '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-xlN9a0'
         
       exitCode: 0
   -
@@ -1375,22 +1110,22 @@ events:
       Parsed C implicit link information:
         link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
         linker tool regex: [^[ 	]*(->|"|[0-9]+>[ 	-]*Build:[ 	0-9]+ ms[ 	]*)?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)))("|,| |$)]
-        ignore line: [Change Dir: '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-9HOgp9']
+        ignore line: [Change Dir: '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-xlN9a0']
         ignore line: []
-        ignore line: [Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_d99c6/fast]
-        ignore line: [/usr/bin/make  -f CMakeFiles/cmTC_d99c6.dir/build.make CMakeFiles/cmTC_d99c6.dir/build]
-        ignore line: [make[1]: Entering directory '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-9HOgp9']
-        ignore line: [Building C object CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.o]
-        ignore line: [/usr/bin/cc   -v -o CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake/Modules/CMakeCCompilerABI.c]
+        ignore line: [Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_5f345/fast]
+        ignore line: [/usr/bin/make  -f CMakeFiles/cmTC_5f345.dir/build.make CMakeFiles/cmTC_5f345.dir/build]
+        ignore line: [make[1]: Entering directory '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-xlN9a0']
+        ignore line: [Building C object CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.o]
+        ignore line: [/usr/bin/gcc   -v -o CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake/Modules/CMakeCCompilerABI.c]
         ignore line: [Using built-in specs.]
-        ignore line: [COLLECT_GCC=/usr/bin/cc]
+        ignore line: [COLLECT_GCC=/usr/bin/gcc]
         ignore line: [Target: x86_64-pc-linux-gnu]
         ignore line: [Configured with: /build/gcc/src/gcc/configure --enable-languages=ada c c++ d fortran go lto m2 objc obj-c++ rust cobol --enable-bootstrap --prefix=/usr --libdir=/usr/lib --libexecdir=/usr/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=https://gitlab.archlinux.org/archlinux/packaging/packages/gcc/-/issues --with-build-config=bootstrap-lto --with-linker-hash-style=gnu --with-system-zlib --enable-__cxa_atexit --enable-cet=auto --enable-checking=release --enable-clocale=gnu --enable-default-pie --enable-default-ssp --enable-gnu-indirect-function --enable-gnu-unique-object --enable-libstdcxx-backtrace --enable-link-serialization=1 --enable-linker-build-id --enable-lto --enable-multilib --enable-plugin --enable-shared --enable-threads=posix --disable-libssp --disable-libstdcxx-pch --disable-werror]
         ignore line: [Thread model: posix]
         ignore line: [Supported LTO compression algorithms: zlib zstd]
         ignore line: [gcc version 15.2.1 20260209 (GCC) ]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_d99c6.dir/']
-        ignore line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/cc1 -quiet -v /usr/share/cmake/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_d99c6.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mtune=generic -march=x86-64 -version -o /tmp/ccFz7msW.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_5f345.dir/']
+        ignore line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/cc1 -quiet -v /usr/share/cmake/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_5f345.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mtune=generic -march=x86-64 -version -o /tmp/ccMmEwdZ.s]
         ignore line: [GNU C23 (GCC) version 15.2.1 20260209 (x86_64-pc-linux-gnu)]
         ignore line: [	compiled by GNU C version 15.2.1 20260209  GMP version 6.3.0  MPFR version 4.2.2  MPC version 1.3.1  isl version isl-0.27-GMP]
         ignore line: []
@@ -1405,16 +1140,16 @@ events:
         ignore line: [ /usr/include]
         ignore line: [End of search list.]
         ignore line: [Compiler executable checksum: 4a3176b8a5098bb872007d0a1d5e5fb3]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_d99c6.dir/']
-        ignore line: [ as -v --64 -o CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.o /tmp/ccFz7msW.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_5f345.dir/']
+        ignore line: [ as -v --64 -o CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.o /tmp/ccMmEwdZ.s]
         ignore line: [GNU assembler version 2.46 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.46]
         ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/]
         ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../:/lib/:/usr/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.']
-        ignore line: [Linking C executable cmTC_d99c6]
-        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d99c6.dir/link.txt --verbose=1]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.o' '-c' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.']
+        ignore line: [Linking C executable cmTC_5f345]
+        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5f345.dir/link.txt --verbose=1]
         ignore line: [Using built-in specs.]
-        ignore line: [COLLECT_GCC=/usr/bin/cc]
+        ignore line: [COLLECT_GCC=/usr/bin/gcc]
         ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper]
         ignore line: [Target: x86_64-pc-linux-gnu]
         ignore line: [Configured with: /build/gcc/src/gcc/configure --enable-languages=ada c c++ d fortran go lto m2 objc obj-c++ rust cobol --enable-bootstrap --prefix=/usr --libdir=/usr/lib --libexecdir=/usr/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=https://gitlab.archlinux.org/archlinux/packaging/packages/gcc/-/issues --with-build-config=bootstrap-lto --with-linker-hash-style=gnu --with-system-zlib --enable-__cxa_atexit --enable-cet=auto --enable-checking=release --enable-clocale=gnu --enable-default-pie --enable-default-ssp --enable-gnu-indirect-function --enable-gnu-unique-object --enable-libstdcxx-backtrace --enable-link-serialization=1 --enable-linker-build-id --enable-lto --enable-multilib --enable-plugin --enable-shared --enable-threads=posix --disable-libssp --disable-libstdcxx-pch --disable-werror]
@@ -1423,13 +1158,13 @@ events:
         ignore line: [gcc version 15.2.1 20260209 (GCC) ]
         ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/]
         ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../:/lib/:/usr/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_d99c6' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_d99c6.']
-        link line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccz3HPL4.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_d99c6 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1 -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_5f345' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_5f345.']
+        link line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccpbH0q4.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_5f345 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1 -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o]
           arg [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/collect2] ==> ignore
           arg [-plugin] ==> ignore
           arg [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/liblto_plugin.so] ==> ignore
           arg [-plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper] ==> ignore
-          arg [-plugin-opt=-fresolution=/tmp/ccz3HPL4.res] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp/ccpbH0q4.res] ==> ignore
           arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
           arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
           arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -1444,7 +1179,7 @@ events:
           arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
           arg [-pie] ==> ignore
           arg [-o] ==> ignore
-          arg [cmTC_d99c6] ==> ignore
+          arg [cmTC_5f345] ==> ignore
           arg [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o] ==> obj [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o]
           arg [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o] ==> obj [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o]
           arg [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o] ==> obj [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o]
@@ -1456,7 +1191,7 @@ events:
           arg [-L/lib] ==> dir [/lib]
           arg [-L/usr/lib] ==> dir [/usr/lib]
           arg [-v] ==> ignore
-          arg [CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.o] ==> ignore
+          arg [CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.o] ==> ignore
           arg [-lgcc] ==> lib [gcc]
           arg [--push-state] ==> ignore
           arg [--as-needed] ==> ignore
@@ -1471,7 +1206,7 @@ events:
           arg [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o] ==> obj [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o]
           arg [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o] ==> obj [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o]
         ignore line: [collect2 version 15.2.1 20260209]
-        ignore line: [/usr/bin/ld -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccz3HPL4.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_d99c6 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1 -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_d99c6.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o]
+        ignore line: [/usr/bin/ld -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccpbH0q4.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_5f345 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1 -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_5f345.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o]
         linker tool for 'C': /usr/bin/ld
         collapse obj [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o] ==> [/usr/lib/Scrt1.o]
         collapse obj [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o] ==> [/usr/lib/crti.o]
@@ -1508,8 +1243,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-f19NUE"
-      binary: "/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-f19NUE"
+      source: "/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-BkUg30"
+      binary: "/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-BkUg30"
     cmakeVariables:
       CMAKE_CXX_FLAGS: ""
       CMAKE_CXX_FLAGS_DEBUG: "-g"
@@ -1520,22 +1255,22 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-f19NUE'
+        Change Dir: '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-BkUg30'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_723a4/fast
-        /usr/bin/make  -f CMakeFiles/cmTC_723a4.dir/build.make CMakeFiles/cmTC_723a4.dir/build
-        make[1]: Entering directory '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-f19NUE'
-        Building CXX object CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.o
-        /usr/bin/c++   -v -o CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_e0806/fast
+        /usr/bin/make  -f CMakeFiles/cmTC_e0806.dir/build.make CMakeFiles/cmTC_e0806.dir/build
+        make[1]: Entering directory '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-BkUg30'
+        Building CXX object CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.o
+        /usr/bin/g++   -v -o CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp
         Using built-in specs.
-        COLLECT_GCC=/usr/bin/c++
+        COLLECT_GCC=/usr/bin/g++
         Target: x86_64-pc-linux-gnu
         Configured with: /build/gcc/src/gcc/configure --enable-languages=ada,c,c++,d,fortran,go,lto,m2,objc,obj-c++,rust,cobol --enable-bootstrap --prefix=/usr --libdir=/usr/lib --libexecdir=/usr/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=https://gitlab.archlinux.org/archlinux/packaging/packages/gcc/-/issues --with-build-config=bootstrap-lto --with-linker-hash-style=gnu --with-system-zlib --enable-__cxa_atexit --enable-cet=auto --enable-checking=release --enable-clocale=gnu --enable-default-pie --enable-default-ssp --enable-gnu-indirect-function --enable-gnu-unique-object --enable-libstdcxx-backtrace --enable-link-serialization=1 --enable-linker-build-id --enable-lto --enable-multilib --enable-plugin --enable-shared --enable-threads=posix --disable-libssp --disable-libstdcxx-pch --disable-werror
         Thread model: posix
         Supported LTO compression algorithms: zlib zstd
         gcc version 15.2.1 20260209 (GCC) 
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_723a4.dir/'
-         /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/cc1plus -quiet -v -D_GNU_SOURCE /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_723a4.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -o /tmp/ccYPCGJZ.s
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e0806.dir/'
+         /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/cc1plus -quiet -v -D_GNU_SOURCE /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_e0806.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -o /tmp/ccJQCkRP.s
         GNU C++17 (GCC) version 15.2.1 20260209 (x86_64-pc-linux-gnu)
         	compiled by GNU C version 15.2.1 20260209, GMP version 6.3.0, MPFR version 4.2.2, MPC version 1.3.1, isl version isl-0.27-GMP
         
@@ -1553,16 +1288,16 @@ events:
          /usr/include
         End of search list.
         Compiler executable checksum: 5e3969de92aa3c12a625237f01b15b2f
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_723a4.dir/'
-         as -v --64 -o CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccYPCGJZ.s
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e0806.dir/'
+         as -v --64 -o CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccJQCkRP.s
         GNU assembler version 2.46 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.46
         COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/
         LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../:/lib/:/usr/lib/
-        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.'
-        Linking CXX executable cmTC_723a4
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_723a4.dir/link.txt --verbose=1
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.'
+        Linking CXX executable cmTC_e0806
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e0806.dir/link.txt --verbose=1
         Using built-in specs.
-        COLLECT_GCC=/usr/bin/c++
+        COLLECT_GCC=/usr/bin/g++
         COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper
         Target: x86_64-pc-linux-gnu
         Configured with: /build/gcc/src/gcc/configure --enable-languages=ada,c,c++,d,fortran,go,lto,m2,objc,obj-c++,rust,cobol --enable-bootstrap --prefix=/usr --libdir=/usr/lib --libexecdir=/usr/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=https://gitlab.archlinux.org/archlinux/packaging/packages/gcc/-/issues --with-build-config=bootstrap-lto --with-linker-hash-style=gnu --with-system-zlib --enable-__cxa_atexit --enable-cet=auto --enable-checking=release --enable-clocale=gnu --enable-default-pie --enable-default-ssp --enable-gnu-indirect-function --enable-gnu-unique-object --enable-libstdcxx-backtrace --enable-link-serialization=1 --enable-linker-build-id --enable-lto --enable-multilib --enable-plugin --enable-shared --enable-threads=posix --disable-libssp --disable-libstdcxx-pch --disable-werror
@@ -1571,14 +1306,14 @@ events:
         gcc version 15.2.1 20260209 (GCC) 
         COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/
         LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../:/lib/:/usr/lib/
-        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_723a4' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_723a4.'
-         /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccw8gEm6.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_723a4 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1 -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_e0806' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_e0806.'
+         /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccezhdrG.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_e0806 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1 -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o
         collect2 version 15.2.1 20260209
-        /usr/bin/ld -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccw8gEm6.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_723a4 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1 -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o
+        /usr/bin/ld -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccezhdrG.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_e0806 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1 -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o
         GNU ld (GNU Binutils) 2.46
-        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_723a4' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_723a4.'
-        /usr/bin/c++  -v -Wl,-v CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_723a4
-        make[1]: Leaving directory '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-f19NUE'
+        COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_e0806' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_e0806.'
+        /usr/bin/g++  -v -Wl,-v CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_e0806
+        make[1]: Leaving directory '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-BkUg30'
         
       exitCode: 0
   -
@@ -1619,22 +1354,22 @@ events:
       Parsed CXX implicit link information:
         link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
         linker tool regex: [^[ 	]*(->|"|[0-9]+>[ 	-]*Build:[ 	0-9]+ ms[ 	]*)?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)))("|,| |$)]
-        ignore line: [Change Dir: '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-f19NUE']
+        ignore line: [Change Dir: '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-BkUg30']
         ignore line: []
-        ignore line: [Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_723a4/fast]
-        ignore line: [/usr/bin/make  -f CMakeFiles/cmTC_723a4.dir/build.make CMakeFiles/cmTC_723a4.dir/build]
-        ignore line: [make[1]: Entering directory '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-f19NUE']
-        ignore line: [Building CXX object CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.o]
-        ignore line: [/usr/bin/c++   -v -o CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_e0806/fast]
+        ignore line: [/usr/bin/make  -f CMakeFiles/cmTC_e0806.dir/build.make CMakeFiles/cmTC_e0806.dir/build]
+        ignore line: [make[1]: Entering directory '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-BkUg30']
+        ignore line: [Building CXX object CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.o]
+        ignore line: [/usr/bin/g++   -v -o CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp]
         ignore line: [Using built-in specs.]
-        ignore line: [COLLECT_GCC=/usr/bin/c++]
+        ignore line: [COLLECT_GCC=/usr/bin/g++]
         ignore line: [Target: x86_64-pc-linux-gnu]
         ignore line: [Configured with: /build/gcc/src/gcc/configure --enable-languages=ada c c++ d fortran go lto m2 objc obj-c++ rust cobol --enable-bootstrap --prefix=/usr --libdir=/usr/lib --libexecdir=/usr/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=https://gitlab.archlinux.org/archlinux/packaging/packages/gcc/-/issues --with-build-config=bootstrap-lto --with-linker-hash-style=gnu --with-system-zlib --enable-__cxa_atexit --enable-cet=auto --enable-checking=release --enable-clocale=gnu --enable-default-pie --enable-default-ssp --enable-gnu-indirect-function --enable-gnu-unique-object --enable-libstdcxx-backtrace --enable-link-serialization=1 --enable-linker-build-id --enable-lto --enable-multilib --enable-plugin --enable-shared --enable-threads=posix --disable-libssp --disable-libstdcxx-pch --disable-werror]
         ignore line: [Thread model: posix]
         ignore line: [Supported LTO compression algorithms: zlib zstd]
         ignore line: [gcc version 15.2.1 20260209 (GCC) ]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_723a4.dir/']
-        ignore line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/cc1plus -quiet -v -D_GNU_SOURCE /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_723a4.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -o /tmp/ccYPCGJZ.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e0806.dir/']
+        ignore line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/cc1plus -quiet -v -D_GNU_SOURCE /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_e0806.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mtune=generic -march=x86-64 -version -o /tmp/ccJQCkRP.s]
         ignore line: [GNU C++17 (GCC) version 15.2.1 20260209 (x86_64-pc-linux-gnu)]
         ignore line: [	compiled by GNU C version 15.2.1 20260209  GMP version 6.3.0  MPFR version 4.2.2  MPC version 1.3.1  isl version isl-0.27-GMP]
         ignore line: []
@@ -1652,16 +1387,16 @@ events:
         ignore line: [ /usr/include]
         ignore line: [End of search list.]
         ignore line: [Compiler executable checksum: 5e3969de92aa3c12a625237f01b15b2f]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_723a4.dir/']
-        ignore line: [ as -v --64 -o CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccYPCGJZ.s]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e0806.dir/']
+        ignore line: [ as -v --64 -o CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccJQCkRP.s]
         ignore line: [GNU assembler version 2.46 (x86_64-pc-linux-gnu) using BFD version (GNU Binutils) 2.46]
         ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/]
         ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../:/lib/:/usr/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.']
-        ignore line: [Linking CXX executable cmTC_723a4]
-        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_723a4.dir/link.txt --verbose=1]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.']
+        ignore line: [Linking CXX executable cmTC_e0806]
+        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e0806.dir/link.txt --verbose=1]
         ignore line: [Using built-in specs.]
-        ignore line: [COLLECT_GCC=/usr/bin/c++]
+        ignore line: [COLLECT_GCC=/usr/bin/g++]
         ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper]
         ignore line: [Target: x86_64-pc-linux-gnu]
         ignore line: [Configured with: /build/gcc/src/gcc/configure --enable-languages=ada c c++ d fortran go lto m2 objc obj-c++ rust cobol --enable-bootstrap --prefix=/usr --libdir=/usr/lib --libexecdir=/usr/lib --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=https://gitlab.archlinux.org/archlinux/packaging/packages/gcc/-/issues --with-build-config=bootstrap-lto --with-linker-hash-style=gnu --with-system-zlib --enable-__cxa_atexit --enable-cet=auto --enable-checking=release --enable-clocale=gnu --enable-default-pie --enable-default-ssp --enable-gnu-indirect-function --enable-gnu-unique-object --enable-libstdcxx-backtrace --enable-link-serialization=1 --enable-linker-build-id --enable-lto --enable-multilib --enable-plugin --enable-shared --enable-threads=posix --disable-libssp --disable-libstdcxx-pch --disable-werror]
@@ -1670,13 +1405,13 @@ events:
         ignore line: [gcc version 15.2.1 20260209 (GCC) ]
         ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/]
         ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/:/lib/../lib/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../:/lib/:/usr/lib/]
-        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_723a4' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_723a4.']
-        link line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccw8gEm6.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_723a4 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1 -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_e0806' '-shared-libgcc' '-mtune=generic' '-march=x86-64' '-dumpdir' 'cmTC_e0806.']
+        link line: [ /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/collect2 -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccezhdrG.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_e0806 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1 -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o]
           arg [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/collect2] ==> ignore
           arg [-plugin] ==> ignore
           arg [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/liblto_plugin.so] ==> ignore
           arg [-plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper] ==> ignore
-          arg [-plugin-opt=-fresolution=/tmp/ccw8gEm6.res] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp/ccezhdrG.res] ==> ignore
           arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
           arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
           arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -1691,7 +1426,7 @@ events:
           arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
           arg [-pie] ==> ignore
           arg [-o] ==> ignore
-          arg [cmTC_723a4] ==> ignore
+          arg [cmTC_e0806] ==> ignore
           arg [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o] ==> obj [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o]
           arg [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o] ==> obj [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o]
           arg [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o] ==> obj [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o]
@@ -1703,7 +1438,7 @@ events:
           arg [-L/lib] ==> dir [/lib]
           arg [-L/usr/lib] ==> dir [/usr/lib]
           arg [-v] ==> ignore
-          arg [CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+          arg [CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
           arg [-lstdc++] ==> lib [stdc++]
           arg [-lm] ==> lib [m]
           arg [-lgcc_s] ==> lib [gcc_s]
@@ -1714,7 +1449,7 @@ events:
           arg [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o] ==> obj [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o]
           arg [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o] ==> obj [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o]
         ignore line: [collect2 version 15.2.1 20260209]
-        ignore line: [/usr/bin/ld -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccw8gEm6.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_723a4 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1 -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_723a4.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o]
+        ignore line: [/usr/bin/ld -plugin /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccezhdrG.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_e0806 /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtbeginS.o -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1 -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib -L/lib/../lib -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../.. -L/lib -L/usr/lib -v CMakeFiles/cmTC_e0806.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/crtendS.o /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crtn.o]
         linker tool for 'CXX': /usr/bin/ld
         collapse obj [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/Scrt1.o] ==> [/usr/lib/Scrt1.o]
         collapse obj [/usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/../../../../lib/crti.o] ==> [/usr/lib/crti.o]
@@ -1761,9 +1496,6 @@ events:
     names:
       - "GL/gl.h"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -1789,9 +1521,6 @@ events:
       - "/usr/openwin/share/include/"
       - "/opt/graphics/OpenGL/include/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/GL/gl.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/GL/gl.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/GL/gl.h"
       - "/usr/local/sbin/GL/gl.h"
       - "/usr/local/bin/GL/gl.h"
       - "/usr/bin/GL/gl.h"
@@ -1806,9 +1535,6 @@ events:
     found: "/usr/include/"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -1850,9 +1576,6 @@ events:
     names:
       - "GL/glx.h"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -1875,9 +1598,6 @@ events:
       - "/opt/"
       - "/usr/include/X11/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/GL/glx.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/GL/glx.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/GL/glx.h"
       - "/usr/local/sbin/GL/glx.h"
       - "/usr/local/bin/GL/glx.h"
       - "/usr/bin/GL/glx.h"
@@ -1892,9 +1612,6 @@ events:
     found: "/usr/include/"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -1936,9 +1653,6 @@ events:
     names:
       - "EGL/egl.h"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -1961,9 +1675,6 @@ events:
       - "/opt/"
       - "/usr/include/X11/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/EGL/egl.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/EGL/egl.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/EGL/egl.h"
       - "/usr/local/sbin/EGL/egl.h"
       - "/usr/local/bin/EGL/egl.h"
       - "/usr/bin/EGL/egl.h"
@@ -1978,9 +1689,6 @@ events:
     found: "/usr/include/"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -2022,9 +1730,6 @@ events:
     names:
       - "GLES2/gl2.h"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -2047,9 +1752,6 @@ events:
       - "/opt/"
       - "/usr/include/X11/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/GLES2/gl2.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/GLES2/gl2.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/GLES2/gl2.h"
       - "/usr/local/sbin/GLES2/gl2.h"
       - "/usr/local/bin/GLES2/gl2.h"
       - "/usr/bin/GLES2/gl2.h"
@@ -2064,9 +1766,6 @@ events:
     found: "/usr/include/"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -2108,9 +1807,6 @@ events:
     names:
       - "GLES3/gl3.h"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -2133,9 +1829,6 @@ events:
       - "/opt/"
       - "/usr/include/X11/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/GLES3/gl3.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/GLES3/gl3.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/GLES3/gl3.h"
       - "/usr/local/sbin/GLES3/gl3.h"
       - "/usr/local/bin/GLES3/gl3.h"
       - "/usr/bin/GLES3/gl3.h"
@@ -2150,9 +1843,6 @@ events:
     found: "/usr/include/"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -2194,9 +1884,6 @@ events:
     names:
       - "GL/xmesa.h"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -2222,9 +1909,6 @@ events:
       - "/usr/openwin/share/include/"
       - "/opt/graphics/OpenGL/include/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/GL/xmesa.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/GL/xmesa.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/GL/xmesa.h"
       - "/usr/local/sbin/GL/xmesa.h"
       - "/usr/local/bin/GL/xmesa.h"
       - "/usr/bin/GL/xmesa.h"
@@ -2252,9 +1936,6 @@ events:
     found: false
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -2296,9 +1977,6 @@ events:
     names:
       - "GL/glu.h"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -2321,9 +1999,6 @@ events:
       - "/opt/"
       - "/usr/include/X11/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/GL/glu.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/GL/glu.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/GL/glu.h"
       - "/usr/local/sbin/GL/glu.h"
       - "/usr/local/bin/GL/glu.h"
       - "/usr/bin/GL/glu.h"
@@ -2338,9 +2013,6 @@ events:
     found: "/usr/include/"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -2382,9 +2054,6 @@ events:
     names:
       - "OpenGL"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -2407,9 +2076,6 @@ events:
       - "/opt/"
       - "/usr/lib/X11/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -2424,9 +2090,6 @@ events:
     found: "/usr/lib/libOpenGL.so"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -2468,12 +2131,6 @@ events:
     names:
       - "GLX"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libglvnd/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libglvnd/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libglvnd/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/libglvnd/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/libglvnd/"
@@ -2517,12 +2174,6 @@ events:
       - "/usr/lib/X11/libglvnd/"
       - "/usr/lib/X11/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libglvnd/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libglvnd/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libglvnd/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/libglvnd/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/libglvnd/"
@@ -2549,9 +2200,6 @@ events:
     found: "/usr/lib/libGLX.so"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -2593,12 +2241,6 @@ events:
     names:
       - "EGL"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libglvnd/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libglvnd/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libglvnd/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/libglvnd/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/libglvnd/"
@@ -2642,12 +2284,6 @@ events:
       - "/usr/lib/X11/libglvnd/"
       - "/usr/lib/X11/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libglvnd/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libglvnd/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libglvnd/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/libglvnd/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/libglvnd/"
@@ -2674,9 +2310,6 @@ events:
     found: "/usr/lib/libEGL.so"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -2718,9 +2351,6 @@ events:
     names:
       - "GLESv2"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -2743,9 +2373,6 @@ events:
       - "/opt/"
       - "/usr/lib/X11/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -2760,9 +2387,6 @@ events:
     found: "/usr/lib/libGLESv2.so"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -2805,9 +2429,6 @@ events:
       - "GLESv3"
       - "GLESv2"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -2830,9 +2451,6 @@ events:
       - "/opt/"
       - "/usr/lib/X11/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -2854,9 +2472,6 @@ events:
       - "/opt/lib/"
       - "/opt/"
       - "/usr/lib/X11/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -2871,9 +2486,6 @@ events:
     found: "/usr/lib/libGLESv2.so"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -2916,9 +2528,6 @@ events:
       - "GLU"
       - "MesaGLU"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -2944,9 +2553,6 @@ events:
       - "/usr/openwin/lib/"
       - "/usr/shlib/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -2961,9 +2567,6 @@ events:
     found: "/usr/lib/libGLU.so"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -2997,8 +2600,8 @@ events:
     checks:
       - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
     directories:
-      source: "/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-nelTiY"
-      binary: "/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-nelTiY"
+      source: "/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-oXH65u"
+      binary: "/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-oXH65u"
     cmakeVariables:
       CMAKE_CXX_STDLIB_MODULES_JSON: ""
       CMAKE_C_FLAGS: ""
@@ -3008,17 +2611,17 @@ events:
       variable: "CMAKE_HAVE_LIBC_PTHREAD"
       cached: true
       stdout: |
-        Change Dir: '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-nelTiY'
+        Change Dir: '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-oXH65u'
         
-        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_61a06/fast
-        /usr/bin/make  -f CMakeFiles/cmTC_61a06.dir/build.make CMakeFiles/cmTC_61a06.dir/build
-        make[1]: Entering directory '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-nelTiY'
-        Building C object CMakeFiles/cmTC_61a06.dir/src.c.o
-        /usr/bin/cc -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_61a06.dir/src.c.o -c /home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-nelTiY/src.c
-        Linking C executable cmTC_61a06
-        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_61a06.dir/link.txt --verbose=1
-        /usr/bin/cc CMakeFiles/cmTC_61a06.dir/src.c.o -o cmTC_61a06
-        make[1]: Leaving directory '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-nelTiY'
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_b1369/fast
+        /usr/bin/make  -f CMakeFiles/cmTC_b1369.dir/build.make CMakeFiles/cmTC_b1369.dir/build
+        make[1]: Entering directory '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-oXH65u'
+        Building C object CMakeFiles/cmTC_b1369.dir/src.c.o
+        /usr/bin/gcc -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_b1369.dir/src.c.o -c /home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-oXH65u/src.c
+        Linking C executable cmTC_b1369
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b1369.dir/link.txt --verbose=1
+        /usr/bin/gcc CMakeFiles/cmTC_b1369.dir/src.c.o -o cmTC_b1369
+        make[1]: Leaving directory '/home/jakub/programko/cpp/skurvene-morciatka/build/CMakeFiles/CMakeScratch/TryCompile-oXH65u'
         
       exitCode: 0
   -
@@ -3040,9 +2643,6 @@ events:
       - "glm/glm.hpp"
     candidate_directories:
       - "/home/jakub/programko/cpp/skurvene-morciatka/include/glm/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -3067,9 +2667,6 @@ events:
     found: "/home/jakub/programko/cpp/skurvene-morciatka/include/glm/"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -3112,9 +2709,6 @@ events:
       - "pkg-config"
       - "pkgconf"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/"
       - "/usr/bin/"
@@ -3142,12 +2736,6 @@ events:
       - "/opt/sbin/"
       - "/opt/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/pkg-config"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/pkgconf"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/pkg-config"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/pkgconf"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/pkg-config"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/pkgconf"
       - "/usr/local/sbin/pkg-config"
       - "/usr/local/sbin/pkgconf"
       - "/usr/local/bin/pkg-config"
@@ -3155,9 +2743,6 @@ events:
     found: "/usr/bin/pkg-config"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -3233,54 +2818,6 @@ events:
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/home/jakub/.nvm/versions/node/v24.11.0/glfw3Config.cmake"
-        mode: "config"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.nvm/versions/node/v24.11.0/glfw3-config.cmake"
-        mode: "config"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.nvm/versions/node/v24.11.0/lib/cps/glfw3.cps"
-        mode: "cps"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.nvm/versions/node/v24.11.0/share/cps/glfw3.cps"
-        mode: "cps"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/glfw3Config.cmake"
-        mode: "config"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/glfw3-config.cmake"
-        mode: "config"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/lib/cps/glfw3.cps"
-        mode: "cps"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/share/cps/glfw3.cps"
-        mode: "cps"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/glfw3Config.cmake"
-        mode: "config"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/glfw3-config.cmake"
-        mode: "config"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/lib/cps/glfw3.cps"
-        mode: "cps"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/share/cps/glfw3.cps"
-        mode: "cps"
-        reason: "no_exist"
-      -
         path: "/usr/local/glfw3Config.cmake"
         mode: "config"
         reason: "no_exist"
@@ -3318,9 +2855,6 @@ events:
       version: "3.4.0"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -3360,18 +2894,6 @@ events:
     names:
       - "ft2build.h"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/include/freetype2/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/include/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/freetype2/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/include/freetype2/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/include/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/freetype2/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/include/freetype2/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/include/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/freetype2/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/include/freetype2/"
       - "/usr/local/sbin/include/"
       - "/usr/local/sbin/freetype2/"
@@ -3457,18 +2979,6 @@ events:
       - "/usr/include/X11/freetype2/"
       - "/usr/include/X11/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/include/freetype2/ft2build.h"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/include/ft2build.h"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/freetype2/ft2build.h"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/ft2build.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/include/freetype2/ft2build.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/include/ft2build.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/freetype2/ft2build.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/ft2build.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/include/freetype2/ft2build.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/include/ft2build.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/freetype2/ft2build.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/ft2build.h"
       - "/usr/local/sbin/include/freetype2/ft2build.h"
       - "/usr/local/sbin/include/ft2build.h"
       - "/usr/local/sbin/freetype2/ft2build.h"
@@ -3518,9 +3028,6 @@ events:
     found: "/usr/include/freetype2/"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -3563,18 +3070,6 @@ events:
       - "freetype/config/ftheader.h"
       - "config/ftheader.h"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/include/freetype2/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/include/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/freetype2/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/include/freetype2/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/include/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/freetype2/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/include/freetype2/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/include/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/freetype2/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/include/freetype2/"
       - "/usr/local/sbin/include/"
       - "/usr/local/sbin/freetype2/"
@@ -3660,18 +3155,6 @@ events:
       - "/usr/include/X11/freetype2/"
       - "/usr/include/X11/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/include/freetype2/freetype/config/ftheader.h"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/include/freetype/config/ftheader.h"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/freetype2/freetype/config/ftheader.h"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/freetype/config/ftheader.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/include/freetype2/freetype/config/ftheader.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/include/freetype/config/ftheader.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/freetype2/freetype/config/ftheader.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/freetype/config/ftheader.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/include/freetype2/freetype/config/ftheader.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/include/freetype/config/ftheader.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/freetype2/freetype/config/ftheader.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/freetype/config/ftheader.h"
       - "/usr/local/sbin/include/freetype2/freetype/config/ftheader.h"
       - "/usr/local/sbin/include/freetype/config/ftheader.h"
       - "/usr/local/sbin/freetype2/freetype/config/ftheader.h"
@@ -3721,9 +3204,6 @@ events:
     found: "/usr/include/freetype2/"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -3767,12 +3247,6 @@ events:
       - "libfreetype"
       - "freetype219"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/lib/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/lib/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/lib/"
@@ -3816,12 +3290,6 @@ events:
       - "/usr/lib/X11/lib/"
       - "/usr/lib/X11/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/lib/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/lib/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/lib/"
@@ -3848,9 +3316,6 @@ events:
     found: "/usr/lib/libfreetype.so"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -3894,12 +3359,6 @@ events:
       - "libfreetyped"
       - "freetype219d"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/lib/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/lib/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/lib/"
@@ -3943,12 +3402,6 @@ events:
       - "/usr/lib/X11/lib/"
       - "/usr/lib/X11/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/lib/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/lib/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/lib/"
@@ -3991,12 +3444,6 @@ events:
       - "/opt/"
       - "/usr/lib/X11/lib/"
       - "/usr/lib/X11/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/lib/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/lib/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/lib/"
@@ -4039,12 +3486,6 @@ events:
       - "/opt/"
       - "/usr/lib/X11/lib/"
       - "/usr/lib/X11/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/lib/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/lib/"
       - "/usr/local/sbin/"
       - "/usr/local/bin/lib/"
@@ -4090,9 +3531,6 @@ events:
     found: false
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -4134,24 +3572,6 @@ events:
     names:
       - "al.h"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/include/AL/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/include/OpenAL/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/include/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/AL/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/OpenAL/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/include/AL/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/include/OpenAL/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/include/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/AL/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/OpenAL/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/include/AL/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/include/OpenAL/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/include/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/AL/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/OpenAL/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/include/AL/"
       - "/usr/local/sbin/include/OpenAL/"
       - "/usr/local/sbin/include/"
@@ -4297,24 +3717,6 @@ events:
       - "/opt/OpenAL/"
       - "/opt/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/include/AL/al.h"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/include/OpenAL/al.h"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/include/al.h"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/AL/al.h"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/OpenAL/al.h"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/al.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/include/AL/al.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/include/OpenAL/al.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/include/al.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/AL/al.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/OpenAL/al.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/al.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/include/AL/al.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/include/OpenAL/al.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/include/al.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/AL/al.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/OpenAL/al.h"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/al.h"
       - "/usr/local/sbin/include/AL/al.h"
       - "/usr/local/sbin/include/OpenAL/al.h"
       - "/usr/local/sbin/include/al.h"
@@ -4387,9 +3789,6 @@ events:
     found: "/usr/include/AL/"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -4434,27 +3833,6 @@ events:
       - "openal"
       - "OpenAL32"
     candidate_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libx32/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/lib64/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/lib/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libs64/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libs/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libs/Win64/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libx32/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/lib64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libs64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libs/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libs/Win64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libx32/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/lib64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libs64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libs/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libs/Win64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/libx32/"
       - "/usr/local/sbin/lib64/"
       - "/usr/local/sbin/lib/"
@@ -4624,27 +4002,6 @@ events:
       - "/opt/libs/Win64/"
       - "/opt/"
     searched_directories:
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libx32/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/lib64/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/lib/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libs64/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libs/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libs/Win64/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libx32/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/lib64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libs64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libs/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libs/Win64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libx32/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/lib64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libs64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libs/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libs/Win64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/libx32/"
       - "/usr/local/sbin/lib64/"
       - "/usr/local/sbin/lib/"
@@ -4813,27 +4170,6 @@ events:
       - "/opt/libs/"
       - "/opt/libs/Win64/"
       - "/opt/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libx32/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/lib64/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/lib/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libs64/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libs/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libs/Win64/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libx32/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/lib64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libs64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libs/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libs/Win64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libx32/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/lib64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libs64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libs/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libs/Win64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/libx32/"
       - "/usr/local/sbin/lib64/"
       - "/usr/local/sbin/lib/"
@@ -5002,27 +4338,6 @@ events:
       - "/opt/libs/"
       - "/opt/libs/Win64/"
       - "/opt/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libx32/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/lib64/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/lib/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libs64/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libs/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/libs/Win64/"
-      - "/home/jakub/.nvm/versions/node/v24.11.0/bin/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libx32/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/lib64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libs64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libs/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/libs/Win64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libx32/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/lib64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/lib/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libs64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libs/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/libs/Win64/"
-      - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/"
       - "/usr/local/sbin/libx32/"
       - "/usr/local/sbin/lib64/"
       - "/usr/local/sbin/lib/"
@@ -5109,9 +4424,6 @@ events:
     found: "/usr/lib/libopenal.so"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"
@@ -5201,78 +4513,6 @@ events:
         mode: "cps"
         reason: "no_exist"
       -
-        path: "/home/jakub/.nvm/versions/node/v24.11.0/GTestConfig.cmake"
-        mode: "config"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.nvm/versions/node/v24.11.0/gtest-config.cmake"
-        mode: "config"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.nvm/versions/node/v24.11.0/lib/cps/GTest.cps"
-        mode: "cps"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.nvm/versions/node/v24.11.0/lib/cps/gtest.cps"
-        mode: "cps"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.nvm/versions/node/v24.11.0/share/cps/GTest.cps"
-        mode: "cps"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.nvm/versions/node/v24.11.0/share/cps/gtest.cps"
-        mode: "cps"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/GTestConfig.cmake"
-        mode: "config"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/gtest-config.cmake"
-        mode: "config"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/lib/cps/GTest.cps"
-        mode: "cps"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/lib/cps/gtest.cps"
-        mode: "cps"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/share/cps/GTest.cps"
-        mode: "cps"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand/share/cps/gtest.cps"
-        mode: "cps"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/GTestConfig.cmake"
-        mode: "config"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/gtest-config.cmake"
-        mode: "config"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/lib/cps/GTest.cps"
-        mode: "cps"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/lib/cps/gtest.cps"
-        mode: "cps"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/share/cps/GTest.cps"
-        mode: "cps"
-        reason: "no_exist"
-      -
-        path: "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli/share/cps/gtest.cps"
-        mode: "cps"
-        reason: "no_exist"
-      -
         path: "/usr/local/GTestConfig.cmake"
         mode: "config"
         reason: "no_exist"
@@ -5326,9 +4566,6 @@ events:
       version: "1.17.0"
     search_context:
       ENV{PATH}:
-        - "/home/jakub/.nvm/versions/node/v24.11.0/bin"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/debugCommand"
-        - "/home/jakub/.config/Code/User/globalStorage/github.copilot-chat/copilotCli"
         - "/usr/local/sbin"
         - "/usr/local/bin"
         - "/usr/bin"

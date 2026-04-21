@@ -104,6 +104,7 @@ int main()
     option_store_spawn_config.min_spawn_radius_particles = 80;
     option_store_spawn_config.max_spawn_radius_particles = 900;
     option_store_spawn_config.min_distance_between_stores_particles = 320;
+    option_store_spawn_config.min_distance_from_columns_particles = 450;
     option_store_spawn_config.min_distance_from_origin_particles = 150;
 
     entity_manager.set_devushki_objective_count(option_column_spawn_count);
@@ -127,7 +128,7 @@ int main()
         render.set_loading_screen_state(progress, status);
         Menu_Options_Model loading_options;
         render.render_everything(false, false, [&]()
-                                { render.render_menu_screen(Menu_Screen::LOADING, false, false, loading_options); });
+                                 { render.render_menu_screen(Menu_Screen::LOADING, false, false, loading_options); });
     };
 
     auto rebuild_world_with_new_seed = [&](const std::optional<int> &requested_seed)

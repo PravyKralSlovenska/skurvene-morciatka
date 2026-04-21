@@ -1,5 +1,6 @@
 #pragma once
 
+// File purpose: Defines particle data, flags, and particle type behavior fields.
 #include <memory>
 #include <vector>
 #include <array>
@@ -109,7 +110,9 @@ struct Particle_Physics
     // Dispersion rate - how much liquid spreads horizontally
     int dispersion_rate = 1;
 
+    // Constructs Particle_Physics.
     Particle_Physics() = default;
+    // Constructs Particle_Physics.
     Particle_Physics(float density, float temperature, float melting_point, float boiling_point);
 };
 
@@ -128,6 +131,7 @@ struct Particle_Flags
     uint8_t reserved : 2;
 
     Particle_Flags() : is_static(0), is_updated(0), is_falling(0),
+                       // Returns true if reactive.
                        is_reactive(0), is_flammable(0), is_on_fire(0), reserved(0) {}
 };
 
@@ -135,6 +139,7 @@ struct Particle_Flags
  * Particle
  * - hlavna stavebna jednotka
  */
+// Represents one simulated world particle/cell.
 class Particle
 {
 public:
@@ -142,7 +147,9 @@ public:
     Particle_State state = Particle_State::NONE;
     Particle_Movement move = Particle_Movement::STATIC;
 
+    // Constructs Color.
     Color base_color = Color(0, 0, 0, 0.0f);
+    // Constructs Color.
     Color color = Color(0, 0, 0, 0.0f);
 
     // Physics properties
@@ -201,21 +208,33 @@ public:
         flags.is_static = value ? 1 : 0;
     }
 
+    // Constructs Particle.
     Particle();
+    // Constructs Particle.
     Particle(Particle_Type type, Particle_State state, Particle_Movement move, Color base_color);
+    // Constructs Particle.
     Particle(Particle_Type type, Particle_State state, Particle_Movement move, Color base_color, Particle_Physics physics);
+    // Destroys Particle and releases owned resources.
     ~Particle() = default;
 };
 
 // Factory functions for creating particles
 Particle create_sand(bool is_static = false);
+// Creates water.
 Particle create_water(bool is_static = false);
+// Creates ice.
 Particle create_ice(bool is_static = false);
+// Creates water vapor.
 Particle create_water_vapor(bool is_static = false);
+// Creates smoke.
 Particle create_smoke(bool is_static = false);
+// Creates wood.
 Particle create_wood(bool is_static = false);
+// Creates fire.
 Particle create_fire(bool is_static = false);
+// Creates stone.
 Particle create_stone(bool is_static = false);
+// Creates uranium.
 Particle create_uranium(bool is_static = false);
 
 // Create empty particle

@@ -1,5 +1,6 @@
 #pragma once
 
+// File purpose: Runs the cellular falling-sand simulation over world chunks.
 #include <vector>
 #include <array>
 #include <random>
@@ -19,6 +20,7 @@ enum class Particle_State;
  * - Spracovava pohyb castic na zaklade ich fyzikalnych vlastnosti
  * - Podporuje: gravitaciu, displacement (vymienu castic), sirenie tekutin
  */
+// Updates particle-based cellular simulation for active chunks.
 class Falling_Sand_Simulation
 {
 private:
@@ -54,12 +56,16 @@ private:
 private:
     // Helper: Get cell at position (handles chunk boundaries)
     WorldCell *get_cell_at(const glm::ivec2 &chunk_coords, int x, int y);
+    // Returns cell at fast.
     WorldCell *get_cell_at_fast(const glm::ivec2 &chunk_coords, int x, int y, Chunk *current_chunk);
+    // Returns cell at world pos.
     WorldCell *get_cell_at_world_pos(const glm::ivec2 &world_cell_pos);
 
     // Helper: Convert local to world coordinates and vice versa
     glm::ivec2 local_to_world(const glm::ivec2 &chunk_coords, int x, int y);
+    // Converts world to chunk.
     glm::ivec2 world_to_chunk(const glm::ivec2 &world_pos);
+    // Converts world to local.
     glm::ivec2 world_to_local(const glm::ivec2 &world_pos);
 
     // Helper: Check if position is valid
@@ -68,6 +74,7 @@ private:
     // Movement helpers
     bool try_move(const glm::ivec2 &from_chunk, int from_x, int from_y,
                   const glm::ivec2 &to_chunk, int to_x, int to_y);
+    // Tries swap.
     bool try_swap(WorldCell *from, WorldCell *to);
 
     // Cached chunk lookup
@@ -75,7 +82,9 @@ private:
 
     // Particle-specific movement
     void update_solid(const glm::ivec2 &chunk_coords, int x, int y, WorldCell *cell, Chunk *current_chunk);
+    // Updates liquid.
     void update_liquid(const glm::ivec2 &chunk_coords, int x, int y, WorldCell *cell, Chunk *current_chunk);
+    // Updates gas.
     void update_gas(const glm::ivec2 &chunk_coords, int x, int y, WorldCell *cell, Chunk *current_chunk);
 
     // Fire reaction: consume adjacent wood by igniting it.
@@ -83,16 +92,21 @@ private:
 
     // Physics updates
     void apply_gravity(Particle &particle, float delta_time);
+    // Applies temperature transfer.
     void apply_temperature_transfer(WorldCell *cell, const glm::ivec2 &chunk_coords, int x, int y, Chunk *current_chunk);
+    // Checks state change.
     bool check_state_change(Particle &particle);
 
     // Process single chunk
     void process_chunk(Chunk *chunk, const glm::ivec2 &chunk_coords);
 
 public:
+    // Falling Sand Simulation.
     Falling_Sand_Simulation();
+    // Destroys Falling_Sand_Simulation and releases owned resources.
     ~Falling_Sand_Simulation() = default;
 
+    // Sets world.
     void set_world(World *world);
 
     // Main update - call once per frame

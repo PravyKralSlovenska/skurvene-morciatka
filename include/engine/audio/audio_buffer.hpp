@@ -1,11 +1,13 @@
 #pragma once
 
+// File purpose: Defines decoded audio buffer data and loading helpers.
 #include <string>
 #include <vector>
 #include <cstdint>
 #include <AL/al.h>
 
 // konkretna pesnicka/zvuk (cdcko)
+// Stores decoded audio samples for playback.
 class Sound_Buffer
 {
 private:
@@ -22,10 +24,15 @@ public:
     int duration = 0;              // kolko sekund trva nahravka :3
 
 public:
+    // Constructs Sound_Buffer.
     Sound_Buffer(const std::string path_to_sound);
+    // Destroys Sound_Buffer and releases owned resources.
     ~Sound_Buffer();
 
+    // Read data mp3.
     void read_data_mp3();
+    // Read data wav.
     void read_data_wav();
+    // Fills with data.
     void fill_with_data();
 };

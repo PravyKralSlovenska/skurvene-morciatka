@@ -1,5 +1,6 @@
 #pragma once
 
+// File purpose: Defines vertex array object (VAO) binding helpers.
 #include "engine/renderer/buffers/buffer.hpp"
 
 /*
@@ -10,13 +11,18 @@
  * - BIND FIRST
  * -  SECOND
  */
+// Wraps OpenGL vertex array object state.
 class VERTEX_ARRAY_OBJECT : public Buffer
 {
 public:
+    // Constructs VERTEX_ARRAY_OBJECT.
     VERTEX_ARRAY_OBJECT();
+    // Destroys VERTEX_ARRAY_OBJECT and releases owned resources.
     ~VERTEX_ARRAY_OBJECT();
 
+    // Binds.
     void bind() override;
+    // Unbinds.
     void unbind() override;
 
     /*
@@ -31,5 +37,6 @@ public:
      * @param offset - (void *)0 - (odkial zacina data pre tento atribut)
      */
     void setup_vertex_attribute_pointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
+    // Disables vertex attribute pointer.
     void disable_vertex_attribute_pointer(GLuint index);
 };

@@ -1,5 +1,6 @@
 #pragma once
 
+// File purpose: Defines FreeType-based text rendering helpers.
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -22,6 +23,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+// Defines the Character struct.
 struct Character
 {
     unsigned int TextureID; // ID handle of the glyph texture
@@ -29,11 +31,14 @@ struct Character
     glm::ivec2 Bearing;     // Offset from baseline to left/top of glyph
     unsigned int Advance;   // Offset to advance to next glyph
 
+    // Constructs Character.
     Character() {}
+    // Constructs Character.
     Character(unsigned int textureID, glm::ivec2 size, glm::ivec2 bearing, unsigned int advance);
 };
 
 // mozny performance upgrade -> bitmapy
+// Renders text glyphs using FreeType.
 class Text_Renderer
 {
 private:
@@ -53,14 +58,20 @@ private:
     glm::mat4 projection;
 
 public:
+    // Constructs Text_Renderer.
     Text_Renderer();
     // Text_Renderer(const char *font_path);
     ~Text_Renderer();
 
+    // Initializes state.
     void init();
+    // Loads characters.
     void load_characters();
+    // Renders text.
     void render_text(std::string text, glm::vec2 coords, float scale, Color color);
+    // Clears buffers.
     void clear_buffers();
+    // Sets projection.
     void set_projection(glm::mat4 projection);
 
     // test

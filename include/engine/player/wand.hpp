@@ -1,5 +1,6 @@
 #pragma once
 
+// File purpose: Defines wand stats, upgrades, and hotbar wand management.
 #include <string>
 #include <glm/glm.hpp>
 #include "engine/particle/particle.hpp"
@@ -21,6 +22,7 @@ enum class Wand_Type
     COMPASS_WAND
 };
 
+// Defines the Wand struct.
 struct Wand
 {
     Wand_Type type = Wand_Type::NONE;
@@ -31,6 +33,7 @@ struct Wand
     float cooldown = 0.0f; // Time between uses
     float last_use_time = 0.0f;
 
+    // Returns true if empty.
     bool is_empty() const { return type == Wand_Type::NONE; }
 
     // Factory methods for creating wands
@@ -170,6 +173,7 @@ struct Wand
     }
 };
 
+// Manages quick-access wand slots.
 class Hotbar
 {
 private:
@@ -182,9 +186,13 @@ public:
     {
         // Initialize default hotbar with requested baseline loadout.
         slots[0] = Wand::create_gun_wand();
+        // Creates fire wand.
         slots[1] = Wand::create_fire_wand();
+        // Creates compass wand.
         slots[2] = Wand::create_compass_wand();
+        // Creates stone wand.
         slots[3] = Wand::create_stone_wand();
+        // Creates delete wand.
         slots[4] = Wand::create_delete_wand();
     }
 
@@ -196,9 +204,12 @@ public:
         }
     }
 
+    // Returns selected slot.
     int get_selected_slot() const { return selected_slot; }
 
+    // Returns selected wand.
     Wand &get_selected_wand() { return slots[selected_slot]; }
+    // Returns selected wand.
     const Wand &get_selected_wand() const { return slots[selected_slot]; }
 
     Wand &get_wand(int slot)
@@ -216,5 +227,6 @@ public:
         }
     }
 
+    // Returns size.
     static constexpr int size() { return HOTBAR_SIZE; }
 };

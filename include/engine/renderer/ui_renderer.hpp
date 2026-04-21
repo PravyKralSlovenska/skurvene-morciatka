@@ -1,7 +1,9 @@
 #pragma once
 
+// File purpose: Defines ImGui-based menus, HUD, and UI rendering logic.
 #include "imgui/imgui.h"
 #include <glm/glm.hpp>
+#include <cstdint>
 #include <string>
 #include <unordered_map>
 #include <algorithm>
@@ -25,6 +27,7 @@ enum class Menu_Screen
     PLAYER_LOST
 };
 
+// Defines the Menu_Options_Model struct.
 struct Menu_Options_Model
 {
     float enemy_difficulty = 1.0f;
@@ -44,6 +47,7 @@ struct Menu_Options_Model
     float audio_flamethrower_volume = 0.27f;
 };
 
+// Defines the Menu_Actions struct.
 struct Menu_Actions
 {
     bool start_game = false;
@@ -58,6 +62,7 @@ struct Menu_Actions
     bool toggle_fullscreen = false;
 };
 
+// Draws in-game and menu UI panels.
 class UI_Renderer
 {
 private:
@@ -89,26 +94,50 @@ private:
     glm::vec2 map_drag_start = {0.0f, 0.0f};
     float map_zoom = 3.0f;
 
+    // Map rendering cache/throttling.
+    std::unordered_map<std::uint64_t, ImU32> map_chunk_color_cache;
+    double map_chunk_color_refresh_timer_seconds = 0.0;
+    bool map_chunk_color_refresh_due = true;
+    static constexpr double MAP_CHUNK_COLOR_REFRESH_INTERVAL_SECONDS = 1.0 / 8.0;
+
+    // Centers next window.
     void center_next_window(float width, float height);
+    // Renders main menu.
     void render_main_menu(Menu_Actions &actions);
+    // Renders new game setup menu.
     void render_new_game_setup_menu(Menu_Actions &actions, Menu_Options_Model &options);
+    // Renders pause menu.
     void render_pause_menu(Menu_Actions &actions);
+    // Renders boss defeated menu.
     void render_boss_defeated_menu(Menu_Actions &actions);
+    // Renders player lost menu.
     void render_player_lost_menu(Menu_Actions &actions);
+    // Renders options menu.
     void render_options_menu(Menu_Actions &actions, Menu_Options_Model &options);
+    // Renders loading screen.
     void render_loading_screen();
+    // Ensures store offer textures loaded.
     bool ensure_store_offer_textures_loaded();
+    // Loads ui texture.
     unsigned int load_ui_texture(const std::string &path);
+    // Creates solid color texture.
     unsigned int create_solid_color_texture(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 255);
 
 public:
+    // Constructs UI_Renderer.
     UI_Renderer() = default;
+    // Destroys UI_Renderer and releases owned resources.
     ~UI_Renderer();
 
+    // Sets player.
     void set_player(Player *player);
+    // Sets camera.
     void set_camera(Camera *camera);
+    // Sets world.
     void set_world(World *world);
+    // Sets time manager.
     void set_time_manager(Time_Manager *time_manager);
+    // Sets entity manager.
     void set_entity_manager(Entity_Manager *entity_manager);
 
     // main render call - call between imgui_new_frame and imgui_render
@@ -116,17 +145,26 @@ public:
 
     // individual UI panels
     void render_debug_overlay();
+    // Renders player status panel.
     void render_player_status_panel();
+    // Renders health bar.
     void render_health_bar();
+    // Renders boss health bar.
     void render_boss_health_bar();
+    // Renders hotbar.
     void render_hotbar();
+    // Renders minimap.
     void render_minimap();
+    // Renders fullscreen map.
     void render_fullscreen_map();
+    // Renders devushki objective.
     void render_devushki_objective();
+    // Renders store offers.
     void render_store_offers();
 
     void set_loading_state(float progress, const std::string &status)
     {
+        // Clamps.
         loading_progress = std::clamp(progress, 0.0f, 1.0f);
         loading_status = status;
     }
@@ -143,9 +181,14 @@ public:
 
     // toggles
     void toggle_debug_info() { show_debug_info = !show_debug_info; }
+    // Toggles hotbar.
     void toggle_hotbar() { show_hotbar = !show_hotbar; }
+    // Toggles health bar.
     void toggle_health_bar() { show_health_bar = !show_health_bar; }
+    // Toggles minimap.
     void toggle_minimap() { show_minimap = !show_minimap; }
+    // Toggles fullscreen map.
     void toggle_fullscreen_map();
+    // Returns true if fullscreen map open.
     bool is_fullscreen_map_open() const { return show_fullscreen_map; }
 };
